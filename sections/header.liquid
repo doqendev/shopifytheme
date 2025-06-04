@@ -188,6 +188,23 @@ body.menu-drawer-open .nav-menu-new a.active::after {
     color: #000 !important;
   }
 }
+
+    .nav-menu-new {
+        display: none !important; /* Hide on all screen sizes */
+    }
+    
+    /* Ensure it stays hidden even with other rules */
+    @media screen and (min-width: 750px) {
+        .nav-menu-new {
+            display: none !important;
+        }
+    }
+    
+    @media screen and (min-width: 990px) {
+        .nav-menu-new {
+            display: none !important;
+        }
+    }
 </style>
 
 {%- style -%}

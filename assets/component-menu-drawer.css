@@ -541,3 +541,32 @@ menu-drawer > details[open] > summary::before {
   visibility: hidden !important;
   transition: none !important;
 }
+
+/* Style for nav menu when moved into drawer */
+.moved-into-drawer {
+  display: flex !important;
+  justify-content: flex-start;
+  gap: 2rem;
+  padding: 2rem 3rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgba(var(--color-foreground), 0.1);
+}
+
+.moved-into-drawer a {
+  text-decoration: none;
+  color: rgb(var(--color-foreground));
+  font-weight: 500;
+  font-size: 1.4rem;
+  transition: color 0.3s ease;
+}
+
+.moved-into-drawer a:hover {
+  color: rgba(var(--color-foreground), 0.75);
+}
+
+.moved-into-drawer a.active {
+  color: rgb(var(--color-foreground));
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.3rem;
+}
