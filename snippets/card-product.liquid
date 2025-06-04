@@ -1,0 +1,426 @@
+<!-- card-product.liquid -->
+{% comment %}
+  card-product.liquid (Option C)
+  ------------------------------------------------------------------
+  Attempting to read "value.swatch" on each color option value,
+  as used in the product-variant-picker. If Shopify doesn't
+  inject this data at the card level, it will be blank.
+{% endcomment %}
+
+<style>
+
+.product-card { position: relative; }
+.wishlist-toggle {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.heart-icon { pointer-events: none; }
+
+  
+  .card__content {
+    width: 100%;
+  }
+  .title-cheyenne {
+    font-family: "Figtree", Arial, Helvetica, sans-serif;
+    display: inline-block;
+    color: black;
+    width: 95%;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 5%;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 16px;
+  }
+  
+  /* Temporary CSS to help ensure proper Swiper behavior */
+  .swiper-container {
+    width: 100%;
+    overflow: hidden;
+    pointer-events: auto; /* Ensure pointer events are allowed */
+    touch-action: auto; /* Let the browser decide (default behavior) */
+  }
+  .swiper-wrapper {
+    display: flex;
+    transition-property: transform;
+    z-index: 10;
+    position: relative;
+  }
+  .swiper-slide {
+    width: 100%;
+  }
+  .swiper-pagination-bullet {
+    display: none;
+  }
+
+@media screen and (min-width: 750px) {
+  .heart-icon {
+    width: 20px!important;
+    height: 20px!important;
+  }
+  
+</style>
+
+{%- unless skip_styles -%}
+  {{ 'component-rating.css' | asset_url | stylesheet_tag }}
+  {{ 'component-volume-pricing.css' | asset_url | stylesheet_tag }}
+  {{ 'swatches-cheyenne.css' | asset_url | stylesheet_tag }}
+  {{ 'component-price.css' | asset_url | stylesheet_tag }}
+  {{ 'quick-order-list.css' | asset_url | stylesheet_tag }}
+  {{ 'quantity-popover.css' | asset_url | stylesheet_tag }}
+{%- endunless %}
+
+{% if card_product and card_product != empty %}
+  {%- comment -%}
+    (A) existing code gathering color tags, sizes, etc. if needed
+  {%- endcomment -%}
+  {% assign color_values = '' | split: ',' %}
+  {% assign base_color_values = '' | split: ',' %}
+  {% assign size_values  = '' | split: ',' %}
+  {% assign product_type_values = '' | split: ',' %}
+
+  {% for variant in card_product.variants %}
+    {% assign s = variant.option2 | downcase | strip %}
+    {% if s != '' and s != 'default title' %}
+      {% unless size_values contains s %}
+        {% capture new_sizes %}{{ size_values | join: ',' }},{{ s }}{% endcapture %}
+        {% assign size_values = new_sizes | split: ',' | uniq %}
+      {% endunless %}
+    {% endif %}
+  {% endfor %}
+
+  {% for tag in card_product.tags %}
+    {% assign tag_clean = tag | downcase | strip %}
+    {% unless size_values contains tag_clean or product_type_values contains tag_clean %}
+      {% capture new_product_types %}{{ product_type_values | join: ',' }},{{ tag_clean }}{% endcapture %}
+      {% assign product_type_values = new_product_types | split: ',' | uniq %}
+    {% endunless %}
+  {% endfor %}
+
+  {% assign color_values_str = color_values | join: ',' | remove_first: ',' %}
+  {% assign base_color_values_str = base_color_values | join: ',' | remove_first: ',' %}
+  {% assign size_values_str  = size_values | join: ',' | remove_first: ',' %}
+  {% assign product_type_values_str = product_type_values | join: ',' | remove_first: ',' %}
+
+  {%- liquid
+    assign ratio = 1
+    if card_product.featured_media and media_aspect_ratio == 'portrait'
+      assign ratio = 0.8
+    elsif card_product.featured_media and media_aspect_ratio == 'adapt'
+      assign ratio = card_product.featured_media.aspect_ratio
+    endif
+    if ratio == 0 or ratio == null
+      assign ratio = 1
+    endif
+  -%}
+
+  <div
+    class="card-wrapper product-card-wrapper product-card underline-links-hover"
+    data-product-handle="{{ card_product.handle }}"
+    data-colors="{{ color_values_str }}"
+    data-base-colors="{{ base_color_values_str }}"
+    data-sizes="{{ size_values_str }}"
+    data-product-types="{{ product_type_values_str }}"
+    data-tags="{{ card_product.tags | join: ',' | downcase }}"
+  >
+    <div
+      class="
+        card card--{{ settings.card_style }}
+        {% if card_product.featured_media %} card--media{% else %} card--text{% endif %}
+        {% if settings.card_style == 'card' %} color-{{ settings.card_color_scheme }} gradient{% endif %}
+        {% if image_shape and image_shape != 'default' %} card--shape{% endif %}
+        {% if extend_height %} card--extend-height{% endif %}
+        {% if card_product.featured_media == nil and settings.card_style == 'card' %} ratio{% endif %}
+        {% if horizontal_class %} card--horizontal{% endif %}
+      "
+      style="--ratio-percent: {{ 1 | divided_by: ratio | times: 100 }}%;"
+    >
+      <div
+        class="card__inner {% if settings.card_style == 'standard' %}color-{{ settings.card_color_scheme }} gradient{% endif %}{% if card_product.featured_media or settings.card_style == 'standard' %} ratio{% endif %}"
+        style="--ratio-percent: {{ 1 | divided_by: ratio | times: 100 }}%;"
+      >
+       {% if card_product.featured_media %}
+  <div class="card__media swiper-container">
+    <div class="swiper-wrapper">
+      {% for media in card_product.media %}
+        {% if media.preview_image != blank %}
+          <div class="swiper-slide">
+            <a href="{{ card_product.url }}" class="full-unstyled-link">
+              <img
+                src="{{ media | image_url: width: 533 }}"
+                srcset="
+                  {{ media | image_url: width: 165 }} 165w,
+                  {{ media | image_url: width: 360 }} 360w,
+                  {{ media | image_url: width: 533 }} 533w,
+                  {{ media | image_url: width: 720 }} 720w,
+                  {{ media | image_url: width: 940 }} 940w,
+                  {{ media | image_url: width: 1066 }} 1066w
+                "
+                sizes="(min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 130 | divided_by: 4 }}px, (min-width: 990px) calc((100vw - 130px) / 4), (min-width: 750px) calc((100vw - 120px) / 3), calc((100vw - 35px) / 2)"
+                alt="{{ media.alt | escape }}"
+                loading="lazy"
+                width="{{ media.preview_image.width }}"
+                height="{{ media.preview_image.height }}"
+              >
+            </a>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    <div class="swiper-pagination"></div>
+  </div>
+{% endif %}
+
+      </div>
+
+      <div class="card__content">
+        <div class="card__information">
+
+            <a
+              href="{{ card_product.url }}"
+                id="CardLink-{{ section_id }}-{{ card_product.id }}"
+              class="title-cheyenne"
+              aria-labelledby="CardLink-{{ section_id }}-{{ card_product.id }} Badge-{{ section_id }}-{{ card_product.id }}"
+            >
+              {{ card_product.title | escape }}
+            </a>
+
+          <div class="card-information">
+              
+<button class="wishlist-toggle" aria-label="Add to wishlist">
+    <!-- empty heart -->
+    <svg class="heart-icon empty" xmlns="http://www.w3.org/2000/svg"
+         viewBox="0 0 24 24" width="18" height="18" fill="none"
+         stroke="black" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/>
+    </svg>
+    <!-- filled heart -->
+    <svg class="heart-icon filled" xmlns="http://www.w3.org/2000/svg"
+         viewBox="0 0 24 24" width="18" height="18" fill="#ff6f61"
+         style="display:none">
+      <path d="M12 21l-1-1C6.1 15.5 2 11.2 2 7.1 2 4.3 4.3 2 7.1 2c2.07 0 4 1.17 4.9 3 .9-1.83 2.83-3 4.9-3C19.7 2 22 4.3 22 7.1c0 4.1-4.1 8.4-8.9 12.9L12 21z"/>
+    </svg>
+  </button>
+
+            {% if show_vendor %}
+              <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
+              <div class="caption-with-letter-spacing light">{{ card_product.vendor }}</div>
+            {% endif %}
+
+            <span class="caption-large light">{{ block.settings.description | escape }}</span>
+
+            <!-- Price and swatch side by side -->
+            <div class="price-and-swatch">
+              <!-- BEGIN: Option C code for color swatches from option.value.swatch -->
+              {% for option in card_product.options_with_values %}
+                {% if option.name == 'Color' or option.name == 'Cor' %}
+                  {% assign color_index = forloop.index0 %}
+                  <div class="product-card__swatch-indicator">
+                    {% assign swatch_count = 0 %}
+                    {% assign additional_swatch_count = 0 %}
+                    {% for value in option.values %}
+                      {% assign variant_image_url = '' %}
+                      {% assign option_text = value.value | default: value %}
+                      {% assign option_text_downcase = option_text | downcase %}
+                      {% for variant in card_product.variants %}
+                        {% assign variant_option = variant.options[color_index] %}
+                        {% assign variant_option_downcase = variant_option | downcase %}
+                        {% if variant.image and variant_option_downcase == option_text_downcase %}
+                          {% assign variant_image_url = variant.image | image_url: '533x' %}
+                          {% if variant_image_url == blank %}
+                            {% assign variant_image_url = variant.image %}
+                          {% endif %}
+                          {% assign first_char = variant_image_url | slice: 0, 1 %}
+                          {% if first_char != "/" %}
+                            {% assign variant_image_url = "/" | append: variant_image_url %}
+                          {% endif %}
+                          {% assign first6 = variant_image_url | slice: 0, 6 %}
+                          {% if first6 == '/files' %}
+                            {% assign variant_image_url = '//' | append: shop.domain | append: '/cdn/shop' | append: variant_image_url %}
+                          {% else %}
+                            {% assign variant_image_url = variant_image_url | absolute_url %}
+                          {% endif %}
+                          {% break %}
+                        {% endif %}
+                      {% endfor %}
+                      {% if value.swatch != blank %}
+                        {% if swatch_count < 5 %}
+                          {% assign is_active = false %}
+                          {% if swatch_count == 0 %}
+                            {% assign is_active = true %}
+                          {% endif %}
+                          {% render 'swatch', swatch: value.swatch, shape: 'circle', variant_image: variant_image_url, is_default: is_active %}
+                          {% assign swatch_count = swatch_count | plus: 1 %}
+                        {% else %}
+                          {% assign additional_swatch_count = additional_swatch_count | plus: 1 %}
+                        {% endif %}
+                      {% else %}
+                        <!-- fallback if no swatch data -->
+                        <div style="width:24px;height:24px;border-radius:50%;background:#ccc;"></div>
+                      {% endif %}
+                    {% endfor %}
+                    {% if additional_swatch_count > 0 %}
+                      <span class="additional-swatch-count">+{{ additional_swatch_count }}</span>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              {% endfor %}
+              <!-- END: Option C code -->
+
+              {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
+            </div>
+          </div>
+        </div>
+
+        {%- comment -%}
+          Quick add, volume pricing, etc. remain unchanged
+        {%- endcomment %}
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%}
+    --- NEW: Swiper Initialization Function ---
+    Wrap the Swiper initialization in a function so it can be re-run
+    after the product grid is updated via filtering.
+  {%- endcomment -%}
+  <script>
+    function initializeProductCardSwipers() {
+      // Ensure Swiper library is loaded
+      if (typeof Swiper === 'undefined') {
+        console.error('Swiper is not loaded. Please include Swiper JS library.');
+        return;
+      }
+
+      var productCards = document.querySelectorAll('.product-card-wrapper');
+      productCards.forEach(function(card, index) {
+        var swiperContainer = card.querySelector('.swiper-container');
+        if (!swiperContainer) {
+          console.log('No swiper container found for card', index);
+          return; // Skip if no media slider is present
+        }
+
+        // Remove any forced touchAction override that might block horizontal swipes
+        swiperContainer.style.touchAction = 'auto';
+
+        console.log('Initializing Swiper for card', index, swiperContainer);
+
+        new Swiper(swiperContainer, {
+          slidesPerView: 1,
+          spaceBetween: 0,
+          allowTouchMove: true,
+          touchEventsTarget: 'container',
+          pagination: {
+            el: card.querySelector('.swiper-pagination'),
+            clickable: true,
+          },
+          simulateTouch: true,
+          touchRatio: 1,
+          grabCursor: true,
+          threshold: 0,
+          on: {
+            init: function() {
+              console.log('Swiper init event on card', index);
+              // Update swiper after a short delay in case dimensions change
+              setTimeout(() => {
+                this.update();
+                console.log('Swiper updated after init for card', index);
+              }, 1000);
+            },
+            // Additional event listeners can be added here if needed.
+          }
+        });
+      });
+    }
+
+    // Initialize Swiper on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeProductCardSwipers();
+      
+      // Swatch click handling remains unchanged
+      var productGridContainer = document.getElementById('ProductGridContainer');
+      if (productGridContainer) {
+        productGridContainer.addEventListener('click', function(e) {
+          var swatchEl = e.target.closest('.swatch');
+          if (!swatchEl) return;
+          var card = swatchEl.closest('.product-card-wrapper');
+          if (!card) return;
+          card.querySelectorAll('.swatch').forEach(function(el) {
+            el.classList.remove('active');
+          });
+          swatchEl.classList.add('active');
+          var newImage = swatchEl.getAttribute('data-variant-image');
+          if (!newImage) return;
+          var mediaContainer = card.querySelector('.card__media');
+          if (!mediaContainer) return;
+          var img = card.querySelector('.swiper-slide-active img') || mediaContainer.querySelector('img');
+          if (img) {
+            console.log("Updating image via swatch click", newImage);
+            img.src = newImage;
+            img.srcset = newImage;
+          }
+        });
+      }
+    });
+  </script>
+
+{% else %}
+  {%- liquid
+    assign ratio = 1
+    assign placeholder = true
+    if media_aspect_ratio == 'portrait'
+      assign ratio = 1
+    endif
+  -%}
+  <div class="card-wrapper product-card-wrapper underline-links-hover">
+    <div
+      class="
+        card card--{{ settings.card_style }}
+        {% if extend_height %} card--extend-height{% endif %}
+        {% if image_shape and image_shape != 'default' %} card--shape{% endif %}
+        {% if settings.card_style == 'card' %} color-{{ settings.card_color_scheme }} gradient{% endif %}
+      "
+      style="--ratio-percent: {{ 1 | divided_by: ratio | times: 100 }}%;"
+    >
+      <div
+        class="
+          card__inner{% if settings.card_style == 'standard' %} color-{{ settings.card_color_scheme }} gradient{% endif %} ratio
+        "
+      >
+        <div
+          class="card__media {% if image_shape and image_shape != 'default' %} shape--{{ image_shape }} color-{{ settings.card_color_scheme }} gradient{% endif %}"
+        >
+          <div class="media media--transparent">
+            {% if placeholder_image %}
+              {{ placeholder_image | placeholder_svg_tag: 'placeholder-svg' }}
+            {% else %}
+              {{ 'product-apparel-2' | placeholder_svg_tag: 'placeholder-svg' }}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="card__content">
+        <div class="card__information">
+          <h3 class="card__heading card__heading--placeholder{% if settings.card_style == 'standard' %} h5{% endif %}">
+            <a role="link" aria-disabled="true" class="full-unstyled-link">
+              {{ 'onboarding.product_title' | t }}
+            </a>
+          </h3>
+          <div class="card-information">
+            {% if show_vendor %}
+              <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
+              <div class="caption-with-letter-spacing light">{{ 'products.product.vendor' | t }}</div>
+            {% endif %}
+            {% render 'price', placeholder: placeholder, show_compare_at_price: true %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}

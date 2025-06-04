@@ -1,0 +1,528 @@
+<!-- Inline styles: move to your theme stylesheet in production -->
+<style>
+/* Link styling */
+.body-measure-link {
+  cursor: pointer;
+  text-decoration: underline;
+  color: #333;
+}
+
+/* Full-screen drawer styling */
+.body-measure-drawer {
+  position: fixed;
+  top: 0; 
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  display: none;
+  z-index: 9999;
+  overflow-y: auto;
+  padding: 20px;
+}
+.body-measure-drawer.active {
+  display: block;
+}
+
+/* Close button */
+.body-measure-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 1.8rem;
+  cursor: pointer;
+}
+
+/* Drawer content container */
+.body-measure-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+.body-measure-content h2 {
+  font-size: 1.4rem;
+  margin-top: 40px;
+}
+
+/* 
+  TAB NAVIGATION: three buttons for Mulher, Homem, Criança 
+*/
+.body-measure-tabs {
+  display: flex;
+  gap: 1rem;
+  margin: 20px 0;
+  list-style: none;
+  padding: 0;
+}
+.body-measure-tabs button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 4px 8px;
+  border-bottom: 2px solid transparent;
+}
+.body-measure-tabs button.active {
+  border-bottom-color: #000;
+}
+
+/* 
+  Each tab's panel container. 
+  By default, only the "active" one is shown. 
+*/
+.body-measure-panel {
+  display: none;
+}
+.body-measure-panel.active {
+  display: block;
+}
+
+/* Shared styles for each panel's image + overlay */
+.body-measure-image-container {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin: 20px auto;
+}
+.body-measure-image {
+  width: 100%;
+  display: block;
+}
+.body-measure-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.info-box {
+  position: absolute;
+  background: #fff;
+  color: #333;
+  font-size: 0.85rem;
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  white-space: nowrap;
+  z-index: 2;
+}
+/* Arrow line + arrowheads + subtle drop shadow */
+.arrow {
+  position: absolute;
+  height: 2px;
+  background: currentColor;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1;
+  filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.2));
+}
+.arrow-start {
+  width: 0;
+  height: 0;
+  border-right: 6px solid currentColor;
+  border-top: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+  margin-left: -2px;
+}
+.arrow-end {
+  width: 0;
+  height: 0;
+  border-left: 6px solid currentColor;
+  border-top: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+  margin-right: -2px;
+}
+
+/* Unit toggle & size buttons (common to all tabs) */
+.units, .sizes {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+  font-weight: 600;
+}
+.unit-btn, .size-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 4px 8px;
+  border-bottom: 2px solid transparent;
+}
+.unit-btn.active, .size-btn.active {
+  border-bottom-color: #000;
+}
+
+</style>
+
+<div class="body-measure-container">
+  <!-- Link that triggers the drawer -->
+  <a href="#body-measure-drawer" class="body-measure-link" id="open-body-measure">
+    Guia de tamanhos
+  </a>
+
+  <!-- Full-screen drawer -->
+  <div class="body-measure-drawer" id="body-measure-drawer">
+    <!-- Close button -->
+    <span class="body-measure-close" id="close-body-measure">&#10005;</span>
+
+    <!-- Drawer content -->
+    <div class="body-measure-content">
+      <h2>Guia de tamanhos</h2>
+      <p>Selecione o tamanho para ver as medidas do contorno do corpo.</p>
+
+      <!-- TAB NAVIGATION -->
+      <div class="body-measure-tabs">
+        <button type="button" class="tab-btn active" data-tab="panel-mulher">Mulher</button>
+        <button type="button" class="tab-btn" data-tab="panel-homem">Homem</button>
+        <button type="button" class="tab-btn" data-tab="panel-crianca">Criança</button>
+      </div>
+
+      <!-- MULHER PANEL -->
+      <div class="body-measure-panel active" id="panel-mulher">
+        <!-- Image Container -->
+        <div class="body-measure-image-container">
+          <img
+            src="https://cdn.shopify.com/s/files/1/0911/7843/4884/files/c22695092129.jpg?v=1743499533"
+            alt="Mulher demonstrando medições"
+            class="body-measure-image"
+          />
+
+          <!-- Overlay: replicate your arrows/labels as needed -->
+          <div class="body-measure-overlay">
+            <!-- CollAR label -->
+            <span
+              class="info-box"
+              id="collar-label-mulher"
+              style="left: 15%; top: 29%;"
+            >
+              38 cm
+            </span>
+            <!-- CollAR arrow -->
+            <span
+              class="arrow"
+              id="collar-arrow-mulher"
+              style="left: 44%; top: 31%; width: 12%; color: white;"
+            >
+              <span class="arrow-start"></span>
+              <span class="arrow-end"></span>
+            </span>
+
+            <!-- Chest label -->
+            <span
+              class="info-box"
+              id="chest-label-mulher"
+              style="left: 10%; top: 45%;"
+            >
+              94 cm
+            </span>
+            <!-- Chest arrow -->
+            <span
+              class="arrow"
+              id="chest-arrow-mulher"
+              style="left: 33%; top: 48%; width: 33%; color: white;"
+            >
+              <span class="arrow-start"></span>
+              <span class="arrow-end"></span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Unit toggle (CM / IN) -->
+        <div class="units">
+          <button class="unit-btn active" data-unit="cm" data-target="mulher">CM</button>
+          <button class="unit-btn" data-unit="in" data-target="mulher">IN</button>
+        </div>
+
+        <!-- Size selection (S, M, L, XL, etc.) -->
+        <div class="sizes">
+          <button class="size-btn active" data-size="S" data-target="mulher">S</button>
+          <button class="size-btn" data-size="M" data-target="mulher">M</button>
+          <button class="size-btn" data-size="L" data-target="mulher">L</button>
+          <button class="size-btn" data-size="XL" data-target="mulher">XL</button>
+        </div>
+      </div>
+      
+      <!-- HOMEM PANEL -->
+      <div class="body-measure-panel" id="panel-homem">
+        <!-- (Same structure, you can change arrow positions / image as needed) -->
+        <div class="body-measure-image-container">
+          <img
+            src="https://cdn.shopify.com/s/files/1/0911/7843/4884/files/c22695092129.jpg?v=1743499533"
+            alt="Homem demonstrando medições"
+            class="body-measure-image"
+          />
+          <div class="body-measure-overlay">
+            <span
+              class="info-box"
+              id="collar-label-homem"
+              style="left: 15%; top: 29%;"
+            >
+              38 cm
+            </span>
+            <span
+              class="arrow"
+              id="collar-arrow-homem"
+              style="left: 44%; top: 31%; width: 12%; color: white;"
+            >
+              <span class="arrow-start"></span>
+              <span class="arrow-end"></span>
+            </span>
+
+            <span
+              class="info-box"
+              id="chest-label-homem"
+              style="left: 10%; top: 45%;"
+            >
+              94 cm
+            </span>
+            <span
+              class="arrow"
+              id="chest-arrow-homem"
+              style="left: 33%; top: 48%; width: 33%; color: white;"
+            >
+              <span class="arrow-start"></span>
+              <span class="arrow-end"></span>
+            </span>
+          </div>
+        </div>
+
+        <div class="units">
+          <button class="unit-btn active" data-unit="cm" data-target="homem">CM</button>
+          <button class="unit-btn" data-unit="in" data-target="homem">IN</button>
+        </div>
+        <div class="sizes">
+          <button class="size-btn active" data-size="S" data-target="homem">S</button>
+          <button class="size-btn" data-size="M" data-target="homem">M</button>
+          <button class="size-btn" data-size="L" data-target="homem">L</button>
+          <button class="size-btn" data-size="XL" data-target="homem">XL</button>
+        </div>
+      </div>
+
+      <!-- CRIANÇA PANEL -->
+      <div class="body-measure-panel" id="panel-crianca">
+        <!-- (Same structure, tweak as needed) -->
+        <div class="body-measure-image-container">
+          <img
+            src="https://cdn.shopify.com/s/files/1/0911/7843/4884/files/c22695092129.jpg?v=1743499533"
+            alt="Criança demonstrando medições"
+            class="body-measure-image"
+          />
+          <div class="body-measure-overlay">
+            <span
+              class="info-box"
+              id="collar-label-crianca"
+              style="left: 15%; top: 29%;"
+            >
+              38 cm
+            </span>
+            <span
+              class="arrow"
+              id="collar-arrow-crianca"
+              style="left: 44%; top: 31%; width: 12%; color: white;"
+            >
+              <span class="arrow-start"></span>
+              <span class="arrow-end"></span>
+            </span>
+
+            <span
+              class="info-box"
+              id="chest-label-crianca"
+              style="left: 10%; top: 45%;"
+            >
+              94 cm
+            </span>
+            <span
+              class="arrow"
+              id="chest-arrow-crianca"
+              style="left: 33%; top: 48%; width: 33%; color: white;"
+            >
+              <span class="arrow-start"></span>
+              <span class="arrow-end"></span>
+            </span>
+          </div>
+        </div>
+
+        <div class="units">
+          <button class="unit-btn active" data-unit="cm" data-target="crianca">CM</button>
+          <button class="unit-btn" data-unit="in" data-target="crianca">IN</button>
+        </div>
+        <div class="sizes">
+          <button class="size-btn active" data-size="S" data-target="crianca">6</button>
+          <button class="size-btn" data-size="M" data-target="crianca">8</button>
+          <button class="size-btn" data-size="L" data-target="crianca">10</button>
+          <button class="size-btn" data-size="XL" data-target="crianca">12</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Inline script: open/close drawer + dynamic measurement updates + tab switching -->
+<script>
+  (function() {
+    // 1) Drawer open/close
+    const openBtn = document.getElementById('open-body-measure');
+    const closeBtn = document.getElementById('close-body-measure');
+    const drawer = document.getElementById('body-measure-drawer');
+
+    if(openBtn && drawer) {
+      openBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        drawer.classList.add('active');
+      });
+    }
+    if(closeBtn && drawer) {
+      closeBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        drawer.classList.remove('active');
+      });
+    }
+
+    // 2) Tab switching logic
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const panels = document.querySelectorAll('.body-measure-panel');
+    
+    tabButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        // Remove 'active' from all buttons & panels
+        tabButtons.forEach((b) => b.classList.remove('active'));
+        panels.forEach((p) => p.classList.remove('active'));
+        
+        // Activate the clicked button
+        btn.classList.add('active');
+        // Show the corresponding panel
+        const targetPanel = document.getElementById(btn.dataset.tab);
+        if(targetPanel) {
+          targetPanel.classList.add('active');
+        }
+      });
+    });
+
+    // 3) Measurement data for each group. 
+    //    For now, we’re copying the same data for Mulher, Homem, Criança. 
+    //    Adjust as desired.
+    const measurements = {
+      mulher: {
+        cm: {
+          S:  { collar: 38, chest: 94 },
+          M:  { collar: 39, chest: 98 },
+          L:  { collar: 40, chest: 102 },
+          XL: { collar: 41, chest: 106 },
+        },
+        in: {
+          S:  { collar: 15,   chest: 37 },
+          M:  { collar: 15.5, chest: 38.5 },
+          L:  { collar: 16,   chest: 40 },
+          XL: { collar: 16.5, chest: 41.5 },
+        }
+      },
+      homem: {
+        cm: {
+          S:  { collar: 38, chest: 94 },
+          M:  { collar: 39, chest: 98 },
+          L:  { collar: 40, chest: 102 },
+          XL: { collar: 41, chest: 106 },
+        },
+        in: {
+          S:  { collar: 15,   chest: 37 },
+          M:  { collar: 15.5, chest: 38.5 },
+          L:  { collar: 16,   chest: 40 },
+          XL: { collar: 16.5, chest: 41.5 },
+        }
+      },
+      crianca: {
+        cm: {
+          S:  { collar: 38, chest: 94 },
+          M:  { collar: 39, chest: 98 },
+          L:  { collar: 40, chest: 102 },
+          XL: { collar: 41, chest: 106 },
+        },
+        in: {
+          S:  { collar: 15,   chest: 37 },
+          M:  { collar: 15.5, chest: 38.5 },
+          L:  { collar: 16,   chest: 40 },
+          XL: { collar: 16.5, chest: 41.5 },
+        }
+      }
+    };
+
+    // 4) Update logic: each panel has its own label IDs
+    function updateLabels(group, unit, size) {
+      // e.g., #collar-label-mulher, #chest-label-mulher, etc.
+      const collarLabel = document.getElementById(`collar-label-${group}`);
+      const chestLabel  = document.getElementById(`chest-label-${group}`);
+      if(!collarLabel || !chestLabel) return;
+
+      const data = measurements[group][unit][size];
+      collarLabel.textContent = data.collar + ' ' + unit;
+      chestLabel.textContent  = data.chest  + ' ' + unit;
+    }
+
+    // 5) Handle unit + size buttons
+    const unitButtons = document.querySelectorAll('.unit-btn');
+    const sizeButtons = document.querySelectorAll('.size-btn');
+
+    // Default selections for each group
+    const currentSelections = {
+      mulher: { unit: 'cm', size: 'S' },
+      homem:  { unit: 'cm', size: 'S' },
+      crianca:{ unit: 'cm', size: 'S' }
+    };
+
+    // On click of a unit button
+    unitButtons.forEach((btn) => {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const group = btn.dataset.target;   // e.g. "mulher"
+        const unit = btn.dataset.unit;      // e.g. "cm"
+        
+        // Clear 'active' from all unit buttons in *this panel*
+        // We'll identify them by the same data-target
+        unitButtons.forEach((b) => {
+          if(b.dataset.target === group) {
+            b.classList.remove('active');
+          }
+        });
+        // Mark this one active
+        btn.classList.add('active');
+
+        // Update current selections
+        currentSelections[group].unit = unit;
+        // Use whatever size is currently selected
+        const currentSize = currentSelections[group].size;
+        updateLabels(group, unit, currentSize);
+      });
+    });
+
+    // On click of a size button
+    sizeButtons.forEach((btn) => {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const group = btn.dataset.target;   // e.g. "mulher"
+        const size = btn.dataset.size;      // e.g. "S"
+        
+        // Clear 'active' from all size buttons in *this panel*
+        sizeButtons.forEach((b) => {
+          if(b.dataset.target === group) {
+            b.classList.remove('active');
+          }
+        });
+        // Mark this one active
+        btn.classList.add('active');
+
+        // Update current selections
+        currentSelections[group].size = size;
+        // Use whatever unit is currently selected
+        const currentUnit = currentSelections[group].unit;
+        updateLabels(group, currentUnit, size);
+      });
+    });
+
+    // 6) Initialize all panels to show the default measurements (cm + S)
+    Object.keys(currentSelections).forEach((group) => {
+      const { unit, size } = currentSelections[group];
+      updateLabels(group, unit, size);
+    });
+
+  })();
+</script>
