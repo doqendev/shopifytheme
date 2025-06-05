@@ -570,3 +570,53 @@ menu-drawer > details[open] > summary::before {
   text-decoration: underline;
   text-underline-offset: 0.3rem;
 }
+
+/* Drawer Navigation Menu Styles */
+.drawer-nav-menu {
+  padding: 2rem 3rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(var(--color-foreground), 0.1);
+}
+
+.drawer-menu-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.drawer-menu-link {
+  text-decoration: none;
+  color: rgb(52, 52, 52);
+  font-size: 1.4rem;
+  font-weight: 450;
+  position: relative;
+  padding-bottom: 5px;
+  text-transform: uppercase;
+}
+
+.drawer-menu-link.active {
+  font-weight: 700;
+  position: relative;
+}
+
+.drawer-menu-link.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50%;
+  height: 1px;
+  background-color: #000000;
+}
+
+/* Responsive styles for the drawer navigation */
+@media screen and (max-width: 749px) {
+  .drawer-menu-nav {
+    gap: 1rem;
+  }
+  
+  .drawer-menu-link {
+    font-size: 1.2rem;
+  }
+}

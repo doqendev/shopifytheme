@@ -304,14 +304,6 @@ body.menu-drawer-open .nav-menu-new a.active::after {
   
   <header class="header header--{{ section.settings.logo_position }} header--mobile-{{ section.settings.mobile_logo_position }} page-width{% if section.settings.menu_type_desktop == 'drawer' %} drawer-menu{% endif %}{% if section.settings.menu != blank %} header--has-menu{% endif %}{% if has_app_block %} header--has-app{% endif %}{% if social_links %} header--has-social{% endif %}{% if shop.customer_accounts_enabled %} header--has-account{% endif %}{% if localization_forms %} header--has-localizations{% endif %}">
 
-{% if template == 'index' %}
-  <div class="nav-menu-new">
-    <a href="#women" id="menu-woman-link" data-menu="women-menu">MULHER</a>
-    <a href="#homem" id="menu-homem-link" data-menu="homem-menu">HOMEM</a>
-    <a href="#crianca" id="menu-crianca-link" data-menu="crianca-menu">CRIANÇAS</a>
-  </div>
-{% endif %}
-
     {%- liquid
       if section.settings.menu != blank
         render 'header-drawer'

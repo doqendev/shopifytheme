@@ -1,10 +1,56 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const menuLinks = document.querySelectorAll(".nav-menu-new a");
   const menuDrawerContent = document.querySelector("#menu-drawer .menu-drawer__inner-container");
   const menuDrawer = document.querySelector("#menu-drawer");
   const detailsElement = menuDrawer ? menuDrawer.closest("details") : null;
 
   if (!menuDrawerContent) return;
+
+  // Create the navigation menu directly in the drawer
+  const createNavMenu = () => {
+    // Check if navigation already exists to prevent duplication
+    if (menuDrawerContent.querySelector(".drawer-nav-menu")) return;
+    
+    const navMenu = document.createElement("div");
+    navMenu.className = "drawer-nav-menu";
+    navMenu.innerHTML = `
+      <div class="drawer-menu-nav">
+        <a href="#" data-menu="women-menu" class="drawer-menu-link active">MULHER</a>
+        <a href="#" data-menu="homem-menu" class="drawer-menu-link">HOMEM</a>
+        <a href="#" data-menu="crianca-menu" class="drawer-menu-link">CRIANÇAS</a>
+      </div>
+    `;
+    
+    // Insert at the beginning of the drawer
+    menuDrawerContent.insertBefore(navMenu, menuDrawerContent.firstChild);
+    
+    // Add event listeners to the new navigation links
+    const navLinks = navMenu.querySelectorAll(".drawer-menu-link");
+    navLinks.forEach(link => {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        
+        // Update active state
+        navLinks.forEach(l => l.classList.remove("active"));
+        link.classList.add("active");
+        
+        // Change menu content based on selection
+        const menuKey = link.getAttribute("data-menu");
+        if (menus[menuKey]) {
+          // Remove existing menu navigation
+          const oldNav = menuDrawerContent.querySelector(".menu-drawer__navigation");
+          if (oldNav) oldNav.remove();
+          
+          // Add the new menu content
+          menuDrawerContent.insertAdjacentHTML("beforeend", menus[menuKey]);
+          initializeSubmenuBehavior();
+          appendAuthLink();
+        }
+      });
+    });
+  };
+
+  // Execute once when the drawer is initialized
+  createNavMenu();
 
   const menus = {
     "women-menu": `
@@ -248,44 +294,20 @@ document.addEventListener("DOMContentLoaded", () => {
   // On initial page load, show the "women-menu" by default
   const defaultMenu = "women-menu";
   if (menus[defaultMenu]) {
-    menuDrawerContent.innerHTML = menus[defaultMenu];
+    menuDrawerContent.innerHTML = menuDrawerContent.innerHTML.replace(/<nav class="menu-drawer__navigation">[\s\S]*?<\/nav>/g, '');
+    menuDrawerContent.insertAdjacentHTML("beforeend", menus[defaultMenu]);
     initializeSubmenuBehavior();
     appendAuthLink();
   }
 
-  // When somebody clicks "MULHER" / "HOMEM" / "CRIANÇAS"…
-  menuLinks.forEach((link) => {
-    link.addEventListener("click", (event) => {
-      event.preventDefault();
-      const menuKey = link.getAttribute("data-menu");
-      if (menus[menuKey]) {
-        // Swap in the submenu HTML
-        menuDrawerContent.innerHTML = menus[menuKey];
-
-        // If the <details> (drawer) is not already open, open it
-        if (detailsElement && !detailsElement.open) {
-          detailsElement.open = true;
-        }
-        // Mirror the same “open” body / top‐nav styles that <details> toggle does on mobile
-        document.body.classList.add("menu-drawer-open");
-        menuLinks.forEach((l) => l.classList.add("menu-open"));
-
-        // Re‐initialize submenu behavior + re‐append the “CONTA” link
-        initializeSubmenuBehavior();
-        appendAuthLink();
-      }
-    });
-  });
-
-  // Keep the mobile‐style “toggle body class + top‐nav class” in sync if user manually clicks the hamburger on desktop
+  // When drawer opens/closes
   if (detailsElement) {
     detailsElement.addEventListener("toggle", () => {
       if (detailsElement.open) {
+        createNavMenu();
         document.body.classList.add("menu-drawer-open");
-        menuLinks.forEach((link) => link.classList.add("menu-open"));
       } else {
         document.body.classList.remove("menu-drawer-open");
-        menuLinks.forEach((link) => link.classList.remove("menu-open"));
       }
     });
   }
