@@ -3769,3 +3769,20 @@ font-style: normal;
 .menu-drawer__navigation-container {
   display: none !important;
 }
+
+/* Style for the active menu item */
+.main-menu-item.active {
+  font-weight: bold;
+  text-decoration: underline;
+  color: #000;
+}
+
+/* Hide all menus by default */
+#women-menu, #homem-menu, #criancas-menu {
+  display: none;
+}
+
+/* Show only the active menu */
+#women-menu.active, #homem-menu.active, #criancas-menu.active {
+  display: block;
+}

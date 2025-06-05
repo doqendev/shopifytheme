@@ -311,4 +311,54 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+
+  // Get the menu nav items
+  const menuItems = document.querySelectorAll('.main-menu-item');
+  
+  // Get the menu content containers
+  const mulherMenu = document.getElementById('women-menu');
+  const homemMenu = document.getElementById('homem-menu');
+  const criancasMenu = document.getElementById('criancas-menu');
+  
+  const allMenus = [mulherMenu, homemMenu, criancasMenu];
+  
+  // Function to set active menu
+  function setActiveMenu(clickedItem) {
+    // Remove active class from all menu items
+    menuItems.forEach(item => {
+      item.classList.remove('active');
+    });
+    
+    // Add active class to clicked item
+    clickedItem.classList.add('active');
+    
+    // Hide all menus
+    allMenus.forEach(menu => {
+      if (menu) menu.style.display = 'none';
+    });
+    
+    // Show the corresponding menu based on clicked item
+    const category = clickedItem.getAttribute('data-category');
+    if (category === 'mulher' && mulherMenu) {
+      mulherMenu.style.display = 'block';
+    } else if (category === 'homem' && homemMenu) {
+      homemMenu.style.display = 'block';
+    } else if (category === 'criancas' && criancasMenu) {
+      criancasMenu.style.display = 'block';
+    }
+  }
+  
+  // Add click event listeners to menu items
+  menuItems.forEach(item => {
+    item.addEventListener('click', function(e) {
+      e.preventDefault();
+      setActiveMenu(this);
+    });
+  });
+  
+  // Set default active menu to "mulher" on page load
+  const mulherMenuItem = document.querySelector('.main-menu-item[data-category="mulher"]');
+  if (mulherMenuItem) {
+    setActiveMenu(mulherMenuItem);
+  }
 });
