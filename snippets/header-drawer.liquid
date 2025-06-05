@@ -5,6 +5,71 @@
   {% render 'header-drawer' %}
 {% endcomment %}
 
+<style>
+  /* Custom navigation tabs styling */
+  .drawer-nav-menu {
+    padding: 1rem;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  
+  .drawer-menu-nav {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+  }
+  
+  .drawer-menu-link {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+  }
+  
+  .drawer-menu-link:hover {
+    color: #000;
+  }
+  
+  .drawer-menu-link.active {
+    color: #000;
+    border-bottom-color: #000;
+    font-weight: 600;
+  }
+  
+  /* Hide original navigation when custom nav is active */
+  .menu-drawer__inner-container:has(.drawer-nav-menu) > .menu-drawer__navigation-container:first-of-type {
+    display: none;
+  }
+  
+  /* Menu styling */
+  .menu-drawer__navigation-container .menu-separator {
+    height: 1px;
+    background-color: #e5e5e5;
+    margin: 0.5rem 0;
+  }
+  
+  .menu-drawer__navigation-container .saldos-link,
+  .menu-drawer__navigation-container .novidades-link {
+    font-weight: 600;
+    color: #d00;
+  }
+  
+  .menu-drawer__navigation-container .submenu {
+    padding-left: 1rem;
+    margin-top: 0.5rem;
+  }
+  
+  .menu-drawer__navigation-container .submenu-arrow {
+    float: right;
+    transition: transform 0.3s ease;
+  }
+  
+  .menu-drawer__navigation-container .info-item {
+    margin-top: 1rem;
+  }
+</style>
+
 <header-drawer data-breakpoint="{% if section.settings.menu_type_desktop == 'drawer' %}desktop{% else %}tablet{% endif %}">
   <details id="Details-menu-drawer-container" class="menu-drawer-container">
     <summary
