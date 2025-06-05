@@ -361,4 +361,56 @@ document.addEventListener("DOMContentLoaded", () => {
   if (mulherMenuItem) {
     setActiveMenu(mulherMenuItem);
   }
+
+  // Get the existing category tabs in the drawer
+  const mulherTab = document.querySelector('.menu-drawer-tabs [data-tab="MULHER"], .menu-drawer-tabs a:contains("MULHER")');
+  const homemTab = document.querySelector('.menu-drawer-tabs [data-tab="HOMEM"], .menu-drawer-tabs a:contains("HOMEM")');
+  const criancasTab = document.querySelector('.menu-drawer-tabs [data-tab="CRIANÇAS"], .menu-drawer-tabs a:contains("CRIANÇAS")');
+  
+  // Get the menu content containers - adjust these selectors to match your actual IDs/classes
+  const mulherContent = document.getElementById('women-menu') || document.querySelector('.mulher-menu-content');
+  const homemContent = document.getElementById('homem-menu') || document.querySelector('.homem-menu-content');
+  const criancasContent = document.getElementById('criancas-menu') || document.querySelector('.criancas-menu-content');
+  
+  // Function to handle tab switching
+  function switchTab(tab, content) {
+    // Remove active class from all tabs
+    [mulherTab, homemTab, criancasTab].forEach(t => {
+      if (t) t.classList.remove('active');
+    });
+    
+    // Hide all content sections
+    [mulherContent, homemContent, criancasContent].forEach(c => {
+      if (c) c.style.display = 'none';
+    });
+    
+    // Activate the selected tab and content
+    if (tab) tab.classList.add('active');
+    if (content) content.style.display = 'block';
+  }
+  
+  // Add click event listeners
+  if (mulherTab) {
+    mulherTab.addEventListener('click', function(e) {
+      e.preventDefault();
+      switchTab(mulherTab, mulherContent);
+    });
+  }
+  
+  if (homemTab) {
+    homemTab.addEventListener('click', function(e) {
+      e.preventDefault();
+      switchTab(homemTab, homemContent);
+    });
+  }
+  
+  if (criancasTab) {
+    criancasTab.addEventListener('click', function(e) {
+      e.preventDefault();
+      switchTab(criancasTab, criancasContent);
+    });
+  }
+  
+  // Set default tab to MULHER on page load
+  switchTab(mulherTab, mulherContent);
 });
