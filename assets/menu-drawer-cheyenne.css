@@ -1,0 +1,9 @@
+/* ...existing code... */
+.menu-content {
+  display: none;
+}
+
+.menu-content.active {
+  display: block;
+}
+/* ...existing code... */
