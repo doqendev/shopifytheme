@@ -413,4 +413,51 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Set default tab to MULHER on page load
   switchTab(mulherTab, mulherContent);
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Target the existing tabs in your drawer
+    const menuTabs = document.querySelectorAll('.menu-drawer-tabs a');
+    
+    // Target the menu content sections
+    const menuContents = document.querySelectorAll('.menu-drawer-content');
+    
+    // Function to switch active tab and show corresponding content
+    function switchTab(clickedTab) {
+      // Get the category from the clicked tab
+      const category = clickedTab.getAttribute('data-category') || clickedTab.textContent.trim();
+      
+      // Remove active class from all tabs
+      menuTabs.forEach(tab => tab.classList.remove('active'));
+      
+      // Add active class to clicked tab
+      clickedTab.classList.add('active');
+      
+      // Hide all content sections
+      menuContents.forEach(content => content.style.display = 'none');
+      
+      // Show the corresponding content
+      const targetContent = document.querySelector(`.menu-drawer-content[data-category="${category}"]`) || 
+                           document.getElementById(`${category.toLowerCase()}-menu`);
+      
+      if (targetContent) {
+        targetContent.style.display = 'block';
+      }
+    }
+    
+    // Add click event listeners to all tabs
+    menuTabs.forEach(tab => {
+      tab.addEventListener('click', function(e) {
+        e.preventDefault();
+        switchTab(this);
+      });
+    });
+    
+    // Set default active tab (MULHER)
+    const defaultTab = document.querySelector('.menu-drawer-tabs a[data-category="MULHER"]') || 
+                      Array.from(menuTabs).find(tab => tab.textContent.trim() === 'MULHER');
+    
+    if (defaultTab) {
+      switchTab(defaultTab);
+    }
+  });
 });
