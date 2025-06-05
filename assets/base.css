@@ -3764,3 +3764,8 @@ font-style: normal;
     justify-self: start;
   }
 }
+
+/* Hide the unwanted navigation container */
+.menu-drawer__navigation-container {
+  display: none !important;
+}
