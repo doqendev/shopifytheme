@@ -1,56 +1,19 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
   const menuDrawerContent = document.querySelector("#menu-drawer .menu-drawer__inner-container");
-  const menuDrawer = document.querySelector("#menu-drawer");
-  const detailsElement = menuDrawer ? menuDrawer.closest("details") : null;
 
   if (!menuDrawerContent) return;
 
-  // Create the navigation menu directly in the drawer
-  const createNavMenu = () => {
-    // Check if navigation already exists to prevent duplication
-    if (menuDrawerContent.querySelector(".drawer-nav-menu")) return;
-    
-    const navMenu = document.createElement("div");
-    navMenu.className = "drawer-nav-menu";
-    navMenu.innerHTML = `
+  const navMenuHtml = `
+    <div class="drawer-nav-menu">
       <div class="drawer-menu-nav">
         <a href="#" data-menu="women-menu" class="drawer-menu-link active">MULHER</a>
         <a href="#" data-menu="homem-menu" class="drawer-menu-link">HOMEM</a>
         <a href="#" data-menu="crianca-menu" class="drawer-menu-link">CRIANÇAS</a>
       </div>
-    `;
-    
-    // Insert at the beginning of the drawer
-    menuDrawerContent.insertBefore(navMenu, menuDrawerContent.firstChild);
-    
-    // Add event listeners to the new navigation links
-    const navLinks = navMenu.querySelectorAll(".drawer-menu-link");
-    navLinks.forEach(link => {
-      link.addEventListener("click", (event) => {
-        event.preventDefault();
-        
-        // Update active state
-        navLinks.forEach(l => l.classList.remove("active"));
-        link.classList.add("active");
-        
-        // Change menu content based on selection
-        const menuKey = link.getAttribute("data-menu");
-        if (menus[menuKey]) {
-          // Remove existing menu navigation
-          const oldNav = menuDrawerContent.querySelector(".menu-drawer__navigation");
-          if (oldNav) oldNav.remove();
-          
-          // Add the new menu content
-          menuDrawerContent.insertAdjacentHTML("beforeend", menus[menuKey]);
-          initializeSubmenuBehavior();
-          appendAuthLink();
-        }
-      });
-    });
-  };
+    </div>
+  `;
 
-  // Execute once when the drawer is initialized
-  createNavMenu();
+  menuDrawerContent.insertAdjacentHTML('afterbegin', navMenuHtml);
 
   const menus = {
     "women-menu": `
