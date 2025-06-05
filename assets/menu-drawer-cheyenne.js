@@ -5,9 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!menuDrawerContent) return;
 
-  // Store the current active menu
-  let currentActiveMenu = "women-menu";
-
   // Create the navigation menu directly in the drawer
   const createNavMenu = () => {
     // Check if navigation already exists to prevent duplication
@@ -38,37 +35,22 @@ document.addEventListener("DOMContentLoaded", () => {
         
         // Change menu content based on selection
         const menuKey = link.getAttribute("data-menu");
-        currentActiveMenu = menuKey;
-        loadMenu(menuKey);
+        if (menus[menuKey]) {
+          // Remove existing menu navigation
+          const oldNav = menuDrawerContent.querySelector(".menu-drawer__navigation");
+          if (oldNav) oldNav.remove();
+          
+          // Add the new menu content
+          menuDrawerContent.insertAdjacentHTML("beforeend", menus[menuKey]);
+          initializeSubmenuBehavior();
+          appendAuthLink();
+        }
       });
     });
   };
 
-  // Function to load a specific menu
-  const loadMenu = (menuKey) => {
-    if (!menus[menuKey]) return;
-    
-    // Remove existing menu navigation
-    const existingNav = menuDrawerContent.querySelector(".menu-drawer__navigation-container");
-    if (existingNav) existingNav.remove();
-    
-    // Create navigation container
-    const navContainer = document.createElement("div");
-    navContainer.className = "menu-drawer__navigation-container";
-    navContainer.innerHTML = menus[menuKey];
-    
-    // Append after the drawer nav menu
-    const drawerNav = menuDrawerContent.querySelector(".drawer-nav-menu");
-    if (drawerNav) {
-      drawerNav.insertAdjacentElement("afterend", navContainer);
-    } else {
-      menuDrawerContent.appendChild(navContainer);
-    }
-    
-    // Initialize behaviors
-    initializeSubmenuBehavior();
-    appendAuthLink();
-  };
+  // Execute once when the drawer is initialized
+  createNavMenu();
 
   const menus = {
     "women-menu": `
@@ -245,39 +227,39 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   function appendAuthLink() {
-    const isLoggedIn = window.customerLoggedIn === 'true';
-    const linkTarget = isLoggedIn ? '/account' : '/account/login';
-    const accountIcon = `
-      <svg style="width:1em;height:1em;" xmlns="http://www.w3.org/2000/svg" fill="none" class="icon icon-account" viewBox="0 0 18 19">
-        <path
-          fill="currentColor"
-          fill-rule="evenodd"
-          d="M6 4.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0m3-4a4 4 0 1 0 0 8 4 4 0 0 0 0-8m5.58 12.15c1.12.82 1.83 2.24 1.91 4.85H1.51c.08-2.6.79-4.03 1.9-4.85C4.66 11.75 6.5 11.5 9 11.5s4.35.26 5.58 1.15M9 10.5c-2.5 0-4.65.24-6.17 1.35C1.27 12.98.5 14.93.5 18v.5h17V18c0-3.07-.77-5.02-2.33-6.15-1.52-1.1-3.67-1.35-6.17-1.35"
-          clip-rule="evenodd"
-        />
-      </svg>
-    `;
-    const authItem = `
-      <li class="menu-item account-link">
-        <a href="${linkTarget}" class="menu-link" style="margin-top:30px;">
-          <span class="svg-wrapper">${accountIcon}</span>
-          CONTA
-        </a>
-      </li>
-    `;
+  const isLoggedIn = window.customerLoggedIn === 'true';
+  const linkTarget = isLoggedIn ? '/account' : '/account/login';
+  const accountIcon = `
+    <svg style="width:1em;height:1em;" xmlns="http://www.w3.org/2000/svg" fill="none" class="icon icon-account" viewBox="0 0 18 19">
+      <path
+        fill="currentColor"
+        fill-rule="evenodd"
+        d="M6 4.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0m3-4a4 4 0 1 0 0 8 4 4 0 0 0 0-8m5.58 12.15c1.12.82 1.83 2.24 1.91 4.85H1.51c.08-2.6.79-4.03 1.9-4.85C4.66 11.75 6.5 11.5 9 11.5s4.35.26 5.58 1.15M9 10.5c-2.5 0-4.65.24-6.17 1.35C1.27 12.98.5 14.93.5 18v.5h17V18c0-3.07-.77-5.02-2.33-6.15-1.52-1.1-3.67-1.35-6.17-1.35"
+        clip-rule="evenodd"
+      />
+    </svg>
+  `;
+  const authItem = `
+    <li class="menu-item account-link">
+      <a href="${linkTarget}" class="menu-link" style="margin-top:30px;">
+        <span class="svg-wrapper">${accountIcon}</span>
+        CONTA
+      </a>
+    </li>
+  `;
 
-    // — Always grab the UL directly under nav.menu-drawer__navigation
-    const navUl = menuDrawerContent.querySelector(".menu-drawer__navigation-container nav.menu-drawer__navigation > ul.menu-drawer__menu");
-    if (navUl) {
-      // If an old “account-link” already exists, remove it so we don’t duplicate
-      const existingAuth = navUl.querySelector(".account-link");
-      if (existingAuth) existingAuth.remove();
-      navUl.insertAdjacentHTML("beforeend", authItem);
-    }
+  // — Always grab the UL directly under nav.menu-drawer__navigation
+  const navUl = menuDrawerContent.querySelector("nav.menu-drawer__navigation > ul.menu-drawer__menu");
+  if (navUl) {
+    // If an old “account-link” already exists, remove it so we don’t duplicate
+    const existingAuth = navUl.querySelector(".account-link");
+    if (existingAuth) existingAuth.remove();
+    navUl.insertAdjacentHTML("beforeend", authItem);
   }
+}
 
   function initializeSubmenuBehavior() {
-    const submenuLinks = menuDrawerContent.querySelectorAll(".menu-drawer__navigation-container .menu-item.has-submenu > .menu-link");
+    const submenuLinks = menuDrawerContent.querySelectorAll(".menu-item.has-submenu > .menu-link");
     submenuLinks.forEach((link) => {
       link.addEventListener("click", (event) => {
         event.preventDefault();
@@ -309,34 +291,173 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Initialize on page load
-  const initialize = () => {
-    // Create navigation menu
-    createNavMenu();
-    
-    // Load default menu
-    loadMenu(currentActiveMenu);
-  };
+  // On initial page load, show the "women-menu" by default
+  const defaultMenu = "women-menu";
+  if (menus[defaultMenu]) {
+    menuDrawerContent.innerHTML = menuDrawerContent.innerHTML.replace(/<nav class="menu-drawer__navigation">[\s\S]*?<\/nav>/g, '');
+    menuDrawerContent.insertAdjacentHTML("beforeend", menus[defaultMenu]);
+    initializeSubmenuBehavior();
+    appendAuthLink();
+  }
 
-  // Initialize immediately
-  initialize();
-
-  // Re-initialize when drawer opens
+  // When drawer opens/closes
   if (detailsElement) {
     detailsElement.addEventListener("toggle", () => {
       if (detailsElement.open) {
-        // Ensure navigation exists
         createNavMenu();
-        
-        // Reload current menu if needed
-        if (!menuDrawerContent.querySelector(".menu-drawer__navigation-container")) {
-          loadMenu(currentActiveMenu);
-        }
-        
         document.body.classList.add("menu-drawer-open");
       } else {
         document.body.classList.remove("menu-drawer-open");
       }
     });
   }
+
+  // Get the menu nav items
+  const menuItems = document.querySelectorAll('.main-menu-item');
+  
+  // Get the menu content containers
+  const mulherMenu = document.getElementById('women-menu');
+  const homemMenu = document.getElementById('homem-menu');
+  const criancasMenu = document.getElementById('criancas-menu');
+  
+  const allMenus = [mulherMenu, homemMenu, criancasMenu];
+  
+  // Function to set active menu
+  function setActiveMenu(clickedItem) {
+    // Remove active class from all menu items
+    menuItems.forEach(item => {
+      item.classList.remove('active');
+    });
+    
+    // Add active class to clicked item
+    clickedItem.classList.add('active');
+    
+    // Hide all menus
+    allMenus.forEach(menu => {
+      if (menu) menu.style.display = 'none';
+    });
+    
+    // Show the corresponding menu based on clicked item
+    const category = clickedItem.getAttribute('data-category');
+    if (category === 'mulher' && mulherMenu) {
+      mulherMenu.style.display = 'block';
+    } else if (category === 'homem' && homemMenu) {
+      homemMenu.style.display = 'block';
+    } else if (category === 'criancas' && criancasMenu) {
+      criancasMenu.style.display = 'block';
+    }
+  }
+  
+  // Add click event listeners to menu items
+  menuItems.forEach(item => {
+    item.addEventListener('click', function(e) {
+      e.preventDefault();
+      setActiveMenu(this);
+    });
+  });
+  
+  // Set default active menu to "mulher" on page load
+  const mulherMenuItem = document.querySelector('.main-menu-item[data-category="mulher"]');
+  if (mulherMenuItem) {
+    setActiveMenu(mulherMenuItem);
+  }
+
+  // Get the existing category tabs in the drawer
+  const mulherTab = document.querySelector('.menu-drawer-tabs [data-tab="MULHER"], .menu-drawer-tabs a:contains("MULHER")');
+  const homemTab = document.querySelector('.menu-drawer-tabs [data-tab="HOMEM"], .menu-drawer-tabs a:contains("HOMEM")');
+  const criancasTab = document.querySelector('.menu-drawer-tabs [data-tab="CRIANÇAS"], .menu-drawer-tabs a:contains("CRIANÇAS")');
+  
+  // Get the menu content containers - adjust these selectors to match your actual IDs/classes
+  const mulherContent = document.getElementById('women-menu') || document.querySelector('.mulher-menu-content');
+  const homemContent = document.getElementById('homem-menu') || document.querySelector('.homem-menu-content');
+  const criancasContent = document.getElementById('criancas-menu') || document.querySelector('.criancas-menu-content');
+  
+  // Function to handle tab switching
+  function switchTab(tab, content) {
+    // Remove active class from all tabs
+    [mulherTab, homemTab, criancasTab].forEach(t => {
+      if (t) t.classList.remove('active');
+    });
+    
+    // Hide all content sections
+    [mulherContent, homemContent, criancasContent].forEach(c => {
+      if (c) c.style.display = 'none';
+    });
+    
+    // Activate the selected tab and content
+    if (tab) tab.classList.add('active');
+    if (content) content.style.display = 'block';
+  }
+  
+  // Add click event listeners
+  if (mulherTab) {
+    mulherTab.addEventListener('click', function(e) {
+      e.preventDefault();
+      switchTab(mulherTab, mulherContent);
+    });
+  }
+  
+  if (homemTab) {
+    homemTab.addEventListener('click', function(e) {
+      e.preventDefault();
+      switchTab(homemTab, homemContent);
+    });
+  }
+  
+  if (criancasTab) {
+    criancasTab.addEventListener('click', function(e) {
+      e.preventDefault();
+      switchTab(criancasTab, criancasContent);
+    });
+  }
+  
+  // Set default tab to MULHER on page load
+  switchTab(mulherTab, mulherContent);
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Target the existing tabs in your drawer
+    const menuTabs = document.querySelectorAll('.menu-drawer-tabs a');
+    
+    // Target the menu content sections
+    const menuContents = document.querySelectorAll('.menu-drawer-content');
+    
+    // Function to switch active tab and show corresponding content
+    function switchTab(clickedTab) {
+      // Get the category from the clicked tab
+      const category = clickedTab.getAttribute('data-category') || clickedTab.textContent.trim();
+      
+      // Remove active class from all tabs
+      menuTabs.forEach(tab => tab.classList.remove('active'));
+      
+      // Add active class to clicked tab
+      clickedTab.classList.add('active');
+      
+      // Hide all content sections
+      menuContents.forEach(content => content.style.display = 'none');
+      
+      // Show the corresponding content
+      const targetContent = document.querySelector(`.menu-drawer-content[data-category="${category}"]`) || 
+                           document.getElementById(`${category.toLowerCase()}-menu`);
+      
+      if (targetContent) {
+        targetContent.style.display = 'block';
+      }
+    }
+    
+    // Add click event listeners to all tabs
+    menuTabs.forEach(tab => {
+      tab.addEventListener('click', function(e) {
+        e.preventDefault();
+        switchTab(this);
+      });
+    });
+    
+    // Set default active tab (MULHER)
+    const defaultTab = document.querySelector('.menu-drawer-tabs a[data-category="MULHER"]') || 
+                      Array.from(menuTabs).find(tab => tab.textContent.trim() === 'MULHER');
+    
+    if (defaultTab) {
+      switchTab(defaultTab);
+    }
+  });
 });
