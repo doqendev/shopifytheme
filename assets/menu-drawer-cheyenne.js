@@ -460,21 +460,4 @@ document.addEventListener("DOMContentLoaded", () => {
       switchTab(defaultTab);
     }
   });
-
-  const buttons = document.querySelectorAll('[data-menu-target]');
-  const menus = document.querySelectorAll('.menu-content');
-
-  buttons.forEach(button => {
-    button.addEventListener('click', () => {
-      const targetMenuId = button.getAttribute('data-menu-target');
-
-      menus.forEach(menu => {
-        menu.classList.toggle('active', menu.id === targetMenuId);
-      });
-
-      buttons.forEach(btn => {
-        btn.classList.toggle('active', btn === button);
-      });
-    });
-  });
 });
