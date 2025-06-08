@@ -3830,10 +3830,10 @@ font-style: normal;
 .header__icon--menu .icon-hamburger,
 .header__icon--menu .icon-close {
   position: absolute;
-  left: 40px;
-  top: 50px;
-  width: 24px;
-  height: 24px;
+  left: 25px;
+  top: 10px;
+  width: 26px;
+  height: 26px;
   transition: opacity 0.2s;
 }
 .header__icon--menu .icon-close {
