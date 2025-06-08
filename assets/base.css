@@ -3830,9 +3830,8 @@ font-style: normal;
 .header__icon--menu .icon-hamburger,
 .header__icon--menu .icon-close {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  left: 40px;
+  top: 50px;
   width: 24px;
   height: 24px;
   transition: opacity 0.2s;
@@ -3923,9 +3922,9 @@ font-style: normal;
   .header__icon--menu .icon-hamburger,
   .header__icon--menu .icon-close {
     position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    left: 0;
+    top: 0;
+    transform: none;
     width: 24px; /* Adjust to actual SVG size */
     height: 24px; /* Adjust to actual SVG size */
     transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
@@ -3934,20 +3933,20 @@ font-style: normal;
   .header__icon--menu .icon-close {
     opacity: 0;
     pointer-events: none;
-    transform: translate(-50%, -50%) scale(0.8); /* Start hidden and slightly smaller */
+    transform: scale(0.8); /* Start hidden and slightly smaller */
   }
 
   /* Show/hide based on <details> 'open' attribute */
   details[open] > .header__icon--menu .icon-hamburger {
     opacity: 0;
     pointer-events: none;
-    transform: translate(-50%, -50%) scale(0.8);
+    transform: scale(0.8);
   }
 
   details[open] > .header__icon--menu .icon-close {
     opacity: 1;
     pointer-events: auto;
-    transform: translate(-50%, -50%) scale(1);
+    transform: scale(1);
   }
 }
 
