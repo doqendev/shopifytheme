@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialize AOS (if you’re using it)
   if (typeof AOS !== 'undefined') AOS.init();
 
+  // (A) Grab the top navigation links (they’re hidden in the header via CSS on desktop)
+  const navLinks = document.querySelectorAll(".nav-menu-new a");
   const menuDrawer = document.querySelector("#menu-drawer");
   const menuDrawerContent = menuDrawer
     ? menuDrawer.querySelector(".menu-drawer__inner-container")
@@ -13,52 +15,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!menuDrawerContent) return; // Nothing to do if drawer container isn’t present.
 
-  // (A) Create the navigation menu directly in the drawer
-  const createNavMenu = () => {
-    // Check if navigation already exists to prevent duplication
-    if (menuDrawerContent.querySelector(".drawer-nav-menu")) return;
-    
-    const navMenu = document.createElement("div");
-    navMenu.className = "drawer-nav-menu";
-    navMenu.innerHTML = `
-      <div class="drawer-menu-nav">
-        <a href="#" data-menu="women-menu" class="drawer-menu-link active">MULHER</a>
-        <a href="#" data-menu="homem-menu" class="drawer-menu-link">HOMEM</a>
-        <a href="#" data-menu="crianca-menu" class="drawer-menu-link">CRIANÇAS</a>
-      </div>
-    `;
-    
-    // Insert at the beginning of the drawer
-    menuDrawerContent.insertBefore(navMenu, menuDrawerContent.firstChild);
-    
-    // Add click handlers to new menu links
-    const navLinks = navMenu.querySelectorAll(".drawer-menu-link");
-    navLinks.forEach(link => {
-      link.addEventListener("click", (event) => {
-        event.preventDefault();
-        
-        // Update active state
-        navLinks.forEach(l => l.classList.remove("active"));
-        link.classList.add("active");
-        
-        // Change content based on selection
-        const menuKey = link.getAttribute("data-menu");
-        if (menus[menuKey]) {
-          const oldNav = menuDrawerContent.querySelector(".menu-drawer__navigation");
-          if (oldNav) oldNav.remove();
-          menuDrawerContent.insertAdjacentHTML("beforeend", menus[menuKey]);
-          initializeSubmenuBehavior();
-          appendAuthLink();
-          
-          // Update main content sections if needed
-          updateContentSections(menuKey);
-        }
-      });
-    });
-  };
-
-  // Create navigation on init
-  createNavMenu();
+  // (B) Clone & prepend the hidden .nav-menu-new into the drawer so it appears at the top
+  const navMenuContainer = document.querySelector(".nav-menu-new");
+  if (navMenuContainer) {
+    const cloneNav = navMenuContainer.cloneNode(true);
+    cloneNav.classList.add("moved-into-drawer");
+    cloneNav.style.display = 'flex'; // Ensure it's visible in drawer
+    menuDrawerContent.prepend(cloneNav);
+  }
 
   // (C) Define the three category menus (identical to mobile version)
   const menus = {
@@ -235,6 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
     `
   };
 
+  // (D) Append the “CONTA” link at the bottom of whichever menu is active.
   function appendAuthLink() {
     const isLoggedIn = window.customerLoggedIn === 'true';
     const linkTarget = isLoggedIn ? '/account' : '/account/login';
@@ -263,6 +228,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // (E) Submenu toggle behavior
   function initializeSubmenuBehavior() {
     const submenuLinks = menuDrawerContent.querySelectorAll(".menu-item.has-submenu > .menu-link");
     submenuLinks.forEach((link) => {
@@ -295,72 +261,102 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // (F) Render default “women-menu” on desktop
+  // (F) Render default "women-menu" on desktop
   const defaultMenu = "women-menu";
   if (menus[defaultMenu]) {
-    const oldNav = menuDrawerContent.querySelector(".menu-drawer__navigation");
-    if (oldNav) oldNav.remove();
+    // Keep the nav at the top when adding menu content
+    const existingNav = menuDrawerContent.querySelector(".moved-into-drawer");
     menuDrawerContent.insertAdjacentHTML("beforeend", menus[defaultMenu]);
     initializeSubmenuBehavior();
     appendAuthLink();
-  }
-
-  // Function to update the main content sections
-  function updateContentSections(menuType) {
-    const mulherSection = document.querySelector(".image-section-mulher");
-    const homemSection = document.querySelector(".image-section-homem");
-    const criancaSection = document.querySelector(".image-section-crianca");
     
-    if (!mulherSection || !homemSection || !criancaSection) return;
-    
-    // Hide all sections first
-    mulherSection.style.display = "none";
-    homemSection.style.display = "none";
-    criancaSection.style.display = "none";
-    
-    // Show the relevant section
-    if (menuType === "women-menu" && mulherSection) {
-      mulherSection.style.display = "block";
-      updateTrendingNow("mulher");
-    } else if (menuType === "homem-menu" && homemSection) {
-      homemSection.style.display = "block";
-      updateTrendingNow("homem");
-    } else if (menuType === "crianca-menu" && criancaSection) {
-      criancaSection.style.display = "block";
-      updateTrendingNow("crianca");
+    // Set initial active state
+    if (existingNav) {
+      existingNav.querySelector('a[data-menu="women-menu"]')?.classList.add("active");
     }
   }
 
-  function updateTrendingNow(category) {
-    const trendingSource = document.querySelector(".trending-now__picture source");
-    const trendingImg = document.querySelector(".trending-now__picture img");
-    
-    if (!trendingSource || !trendingImg) return;
-    
-    if (category === "mulher") {
-      trendingSource.srcset = "https://cdn.shopify.com/s/files/1/0911/7843/4884/files/fashion-model-in-black-white.jpg?v=1743757550";
-      trendingImg.src = "https://cdn.shopify.com/s/files/1/0911/7843/4884/files/hero_woman.jpg?v=1747744739";
-      trendingImg.alt = "Trending Mulher";
-    } else if (category === "homem") {
-      trendingSource.srcset = "https://cdn.shopify.com/s/files/1/0911/7843/4884/files/S_1_1.jpg?v=1744018021";
-      trendingImg.src = "https://cdn.shopify.com/s/files/1/0911/7843/4884/files/A_1_6.webp?v=1744017915";
-      trendingImg.alt = "Trending Homem";
-    } else if (category === "crianca") {
-      trendingSource.srcset = "https://cdn.shopify.com/s/files/1/0911/7843/4884/files/S_1.jpg?v=1744016515";
-      trendingImg.src = "https://cdn.shopify.com/s/files/1/0911/7843/4884/files/A_1_5.webp?v=1744016919";
-      trendingImg.alt = "Trending Criança";
-    }
-  }
+  // (G) Handle clicks on "MULHER | HOMEM | CRIANÇAS" (now inside the drawer)
+  const clonedNavLinks = menuDrawerContent.querySelectorAll(".moved-into-drawer a[data-menu]");
+  clonedNavLinks.forEach((link) => {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      const menuKey = link.getAttribute("data-menu");
+      if (menus[menuKey]) {
+        // Remove old menu but keep nav
+        const oldNav = menuDrawerContent.querySelector(".menu-drawer__navigation");
+        if (oldNav) oldNav.remove();
+        
+        // Add new menu
+        menuDrawerContent.insertAdjacentHTML("beforeend", menus[menuKey]);
+        
+        // Update active states
+        menuDrawerContent.querySelectorAll(".moved-into-drawer a").forEach(a => a.classList.remove("active"));
+        link.classList.add("active");
+        
+        initializeSubmenuBehavior();
+        appendAuthLink();
+      }
+    });
+  });
 
   // (H) If the drawer is a <details>, toggle body/nav-link classes on open/close
   if (detailsElement) {
     detailsElement.addEventListener("toggle", () => {
       if (detailsElement.open) {
-        createNavMenu(); // Ensure navigation exists when drawer opens
         document.body.classList.add("menu-drawer-open");
+        menuDrawerContent
+          .querySelectorAll(".moved-into-drawer a")
+          .forEach(a => a.classList.add("menu-open"));
       } else {
         document.body.classList.remove("menu-drawer-open");
+        menuDrawerContent
+          .querySelectorAll(".moved-into-drawer a")
+          .forEach(a => a.classList.remove("menu-open"));
       }
     });
+  }
+
+  // (I) Section-switching (“MULHER / HOMEM / CRIANA”) and trending-image update
+  const mulherSection  = document.querySelector(".image-section-mulher");
+  const homemSection   = document.querySelector(".image-section-homem");
+  const criancaSection = document.querySelector(".image-section-crianca");
+  const trendingSource  = document.querySelector(".trending-now__picture source");
+  const trendingImg     = document.querySelector(".trending-now__picture img");
+
+  function showSection(section) {
+    mulherSection.style.display = "none";
+    homemSection.style.display  = "none";
+    criancaSection.style.display= "none";
+    section.style.display       = "block";
+  }
+  function updateActiveLink(activeLink) {
+    menuDrawerContent
+      .querySelectorAll(".moved-into-drawer a")
+      .forEach(a => a.classList.remove("active"));
+    activeLink.classList.add("active");
+  }
+  function updateTrendingNow(category) {
+    if (category === "mulher") {
+      trendingSource.srcset = "https://cdn.shopify.com/s/files/1/0911/7843/4884/files/fashion-model-in-black-white.jpg?v=1743757550";
+      trendingImg.src       = "https://cdn.shopify.com/s/files/1/0911/7843/4884/files/hero_woman.jpg?v=1747744739";
+      trendingImg.alt       = "Trending Mulher";
+    } else if (category === "homem") {
+      trendingSource.srcset = "https://cdn.shopify.com/s/files/1/0911/7843/4884/files/S_1_1.jpg?v=1744018021";
+      trendingImg.src       = "https://cdn.shopify.com/s/files/1/0911/7843/4884/files/A_1_6.webp?v=1744017915";
+      trendingImg.alt       = "Trending Homem";
+    } else if (category === "crianca") {
+      trendingSource.srcset = "https://cdn.shopify.com/s/files/1/0911/7843/4884/files/S_1.jpg?v=1744016515";
+      trendingImg.src       = "https://cdn.shopify.com/s/files/1/0911/7843/4884/files/A_1_5.webp?v=1744016919";
+      trendingImg.alt       = "Trending Criança";
+    }
+  }
+
+  // Initial state on desktop: show Mulher by default
+  showSection(mulherSection);
+  const defaultDrawerLink = menuDrawerContent.querySelector(".moved-into-drawer a[data-menu='women-menu']");
+  if (defaultDrawerLink) {
+    updateActiveLink(defaultDrawerLink);
+    updateTrendingNow("mulher");
   }
 });

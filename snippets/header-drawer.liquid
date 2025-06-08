@@ -5,6 +5,16 @@
   {% render 'header-drawer' %}
 {% endcomment %}
 
+<style>
+@media screen and (max-width: 1024px) {
+  .menu-open .header__heading-logo {
+  display: none;
+  }
+.menu-open .page-width.drawer-menu {
+    height: 50px !important;
+  }}
+</style>
+
 <header-drawer data-breakpoint="{% if section.settings.menu_type_desktop == 'drawer' %}desktop{% else %}tablet{% endif %}">
   <details id="Details-menu-drawer-container" class="menu-drawer-container">
     <summary

@@ -107,10 +107,6 @@ body.menu-drawer-open .nav-menu-new a.active::after {
     }
   {%- endif -%}
 
-  .menu-drawer-container {
-    display: flex;
-  }
-
   .list-menu {
     list-style: none;
     padding: 0;
@@ -260,14 +256,12 @@ body.menu-drawer-open .nav-menu-new a.active::after {
     display: none !important;
   }
   .header__icon {
-    min-width: 110px;
     display: flex;
-    justify-content: center;
-    align-items: center;
     /* Increase top margin so it's not stuck at the top */
-    margin-top: 40px; /* adjust as needed for vertical spacing */
     gap: 48px; /* controls the horizontal space between links, adjust as needed */
     color: transparent;
+    justify-content: flex-end;
+    align-items: center;
   }
 /*  .header__icon--cart .header__icon-desktop {
  <!-- white-space: nowrap; -->
@@ -289,20 +283,11 @@ body.menu-drawer-open .nav-menu-new a.active::after {
 -%}
 
 <{% if section.settings.sticky_header_type != 'none' %}sticky-header data-sticky-type="{{ section.settings.sticky_header_type }}"{% else %}div{% endif %} class="header-wrapper color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_line_separator %} header-wrapper--border-bottom{% endif %}">
-  {%- liquid
-    assign social_links = false
-    assign localization_forms = false
-
-    if settings.social_twitter_link != blank or settings.social_facebook_link != blank or settings.social_pinterest_link != blank or settings.social_instagram_link != blank or settings.social_youtube_link != blank or settings.social_vimeo_link != blank or settings.social_tiktok_link != blank or settings.social_tumblr_link != blank or settings.social_snapchat_link != blank
-      assign social_links = true
-    endif
-
-    if localization.available_countries.size > 1 and section.settings.enable_country_selector or section.settings.enable_language_selector and localization.available_languages.size > 1
-      assign localization_forms = true
-    endif
-  -%}
   
   <header class="header header--{{ section.settings.logo_position }} header--mobile-{{ section.settings.mobile_logo_position }} page-width{% if section.settings.menu_type_desktop == 'drawer' %} drawer-menu{% endif %}{% if section.settings.menu != blank %} header--has-menu{% endif %}{% if has_app_block %} header--has-app{% endif %}{% if social_links %} header--has-social{% endif %}{% if shop.customer_accounts_enabled %} header--has-account{% endif %}{% if localization_forms %} header--has-localizations{% endif %}">
+
+<!-- Always include nav menu but hidden by default -->
+
 
     {%- liquid
       if section.settings.menu != blank

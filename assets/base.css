@@ -2480,14 +2480,14 @@ input[type='checkbox'] {
 
 .header__heading-logo {
   height: auto;
-  max-width: 100%;
 }
 
 @media screen and (min-width: 1024px) {
   .header__heading-logo {
   height: auto;
-  max-width: 100%;
   margin-top: 30px;
+  margin-left: 30px;
+  width: 400px;
 }
 }
 
@@ -2517,7 +2517,7 @@ input[type='checkbox'] {
 @media screen and (min-width: 990px) {
   .header--middle-left .header__heading-link,
   .header--top-left .header__heading-link {
-    margin-left: -0.75rem;
+    margin-left: 2rem;
   }
 
   .header__heading,
@@ -2551,21 +2551,25 @@ input[type='checkbox'] {
   max-height: 4.4rem;
   overflow: hidden;
 }
-
-.header__icon:not(.header__icon--summary),
-.header__icon span {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+@media screen and (min-width: 1024) {
+  .header__icon:not(.header__icon--summary),
+  .header__icon span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+  }
 
+@media screen and (max-width: 1023) {
+.header__icon .header__icon-desktop { display: none !important; }
+.header__icon .header__icon-mobile { display: inline-flex; }
+  
+}
 .header__icon {
   color: rgb(var(--color-foreground));
 }
 
-.header__icon span {
-  height: 100%;
-}
+
 
 .header__icon .svg-wrapper {
   width: 44px;
@@ -2594,8 +2598,8 @@ input[type='checkbox'] {
 
 @media screen and (min-width: 1024px) {
   .header__icon .icon { 
-  width: 5rem!important;
-  height: 5rem!important;
+  width: 7rem!important;
+  height: 7rem!important;
 }
 }
 
@@ -2604,7 +2608,6 @@ input[type='checkbox'] {
 .header__icon,
 .header__icon--cart .icon {
   height: 4.4rem;
-  width: 4.4rem;
   padding: 0;
 }
 
@@ -2663,7 +2666,6 @@ menu-drawer + .header__search {
 
 .header__search {
   display: inline-flex;
-  line-height: 0;
 }
 
 .header--top-center > .header__search {
@@ -2763,8 +2765,7 @@ details[open] .modal-overlay::after {
 
 /* Header menu drawer */
 .header__icon--menu .icon {
-  display: block;
-  position: absolute;
+
   opacity: 1;
   transform: scale(1);
   transition: transform 150ms ease, opacity 150ms ease;
@@ -3792,4 +3793,182 @@ font-style: normal;
 /* Show only the active menu */
 #women-menu.active, #homem-menu.active, #criancas-menu.active {
   display: block;
+
+
+  
+/* Mobile default: hide text, show icons */
+.header__icon .header__icon-desktop { display: none !important; }
+.header__icon .header__icon-mobile { display: inline-flex; }
+
 }
+
+
+
+
+/* Ensure main header row is flex */
+.header {
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Left side: Hamburger + logo */
+.header__left {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* Hamburger/X icon overlap trick */
+.header__icon--menu {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.header__icon--menu .icon-hamburger,
+.header__icon--menu .icon-close {
+  position: absolute;
+  left: 40px; top: 50px;
+  width: 24px;
+  height: 24px;
+  transition: opacity 0.2s;
+}
+.header__icon--menu .icon-close {
+  opacity: 0;
+  pointer-events: none;
+}
+.menu-open .header__icon--menu .icon-hamburger {
+  opacity: 0;
+  pointer-events: none;
+}
+.menu-open .header__icon--menu .icon-close {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Right-side icons/text: space them out */
+.header__icons {
+  display: flex;
+  align-items: center;
+  gap: 5rem; /* Or your preferred spacing */
+}
+
+
+
+
+
+/* ... (other parts of base.css) ... */
+
+/* Mobile Header - Two Rows Layout & Hamburger/X Icon Fixes */
+@media screen and (max-width: 749px) {
+  .header {
+    display: grid;
+    /* Columns: Hamburger (auto width for its content), Right Icons (take remaining space) */
+    grid-template-columns: auto 1fr;
+    /* Rows: First for top items, Second for logo */
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "hamburger-area  right-icons-area"  /* Row 1: Hamburger on left, Search/Cart on right */
+      "logo-area       logo-area";        /* Row 2: Logo spans both columns */
+    align-items: start; /* CRITICAL: Aligns items in each row to the top of that row */
+    padding: 1rem 1.5rem;
+    row-gap: 0.5rem; /* Optional: Adds a small space between the first and second row */
+  }
+
+  /* Hamburger menu area:
+     Targets the <header-drawer> custom element, assuming it's a direct child of .header */
+  .header > header-drawer {
+    grid-area: hamburger-area;
+    justify-self: start; /* Align to the far left of its grid cell */
+    align-self: start;   /* Align to the top of its grid cell */
+  }
+
+  /* Right icons container (search, cart):
+     Targets the <div class="header__icons">, assuming it's a direct child */
+  .header > .header__icons {
+    grid-area: right-icons-area;
+    justify-self: end; /* Align to the far right of its grid cell */
+    align-self: start;   /* Align to the top of its grid cell */
+    display: flex;     /* Arrange search and cart icons inline */
+    align-items: center; /* Vertically center icons within this flex container */
+    gap: 0.5rem;       /* Adjust space between search and cart icons */
+  }
+
+  /* Logo area:
+     Targets the <h1 class="header__heading"> or similar, assuming it's a direct child */
+  .header > .header__heading {
+    grid-area: logo-area;
+    justify-self: center; /* Center horizontally in its area (which spans full width) */
+    align-self: center;   /* Center vertically within its row */
+    text-align: center;
+    width: 100%; /* Ensure it can be centered properly */
+  }
+
+  /* --- Hamburger Button & Icon Visibility --- */
+  /* Ensure the hamburger button itself is sized and behaves as expected */
+  .header__icon--menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px; /* Standard clickable size, adjust if needed */
+    height: 44px;
+    position: relative; /* For positioning SVGs inside */
+  }
+
+  /* Centering and toggle for hamburger/X SVGs (this part was likely okay) */
+  .header__icon--menu .icon-hamburger,
+  .header__icon--menu .icon-close {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 24px; /* Adjust to actual SVG size */
+    height: 24px; /* Adjust to actual SVG size */
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+  }
+
+  .header__icon--menu .icon-close {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0.8); /* Start hidden and slightly smaller */
+  }
+
+  /* Show/hide based on <details> 'open' attribute */
+  details[open] > .header__icon--menu .icon-hamburger {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+
+  details[open] > .header__icon--menu .icon-close {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* ... (rest of base.css) ... */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -328,7 +328,7 @@ details[open].menu-opening > .menu-drawer__submenu {
 .saldos-link {
   color: red !important;
   font-weight: bold!important;
-  margin-top: 70px;
+  margin-top: 20px;
   margin-bottom: 30px;
 }
 
@@ -337,7 +337,6 @@ details[open].menu-opening > .menu-drawer__submenu {
 .saldos-link {
   color: red !important;
   font-weight: bold!important;
-  margin-top: 70px;
   margin-bottom: 30px;
 }
 }
