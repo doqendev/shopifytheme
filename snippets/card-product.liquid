@@ -11,7 +11,6 @@
 
 .product-card { position: relative; }
 
-
   
   .card__content {
     width: 100%;
@@ -51,6 +50,8 @@
     display: none;
   }
 
+@media screen and (min-width: 750px) {
+}
 </style>
 
 {%- unless skip_styles -%}
@@ -292,6 +293,7 @@
         {%- endcomment %}
       </div>
     </div>
+
   </div>
 
   {%- comment -%}
@@ -351,7 +353,13 @@
     // Initialize Swiper on page load
     document.addEventListener('DOMContentLoaded', function() {
       initializeProductCardSwipers();
-      
+
+      var plusEls = document.querySelectorAll('.product-card-plus');
+      console.log('product card plus count', plusEls.length);
+      plusEls.forEach(function(el, idx) {
+        console.log('plus icon element', idx, el);
+      });
+
       // Swatch click handling remains unchanged
       var productGridContainer = document.getElementById('ProductGridContainer');
       if (productGridContainer) {
