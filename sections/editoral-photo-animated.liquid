@@ -282,10 +282,10 @@
     let sliderRect;
 
     const slideTransitions = [
-      { out_transform: 'translate(-100vw, -100vh)', in_transform: 'translate(100vw, 100vh)' }, 
-      { out_transform: 'translate(100vw, -100vh)',  in_transform: 'translate(-100vw, 100vh)' },
-      { out_transform: 'translateX(150vw)',         in_transform: 'translateX(-150vw)' },      
-      { out_transform: 'translateX(-150vw)',        in_transform: 'translateX(150vw)' }       
+      // Odd transitions: slide exits toward the top left, next slide enters from the bottom right
+      { out_transform: 'translate(-100vw, -100vh)', in_transform: 'translate(100vw, 100vh)' },
+      // Even transitions: slide exits toward the top right, next slide enters from the bottom left
+      { out_transform: 'translate(100vw, -100vh)',  in_transform: 'translate(-100vw, 100vh)' }
     ];
 
     function updateSliderRect() {
