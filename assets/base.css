@@ -3962,20 +3962,36 @@ font-style: normal;
 .product-card-plus {
   position: absolute;
   bottom: 0.5rem;
-  right: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 2;
+  cursor: pointer;
+}
+
+.product-card-plus .plus-icon {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  color: #000;
 }
 
 .product-card-plus .size-options {
   display: none;
   position: absolute;
   bottom: 100%;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
   background: #fff;
   border: 1px solid #ccc;
   padding: 0.4rem;
   white-space: nowrap;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-align: center;
 }
 
 .product-card-plus:hover .size-options {
