@@ -189,18 +189,18 @@
         {% endif %}
       {% endfor %}
     </div>
-      <div class="swiper-pagination"></div>
-      {% if size_option_index != -1 %}
-        <div class="product-card-plus">
-          <span class="plus-icon">{{ 'icon-plus.svg' | inline_asset_content }}</span>
-          <div class="size-options">
-            {% for size in all_sizes %}
-              <span class="size-option{% unless available_sizes contains size %} sold-out{% endunless %}">{{ size }}</span>
-            {% endfor %}
-          </div>
+    <div class="swiper-pagination"></div>
+    {% if size_option_index != -1 %}
+      <div class="product-card-plus">
+        <span class="plus-icon">{{ 'icon-plus.svg' | inline_asset_content }}</span>
+        <div class="size-options">
+          {% for size in all_sizes %}
+            <span class="size-option{% unless available_sizes contains size %} sold-out{% endunless %}">{{ size }}</span>
+          {% endfor %}
         </div>
-      {% endif %}
-    </div>
+      </div>
+    {% endif %}
+  </div>
 {% endif %}
 
       </div>
@@ -295,6 +295,7 @@
         {%- endcomment %}
       </div>
     </div>
+
 
   </div>
 
@@ -422,16 +423,6 @@
               {{ 'product-apparel-2' | placeholder_svg_tag: 'placeholder-svg' }}
             {% endif %}
           </div>
-          {% if size_option_index != -1 %}
-            <div class="product-card-plus">
-              <span class="plus-icon">{{ 'icon-plus.svg' | inline_asset_content }}</span>
-              <div class="size-options">
-                {% for size in all_sizes %}
-                  <span class="size-option{% unless available_sizes contains size %} sold-out{% endunless %}">{{ size }}</span>
-                {% endfor %}
-              </div>
-            </div>
-          {% endif %}
         </div>
       </div>
       <div class="card__content">
