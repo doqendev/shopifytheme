@@ -3960,12 +3960,12 @@ font-style: normal;
 }
 
 .product-card-plus {
-  position: absolute;
-  bottom: 0.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2;
-  cursor: pointer;
+    position: absolute;
+    bottom: 30%;
+    left: 90%;
+    transform: translate(-50%);
+    z-index: 2;
+    cursor: pointer;
 }
 
 .product-card-plus .plus-icon {
