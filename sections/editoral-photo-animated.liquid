@@ -22,7 +22,14 @@
     >
       {%- assign desktop_image = block.settings.image_desktop -%}
       {%- assign mobile_image = block.settings.image_mobile -%}
+      {%- assign desktop_video = block.settings.video_desktop -%}
+      {%- assign mobile_video = block.settings.video_mobile -%}
       {%- assign alt_text = block.settings.caption | escape | default: 'Editorial image' -%}
+
+      {%- assign has_any_video = false -%}
+      {%- if desktop_video != blank or mobile_video != blank -%}
+        {%- assign has_any_video = true -%}
+      {%- endif -%}
 
       {%- comment -%} Determine a primary image for the fallback <img> tag and for the main condition {% endcomment -%}
       {%- assign has_any_image = false -%}
@@ -38,7 +45,14 @@
         {%- assign fallback_img_width = block.settings.max_width_mobile -%}
       {%- endif -%}
 
-      {% if has_any_image %}
+      {% if has_any_video %}
+        {% if desktop_video != blank %}
+          {{ desktop_video | video_tag: autoplay: true, loop: true, controls: false, muted: true, class: 'editorial-slide-video editorial-slide-video-desktop' }}
+        {% endif %}
+        {% if mobile_video != blank %}
+          {{ mobile_video | video_tag: autoplay: true, loop: true, controls: false, muted: true, class: 'editorial-slide-video editorial-slide-video-mobile' }}
+        {% endif %}
+      {% elsif has_any_image %}
         <picture class="editorial-slide-picture-element">
           {% if mobile_image != blank %}
             <source
@@ -58,7 +72,7 @@
             alt="{{ alt_text }}"
             class="editorial-slide-image"
             loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
-            width="{{ fallback_img_width }}" {% comment %} Optional: hint for browser {% endcomment %}
+            width="{{ fallback_img_width }}"
           >
         </picture>
       {% else %}
@@ -132,8 +146,23 @@
   .editorial-slide-image {  /* Style for the <img> tag inside <picture> */
     display: block;
     width: 100%;
-    height: 100%; 
-    object-fit: cover; 
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .editorial-slide-video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .editorial-slide-video-desktop {
+    display: block;
+  }
+
+  .editorial-slide-video-mobile {
+    display: none;
   }
 
   .editorial-slide-placeholder {
@@ -211,6 +240,12 @@
       top: var(--mobile-margin-top, 40px);
       max-width: var(--mobile-max-width, 360px);
       padding: var(--mobile-border-width, 8px);
+    }
+    .editorial-slide-video-desktop {
+      display: none;
+    }
+    .editorial-slide-video-mobile {
+      display: block;
     }
     .editorial-slide-overlay {
         top: var(--mobile-border-width, 8px);
@@ -495,10 +530,20 @@
           "label": "Mobile Image (Portrait Recommended)"
         },
         {
+          "type": "video",
+          "id": "video_desktop",
+          "label": "Desktop Video"
+        },
+        {
+          "type": "video",
+          "id": "video_mobile",
+          "label": "Mobile Video (Portrait Recommended)"
+        },
+        {
           "type": "text",
           "id": "caption",
           "label": "Caption Text",
-          "default": "Image Caption" 
+          "default": "Image Caption"
         },
         {
           "type": "text",
