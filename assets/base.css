@@ -3755,6 +3755,7 @@ font-style: normal;
     grid-column: 2;
     grid-row: 1;
     justify-self: end;
+    padding-right: 0;
   }
 
   .header > .header__search,
@@ -3830,7 +3831,8 @@ font-style: normal;
 .header__icon--menu .icon-hamburger,
 .header__icon--menu .icon-close {
   position: absolute;
-  left: 40px; top: 50px;
+  left: 40px;
+  top: 50px;
   width: 24px;
   height: 24px;
   transition: opacity 0.2s;
@@ -3893,6 +3895,7 @@ font-style: normal;
     align-self: start;   /* Align to the top of its grid cell */
     display: flex;     /* Arrange search and cart icons inline */
     align-items: center; /* Vertically center icons within this flex container */
+    padding-right: 0;
     gap: 0.5rem;       /* Adjust space between search and cart icons */
   }
 
@@ -3921,9 +3924,9 @@ font-style: normal;
   .header__icon--menu .icon-hamburger,
   .header__icon--menu .icon-close {
     position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    left: 25PX !important;
+    top: 10px!important;
+    transform: none;
     width: 24px; /* Adjust to actual SVG size */
     height: 24px; /* Adjust to actual SVG size */
     transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
@@ -3932,24 +3935,76 @@ font-style: normal;
   .header__icon--menu .icon-close {
     opacity: 0;
     pointer-events: none;
-    transform: translate(-50%, -50%) scale(0.8); /* Start hidden and slightly smaller */
-  }
 
-  /* Show/hide based on <details> 'open' attribute */
-  details[open] > .header__icon--menu .icon-hamburger {
-    opacity: 0;
-    pointer-events: none;
-    transform: translate(-50%, -50%) scale(0.8);
-  }
-
-  details[open] > .header__icon--menu .icon-close {
+  bottom: 30%;
+  left: 90%;
+  transform: translate(-50%);
+  width: 16px;
+  height: 16px;
+  color: #3c3c3c;
+  top: 50%;
+  left: calc(100% + 0.5rem);
+  transform: translateY(-50%);
+  flex-direction: column;
     opacity: 1;
     pointer-events: auto;
-    transform: translate(-50%, -50%) scale(1);
+    transform: scale(1);
   }
 }
 
 /* ... (rest of base.css) ... */
+
+/* --- Product card size quick view --- */
+.product-card-wrapper {
+  position: relative;
+}
+
+.product-card-plus {
+    position: absolute;
+    bottom: 30%;
+    left: 90%;
+    transform: translate(-50%);
+    z-index: 2;
+    cursor: pointer;
+}
+
+.product-card-plus .plus-icon {
+    display: inline-flex
+;
+    width: 16px;
+    height: 16px;
+    align-items: center;
+    justify-content: center;
+   /* background: #fff; */
+
+    color: #3c3c3c;
+}
+
+.product-card-plus .size-options {
+  display: none;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 0.4rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.product-card-plus:hover .size-options {
+  display: block;
+}
+
+.product-card-plus .size-option {
+  margin: 0 0.2rem;
+  font-size: 0.9rem;
+}
+
+.product-card-plus .size-option.sold-out {
+  opacity: 0.5;
+}
 
 
 
