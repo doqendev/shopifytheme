@@ -3955,17 +3955,21 @@ font-style: normal;
 /* ... (rest of base.css) ... */
 
 /* --- Product card size quick view --- */
+
 .product-card-wrapper {
   position: relative;
 }
 
+.product-card-wrapper .card__media {
+  position: relative;
+}
+
 .product-card-plus {
-    position: absolute;
-    bottom: 30%;
-    left: 90%;
-    transform: translate(-50%);
-    z-index: 2;
-    cursor: pointer;
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  z-index: 2;
+  cursor: pointer;
 }
 
 .product-card-plus .plus-icon {
@@ -3983,9 +3987,9 @@ font-style: normal;
 .product-card-plus .size-options {
   display: none;
   position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 0;
+  right: 100%;
+  flex-direction: column;
   background: #fff;
   border: 1px solid #ccc;
   padding: 0.4rem;
@@ -3998,7 +4002,7 @@ font-style: normal;
 }
 
 .product-card-plus .size-option {
-  margin: 0 0.2rem;
+  margin: 0.2rem 0;
   font-size: 0.9rem;
 }
 
