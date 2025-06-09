@@ -3935,17 +3935,17 @@ font-style: normal;
   .header__icon--menu .icon-close {
     opacity: 0;
     pointer-events: none;
-    transform: scale(0.8); /* Start hidden and slightly smaller */
-  }
 
-  /* Show/hide based on <details> 'open' attribute */
-  details[open] > .header__icon--menu .icon-hamburger {
-    opacity: 0;
-    pointer-events: none;
-    transform: scale(0.8);
-  }
-
-  details[open] > .header__icon--menu .icon-close {
+  bottom: 30%;
+  left: 90%;
+  transform: translate(-50%);
+  width: 16px;
+  height: 16px;
+  color: #3c3c3c;
+  top: 50%;
+  left: calc(100% + 0.5rem);
+  transform: translateY(-50%);
+  flex-direction: column;
     opacity: 1;
     pointer-events: auto;
     transform: scale(1);
