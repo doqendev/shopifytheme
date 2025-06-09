@@ -3965,7 +3965,7 @@ font-style: normal;
   position: absolute;
   bottom: 0.5rem;
   right: 0.5rem;
-  z-index: 2;
+  z-index: 20;
   cursor: pointer;
 }
 
