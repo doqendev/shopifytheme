@@ -247,10 +247,10 @@
             "button_text": "Shop Now",
             "button_link": "",
             "border_color": "#efef10",
-            "border_width": 12,
+            "border_width": 0,
             "max_width": 840,
             "margin_top": 200,
-            "border_width_mobile": 8,
+            "border_width_mobile": 0,
             "max_width_mobile": 360,
             "margin_top_mobile": 160
           }
