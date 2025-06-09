@@ -3960,9 +3960,6 @@ font-style: normal;
   position: relative;
 }
 
-.product-card-wrapper .card__media {
-  position: relative;
-}
 
 .product-card-plus {
   position: absolute;
@@ -3987,9 +3984,9 @@ font-style: normal;
 .product-card-plus .size-options {
   display: none;
   position: absolute;
-  bottom: 0;
-  right: 100%;
-  flex-direction: column;
+  bottom: calc(100% + 0.25rem);
+  right: 0;
+  flex-direction: column-reverse;
   background: #fff;
   border: 1px solid #ccc;
   padding: 0.4rem;
