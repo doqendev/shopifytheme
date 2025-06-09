@@ -192,7 +192,7 @@
     <div class="swiper-pagination"></div>
     {% if size_option_index != -1 %}
       <div class="product-card-plus">
-        <span class="plus-icon"><i class="fa-thin fa-tag"></i></span>
+        <span class="plus-icon">{{ 'icon-plus.svg' | inline_asset_content }}</span>
         <div class="size-options">
           {% for size in all_sizes %}
             <span class="size-option{% unless available_sizes contains size %} sold-out{% endunless %}">{{ size }}</span>
