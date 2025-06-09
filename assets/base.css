@@ -3984,18 +3984,24 @@ font-style: normal;
 .product-card-plus .size-options {
   display: none;
   position: absolute;
-  bottom: calc(100% + 0.25rem);
+  top: 0;
+  bottom: 0;
   right: 0;
-  flex-direction: column-reverse;
+  width: 3rem;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
   background: #fff;
   border: 1px solid #ccc;
-  padding: 0.4rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  text-align: center;
 }
 
-.product-card-plus:hover .size-options {
-  display: block;
+.product-card-plus.active .size-options {
+  display: flex;
+}
+
+.product-card-plus.active .plus-icon {
+  display: none;
 }
 
 .product-card-plus .size-option {

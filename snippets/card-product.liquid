@@ -358,9 +358,27 @@
       initializeProductCardSwipers();
 
       var plusEls = document.querySelectorAll('.product-card-plus');
-      console.log('product card plus count', plusEls.length);
-      plusEls.forEach(function(el, idx) {
-        console.log('plus icon element', idx, el);
+      plusEls.forEach(function(el) {
+        var plusIcon = el.querySelector('.plus-icon');
+        var sizeOptions = el.querySelector('.size-options');
+        if (!plusIcon || !sizeOptions) return;
+
+        plusIcon.addEventListener('click', function(ev) {
+          ev.stopPropagation();
+          el.classList.add('active');
+        });
+
+        sizeOptions.addEventListener('click', function(ev) {
+          ev.stopPropagation();
+        });
+      });
+
+      document.addEventListener('click', function(ev) {
+        plusEls.forEach(function(el) {
+          if (!el.contains(ev.target)) {
+            el.classList.remove('active');
+          }
+        });
       });
 
       // Swatch click handling remains unchanged
