@@ -3995,6 +3995,16 @@ font-style: normal;
 
 }
 
+@media screen and (min-width: 750px) {
+  .product-card-plus .size-options {
+    width: 4rem;
+  }
+
+  .product-card-plus .size-option {
+    font-size: 1.1rem;
+  }
+}
+
 .product-card-plus.active .size-options {
   display: flex;
 }

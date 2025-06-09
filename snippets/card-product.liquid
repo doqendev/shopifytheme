@@ -316,14 +316,12 @@
       productCards.forEach(function(card, index) {
         var swiperContainer = card.querySelector('.swiper-container');
         if (!swiperContainer) {
-          console.log('No swiper container found for card', index);
           return; // Skip if no media slider is present
         }
 
         // Remove any forced touchAction override that might block horizontal swipes
         swiperContainer.style.touchAction = 'auto';
 
-        console.log('Initializing Swiper for card', index, swiperContainer);
 
         new Swiper(swiperContainer, {
           slidesPerView: 1,
@@ -340,11 +338,9 @@
           threshold: 0,
           on: {
             init: function() {
-              console.log('Swiper init event on card', index);
               // Update swiper after a short delay in case dimensions change
               setTimeout(() => {
                 this.update();
-                console.log('Swiper updated after init for card', index);
               }, 1000);
             },
             // Additional event listeners can be added here if needed.
@@ -399,7 +395,6 @@
           if (!mediaContainer) return;
           var img = card.querySelector('.swiper-slide-active img') || mediaContainer.querySelector('img');
           if (img) {
-            console.log("Updating image via swatch click", newImage);
             img.src = newImage;
             img.srcset = newImage;
           }
