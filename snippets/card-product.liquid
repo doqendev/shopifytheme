@@ -107,6 +107,35 @@
     endif
   -%}
 
+  {%- comment -%} Size quick view trigger {%- endcomment -%}
+  {% assign size_option_index = -1 %}
+  {% for option in card_product.options_with_values %}
+    {% if option.name == 'Size' or option.name == 'Tamanho' %}
+      {% assign size_option_index = forloop.index0 %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+
+  {% if size_option_index != -1 %}
+    {% assign all_sizes = '' | split: ',' %}
+    {% assign available_sizes = '' | split: ',' %}
+    {% for variant in card_product.variants %}
+      {% assign size_val = variant.options[size_option_index] | strip %}
+      {% if size_val != '' %}
+        {% unless all_sizes contains size_val %}
+          {% capture tmp %}{{ all_sizes | join: ',' }},{{ size_val }}{% endcapture %}
+          {% assign all_sizes = tmp | split: ',' | uniq %}
+        {% endunless %}
+        {% if variant.available %}
+          {% unless available_sizes contains size_val %}
+            {% capture tmp2 %}{{ available_sizes | join: ',' }},{{ size_val }}{% endcapture %}
+            {% assign available_sizes = tmp2 | split: ',' | uniq %}
+          {% endunless %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+
   <div
     class="card-wrapper product-card-wrapper product-card underline-links-hover"
     data-product-handle="{{ card_product.handle }}"
@@ -161,6 +190,16 @@
       {% endfor %}
     </div>
     <div class="swiper-pagination"></div>
+    {% if size_option_index != -1 %}
+      <div class="product-card-plus">
+        <span class="plus-icon">{{ 'icon-plus.svg' | inline_asset_content }}</span>
+        <div class="size-options">
+          {% for size in all_sizes %}
+            <span class="size-option{% unless available_sizes contains size %} sold-out{% endunless %}">{{ size }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
   </div>
 {% endif %}
 
@@ -257,42 +296,7 @@
       </div>
     </div>
 
-    {%- comment -%} Size quick view trigger {%- endcomment -%}
-    {% assign size_option_index = -1 %}
-    {% for option in card_product.options_with_values %}
-      {% if option.name == 'Size' or option.name == 'Tamanho' %}
-        {% assign size_option_index = forloop.index0 %}
-        {% break %}
-      {% endif %}
-    {% endfor %}
 
-    {% if size_option_index != -1 %}
-      {% assign all_sizes = '' | split: ',' %}
-      {% assign available_sizes = '' | split: ',' %}
-      {% for variant in card_product.variants %}
-        {% assign size_val = variant.options[size_option_index] | strip %}
-        {% if size_val != '' %}
-          {% unless all_sizes contains size_val %}
-            {% capture tmp %}{{ all_sizes | join: ',' }},{{ size_val }}{% endcapture %}
-            {% assign all_sizes = tmp | split: ',' | uniq %}
-          {% endunless %}
-          {% if variant.available %}
-            {% unless available_sizes contains size_val %}
-              {% capture tmp2 %}{{ available_sizes | join: ',' }},{{ size_val }}{% endcapture %}
-              {% assign available_sizes = tmp2 | split: ',' | uniq %}
-            {% endunless %}
-          {% endif %}
-        {% endif %}
-      {% endfor %}
-      <div class="product-card-plus">
-        <span class="plus-icon">{{ 'icon-plus.svg' | inline_asset_content }}</span>
-        <div class="size-options">
-          {% for size in all_sizes %}
-            <span class="size-option{% unless available_sizes contains size %} sold-out{% endunless %}">{{ size }}</span>
-          {% endfor %}
-        </div>
-      </div>
-    {% endif %}
   </div>
 
   {%- comment -%}
@@ -312,14 +316,12 @@
       productCards.forEach(function(card, index) {
         var swiperContainer = card.querySelector('.swiper-container');
         if (!swiperContainer) {
-          console.log('No swiper container found for card', index);
           return; // Skip if no media slider is present
         }
 
         // Remove any forced touchAction override that might block horizontal swipes
         swiperContainer.style.touchAction = 'auto';
 
-        console.log('Initializing Swiper for card', index, swiperContainer);
 
         new Swiper(swiperContainer, {
           slidesPerView: 1,
@@ -336,11 +338,9 @@
           threshold: 0,
           on: {
             init: function() {
-              console.log('Swiper init event on card', index);
               // Update swiper after a short delay in case dimensions change
               setTimeout(() => {
                 this.update();
-                console.log('Swiper updated after init for card', index);
               }, 1000);
             },
             // Additional event listeners can be added here if needed.
@@ -354,9 +354,27 @@
       initializeProductCardSwipers();
 
       var plusEls = document.querySelectorAll('.product-card-plus');
-      console.log('product card plus count', plusEls.length);
-      plusEls.forEach(function(el, idx) {
-        console.log('plus icon element', idx, el);
+      plusEls.forEach(function(el) {
+        var plusIcon = el.querySelector('.plus-icon');
+        var sizeOptions = el.querySelector('.size-options');
+        if (!plusIcon || !sizeOptions) return;
+
+        plusIcon.addEventListener('click', function(ev) {
+          ev.stopPropagation();
+          el.classList.add('active');
+        });
+
+        sizeOptions.addEventListener('click', function(ev) {
+          ev.stopPropagation();
+        });
+      });
+
+      document.addEventListener('click', function(ev) {
+        plusEls.forEach(function(el) {
+          if (!el.contains(ev.target)) {
+            el.classList.remove('active');
+          }
+        });
       });
 
       // Swatch click handling remains unchanged
@@ -377,7 +395,6 @@
           if (!mediaContainer) return;
           var img = card.querySelector('.swiper-slide-active img') || mediaContainer.querySelector('img');
           if (img) {
-            console.log("Updating image via swatch click", newImage);
             img.src = newImage;
             img.srcset = newImage;
           }
