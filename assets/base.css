@@ -3755,6 +3755,7 @@ font-style: normal;
     grid-column: 2;
     grid-row: 1;
     justify-self: end;
+    padding-right: 0;
   }
 
   .header > .header__search,
@@ -3894,6 +3895,7 @@ font-style: normal;
     align-self: start;   /* Align to the top of its grid cell */
     display: flex;     /* Arrange search and cart icons inline */
     align-items: center; /* Vertically center icons within this flex container */
+    padding-right: 0;
     gap: 0.5rem;       /* Adjust space between search and cart icons */
   }
 
