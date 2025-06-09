@@ -218,14 +218,14 @@
             "margin_top": 200,
             "border_width_mobile": 0,
             "max_width_mobile": 360,
-            "margin_top_mobile": 160
+            "margin_top_mobile": 120
           }
         },
         "photo_LGYUUc": {
           "type": "photo",
           "settings": {
-            "image_desktop": "shopify://shop_images/20250609_1106_Bohemian_Van_Beauty_simple_compose_01jxa2c87ce7csyy5gk4y8r8h6.png",
-            "image_mobile": "shopify://shop_images/photo_mobile2.jpg",
+            "image_desktop": "shopify://shop_images/20250609_1106_Bohemian_Van_Beauty_simple_compose_01jxa2c87ce7csyy5gk4y8r8h6_1.png",
+            "image_mobile": "shopify://shop_images/20250609_1106_Bohemian_Van_Beauty_simple_compose_01jxa2c87ce7csyy5gk4y8r8h6.png",
             "caption": "ACESSÓRIOS",
             "button_text": "VER AGORA",
             "button_link": "shopify://collections/saldos",
@@ -235,7 +235,22 @@
             "margin_top": 200,
             "border_width_mobile": 0,
             "max_width_mobile": 360,
-            "margin_top_mobile": 160
+            "margin_top_mobile": 120
+          }
+        },
+        "photo_YirLd4": {
+          "type": "photo",
+          "settings": {
+            "caption": "Image Caption",
+            "button_text": "Shop Now",
+            "button_link": "",
+            "border_color": "#eaeada",
+            "border_width": 24,
+            "max_width": 840,
+            "margin_top": 200,
+            "border_width_mobile": 8,
+            "max_width_mobile": 360,
+            "margin_top_mobile": 40
           }
         },
         "photo_XRkccm": {
@@ -307,6 +322,7 @@
       "block_order": [
         "photo_WTiLjT",
         "photo_LGYUUc",
+        "photo_YirLd4",
         "photo_XRkccm",
         "photo_cXx648",
         "photo_8HYGzA",
