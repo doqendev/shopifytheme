@@ -3975,7 +3975,7 @@ font-style: normal;
     height: 16px;
     align-items: center;
     justify-content: center;
-    background: #fff;
+   /* background: #fff; */
 
     color: #3c3c3c;
 }
