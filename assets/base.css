@@ -3969,15 +3969,15 @@ font-style: normal;
 }
 
 .product-card-plus .plus-icon {
-  display: inline-flex;
-  width: 32px;
-  height: 32px;
-  align-items: center;
-  justify-content: center;
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 50%;
-  color: #000;
+    display: inline-flex
+;
+    width: 16px;
+    height: 16px;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+
+    color: #3c3c3c;
 }
 
 .product-card-plus .size-options {
