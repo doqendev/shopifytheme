@@ -256,6 +256,43 @@
         {%- endcomment %}
       </div>
     </div>
+
+    {%- comment -%} Size quick view trigger {%- endcomment -%}
+    {% assign size_option_index = -1 %}
+    {% for option in card_product.options_with_values %}
+      {% if option.name == 'Size' or option.name == 'Tamanho' %}
+        {% assign size_option_index = forloop.index0 %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+
+    {% if size_option_index != -1 %}
+      {% assign all_sizes = '' | split: ',' %}
+      {% assign available_sizes = '' | split: ',' %}
+      {% for variant in card_product.variants %}
+        {% assign size_val = variant.options[size_option_index] | strip %}
+        {% if size_val != '' %}
+          {% unless all_sizes contains size_val %}
+            {% capture tmp %}{{ all_sizes | join: ',' }},{{ size_val }}{% endcapture %}
+            {% assign all_sizes = tmp | split: ',' | uniq %}
+          {% endunless %}
+          {% if variant.available %}
+            {% unless available_sizes contains size_val %}
+              {% capture tmp2 %}{{ available_sizes | join: ',' }},{{ size_val }}{% endcapture %}
+              {% assign available_sizes = tmp2 | split: ',' | uniq %}
+            {% endunless %}
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+      <div class="product-card-plus">
+        <span class="plus-icon">{{ 'icon-plus.svg' | inline_asset_content }}</span>
+        <div class="size-options">
+          {% for size in all_sizes %}
+            <span class="size-option{% unless available_sizes contains size %} sold-out{% endunless %}">{{ size }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
   </div>
 
   {%- comment -%}

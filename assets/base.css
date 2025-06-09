@@ -3954,6 +3954,43 @@ font-style: normal;
 
 /* ... (rest of base.css) ... */
 
+/* --- Product card size quick view --- */
+.product-card-wrapper {
+  position: relative;
+}
+
+.product-card-plus {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  z-index: 2;
+}
+
+.product-card-plus .size-options {
+  display: none;
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 0.4rem;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.product-card-plus:hover .size-options {
+  display: block;
+}
+
+.product-card-plus .size-option {
+  margin: 0 0.2rem;
+  font-size: 0.9rem;
+}
+
+.product-card-plus .size-option.sold-out {
+  opacity: 0.5;
+}
+
 
 
 
