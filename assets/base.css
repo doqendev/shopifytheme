@@ -3981,7 +3981,6 @@ font-style: normal;
 }
 
 .product-card-plus .size-options {
-    display: none;
     position: absolute;
     bottom: 100%;
     left: 50%;
