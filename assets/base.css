@@ -3959,6 +3959,10 @@ font-style: normal;
   position: relative;
 }
 
+.product-card-wrapper .card__media {
+  position: relative;
+}
+
 .product-card-plus {
   position: absolute;
   bottom: 0.5rem;
