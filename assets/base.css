@@ -4006,6 +4006,7 @@ font-style: normal;
 .product-card-plus .size-option {
   margin: 0.2rem 0;
   font-size: 0.9rem;
+  font-weight: bold;
 }
 
 .product-card-plus .size-option.sold-out {
