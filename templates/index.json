@@ -324,7 +324,7 @@
             "image_desktop": "shopify://shop_images/20250606_1133_Minimalist_Fashion_Portrait_remix_01jx2cre3ve5ys8h2db9z3zfq6.png",
             "caption": "NewCollection",
             "button_text": "Discover",
-            "button_link": "",
+            "button_link": "shopify://pages/pagamento",
             "border_color": "#eaeada",
             "border_width": 24,
             "max_width": 840,
