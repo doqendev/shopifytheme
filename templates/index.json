@@ -395,7 +395,7 @@
             "margin_top": 200,
             "border_width_mobile": 8,
             "max_width_mobile": 360,
-            "margin_top_mobile": 160,
+            "margin_top_mobile": 200,
             "margin_left_mobile": 0,
             "margin_right_mobile": 0
           }
@@ -418,7 +418,29 @@
             "margin_top": 200,
             "border_width_mobile": 8,
             "max_width_mobile": 360,
-            "margin_top_mobile": 40,
+            "margin_top_mobile": 200,
+            "margin_left_mobile": 0,
+            "margin_right_mobile": 0
+          }
+        },
+        "photo_p8W8LY": {
+          "type": "photo",
+          "settings": {
+            "image_mobile": "shopify://shop_images/photo_mobile2.jpg",
+            "caption": "Image Caption",
+            "button_text": "Shop Now",
+            "button_link": "",
+            "border_color": "#eaeada",
+            "caption_color": "#ffffff",
+            "border_width": 24,
+            "max_width": 840,
+            "margin_left": 0,
+            "margin_right": 0,
+            "image_rotation": 0,
+            "margin_top": 200,
+            "border_width_mobile": 8,
+            "max_width_mobile": 360,
+            "margin_top_mobile": 200,
             "margin_left_mobile": 0,
             "margin_right_mobile": 0
           }
@@ -427,7 +449,8 @@
       "block_order": [
         "photo_fUEcV3",
         "photo_hXDDcP",
-        "photo_3YDte7"
+        "photo_3YDte7",
+        "photo_p8W8LY"
       ],
       "name": "Editorial Photo Stacked",
       "settings": {}
