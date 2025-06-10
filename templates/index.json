@@ -322,11 +322,28 @@
           "type": "photo",
           "settings": {
             "image_desktop": "shopify://shop_images/20250606_1133_Minimalist_Fashion_Portrait_remix_01jx2cre3ve5ys8h2db9z3zfq6.png",
+            "image_mobile": "shopify://shop_images/photo_mobile.jpg",
             "caption": "NewCollection",
             "button_text": "Discover",
             "button_link": "shopify://pages/pagamento",
             "border_color": "#eaeada",
-            "border_width": 24,
+            "border_width": 0,
+            "max_width": 1200,
+            "margin_top": 200,
+            "border_width_mobile": 8,
+            "max_width_mobile": 360,
+            "margin_top_mobile": 40
+          }
+        },
+        "photo_hXDDcP": {
+          "type": "photo",
+          "settings": {
+            "image_desktop": "shopify://shop_images/indexpassword.png",
+            "caption": "Image Caption",
+            "button_text": "Shop Now",
+            "button_link": "",
+            "border_color": "#121212",
+            "border_width": 0,
             "max_width": 840,
             "margin_top": 200,
             "border_width_mobile": 8,
@@ -342,23 +359,7 @@
             "button_text": "Shop Now",
             "button_link": "",
             "border_color": "#eaeada",
-            "border_width": 24,
-            "max_width": 840,
-            "margin_top": 200,
-            "border_width_mobile": 8,
-            "max_width_mobile": 360,
-            "margin_top_mobile": 40
-          }
-        },
-        "photo_hXDDcP": {
-          "type": "photo",
-          "settings": {
-            "image_desktop": "shopify://shop_images/indexpassword.png",
-            "caption": "Image Caption",
-            "button_text": "Shop Now",
-            "button_link": "",
-            "border_color": "#eaeada",
-            "border_width": 24,
+            "border_width": 0,
             "max_width": 840,
             "margin_top": 200,
             "border_width_mobile": 8,
@@ -369,8 +370,8 @@
       },
       "block_order": [
         "photo_fUEcV3",
-        "photo_3YDte7",
-        "photo_hXDDcP"
+        "photo_hXDDcP",
+        "photo_3YDte7"
       ],
       "name": "Editorial Photo Stacked",
       "settings": {}
