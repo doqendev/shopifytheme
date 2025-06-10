@@ -213,12 +213,18 @@
             "button_text": "Ver agora",
             "button_link": "shopify://collections/novidades",
             "border_color": "#05f5e0",
+            "caption_color": "#ffffff",
             "border_width": 0,
             "max_width": 960,
+            "margin_left": 0,
+            "margin_right": 0,
+            "image_rotation": 0,
             "margin_top": 200,
             "border_width_mobile": 0,
             "max_width_mobile": 360,
-            "margin_top_mobile": 120
+            "margin_top_mobile": 120,
+            "margin_left_mobile": 0,
+            "margin_right_mobile": 0
           }
         },
         "photo_LGYUUc": {
@@ -230,12 +236,18 @@
             "button_text": "VER AGORA",
             "button_link": "shopify://collections/saldos",
             "border_color": "#eaeada",
+            "caption_color": "#ffffff",
             "border_width": 0,
             "max_width": 960,
+            "margin_left": 0,
+            "margin_right": 0,
+            "image_rotation": 0,
             "margin_top": 200,
             "border_width_mobile": 0,
             "max_width_mobile": 360,
-            "margin_top_mobile": 120
+            "margin_top_mobile": 120,
+            "margin_left_mobile": 0,
+            "margin_right_mobile": 0
           }
         },
         "photo_XRkccm": {
@@ -246,12 +258,18 @@
             "button_text": "Shop Now",
             "button_link": "",
             "border_color": "#efef10",
+            "caption_color": "#ffffff",
             "border_width": 12,
             "max_width": 840,
+            "margin_left": 0,
+            "margin_right": 0,
+            "image_rotation": 0,
             "margin_top": 200,
             "border_width_mobile": 8,
             "max_width_mobile": 360,
-            "margin_top_mobile": 160
+            "margin_top_mobile": 160,
+            "margin_left_mobile": 0,
+            "margin_right_mobile": 0
           }
         },
         "photo_cXx648": {
@@ -262,12 +280,18 @@
             "button_text": "Shop Now",
             "button_link": "",
             "border_color": "#05f5e0",
+            "caption_color": "#ffffff",
             "border_width": 24,
             "max_width": 840,
+            "margin_left": 0,
+            "margin_right": 0,
+            "image_rotation": 0,
             "margin_top": 200,
             "border_width_mobile": 8,
             "max_width_mobile": 360,
-            "margin_top_mobile": 160
+            "margin_top_mobile": 160,
+            "margin_left_mobile": 0,
+            "margin_right_mobile": 0
           }
         },
         "photo_8HYGzA": {
@@ -278,12 +302,18 @@
             "button_text": "Shop Now",
             "button_link": "",
             "border_color": "#eaeada",
+            "caption_color": "#ffffff",
             "border_width": 24,
             "max_width": 840,
+            "margin_left": 0,
+            "margin_right": 0,
+            "image_rotation": 0,
             "margin_top": 200,
             "border_width_mobile": 8,
             "max_width_mobile": 360,
-            "margin_top_mobile": 160
+            "margin_top_mobile": 160,
+            "margin_left_mobile": 0,
+            "margin_right_mobile": 0
           }
         },
         "photo_M9bpR8": {
@@ -294,12 +324,18 @@
             "button_text": "Shop Now",
             "button_link": "",
             "border_color": "#eaeada",
+            "caption_color": "#ffffff",
             "border_width": 24,
             "max_width": 840,
+            "margin_left": 0,
+            "margin_right": 0,
+            "image_rotation": 0,
             "margin_top": 200,
             "border_width_mobile": 8,
             "max_width_mobile": 360,
-            "margin_top_mobile": 160
+            "margin_top_mobile": 160,
+            "margin_left_mobile": 0,
+            "margin_right_mobile": 0
           }
         }
       },
@@ -327,12 +363,18 @@
             "button_text": "Discover",
             "button_link": "shopify://pages/pagamento",
             "border_color": "#eaeada",
+            "caption_color": "#ffffff",
             "border_width": 0,
             "max_width": 1200,
-            "margin_top": 200,
+            "margin_left": 0,
+            "margin_right": 0,
+            "image_rotation": 0,
+            "margin_top": 195,
             "border_width_mobile": 8,
             "max_width_mobile": 360,
-            "margin_top_mobile": 40
+            "margin_top_mobile": 115,
+            "margin_left_mobile": 0,
+            "margin_right_mobile": 0
           }
         },
         "photo_hXDDcP": {
@@ -343,12 +385,18 @@
             "button_text": "Shop Now",
             "button_link": "",
             "border_color": "#121212",
+            "caption_color": "#ffffff",
             "border_width": 0,
             "max_width": 840,
+            "margin_left": 0,
+            "margin_right": 220,
+            "image_rotation": 14,
             "margin_top": 200,
             "border_width_mobile": 8,
             "max_width_mobile": 360,
-            "margin_top_mobile": 40
+            "margin_top_mobile": 40,
+            "margin_left_mobile": 0,
+            "margin_right_mobile": 0
           }
         },
         "photo_3YDte7": {
@@ -359,12 +407,18 @@
             "button_text": "Shop Now",
             "button_link": "",
             "border_color": "#eaeada",
+            "caption_color": "#ffffff",
             "border_width": 0,
             "max_width": 840,
+            "margin_left": 0,
+            "margin_right": 0,
+            "image_rotation": 0,
             "margin_top": 200,
             "border_width_mobile": 8,
             "max_width_mobile": 360,
-            "margin_top_mobile": 40
+            "margin_top_mobile": 40,
+            "margin_left_mobile": 0,
+            "margin_right_mobile": 0
           }
         }
       },
