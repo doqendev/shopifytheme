@@ -5,7 +5,7 @@
 <section class="editorial-slider-stack" id="editorial-slider-stack">
   {% for block in section.blocks %}
     <div
-      class="editorial-slide-block{% if block.settings.full_width %} is-full-width{% endif %}{% if block.settings.full_width_mobile %} is-full-width-mobile{% endif %}"
+      class="editorial-slide-block{% if block.settings.full_width %} is-full-width{% endif %}{% if block.settings.full_width_mobile %} is-full-width-mobile{% endif %}{% if block.settings.video_desktop != blank %} has-desktop-video{% endif %}{% if block.settings.video_mobile != blank %} has-mobile-video{% endif %}"
       style="
         --border-color: {{ block.settings.border_color }};
         --border-width: {{ block.settings.border_width }}px;
@@ -28,12 +28,7 @@
       {%- assign mobile_video = block.settings.video_mobile -%}
       {%- assign alt_text = block.settings.caption | escape | default: 'Editorial image' -%}
 
-      {%- assign has_any_video = false -%}
-      {%- if desktop_video != blank or mobile_video != blank -%}
-        {%- assign has_any_video = true -%}
-      {%- endif -%}
-
-      {%- comment -%} Determine a primary image for the fallback <img> tag and for the main condition {% endcomment -%}
+      {%- comment -%} Determine a primary image for the fallback <img> tag {% endcomment -%}
       {%- assign has_any_image = false -%}
       {%- assign fallback_img_src = "" -%}
       {%- assign fallback_img_width = block.settings.max_width -%}
@@ -47,14 +42,14 @@
         {%- assign fallback_img_width = block.settings.max_width_mobile -%}
       {%- endif -%}
 
-      {% if has_any_video %}
-        {% if desktop_video != blank %}
-          {{ desktop_video | video_tag: autoplay: true, loop: true, controls: false, muted: true, class: 'editorial-slide-video editorial-slide-video-desktop' }}
-        {% endif %}
-        {% if mobile_video != blank %}
-          {{ mobile_video | video_tag: autoplay: true, loop: true, controls: false, muted: true, class: 'editorial-slide-video editorial-slide-video-mobile' }}
-        {% endif %}
-      {% elsif has_any_image %}
+      {% if desktop_video != blank %}
+        {{ desktop_video | video_tag: autoplay: true, loop: true, controls: false, muted: true, class: 'editorial-slide-video editorial-slide-video-desktop' }}
+      {% endif %}
+      {% if mobile_video != blank %}
+        {{ mobile_video | video_tag: autoplay: true, loop: true, controls: false, muted: true, class: 'editorial-slide-video editorial-slide-video-mobile' }}
+      {% endif %}
+
+      {% if has_any_image %}
         <picture class="editorial-slide-picture-element">
           {% if mobile_image != blank %}
             <source
@@ -130,12 +125,24 @@
     box-sizing: border-box;
   }
 
-  .editorial-slide-block.is-full-width,
-  .editorial-slide-block.is-full-width-mobile {
+  .editorial-slide-block.is-full-width {
     margin-left: 0;
     margin-right: 0;
     max-width: none;
     width: 100%;
+  }
+
+  /* Hide images when a corresponding video exists */
+  @media (min-width: 701px) {
+    .editorial-slide-block.has-desktop-video .editorial-slide-picture-element {
+      display: none;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .editorial-slide-block.has-mobile-video .editorial-slide-picture-element {
+      display: none;
+    }
   }
 
 
@@ -247,7 +254,6 @@
       max-width: var(--mobile-max-width, 360px);
       padding: var(--mobile-border-width, 8px);
     }
-    .editorial-slide-block.is-full-width,
     .editorial-slide-block.is-full-width-mobile {
       margin-left: 0;
       margin-right: 0;
