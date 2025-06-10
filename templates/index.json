@@ -381,7 +381,7 @@
           "type": "photo",
           "settings": {
             "image_desktop": "shopify://shop_images/indexpassword.png",
-            "image_mobile": "shopify://shop_images/20250603_1123_Mystical_Glass_Portrait_simple_compose_01jwtn246dexm93hn7n925tn5e.png",
+            "video_mobile": "shopify://files/videos/20250331_1515_GlowingNeonSaldosAnimation_loop_01jqp8vqtpe64sfj5bv1s03700-ezgif.com-crop-video.mp4",
             "caption": "Image Caption",
             "button_text": "Shop Now",
             "button_link": "",
@@ -419,7 +419,7 @@
             "border_width_mobile": 8,
             "max_width_mobile": 360,
             "margin_top_mobile": 200,
-            "margin_left_mobile": 0,
+            "margin_left_mobile": -75,
             "margin_right_mobile": 0
           }
         },
@@ -440,8 +440,8 @@
             "margin_top": 0,
             "border_width_mobile": 8,
             "max_width_mobile": 360,
-            "margin_top_mobile": 40,
-            "margin_left_mobile": 0,
+            "margin_top_mobile": 0,
+            "margin_left_mobile": 75,
             "margin_right_mobile": 0
           }
         },
