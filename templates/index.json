@@ -244,9 +244,9 @@
           "settings": {
             "image_desktop": "shopify://shop_images/20250609_1106_Bohemian_Van_Beauty_simple_compose_01jxa2c87ce7csyy5gk4y8r8h6_1.png",
             "image_mobile": "shopify://shop_images/20250609_1106_Bohemian_Van_Beauty_simple_compose_01jxa2c87ce7csyy5gk4y8r8h6.png",
-            "caption": "Image Caption",
-            "button_text": "Shop Now",
-            "button_link": "",
+            "caption": "malha",
+            "button_text": "ver tudo",
+            "button_link": "shopify://collections/saldos",
             "border_color": "#eaeada",
             "caption_color": "#ffffff",
             "border_width": 0,
