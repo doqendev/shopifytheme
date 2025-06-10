@@ -112,7 +112,7 @@
       {% if block.settings.focus1_product != blank %}
         {% assign fp1 = all_products[block.settings.focus1_product] %}
         <div class="focus-point" style="--x: var(--f1-left); --y: var(--f1-top); --x-mobile: var(--f1-left-mobile); --y-mobile: var(--f1-top-mobile);">
-          <button type="button" class="focus-point__button" aria-label="{{ fp1.title | escape }}">+</button>
+          <button type="button" class="focus-point__button" aria-label="{{ fp1.title | escape }}"></button>
           <div class="focus-popout">
             {% render 'card-product', card_product: fp1, section_id: section.id %}
           </div>
@@ -122,7 +122,7 @@
       {% if block.settings.focus2_product != blank %}
         {% assign fp2 = all_products[block.settings.focus2_product] %}
         <div class="focus-point" style="--x: var(--f2-left); --y: var(--f2-top); --x-mobile: var(--f2-left-mobile); --y-mobile: var(--f2-top-mobile);">
-          <button type="button" class="focus-point__button" aria-label="{{ fp2.title | escape }}">+</button>
+          <button type="button" class="focus-point__button" aria-label="{{ fp2.title | escape }}"></button>
           <div class="focus-popout">
             {% render 'card-product', card_product: fp2, section_id: section.id %}
           </div>
@@ -283,19 +283,20 @@
   }
 
   .focus-point__button {
-    width: 18px;
-    height: 18px;
+    width: 14px;
+    height: 14px;
     padding: 0;
     border-radius: 50%;
     background: #ffffff;
-    border: 2px solid #000000;
+    border: none;
     cursor: pointer;
-    animation: focus-fade 2s ease-in-out infinite;
+    box-shadow: 0 0 4px 0 rgba(255, 255, 255, 0.7);
+    animation: focus-glow 2s ease-in-out infinite;
   }
 
-  @keyframes focus-fade {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+  @keyframes focus-glow {
+    0%, 100% { box-shadow: 0 0 4px 0 rgba(255, 255, 255, 0.7); }
+    50% { box-shadow: 0 0 12px 4px rgba(255, 255, 255, 0.9); }
   }
 
   .focus-popout {
