@@ -381,6 +381,7 @@
           "type": "photo",
           "settings": {
             "image_desktop": "shopify://shop_images/indexpassword.png",
+            "image_mobile": "shopify://shop_images/20250603_1123_Mystical_Glass_Portrait_simple_compose_01jwtn246dexm93hn7n925tn5e.png",
             "caption": "Image Caption",
             "button_text": "Shop Now",
             "button_link": "",
@@ -394,7 +395,7 @@
             "margin_top": 200,
             "border_width_mobile": 8,
             "max_width_mobile": 360,
-            "margin_top_mobile": 40,
+            "margin_top_mobile": 160,
             "margin_left_mobile": 0,
             "margin_right_mobile": 0
           }
@@ -403,6 +404,7 @@
           "type": "photo",
           "settings": {
             "image_desktop": "shopify://shop_images/20250609_1106_Bohemian_Van_Beauty_simple_compose_01jxa2c87ce7csyy5gk4y8r8h6_1.png",
+            "image_mobile": "shopify://shop_images/20250609_1106_Bohemian_Van_Beauty_simple_compose_01jxa2c87ce7csyy5gk4y8r8h6.png",
             "caption": "Seasonal Sale",
             "button_text": "Shop Now",
             "button_link": "",
