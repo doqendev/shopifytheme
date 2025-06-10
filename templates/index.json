@@ -382,8 +382,8 @@
         "photo_3YDte7": {
           "type": "photo",
           "settings": {
-            "image_desktop": "shopify://shop_images/20250609_1106_Bohemian_Van_Beauty_simple_compose_01jxa2c87ce7csyy5gk4y8r8h6_1.png",
-            "video_mobile": "shopify://files/videos/20250331_1515_GlowingNeonSaldosAnimation_loop_01jqp8vqtpe64sfj5bv1s03700-ezgif.com-crop-video.mp4",
+            "image_mobile": "shopify://shop_images/photo_mobile.jpg",
+            "video_desktop": "shopify://files/videos/20250331_1515_GlowingNeonSaldosAnimation_loop_01jqp8vqtpe64sfj5bv1s03700-ezgif.com-crop-video.mp4",
             "caption": "Seasonal Sale",
             "button_text": "Shop Now",
             "button_link": "",
