@@ -18,6 +18,14 @@
         --mobile-border-width: {{ block.settings.border_width_mobile }}px;
         --mobile-max-width: {{ block.settings.max_width_mobile }}px;
         --mobile-margin-top: {{ block.settings.margin_top_mobile }}px;
+        --caption-color: {{ block.settings.caption_color | default: "#FFFFFF" }};
+        --offset-left: {{ block.settings.margin_left | default: 0 }}px;
+        --offset-right: {{ block.settings.margin_right | default: 0 }}px;
+        --horizontal-offset: calc(-50% + var(--offset-left) - var(--offset-right));
+        --mobile-offset-left: {{ block.settings.margin_left_mobile | default: 0 }}px;
+        --mobile-offset-right: {{ block.settings.margin_right_mobile | default: 0 }}px;
+        --mobile-horizontal-offset: calc(-50% + var(--mobile-offset-left) - var(--mobile-offset-right));
+        --image-rotation: {{ block.settings.image_rotation | default: 0 }}deg;
       "
     >
       {%- assign desktop_image = block.settings.image_desktop -%}
@@ -125,15 +133,15 @@
     background: var(--border-color, #eaeada); 
     box-sizing: border-box;
     opacity: 0;
-    transform: translateX(-50%) translateY(100vh); 
+    transform: translateX(var(--horizontal-offset, -50%)) translateY(100vh) rotate(var(--image-rotation, 0deg));
     transition: transform 0.55s cubic-bezier(.65,0,.35,1), opacity 0.65s cubic-bezier(.55,0,.35,1);
     pointer-events: none; 
   }
 
   .editorial-slide.is-active-slide {
     opacity: 1;
-    transform: translateX(-50%); 
-    pointer-events: auto; 
+    transform: translateX(var(--horizontal-offset, -50%)) rotate(var(--image-rotation, 0deg));
+    pointer-events: auto;
   }
 
   .editorial-slide-picture-element { /* Style for the <picture> tag */
@@ -148,6 +156,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transform: rotate(var(--image-rotation, 0deg));
   }
 
   .editorial-slide-video {
@@ -195,11 +204,11 @@
   }
 
   .editorial-slide-caption {
-    width: auto; 
+    width: auto;
     max-width: 90%;
-    margin-bottom: 20px; 
-    
-    color: #FFFFFF; 
+    margin-bottom: 20px;
+
+    color: var(--caption-color, #FFFFFF);
     font-size: 3.5rem; 
     font-weight: 700; 
     text-transform: uppercase; 
@@ -213,9 +222,9 @@
   }
 
   .editorial-slide-button {
-    display: inline-block; 
-    padding: 10px 28px; 
-    font-size: 0.85rem; 
+    display: inline-block;
+    padding: 10px 28px;
+    font-size: 0.85rem;
     color: #FFFFFF;
     background-color: rgba(0, 0, 0, 0.4); 
     border: 1px solid rgba(255,255,255,0.75); 
@@ -240,6 +249,10 @@
       top: var(--mobile-margin-top, 40px);
       max-width: var(--mobile-max-width, 360px);
       padding: var(--mobile-border-width, 8px);
+      transform: translateX(var(--mobile-horizontal-offset, var(--horizontal-offset, -50%))) translateY(100vh) rotate(var(--image-rotation, 0deg));
+    }
+    .editorial-slide.is-active-slide {
+      transform: translateX(var(--mobile-horizontal-offset, var(--horizontal-offset, -50%))) rotate(var(--image-rotation, 0deg));
     }
     .editorial-slide-video-desktop {
       display: none;
@@ -298,18 +311,18 @@
       const inTransform = isReverse ? transitionConfig.out_transform : transitionConfig.in_transform;
       const outTransform = isReverse ? transitionConfig.in_transform : transitionConfig.out_transform;
       
-      newSlide.style.transform = `translateX(-50%) ${inTransform}`;
+      newSlide.style.transform = `translateX(var(--horizontal-offset, -50%)) ${inTransform}`;
       newSlide.style.opacity = '0';
       void newSlide.offsetWidth;
 
       newSlide.style.transition = 'transform 0.55s cubic-bezier(.65,0,.35,1), opacity 0.65s cubic-bezier(.55,0,.35,1)';
-      newSlide.style.transform = 'translateX(-50%)';
+      newSlide.style.transform = 'translateX(var(--horizontal-offset, -50%))';
       newSlide.style.opacity = '1';
       newSlide.classList.add('is-active-slide');
 
       if (oldSlide) {
         oldSlide.style.transition = 'transform 0.55s cubic-bezier(.65,0,.35,1), opacity 0.65s cubic-bezier(.55,0,.35,1)';
-        oldSlide.style.transform = `translateX(-50%) ${outTransform}`;
+        oldSlide.style.transform = `translateX(var(--horizontal-offset, -50%)) ${outTransform}`;
         oldSlide.style.opacity = '0';
         oldSlide.classList.remove('is-active-slide');
       }
@@ -391,7 +404,7 @@
       const firstSlide = slides[0];
       firstSlide.style.transition = 'none';
       firstSlide.style.opacity = '1';
-      firstSlide.style.transform = 'translateX(-50%)';
+      firstSlide.style.transform = 'translateX(var(--horizontal-offset, -50%))';
       
       updateSliderRect(); 
       if (isSliderScrolledToTop() && isSliderInView()) { 
@@ -564,6 +577,12 @@
           "default": "#eaeada"
         },
         {
+          "type": "color",
+          "id": "caption_color",
+          "label": "Caption Color",
+          "default": "#ffffff"
+        },
+        {
           "type": "range",
           "id": "border_width",
           "label": "Border Width (Desktop)",
@@ -582,6 +601,36 @@
           "step": 10,
           "unit": "px",
           "default": 840
+        },
+        {
+          "type": "range",
+          "id": "margin_left",
+          "label": "Left Margin (Desktop)",
+          "min": -300,
+          "max": 300,
+          "step": 5,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "margin_right",
+          "label": "Right Margin (Desktop)",
+          "min": -300,
+          "max": 300,
+          "step": 5,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "image_rotation",
+          "label": "Image Rotation",
+          "min": -45,
+          "max": 45,
+          "step": 1,
+          "unit": "deg",
+          "default": 0
         },
         {
           "type": "range",
@@ -626,6 +675,26 @@
           "step": 5,
           "unit": "px",
           "default": 40
+        },
+        {
+          "type": "range",
+          "id": "margin_left_mobile",
+          "label": "Left Margin (Mobile)",
+          "min": -200,
+          "max": 200,
+          "step": 5,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "margin_right_mobile",
+          "label": "Right Margin (Mobile)",
+          "min": -200,
+          "max": 200,
+          "step": 5,
+          "unit": "px",
+          "default": 0
         }
       ]
     }
