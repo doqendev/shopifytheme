@@ -5,7 +5,7 @@
 <section class="editorial-slider-stack" id="editorial-slider-stack">
   {% for block in section.blocks %}
     <div
-      class="editorial-slide-block"
+      class="editorial-slide-block{% if block.settings.full_width %} is-full-width{% endif %}{% if block.settings.full_width_mobile %} is-full-width-mobile{% endif %}"
       style="
         --border-color: {{ block.settings.border_color }};
         --border-width: {{ block.settings.border_width }}px;
@@ -130,6 +130,14 @@
     box-sizing: border-box;
   }
 
+  .editorial-slide-block.is-full-width,
+  .editorial-slide-block.is-full-width-mobile {
+    margin-left: 0;
+    margin-right: 0;
+    max-width: none;
+    width: 100%;
+  }
+
 
   .editorial-slide-picture-element { /* Style for the <picture> tag */
     display: block;
@@ -231,13 +239,20 @@
     border-color: #FFFFFF;
   }
 
-    @media (max-width: 700px) {
+  @media (max-width: 700px) {
     .editorial-slide-block {
       margin-top: var(--mobile-margin-top, 40px);
         margin-left: var(--mobile-margin-left, auto);
         margin-right: var(--mobile-margin-right, auto);
       max-width: var(--mobile-max-width, 360px);
       padding: var(--mobile-border-width, 8px);
+    }
+    .editorial-slide-block.is-full-width,
+    .editorial-slide-block.is-full-width-mobile {
+      margin-left: 0;
+      margin-right: 0;
+      max-width: none;
+      width: 100%;
     }
     .editorial-slide-video-desktop {
       display: none;
@@ -406,6 +421,11 @@
           "default": 0
         },
         {
+          "type": "checkbox",
+          "id": "full_width",
+          "label": "Full Width"
+        },
+        {
           "type": "range",
           "id": "image_rotation",
           "label": "Image Rotation",
@@ -478,6 +498,11 @@
           "step": 5,
           "unit": "px",
           "default": 0
+        },
+        {
+          "type": "checkbox",
+          "id": "full_width_mobile",
+          "label": "Full Width (Mobile)"
         }
       ]
     }
