@@ -1,0 +1,744 @@
+{% comment %}
+  Editorial Hero Static - stacked version without transitions.
+  Based on v7.8.
+{% endcomment %}
+<section class="editorial-slider-stack" id="editorial-slider-stack">
+  {% for block in section.blocks %}
+    <div
+      class="editorial-slide-block{% if block.settings.full_width %} is-full-width{% endif %}{% if block.settings.full_width_mobile %} is-full-width-mobile{% endif %}{% if block.settings.video_desktop != blank %} has-desktop-video{% endif %}{% if block.settings.video_mobile != blank %} has-mobile-video{% endif %}"
+      style="
+        --border-color: {{ block.settings.border_color }};
+        --border-width: {{ block.settings.border_width }}px;
+        --max-width: {{ block.settings.max_width }}px;
+        --margin-top: {{ block.settings.margin_top }}px;
+        --mobile-border-width: {{ block.settings.border_width_mobile }}px;
+        --mobile-max-width: {{ block.settings.max_width_mobile }}px;
+        --mobile-margin-top: {{ block.settings.margin_top_mobile }}px;
+        --image-rotation: {{ block.settings.image_rotation | default: 0 }}deg;
+        --f1-left: {{ block.settings.focus1_x | default: 50 }}%;
+        --f1-top: {{ block.settings.focus1_y | default: 50 }}%;
+        --f1-left-mobile: {{ block.settings.focus1_x_mobile | default: 50 }}%;
+        --f1-top-mobile: {{ block.settings.focus1_y_mobile | default: 50 }}%;
+        --f2-left: {{ block.settings.focus2_x | default: 50 }}%;
+        --f2-top: {{ block.settings.focus2_y | default: 50 }}%;
+        --f2-left-mobile: {{ block.settings.focus2_x_mobile | default: 50 }}%;
+        --f2-top-mobile: {{ block.settings.focus2_y_mobile | default: 50 }}%;
+        --margin-left: {% if block.settings.margin_left != blank %}{{ block.settings.margin_left }}px{% else %}auto{% endif %};
+        --margin-right: {% if block.settings.margin_right != blank %}{{ block.settings.margin_right }}px{% else %}auto{% endif %};
+        --mobile-margin-left: {% if block.settings.margin_left_mobile != blank %}{{ block.settings.margin_left_mobile }}px{% else %}auto{% endif %};
+        --mobile-margin-right: {% if block.settings.margin_right_mobile != blank %}{{ block.settings.margin_right_mobile }}px{% else %}auto{% endif %};
+        --caption-color: {{ block.settings.caption_color | default: "#FFFFFF" }};
+      "
+    >
+      {%- assign desktop_image = block.settings.image_desktop -%}
+      {%- assign mobile_image = block.settings.image_mobile -%}
+      {%- assign desktop_video = block.settings.video_desktop -%}
+      {%- assign mobile_video = block.settings.video_mobile -%}
+      {%- assign alt_text = block.settings.caption | escape | default: 'Editorial image' -%}
+
+      {%- comment -%} Determine a primary image for the fallback <img> tag {% endcomment -%}
+      {%- assign has_any_image = false -%}
+      {%- assign fallback_img_src = "" -%}
+      {%- assign fallback_img_width = block.settings.max_width -%}
+
+      {%- if desktop_image != blank -%}
+        {%- assign has_any_image = true -%}
+        {%- assign fallback_img_src = desktop_image | image_url: width: block.settings.max_width -%}
+      {%- elsif mobile_image != blank -%}
+        {%- assign has_any_image = true -%}
+        {%- assign fallback_img_src = mobile_image | image_url: width: block.settings.max_width_mobile -%}
+        {%- assign fallback_img_width = block.settings.max_width_mobile -%}
+      {%- endif -%}
+
+      {% if desktop_video != blank %}
+        {{ desktop_video | video_tag: autoplay: true, loop: true, controls: false, muted: true, class: 'editorial-slide-video editorial-slide-video-desktop' }}
+      {% endif %}
+      {% if mobile_video != blank %}
+        {{ mobile_video | video_tag: autoplay: true, loop: true, controls: false, muted: true, class: 'editorial-slide-video editorial-slide-video-mobile' }}
+      {% endif %}
+
+      {% if has_any_image %}
+        <picture class="editorial-slide-picture-element">
+          {% if mobile_image != blank %}
+            <source
+              media="(max-width: 700px)"
+              srcset="{{ mobile_image | image_url: width: block.settings.max_width_mobile }}"
+            >
+          {% endif %}
+          {% if desktop_image != blank %}
+            <source
+              media="(min-width: 701px)"
+              srcset="{{ desktop_image | image_url: width: block.settings.max_width }}"
+            >
+          {% endif %}
+          {%- comment -%} Fallback for browsers that don't support <picture> or if sources fail. Uses determined fallback_img_src. {%- endcomment -%}
+          <img
+            src="{{ fallback_img_src }}"
+            alt="{{ alt_text }}"
+            class="editorial-slide-image"
+            loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+            width="{{ fallback_img_width }}"
+          >
+        </picture>
+      {% else %}
+        <div class="editorial-slide-placeholder">
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        </div>
+      {% endif %}
+      
+      {%- assign has_caption_content = false -%}
+      {%- if block.settings.caption != blank -%}
+        {%- assign has_caption_content = true -%}
+      {%- endif -%}
+
+      {%- assign has_button_content = false -%}
+      {%- if block.settings.button_text != blank and block.settings.button_link != blank -%}
+        {%- assign has_button_content = true -%}
+      {%- endif -%}
+
+      {% if has_caption_content or has_button_content %}
+        <div class="editorial-slide-overlay">
+          {% if has_caption_content %}
+            <div class="editorial-slide-caption">{{ block.settings.caption }}</div>
+          {% endif %}
+          {% if has_button_content %}
+            <a href="{{ block.settings.button_link }}" class="editorial-slide-button">
+              {{ block.settings.button_text }}
+            </a>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if block.settings.focus1_product != blank %}
+        {% assign fp1 = all_products[block.settings.focus1_product] %}
+        <div class="focus-point" style="--x: var(--f1-left); --y: var(--f1-top); --x-mobile: var(--f1-left-mobile); --y-mobile: var(--f1-top-mobile);">
+          <button type="button" class="focus-point__button" aria-label="{{ fp1.title | escape }}"></button>
+          <div class="focus-popout">
+            {% render 'card-product', card_product: fp1, section_id: section.id %}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if block.settings.focus2_product != blank %}
+        {% assign fp2 = all_products[block.settings.focus2_product] %}
+        <div class="focus-point" style="--x: var(--f2-left); --y: var(--f2-top); --x-mobile: var(--f2-left-mobile); --y-mobile: var(--f2-top-mobile);">
+          <button type="button" class="focus-point__button" aria-label="{{ fp2.title | escape }}"></button>
+          <div class="focus-popout">
+            {% render 'card-product', card_product: fp2, section_id: section.id %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  {% endfor %}
+</section>
+
+<style>
+  .editorial-slider-stack {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: transparent;
+  }
+
+  .editorial-slide-block {
+    position: relative;
+    margin-top: var(--margin-top, 200px);
+    margin-left: var(--margin-left, auto);
+    margin-right: var(--margin-right, auto);
+    max-width: var(--max-width, 840px);
+    width: calc(100% - 40px);
+    padding: var(--border-width, 24px);
+    background: var(--border-color, #eaeada);
+    box-sizing: border-box;
+  }
+
+  .editorial-slide-block.is-full-width {
+    margin-left: 0;
+    margin-right: 0;
+    max-width: none;
+    width: 100%;
+  }
+
+  /* Hide images when a corresponding video exists */
+  @media (min-width: 701px) {
+    .editorial-slide-block.has-desktop-video .editorial-slide-picture-element {
+      display: none;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .editorial-slide-block.has-mobile-video .editorial-slide-picture-element {
+      display: none;
+    }
+  }
+
+
+  .editorial-slide-picture-element { /* Style for the <picture> tag */
+    display: block;
+    width: 100%;
+    height: 100%; /* Ensure it fills the inner area of the slide */
+    overflow: hidden; /* In case object-fit doesn't perfectly contain */
+  }
+
+  .editorial-slide-image {  /* Style for the <img> tag inside <picture> */
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: rotate(var(--image-rotation, 0deg));
+  }
+
+  .editorial-slide-video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .editorial-slide-video-desktop {
+    display: block;
+  }
+
+  .editorial-slide-video-mobile {
+    display: none;
+  }
+
+  .editorial-slide-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%; 
+    height: 100%; 
+    background-color: #f0f0f0;
+  }
+  .editorial-slide-placeholder .placeholder-svg {
+    width: 50px;
+    height: 50px;
+  }
+
+  .editorial-slide-overlay {
+    position: absolute;
+    top: var(--border-width, 24px);
+    bottom: var(--border-width, 24px);
+    left: var(--border-width, 24px);
+    right: var(--border-width, 24px);
+    z-index: 2; 
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end; 
+    padding-bottom: 12%; 
+    pointer-events: none; 
+  }
+
+  .editorial-slide-caption {
+    width: auto; 
+    max-width: 90%;
+    margin-bottom: 20px; 
+    
+    color: var(--caption-color, #FFFFFF);
+    font-size: 3.5rem; 
+    font-weight: 700; 
+    text-transform: uppercase; 
+    text-align: center;
+    letter-spacing: 0.05em; 
+    
+    text-shadow: 0px 2px 6px rgba(0, 0, 0, 0.35); 
+    
+    background-color: transparent; 
+    pointer-events: none; 
+  }
+
+  .editorial-slide-button {
+    display: inline-block; 
+    padding: 10px 28px; 
+    font-size: 0.85rem; 
+    color: #FFFFFF;
+    background-color: rgba(0, 0, 0, 0.4); 
+    border: 1px solid rgba(255,255,255,0.75); 
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 0;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    cursor: pointer;
+    pointer-events: auto; 
+  }
+
+  .editorial-slide-button:hover,
+  .editorial-slide-button:focus {
+    background-color: #FFFFFF;
+    color: #000000;
+    border-color: #FFFFFF;
+  }
+
+  .focus-point {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    transform: translate(-50%, -50%);
+    z-index: 3;
+  }
+
+  .focus-point__button {
+    width: 14px;
+    height: 14px;
+    padding: 0;
+    border-radius: 50%;
+    background: #ffffff;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 0 4px 0 rgba(255, 255, 255, 0.7);
+    animation: focus-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes focus-glow {
+    0%, 100% { box-shadow: 0 0 4px 0 rgba(255, 255, 255, 0.7); }
+    50% { box-shadow: 0 0 12px 4px rgba(255, 255, 255, 0.9); }
+  }
+
+  .focus-popout {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4;
+    background: #ffffff;
+    padding: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    width: 200px;
+  }
+
+  .focus-point.is-open .focus-popout {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  @media (max-width: 700px) {
+    .editorial-slide-block {
+      margin-top: var(--mobile-margin-top, 40px);
+        margin-left: var(--mobile-margin-left, auto);
+        margin-right: var(--mobile-margin-right, auto);
+      max-width: var(--mobile-max-width, 360px);
+      padding: var(--mobile-border-width, 8px);
+    }
+    .editorial-slide-block.is-full-width-mobile {
+      margin-left: 0;
+      margin-right: 0;
+      max-width: none;
+      width: 100%;
+    }
+    .editorial-slide-video-desktop {
+      display: none;
+    }
+    .editorial-slide-video-mobile {
+      display: block;
+    }
+    .editorial-slide-overlay {
+        top: var(--mobile-border-width, 8px);
+        bottom: var(--mobile-border-width, 8px);
+        left: var(--mobile-border-width, 8px);
+        right: var(--mobile-border-width, 8px);
+        padding-bottom: 10%;
+    }
+    .editorial-slide-caption {
+      font-size: 2rem;
+      margin-bottom: 15px;
+      letter-spacing: 0.03em;
+      text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.4);
+    }
+    .editorial-slide-button {
+      font-size: 0.8rem;
+      padding: 8px 20px;
+      background-color: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255,255,255,0.7);
+    }
+    .focus-point {
+      left: var(--x-mobile);
+      top: var(--y-mobile);
+    }
+    .focus-point__button {
+      width: 10px;
+      height: 10px;
+    }
+    .focus-popout {
+      width: 180px;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var container = document.getElementById("editorial-slider-stack");
+    if (!container) return;
+    var slides = Array.prototype.slice.call(container.querySelectorAll(".editorial-slide-block"));
+
+    container.querySelectorAll('.focus-point__button').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var point = btn.parentElement;
+        var isOpen = point.classList.toggle('is-open');
+        if (isOpen) {
+          container.querySelectorAll('.focus-point.is-open').forEach(function(other){
+            if (other !== point) other.classList.remove('is-open');
+          });
+        }
+      });
+    });
+    document.addEventListener('click', function(e) {
+      if (!container.contains(e.target)) return;
+      if (!e.target.closest('.focus-point')) {
+        container.querySelectorAll('.focus-point.is-open').forEach(function(p){
+          p.classList.remove('is-open');
+        });
+      }
+    });
+
+    if (slides.length <= 1) return;
+
+    var firstMargin = parseFloat(getComputedStyle(slides[0]).marginTop) || 0;
+    var index = 0;
+
+    function scrollToSlide(i) {
+      var target = slides[i];
+      var rect = target.getBoundingClientRect();
+      var offset = rect.top + window.pageYOffset - firstMargin;
+      window.scrollTo({ top: offset, behavior: "smooth" });
+    }
+
+    function nextSlide() {
+      index += 1;
+      if (index < slides.length) {
+        scrollToSlide(index);
+        if (index < slides.length - 1) {
+          setTimeout(nextSlide, 5000);
+        }
+      }
+    }
+
+    setTimeout(nextSlide, 5000);
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Editorial Photo Stacked",
+  "tag": "section",
+  "max_blocks": 10,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Editorial Photo Stacked",
+      "info": "Full-height slider with responsive images, captions, and buttons."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "photo",
+      "name": "Photo Block",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image_desktop",
+          "label": "Desktop Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_mobile",
+          "label": "Mobile Image (Portrait Recommended)"
+        },
+        {
+          "type": "video",
+          "id": "video_desktop",
+          "label": "Desktop Video"
+        },
+        {
+          "type": "video",
+          "id": "video_mobile",
+          "label": "Mobile Video (Portrait Recommended)"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Caption Text",
+          "default": "Image Caption"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button Text",
+          "default": "Shop Now",
+          "info": "Leave blank to hide button."
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link"
+        },
+        {
+          "type": "color",
+          "id": "border_color",
+          "label": "Border Color",
+          "default": "#eaeada"
+        },
+        {
+          "type": "color",
+          "id": "caption_color",
+          "label": "Caption Color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "range",
+          "id": "border_width",
+          "label": "Border Width (Desktop)",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "default": 24
+        },
+        {
+          "type": "range",
+          "id": "max_width",
+          "label": "Max Slide Width (Desktop)",
+          "min": 300,
+          "max": 1200,
+          "step": 10,
+          "unit": "px",
+          "default": 840
+        },
+        {
+          "type": "range",
+          "id": "margin_left",
+          "label": "Left Margin (Desktop)",
+          "min": -300,
+          "max": 300,
+          "step": 10,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "margin_right",
+          "label": "Right Margin (Desktop)",
+          "min": -300,
+          "max": 300,
+          "step": 10,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "checkbox",
+          "id": "full_width",
+          "label": "Full Width"
+        },
+        {
+          "type": "range",
+          "id": "image_rotation",
+          "label": "Image Rotation",
+          "min": -45,
+          "max": 45,
+          "step": 1,
+          "unit": "deg",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "margin_top",
+          "label": "Top Margin (Desktop)",
+          "min": 0,
+          "max": 300,
+          "step": 5,
+          "unit": "px",
+          "default": 200
+        },
+        {
+          "type": "header",
+          "content": "Focal Point 1"
+        },
+        {
+          "type": "product",
+          "id": "focus1_product",
+          "label": "Product"
+        },
+        {
+          "type": "range",
+          "id": "focus1_x",
+          "label": "Horizontal Position (Desktop)",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "focus1_y",
+          "label": "Vertical Position (Desktop)",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "focus1_x_mobile",
+          "label": "Horizontal Position (Mobile)",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "focus1_y_mobile",
+          "label": "Vertical Position (Mobile)",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "default": 50
+        },
+        {
+          "type": "header",
+          "content": "Focal Point 2"
+        },
+        {
+          "type": "product",
+          "id": "focus2_product",
+          "label": "Product"
+        },
+        {
+          "type": "range",
+          "id": "focus2_x",
+          "label": "Horizontal Position 2 (Desktop)",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "focus2_y",
+          "label": "Vertical Position 2 (Desktop)",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "focus2_x_mobile",
+          "label": "Horizontal Position 2 (Mobile)",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "focus2_y_mobile",
+          "label": "Vertical Position 2 (Mobile)",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "default": 50
+        },
+        {
+          "type": "header",
+          "content": "Mobile Settings"
+        },
+        {
+          "type": "range",
+          "id": "border_width_mobile",
+          "label": "Border Width (Mobile)",
+          "min": 0,
+          "max": 30,
+          "step": 1,
+          "unit": "px",
+          "default": 8
+        },
+        {
+          "type": "range",
+          "id": "max_width_mobile",
+          "label": "Max Slide Width (Mobile)",
+          "min": 200,
+          "max": 600,
+          "step": 5,
+          "unit": "px",
+          "default": 360
+        },
+        {
+          "type": "range",
+          "id": "margin_top_mobile",
+          "label": "Top Margin (Mobile)",
+          "min": 0,
+          "max": 200,
+          "step": 5,
+          "unit": "px",
+          "default": 40
+        },
+        {
+          "type": "range",
+          "id": "margin_left_mobile",
+          "label": "Left Margin (Mobile)",
+          "min": -200,
+          "max": 200,
+          "step": 5,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "margin_right_mobile",
+          "label": "Right Margin (Mobile)",
+          "min": -200,
+          "max": 200,
+          "step": 5,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "checkbox",
+          "id": "full_width_mobile",
+          "label": "Full Width (Mobile)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Editorial Photo Stacked",
+      "category": "Image",
+      "blocks": [
+        { 
+          "type": "photo",
+          "settings": {
+            "caption": "NewCollection",
+            "button_text": "Discover"
+          }
+        },
+        { 
+          "type": "photo",
+          "settings": {
+            "caption": "Seasonal Sale",
+            "button_text": "Shop Now"
+          }
+        },
+        { "type": "photo" }
+      ]
+    }
+  ]
+}
+{% endschema %}

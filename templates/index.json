@@ -1,1 +1,295 @@
-{"sections":{"custom_liquid_N7YkA9":{"type":"custom-liquid","settings":{"custom_liquid":"","color_scheme":"","padding_top":0,"padding_bottom":0}},"image_banner":{"type":"image-banner","blocks":{"heading":{"type":"heading","settings":{"heading":"Browse our latest products","heading_size":"h0"}},"button":{"type":"buttons","settings":{"button_label_1":"Shop all","button_link_1":"shopify:\/\/collections\/all","button_style_secondary_1":true,"button_label_2":"","button_link_2":"","button_style_secondary_2":false}}},"block_order":["heading","button"],"disabled":true,"settings":{"image":"shopify:\/\/shop_images\/fashion-model-in-black-white.jpg","image_overlay_opacity":40,"image_height":"large","desktop_content_position":"bottom-center","show_text_box":false,"desktop_content_alignment":"center","color_scheme":"scheme-3","image_behavior":"none","mobile_content_alignment":"center","stack_images_on_mobile":false,"show_text_below":false}},"featured_collection":{"type":"featured-collection","disabled":true,"settings":{"title":"Featured products","heading_size":"h2","description":"","show_description":false,"description_style":"body","collection":"all","products_to_show":8,"columns_desktop":4,"full_width":false,"show_view_all":true,"view_all_style":"solid","enable_desktop_slider":false,"color_scheme":"scheme-1","image_ratio":"adapt","image_shape":"default","show_secondary_image":true,"show_vendor":false,"show_rating":false,"quick_add":"none","columns_mobile":"2","swipe_on_mobile":false,"padding_top":44,"padding_bottom":36}},"custom_liquid_pnwEkf":{"type":"custom-liquid","disabled":true,"custom_css":["img {max-width: 100%; height: auto; display: block;}"],"settings":{"custom_liquid":"{%- render 'homepage' -%}","color_scheme":"scheme-3","padding_top":0,"padding_bottom":0}},"footers_cUqBnU":{"type":"FOOTERS","disabled":true,"settings":{}},"editorial_photo_blocks_8daYNJ":{"type":"editorial-photo-blocks","blocks":{"photo_zP7Nbe":{"type":"photo","settings":{"image_desktop":"shopify:\/\/shop_images\/20250606_1133_Minimalist_Fashion_Portrait_remix_01jx2cre3ve5ys8h2db9z3zfq6.png","caption":"Caption","border_color":"#eaeada","border_width":24,"max_width":840,"border_width_mobile":8,"max_width_mobile":360,"margin_top":216,"margin_bottom":100,"margin_top_mobile":0,"margin_bottom_mobile":0}},"photo_gyj4dp":{"type":"photo","settings":{"image_desktop":"shopify:\/\/shop_images\/20250606_1133_Minimalist_Fashion_Portrait_remix_01jx2cre3ve5ys8h2db9z3zfq6.png","caption":"Caption","border_color":"#eaeada","border_width":24,"max_width":1120,"border_width_mobile":8,"max_width_mobile":360,"margin_top":100,"margin_bottom":100,"margin_top_mobile":0,"margin_bottom_mobile":0}},"photo_Be3pEC":{"type":"photo","settings":{"image_desktop":"shopify:\/\/shop_images\/20250606_1125_Minimalist_Fashion_Elegance_remix_01jx2caq95eb7b0d0mc4phg1pg.png","caption":"Caption","border_color":"#eaeada","border_width":24,"max_width":840,"border_width_mobile":8,"max_width_mobile":360,"margin_top":100,"margin_bottom":100,"margin_top_mobile":0,"margin_bottom_mobile":0}},"photo_n9YqBM":{"type":"photo","settings":{"image_desktop":"shopify:\/\/shop_images\/20250606_1133_Minimalist_Fashion_Portrait_remix_01jx2cre3ve5ys8h2db9z3zfq6.png","caption":"Caption","border_color":"#eaeada","border_width":0,"max_width":840,"border_width_mobile":8,"max_width_mobile":280,"margin_top":100,"margin_bottom":100,"margin_top_mobile":196,"margin_bottom_mobile":0}},"photo_RUTmNx":{"type":"photo","settings":{"image_desktop":"shopify:\/\/shop_images\/20250606_1125_Minimalist_Fashion_Elegance_remix_01jx2caq95eb7b0d0mc4phg1pg.png","caption":"Caption","border_color":"#eaeada","border_width":24,"max_width":840,"border_width_mobile":8,"max_width_mobile":360,"margin_top":0,"margin_bottom":200,"margin_top_mobile":0,"margin_bottom_mobile":0}}},"block_order":["photo_zP7Nbe","photo_gyj4dp","photo_Be3pEC","photo_n9YqBM","photo_RUTmNx"],"disabled":true,"name":"Editorial Photo Blocks","settings":{}},"editoral_photo_animated_8etQXd":{"type":"editoral-photo-animated","blocks":{"photo_WTiLjT":{"type":"photo","settings":{"image_desktop":"shopify:\/\/shop_images\/20250606_1133_Minimalist_Fashion_Portrait_remix_01jx2cre3ve5ys8h2db9z3zfq6.png","image_mobile":"shopify:\/\/shop_images\/photo_mobile.jpg","caption":"Novidades","button_text":"Ver agora","button_link":"shopify:\/\/collections\/novidades","border_color":"#05f5e0","border_width":0,"max_width":960,"margin_top":200,"border_width_mobile":0,"max_width_mobile":360,"margin_top_mobile":120}},"photo_LGYUUc":{"type":"photo","settings":{"image_desktop":"shopify:\/\/shop_images\/20250609_1106_Bohemian_Van_Beauty_simple_compose_01jxa2c87ce7csyy5gk4y8r8h6_1.png","image_mobile":"shopify:\/\/shop_images\/20250609_1106_Bohemian_Van_Beauty_simple_compose_01jxa2c87ce7csyy5gk4y8r8h6.png","caption":"EXCLUSIVOS","button_text":"VER AGORA","button_link":"shopify:\/\/collections\/saldos","border_color":"#eaeada","border_width":0,"max_width":960,"margin_top":200,"border_width_mobile":0,"max_width_mobile":360,"margin_top_mobile":120}},"photo_XRkccm":{"type":"photo","settings":{"image_desktop":"shopify:\/\/shop_images\/20250606_1133_Minimalist_Fashion_Portrait_remix_01jx2cre3ve5ys8h2db9z3zfq6.png","caption":"jasdasd","button_text":"Shop Now","button_link":"","border_color":"#efef10","border_width":12,"max_width":840,"margin_top":200,"border_width_mobile":8,"max_width_mobile":360,"margin_top_mobile":160}},"photo_cXx648":{"type":"photo","settings":{"image_desktop":"shopify:\/\/shop_images\/20250606_1125_Minimalist_Fashion_Elegance_remix_01jx2caq95eb7b0d0mc4phg1pg.png","caption":"asdasd","button_text":"Shop Now","button_link":"","border_color":"#05f5e0","border_width":24,"max_width":840,"margin_top":200,"border_width_mobile":8,"max_width_mobile":360,"margin_top_mobile":160}},"photo_8HYGzA":{"type":"photo","settings":{"image_desktop":"shopify:\/\/shop_images\/20250606_1125_Minimalist_Fashion_Elegance_remix_01jx2caq95eb7b0d0mc4phg1pg.png","caption":"","button_text":"Shop Now","button_link":"","border_color":"#eaeada","border_width":24,"max_width":840,"margin_top":200,"border_width_mobile":8,"max_width_mobile":360,"margin_top_mobile":160}},"photo_M9bpR8":{"type":"photo","settings":{"image_desktop":"shopify:\/\/shop_images\/20250606_1133_Minimalist_Fashion_Portrait_remix_01jx2cre3ve5ys8h2db9z3zfq6.png","caption":"","button_text":"Shop Now","button_link":"","border_color":"#eaeada","border_width":24,"max_width":840,"margin_top":200,"border_width_mobile":8,"max_width_mobile":360,"margin_top_mobile":160}}},"block_order":["photo_WTiLjT","photo_LGYUUc","photo_XRkccm","photo_cXx648","photo_8HYGzA","photo_M9bpR8"],"name":"Editorial Hero Slider","settings":{}}},"order":["custom_liquid_N7YkA9","image_banner","featured_collection","custom_liquid_pnwEkf","footers_cUqBnU","editorial_photo_blocks_8daYNJ","editoral_photo_animated_8etQXd"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "custom_liquid_N7YkA9": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "",
+        "color_scheme": "",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "image_banner": {
+      "type": "image-banner",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "Browse our latest products",
+            "heading_size": "h0"
+          }
+        },
+        "button": {
+          "type": "buttons",
+          "settings": {
+            "button_label_1": "Shop all",
+            "button_link_1": "shopify://collections/all",
+            "button_style_secondary_1": true,
+            "button_label_2": "",
+            "button_link_2": "",
+            "button_style_secondary_2": false
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "button"
+      ],
+      "disabled": true,
+      "settings": {
+        "image": "shopify://shop_images/fashion-model-in-black-white.jpg",
+        "image_overlay_opacity": 40,
+        "image_height": "large",
+        "desktop_content_position": "bottom-center",
+        "show_text_box": false,
+        "desktop_content_alignment": "center",
+        "color_scheme": "scheme-3",
+        "image_behavior": "none",
+        "mobile_content_alignment": "center",
+        "stack_images_on_mobile": false,
+        "show_text_below": false
+      }
+    },
+    "featured_collection": {
+      "type": "featured-collection",
+      "disabled": true,
+      "settings": {
+        "title": "Featured products",
+        "heading_size": "h2",
+        "description": "",
+        "show_description": false,
+        "description_style": "body",
+        "collection": "all",
+        "products_to_show": 8,
+        "columns_desktop": 4,
+        "full_width": false,
+        "show_view_all": true,
+        "view_all_style": "solid",
+        "enable_desktop_slider": false,
+        "color_scheme": "scheme-1",
+        "image_ratio": "adapt",
+        "image_shape": "default",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": false,
+        "quick_add": "none",
+        "columns_mobile": "2",
+        "swipe_on_mobile": false,
+        "padding_top": 44,
+        "padding_bottom": 36
+      }
+    },
+    "custom_liquid_pnwEkf": {
+      "type": "custom-liquid",
+      "disabled": true,
+      "custom_css": [
+        "img {max-width: 100%; height: auto; display: block;}"
+      ],
+      "settings": {
+        "custom_liquid": "{%- render 'homepage' -%}",
+        "color_scheme": "scheme-3",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "footers_cUqBnU": {
+      "type": "FOOTERS",
+      "disabled": true,
+      "settings": {}
+    },
+    "editorial_photo_blocks_8daYNJ": {
+      "type": "editorial-photo-blocks",
+      "blocks": {
+        "photo_zP7Nbe": {
+          "type": "photo",
+          "settings": {
+            "image_desktop": "shopify://shop_images/20250606_1133_Minimalist_Fashion_Portrait_remix_01jx2cre3ve5ys8h2db9z3zfq6.png",
+            "caption": "Caption",
+            "border_color": "#eaeada",
+            "border_width": 24,
+            "max_width": 840,
+            "border_width_mobile": 8,
+            "max_width_mobile": 360,
+            "margin_top": 216,
+            "margin_bottom": 100,
+            "margin_top_mobile": 0,
+            "margin_bottom_mobile": 0
+          }
+        },
+        "photo_gyj4dp": {
+          "type": "photo",
+          "settings": {
+            "image_desktop": "shopify://shop_images/20250606_1133_Minimalist_Fashion_Portrait_remix_01jx2cre3ve5ys8h2db9z3zfq6.png",
+            "caption": "Caption",
+            "border_color": "#eaeada",
+            "border_width": 24,
+            "max_width": 1120,
+            "border_width_mobile": 8,
+            "max_width_mobile": 360,
+            "margin_top": 100,
+            "margin_bottom": 100,
+            "margin_top_mobile": 0,
+            "margin_bottom_mobile": 0
+          }
+        },
+        "photo_Be3pEC": {
+          "type": "photo",
+          "settings": {
+            "image_desktop": "shopify://shop_images/20250606_1125_Minimalist_Fashion_Elegance_remix_01jx2caq95eb7b0d0mc4phg1pg.png",
+            "caption": "Caption",
+            "border_color": "#eaeada",
+            "border_width": 24,
+            "max_width": 840,
+            "border_width_mobile": 8,
+            "max_width_mobile": 360,
+            "margin_top": 100,
+            "margin_bottom": 100,
+            "margin_top_mobile": 0,
+            "margin_bottom_mobile": 0
+          }
+        },
+        "photo_n9YqBM": {
+          "type": "photo",
+          "settings": {
+            "image_desktop": "shopify://shop_images/20250606_1133_Minimalist_Fashion_Portrait_remix_01jx2cre3ve5ys8h2db9z3zfq6.png",
+            "caption": "Caption",
+            "border_color": "#eaeada",
+            "border_width": 0,
+            "max_width": 840,
+            "border_width_mobile": 8,
+            "max_width_mobile": 280,
+            "margin_top": 100,
+            "margin_bottom": 100,
+            "margin_top_mobile": 196,
+            "margin_bottom_mobile": 0
+          }
+        },
+        "photo_RUTmNx": {
+          "type": "photo",
+          "settings": {
+            "image_desktop": "shopify://shop_images/20250606_1125_Minimalist_Fashion_Elegance_remix_01jx2caq95eb7b0d0mc4phg1pg.png",
+            "caption": "Caption",
+            "border_color": "#eaeada",
+            "border_width": 24,
+            "max_width": 840,
+            "border_width_mobile": 8,
+            "max_width_mobile": 360,
+            "margin_top": 0,
+            "margin_bottom": 200,
+            "margin_top_mobile": 0,
+            "margin_bottom_mobile": 0
+          }
+        }
+      },
+      "block_order": [
+        "photo_zP7Nbe",
+        "photo_gyj4dp",
+        "photo_Be3pEC",
+        "photo_n9YqBM",
+        "photo_RUTmNx"
+      ],
+      "disabled": true,
+      "name": "Editorial Photo Blocks",
+      "settings": {}
+    },
+    "editorial_photo_stacked_Qg6KDt": {
+      "type": "editorial-photo-stacked",
+      "blocks": {
+        "photo_Rn43XG": {
+          "type": "photo",
+          "settings": {
+            "image_desktop": "shopify://shop_images/20250606_1133_Minimalist_Fashion_Portrait_remix_01jx2cre3ve5ys8h2db9z3zfq6.png",
+            "image_mobile": "shopify://shop_images/photo_mobile.jpg",
+            "caption": "NOVIDADES",
+            "button_text": "Ver tudo",
+            "button_link": "shopify://collections/novidades",
+            "border_color": "#eaeada",
+            "caption_color": "#ffffff",
+            "border_width": 24,
+            "max_width": 840,
+            "margin_left": 0,
+            "margin_right": 0,
+            "full_width": true,
+            "image_rotation": 0,
+            "margin_top": 0,
+            "focus1_product": "saia-de-malha-midi-copy",
+            "focus1_x": 52,
+            "focus1_y": 24,
+            "focus1_x_mobile": 69,
+            "focus1_y_mobile": 22,
+            "focus2_product": "saia-de-malha",
+            "focus2_x": 45,
+            "focus2_y": 48,
+            "focus2_x_mobile": 40,
+            "focus2_y_mobile": 54,
+            "border_width_mobile": 8,
+            "max_width_mobile": 360,
+            "margin_top_mobile": 0,
+            "margin_left_mobile": 0,
+            "margin_right_mobile": 0,
+            "full_width_mobile": false
+          }
+        },
+        "photo_e94A34": {
+          "type": "photo",
+          "settings": {
+            "image_desktop": "shopify://shop_images/20250609_1106_Bohemian_Van_Beauty_simple_compose_01jxa2c87ce7csyy5gk4y8r8h6_1.png",
+            "image_mobile": "shopify://shop_images/20250609_1106_Bohemian_Van_Beauty_simple_compose_01jxa2c87ce7csyy5gk4y8r8h6.png",
+            "caption": "malha",
+            "button_text": "ver tudo",
+            "button_link": "shopify://collections/saldos",
+            "border_color": "#eaeada",
+            "caption_color": "#ffffff",
+            "border_width": 0,
+            "max_width": 840,
+            "margin_left": 0,
+            "margin_right": 0,
+            "full_width": false,
+            "image_rotation": 0,
+            "margin_top": 200,
+            "focus1_product": "camisola-de-malha-copy-1",
+            "focus1_x": 47,
+            "focus1_y": 45,
+            "focus1_x_mobile": 79,
+            "focus1_y_mobile": 47,
+            "focus2_product": "",
+            "focus2_x": 50,
+            "focus2_y": 50,
+            "focus2_x_mobile": 50,
+            "focus2_y_mobile": 50,
+            "border_width_mobile": 0,
+            "max_width_mobile": 360,
+            "margin_top_mobile": 40,
+            "margin_left_mobile": 0,
+            "margin_right_mobile": 0,
+            "full_width_mobile": false
+          }
+        }
+      },
+      "block_order": [
+        "photo_Rn43XG",
+        "photo_e94A34"
+      ],
+      "name": "Editorial Photo Stacked",
+      "settings": {}
+    }
+  },
+  "order": [
+    "custom_liquid_N7YkA9",
+    "image_banner",
+    "featured_collection",
+    "custom_liquid_pnwEkf",
+    "footers_cUqBnU",
+    "editorial_photo_blocks_8daYNJ",
+    "editorial_photo_stacked_Qg6KDt"
+  ]
+}
