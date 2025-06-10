@@ -303,8 +303,7 @@
     width: 200px;
   }
 
-  .focus-point:hover .focus-popout,
-  .focus-point:focus-within .focus-popout {
+  .focus-point.is-open .focus-popout {
     display: block;
   }
 
@@ -358,6 +357,26 @@
   document.addEventListener('DOMContentLoaded', () => {
     const sliderContainer = document.getElementById('editorial-slider-hero-container');
     const slides = Array.from(sliderContainer.querySelectorAll('.editorial-slide'));
+    sliderContainer.querySelectorAll('.focus-point__button').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const point = btn.parentElement;
+        const isOpen = point.classList.toggle('is-open');
+        if (isOpen) {
+          sliderContainer.querySelectorAll('.focus-point.is-open').forEach((other) => {
+            if (other !== point) other.classList.remove('is-open');
+          });
+        }
+      });
+    });
+    document.addEventListener('click', (e) => {
+      if (!sliderContainer.contains(e.target)) return;
+      if (!e.target.closest('.focus-point')) {
+        sliderContainer.querySelectorAll('.focus-point.is-open').forEach((p) => {
+          p.classList.remove('is-open');
+        });
+      }
+    });
     if (slides.length === 0) return;
 
     let currentSlideIndex = 0;

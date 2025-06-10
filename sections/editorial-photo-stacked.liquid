@@ -305,8 +305,7 @@
     width: 200px;
   }
 
-  .focus-point:hover .focus-popout,
-  .focus-point:focus-within .focus-popout {
+  .focus-point.is-open .focus-popout {
     display: block;
   }
 
@@ -364,6 +363,28 @@
     var container = document.getElementById("editorial-slider-stack");
     if (!container) return;
     var slides = Array.prototype.slice.call(container.querySelectorAll(".editorial-slide-block"));
+
+    container.querySelectorAll('.focus-point__button').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var point = btn.parentElement;
+        var isOpen = point.classList.toggle('is-open');
+        if (isOpen) {
+          container.querySelectorAll('.focus-point.is-open').forEach(function(other){
+            if (other !== point) other.classList.remove('is-open');
+          });
+        }
+      });
+    });
+    document.addEventListener('click', function(e) {
+      if (!container.contains(e.target)) return;
+      if (!e.target.closest('.focus-point')) {
+        container.querySelectorAll('.focus-point.is-open').forEach(function(p){
+          p.classList.remove('is-open');
+        });
+      }
+    });
+
     if (slides.length <= 1) return;
 
     var firstMargin = parseFloat(getComputedStyle(slides[0]).marginTop) || 0;
