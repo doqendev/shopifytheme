@@ -201,239 +201,16 @@
       "name": "Editorial Photo Blocks",
       "settings": {}
     },
-    "editoral_photo_animated_8etQXd": {
-      "type": "editoral-photo-animated",
+    "editorial_photo_stacked_Qg6KDt": {
+      "type": "editorial-photo-stacked",
       "blocks": {
-        "photo_WTiLjT": {
+        "photo_Rn43XG": {
           "type": "photo",
           "settings": {
             "image_desktop": "shopify://shop_images/20250606_1133_Minimalist_Fashion_Portrait_remix_01jx2cre3ve5ys8h2db9z3zfq6.png",
             "image_mobile": "shopify://shop_images/photo_mobile.jpg",
-            "caption": "Novidades",
-            "button_text": "Ver agora",
-            "button_link": "shopify://collections/novidades",
-            "border_color": "#05f5e0",
-            "caption_color": "#ffffff",
-            "border_width": 0,
-            "max_width": 960,
-            "margin_left": 0,
-            "margin_right": 0,
-            "image_rotation": 0,
-            "margin_top": 200,
-            "border_width_mobile": 0,
-            "max_width_mobile": 360,
-            "margin_top_mobile": 120,
-            "margin_left_mobile": 0,
-            "margin_right_mobile": 0
-          }
-        },
-        "photo_LGYUUc": {
-          "type": "photo",
-          "settings": {
-            "image_desktop": "shopify://shop_images/20250609_1106_Bohemian_Van_Beauty_simple_compose_01jxa2c87ce7csyy5gk4y8r8h6_1.png",
-            "image_mobile": "shopify://shop_images/20250609_1106_Bohemian_Van_Beauty_simple_compose_01jxa2c87ce7csyy5gk4y8r8h6.png",
-            "caption": "EXCLUSIVOS",
-            "button_text": "VER AGORA",
-            "button_link": "shopify://collections/saldos",
-            "border_color": "#eaeada",
-            "caption_color": "#ffffff",
-            "border_width": 0,
-            "max_width": 960,
-            "margin_left": 0,
-            "margin_right": 0,
-            "image_rotation": 0,
-            "margin_top": 200,
-            "border_width_mobile": 0,
-            "max_width_mobile": 360,
-            "margin_top_mobile": 120,
-            "margin_left_mobile": 0,
-            "margin_right_mobile": 0
-          }
-        },
-        "photo_XRkccm": {
-          "type": "photo",
-          "settings": {
-            "image_desktop": "shopify://shop_images/20250606_1133_Minimalist_Fashion_Portrait_remix_01jx2cre3ve5ys8h2db9z3zfq6.png",
-            "caption": "jasdasd",
-            "button_text": "Shop Now",
-            "button_link": "",
-            "border_color": "#efef10",
-            "caption_color": "#ffffff",
-            "border_width": 12,
-            "max_width": 840,
-            "margin_left": 0,
-            "margin_right": 0,
-            "image_rotation": 0,
-            "margin_top": 200,
-            "border_width_mobile": 8,
-            "max_width_mobile": 360,
-            "margin_top_mobile": 160,
-            "margin_left_mobile": 0,
-            "margin_right_mobile": 0
-          }
-        },
-        "photo_cXx648": {
-          "type": "photo",
-          "settings": {
-            "image_desktop": "shopify://shop_images/20250606_1125_Minimalist_Fashion_Elegance_remix_01jx2caq95eb7b0d0mc4phg1pg.png",
-            "caption": "asdasd",
-            "button_text": "Shop Now",
-            "button_link": "",
-            "border_color": "#05f5e0",
-            "caption_color": "#ffffff",
-            "border_width": 24,
-            "max_width": 840,
-            "margin_left": 0,
-            "margin_right": 0,
-            "image_rotation": 0,
-            "margin_top": 200,
-            "border_width_mobile": 8,
-            "max_width_mobile": 360,
-            "margin_top_mobile": 160,
-            "margin_left_mobile": 0,
-            "margin_right_mobile": 0
-          }
-        },
-        "photo_8HYGzA": {
-          "type": "photo",
-          "settings": {
-            "image_desktop": "shopify://shop_images/20250606_1125_Minimalist_Fashion_Elegance_remix_01jx2caq95eb7b0d0mc4phg1pg.png",
-            "caption": "",
-            "button_text": "Shop Now",
-            "button_link": "",
-            "border_color": "#eaeada",
-            "caption_color": "#ffffff",
-            "border_width": 24,
-            "max_width": 840,
-            "margin_left": 0,
-            "margin_right": 0,
-            "image_rotation": 0,
-            "margin_top": 200,
-            "border_width_mobile": 8,
-            "max_width_mobile": 360,
-            "margin_top_mobile": 160,
-            "margin_left_mobile": 0,
-            "margin_right_mobile": 0
-          }
-        },
-        "photo_M9bpR8": {
-          "type": "photo",
-          "settings": {
-            "image_desktop": "shopify://shop_images/20250606_1133_Minimalist_Fashion_Portrait_remix_01jx2cre3ve5ys8h2db9z3zfq6.png",
-            "caption": "",
-            "button_text": "Shop Now",
-            "button_link": "",
-            "border_color": "#eaeada",
-            "caption_color": "#ffffff",
-            "border_width": 24,
-            "max_width": 840,
-            "margin_left": 0,
-            "margin_right": 0,
-            "image_rotation": 0,
-            "margin_top": 200,
-            "border_width_mobile": 8,
-            "max_width_mobile": 360,
-            "margin_top_mobile": 160,
-            "margin_left_mobile": 0,
-            "margin_right_mobile": 0
-          }
-        }
-      },
-      "block_order": [
-        "photo_WTiLjT",
-        "photo_LGYUUc",
-        "photo_XRkccm",
-        "photo_cXx648",
-        "photo_8HYGzA",
-        "photo_M9bpR8"
-      ],
-      "disabled": true,
-      "name": "Editorial Hero Slider",
-      "settings": {}
-    },
-    "editoral_photo_stacked_MJGW6e": {
-      "type": "editoral-photo-stacked",
-      "blocks": {
-        "photo_fUEcV3": {
-          "type": "photo",
-          "settings": {
-            "image_desktop": "shopify://shop_images/20250606_1133_Minimalist_Fashion_Portrait_remix_01jx2cre3ve5ys8h2db9z3zfq6.png",
-            "image_mobile": "shopify://shop_images/photo_mobile.jpg",
-            "caption": "NOVIDADES",
-            "button_text": "Descobre",
-            "button_link": "shopify://pages/pagamento",
-            "border_color": "#eaeada",
-            "caption_color": "#ffffff",
-            "border_width": 0,
-            "max_width": 1200,
-            "margin_left": 0,
-            "margin_right": 0,
-            "full_width": false,
-            "image_rotation": 0,
-            "margin_top": 115,
-            "border_width_mobile": 8,
-            "max_width_mobile": 360,
-            "margin_top_mobile": 115,
-            "margin_left_mobile": 0,
-            "margin_right_mobile": 0,
-            "full_width_mobile": true
-          }
-        },
-        "photo_3YDte7": {
-          "type": "photo",
-          "settings": {
-            "image_mobile": "shopify://shop_images/20250609_1106_Bohemian_Van_Beauty_simple_compose_01jxa2c87ce7csyy5gk4y8r8h6.png",
-            "video_desktop": "shopify://files/videos/20250331_1515_GlowingNeonSaldosAnimation_loop_01jqp8vqtpe64sfj5bv1s03700-ezgif.com-crop-video.mp4",
-            "caption": "Acessórios",
-            "button_text": "VER AGORA",
-            "button_link": "shopify://pages/favritos",
-            "border_color": "#eaeada",
-            "caption_color": "#ffffff",
-            "border_width": 0,
-            "max_width": 840,
-            "margin_left": 300,
-            "margin_right": 0,
-            "full_width": true,
-            "image_rotation": 0,
-            "margin_top": 200,
-            "border_width_mobile": 8,
-            "max_width_mobile": 360,
-            "margin_top_mobile": 200,
-            "margin_left_mobile": 0,
-            "margin_right_mobile": 0,
-            "full_width_mobile": true
-          }
-        },
-        "photo_Nr9XYa": {
-          "type": "photo",
-          "settings": {
-            "image_desktop": "shopify://shop_images/20250609_1106_Bohemian_Van_Beauty_simple_compose_01jxa2c87ce7csyy5gk4y8r8h6_1.png",
-            "caption": "Image Caption",
-            "button_text": "Shop Now",
-            "button_link": "",
-            "border_color": "#eaeada",
-            "caption_color": "#ffffff",
-            "border_width": 24,
-            "max_width": 840,
-            "margin_left": -300,
-            "margin_right": 0,
-            "full_width": false,
-            "image_rotation": 0,
-            "margin_top": 0,
-            "border_width_mobile": 8,
-            "max_width_mobile": 360,
-            "margin_top_mobile": 0,
-            "margin_left_mobile": 75,
-            "margin_right_mobile": 0,
-            "full_width_mobile": false
-          }
-        },
-        "photo_p8W8LY": {
-          "type": "photo",
-          "settings": {
-            "image_mobile": "shopify://shop_images/photo_mobile2.jpg",
-            "caption": "Image Caption",
-            "button_text": "Shop Now",
+            "caption": "NewCollection",
+            "button_text": "Discover",
             "button_link": "",
             "border_color": "#eaeada",
             "caption_color": "#ffffff",
@@ -444,9 +221,19 @@
             "full_width": false,
             "image_rotation": 0,
             "margin_top": 200,
+            "focus1_product": "saia-de-malha-midi-copy",
+            "focus1_x": 50,
+            "focus1_y": 50,
+            "focus1_x_mobile": 50,
+            "focus1_y_mobile": 50,
+            "focus2_product": "",
+            "focus2_x": 50,
+            "focus2_y": 50,
+            "focus2_x_mobile": 50,
+            "focus2_y_mobile": 50,
             "border_width_mobile": 8,
             "max_width_mobile": 360,
-            "margin_top_mobile": 200,
+            "margin_top_mobile": 40,
             "margin_left_mobile": 0,
             "margin_right_mobile": 0,
             "full_width_mobile": false
@@ -454,10 +241,7 @@
         }
       },
       "block_order": [
-        "photo_fUEcV3",
-        "photo_3YDte7",
-        "photo_Nr9XYa",
-        "photo_p8W8LY"
+        "photo_Rn43XG"
       ],
       "name": "Editorial Photo Stacked",
       "settings": {}
@@ -470,7 +254,6 @@
     "custom_liquid_pnwEkf",
     "footers_cUqBnU",
     "editorial_photo_blocks_8daYNJ",
-    "editoral_photo_animated_8etQXd",
-    "editoral_photo_stacked_MJGW6e"
+    "editorial_photo_stacked_Qg6KDt"
   ]
 }
