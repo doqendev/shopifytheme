@@ -393,8 +393,8 @@
             "margin_right": 0,
             "image_rotation": 0,
             "margin_top": 200,
-            "border_width_mobile": 8,
-            "max_width_mobile": 360,
+            "border_width_mobile": 0,
+            "max_width_mobile": 600,
             "margin_top_mobile": 200,
             "margin_left_mobile": 0,
             "margin_right_mobile": 0
