@@ -111,36 +111,22 @@
 
       {% if block.settings.focus1_product != blank %}
         {% assign fp1 = all_products[block.settings.focus1_product] %}
-        <modal-opener class="focus-point" data-modal="#FocusModal-{{ block.id }}-1" style="--x: var(--f1-left); --y: var(--f1-top); --x-mobile: var(--f1-left-mobile); --y-mobile: var(--f1-top-mobile);">
-          <button type="button" class="focus-point__button" aria-haspopup="dialog" aria-label="{{ fp1.title | escape }}">+</button>
-        </modal-opener>
-        <modal-dialog id="FocusModal-{{ block.id }}-1" class="product-popup-modal">
-          <div role="dialog" aria-label="{{ fp1.title | escape }}" aria-modal="true" class="product-popup-modal__content" tabindex="-1">
-            <button type="button" class="product-popup-modal__toggle" aria-label="{{ 'accessibility.close' | t }}">
-              {{ 'icon-close.svg' | inline_asset_content }}
-            </button>
-            <div class="product-popup-modal__content-info">
-              {% render 'card-product', card_product: fp1, section_id: section.id %}
-            </div>
+        <div class="focus-point" style="--x: var(--f1-left); --y: var(--f1-top); --x-mobile: var(--f1-left-mobile); --y-mobile: var(--f1-top-mobile);">
+          <button type="button" class="focus-point__button" aria-label="{{ fp1.title | escape }}">+</button>
+          <div class="focus-popout">
+            {% render 'card-product', card_product: fp1, section_id: section.id %}
           </div>
-        </modal-dialog>
+        </div>
       {% endif %}
 
       {% if block.settings.focus2_product != blank %}
         {% assign fp2 = all_products[block.settings.focus2_product] %}
-        <modal-opener class="focus-point" data-modal="#FocusModal-{{ block.id }}-2" style="--x: var(--f2-left); --y: var(--f2-top); --x-mobile: var(--f2-left-mobile); --y-mobile: var(--f2-top-mobile);">
-          <button type="button" class="focus-point__button" aria-haspopup="dialog" aria-label="{{ fp2.title | escape }}">+</button>
-        </modal-opener>
-        <modal-dialog id="FocusModal-{{ block.id }}-2" class="product-popup-modal">
-          <div role="dialog" aria-label="{{ fp2.title | escape }}" aria-modal="true" class="product-popup-modal__content" tabindex="-1">
-            <button type="button" class="product-popup-modal__toggle" aria-label="{{ 'accessibility.close' | t }}">
-              {{ 'icon-close.svg' | inline_asset_content }}
-            </button>
-            <div class="product-popup-modal__content-info">
-              {% render 'card-product', card_product: fp2, section_id: section.id %}
-            </div>
+        <div class="focus-point" style="--x: var(--f2-left); --y: var(--f2-top); --x-mobile: var(--f2-left-mobile); --y-mobile: var(--f2-top-mobile);">
+          <button type="button" class="focus-point__button" aria-label="{{ fp2.title | escape }}">+</button>
+          <div class="focus-popout">
+            {% render 'card-product', card_product: fp2, section_id: section.id %}
           </div>
-        </modal-dialog>
+        </div>
       {% endif %}
     </div>
   {% endfor %}
@@ -306,6 +292,24 @@
     cursor: pointer;
   }
 
+  .focus-popout {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4;
+    background: #ffffff;
+    padding: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    width: 200px;
+  }
+
+  .focus-point:hover .focus-popout,
+  .focus-point:focus-within .focus-popout {
+    display: block;
+  }
+
   @media (max-width: 700px) {
     .editorial-slide-block {
       margin-top: var(--mobile-margin-top, 40px);
@@ -348,6 +352,9 @@
     .focus-point {
       left: var(--x-mobile);
       top: var(--y-mobile);
+    }
+    .focus-popout {
+      width: 180px;
     }
   }
 </style>
