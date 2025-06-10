@@ -368,43 +368,22 @@
             "max_width": 1200,
             "margin_left": 0,
             "margin_right": 0,
+            "full_width": false,
             "image_rotation": 0,
             "margin_top": 115,
             "border_width_mobile": 8,
             "max_width_mobile": 360,
             "margin_top_mobile": 115,
             "margin_left_mobile": 0,
-            "margin_right_mobile": 0
-          }
-        },
-        "photo_hXDDcP": {
-          "type": "photo",
-          "settings": {
-            "image_desktop": "shopify://shop_images/indexpassword.png",
-            "video_mobile": "shopify://files/videos/20250331_1515_GlowingNeonSaldosAnimation_loop_01jqp8vqtpe64sfj5bv1s03700-ezgif.com-crop-video.mp4",
-            "caption": "Image Caption",
-            "button_text": "Shop Now",
-            "button_link": "",
-            "border_color": "#121212",
-            "caption_color": "#ffffff",
-            "border_width": 0,
-            "max_width": 1200,
-            "margin_left": 0,
-            "margin_right": 0,
-            "image_rotation": 0,
-            "margin_top": 200,
-            "border_width_mobile": 0,
-            "max_width_mobile": 600,
-            "margin_top_mobile": 200,
-            "margin_left_mobile": 0,
-            "margin_right_mobile": 0
+            "margin_right_mobile": 0,
+            "full_width_mobile": false
           }
         },
         "photo_3YDte7": {
           "type": "photo",
           "settings": {
             "image_desktop": "shopify://shop_images/20250609_1106_Bohemian_Van_Beauty_simple_compose_01jxa2c87ce7csyy5gk4y8r8h6_1.png",
-            "image_mobile": "shopify://shop_images/20250609_1106_Bohemian_Van_Beauty_simple_compose_01jxa2c87ce7csyy5gk4y8r8h6_1.png",
+            "video_mobile": "shopify://files/videos/20250331_1515_GlowingNeonSaldosAnimation_loop_01jqp8vqtpe64sfj5bv1s03700-ezgif.com-crop-video.mp4",
             "caption": "Seasonal Sale",
             "button_text": "Shop Now",
             "button_link": "",
@@ -414,13 +393,15 @@
             "max_width": 840,
             "margin_left": 300,
             "margin_right": 0,
+            "full_width": true,
             "image_rotation": 0,
             "margin_top": 200,
             "border_width_mobile": 8,
             "max_width_mobile": 360,
             "margin_top_mobile": 200,
             "margin_left_mobile": -75,
-            "margin_right_mobile": 0
+            "margin_right_mobile": 0,
+            "full_width_mobile": false
           }
         },
         "photo_Nr9XYa": {
@@ -436,13 +417,15 @@
             "max_width": 840,
             "margin_left": -300,
             "margin_right": 0,
+            "full_width": false,
             "image_rotation": 0,
             "margin_top": 0,
             "border_width_mobile": 8,
             "max_width_mobile": 360,
             "margin_top_mobile": 0,
             "margin_left_mobile": 75,
-            "margin_right_mobile": 0
+            "margin_right_mobile": 0,
+            "full_width_mobile": false
           }
         },
         "photo_p8W8LY": {
@@ -458,19 +441,20 @@
             "max_width": 840,
             "margin_left": 0,
             "margin_right": 0,
+            "full_width": false,
             "image_rotation": 0,
             "margin_top": 200,
             "border_width_mobile": 8,
             "max_width_mobile": 360,
             "margin_top_mobile": 200,
             "margin_left_mobile": 0,
-            "margin_right_mobile": 0
+            "margin_right_mobile": 0,
+            "full_width_mobile": false
           }
         }
       },
       "block_order": [
         "photo_fUEcV3",
-        "photo_hXDDcP",
         "photo_3YDte7",
         "photo_Nr9XYa",
         "photo_p8W8LY"
