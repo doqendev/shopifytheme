@@ -267,6 +267,36 @@
   }
 </style>
 
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var container = document.getElementById("editorial-slider-stack");
+    if (!container) return;
+    var slides = Array.prototype.slice.call(container.querySelectorAll(".editorial-slide-block"));
+    if (slides.length <= 1) return;
+
+    var firstMargin = parseFloat(getComputedStyle(slides[0]).marginTop) || 0;
+    var index = 0;
+
+    function scrollToSlide(i) {
+      var target = slides[i];
+      var rect = target.getBoundingClientRect();
+      var offset = rect.top + window.pageYOffset - firstMargin;
+      window.scrollTo({ top: offset, behavior: "smooth" });
+    }
+
+    function nextSlide() {
+      index += 1;
+      if (index < slides.length) {
+        scrollToSlide(index);
+        if (index < slides.length - 1) {
+          setTimeout(nextSlide, 5000);
+        }
+      }
+    }
+
+    setTimeout(nextSlide, 5000);
+  });
+</script>
 
 {% schema %}
 {
