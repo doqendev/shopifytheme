@@ -376,7 +376,7 @@
             "margin_top_mobile": 115,
             "margin_left_mobile": 0,
             "margin_right_mobile": 0,
-            "full_width_mobile": false
+            "full_width_mobile": true
           }
         },
         "photo_3YDte7": {
@@ -393,7 +393,7 @@
             "max_width": 840,
             "margin_left": 300,
             "margin_right": 0,
-            "full_width": true,
+            "full_width": false,
             "image_rotation": 0,
             "margin_top": 200,
             "border_width_mobile": 8,
