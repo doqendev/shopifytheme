@@ -667,8 +667,10 @@ body.menu-drawer-open .nav-menu-new a.active::after {
     function updateHeaderColor() {
       const rect = header.getBoundingClientRect();
       const x = rect.left + rect.width / 2;
-      const y = rect.bottom + 1;
+      const y = rect.top + rect.height / 2;
+      header.style.pointerEvents = 'none';
       const target = document.elementFromPoint(x, y);
+      header.style.pointerEvents = '';
       if (!target) return;
       const brightness = getBrightness(target);
       if (brightness < 128) {
