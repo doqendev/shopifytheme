@@ -2763,27 +2763,6 @@ details[open] .modal-overlay::after {
   }
 }
 
-@media screen and (max-width: 749px) {
-  .search-modal {
-    min-height: auto;
-    height: auto;
-  }
-
-  .search-modal__content {
-    align-items: flex-start;
-    justify-content: center;
-    height: auto;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-  }
-
-  .search-modal__content-bottom,
-  .search-modal__content-top {
-    top: 0;
-    bottom: auto;
-  }
-}
-
 /* Header menu drawer */
 .header__icon--menu .icon {
 
@@ -4040,10 +4019,6 @@ font-style: normal;
 .product-card-plus .size-option.sold-out {
   opacity: 0.5;
 }
-
-
-
-
 
 
 
