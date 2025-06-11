@@ -436,14 +436,19 @@
       if (index === slides.length - 1 && e.deltaY > 0) {
         return; // allow scrolling past the last block to the footer
       }
+
+      var movingDown = e.deltaY > 0;
       e.preventDefault();
-      if (e.deltaY > 0) {
+      if (movingDown) {
         nextSlide();
       } else if (e.deltaY < 0) {
         prevSlide();
       }
-      isScrolling = true;
-      setTimeout(function(){ isScrolling = false; }, 800);
+
+      if (!(movingDown && index === slides.length - 1)) {
+        isScrolling = true;
+        setTimeout(function(){ isScrolling = false; }, 800);
+      }
     }
 
     function handleTouchStart(e) {
