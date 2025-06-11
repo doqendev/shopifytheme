@@ -121,14 +121,24 @@
   }
   
   /* New layout options CSS */
-  .product-grid.two-col {
-    grid-template-columns: repeat(2, 1fr) !important;
+  @media (max-width: 749px) {
+    .product-grid.two-col {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+    .product-grid.mixed-layout {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+    .product-grid.mixed-layout li:nth-child(3n+1) {
+      grid-column: span 2;
+    }
   }
-  .product-grid.mixed-layout {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
-  .product-grid.mixed-layout li:nth-child(3n+1) {
-    grid-column: span 2;
+  @media (min-width: 750px) {
+    .product-grid.mixed-layout {
+      grid-template-columns: repeat(10, 1fr) !important;
+    }
+    .product-grid.mixed-layout li:nth-child(3n+1) {
+      grid-column: span 1;
+    }
   }
   .grid-controls {
     display: flex;
@@ -410,7 +420,11 @@
     
     btnTwoCol.addEventListener('click', function() {
       grid.classList.remove('mixed-layout');
-      grid.classList.add('two-col');
+      if (window.innerWidth < 750) {
+        grid.classList.add('two-col');
+      } else {
+        grid.classList.remove('two-col');
+      }
       btnTwoCol.classList.add('active');
       btnMixed.classList.remove('active');
     });
