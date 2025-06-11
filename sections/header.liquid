@@ -645,6 +645,45 @@ body.menu-drawer-open .nav-menu-new a.active::after {
   </script>
 {%- endif -%}
 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const header = document.querySelector('.section-header');
+    if (!header) return;
+
+    function getBrightness(el) {
+      const style = getComputedStyle(el);
+      let rgb = style.getPropertyValue('--color-background').trim();
+      let r, g, b;
+      if (rgb) {
+        [r, g, b] = rgb.split(',').map(Number);
+      } else {
+        const bg = style.backgroundColor;
+        if (!bg || bg === 'transparent') return 255;
+        [r, g, b] = bg.replace(/rgba?\(|\)|\s/g, '').split(',').slice(0,3).map(Number);
+      }
+      return (r * 299 + g * 587 + b * 114) / 1000;
+    }
+
+    function updateHeaderColor() {
+      const rect = header.getBoundingClientRect();
+      const x = rect.left + rect.width / 2;
+      const y = rect.bottom + 1;
+      const target = document.elementFromPoint(x, y);
+      if (!target) return;
+      const brightness = getBrightness(target);
+      if (brightness < 128) {
+        header.classList.add('header--inverted');
+      } else {
+        header.classList.remove('header--inverted');
+      }
+    }
+
+    updateHeaderColor();
+    window.addEventListener('scroll', updateHeaderColor, { passive: true });
+    window.addEventListener('resize', updateHeaderColor);
+  });
+</script>
+
 {% schema %}
 {
   "name": "t:sections.header.name",
