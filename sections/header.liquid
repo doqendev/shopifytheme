@@ -667,11 +667,19 @@ body.menu-drawer-open .nav-menu-new a.active::after {
     function updateHeaderColor() {
       const rect = header.getBoundingClientRect();
       const x = rect.left + rect.width / 2;
-      const y = rect.top + rect.height / 2;
+      // sample just below the header to catch the underlying section
+      const y = rect.bottom + 1;
       header.style.pointerEvents = 'none';
-      const target = document.elementFromPoint(x, y);
+      let target = document.elementFromPoint(x, y);
       header.style.pointerEvents = '';
       if (!target) return;
+      // if the target is the html/body element, try the center of the header as a fallback
+      if (target === document.documentElement || target === document.body) {
+        header.style.pointerEvents = 'none';
+        target = document.elementFromPoint(x, rect.top + rect.height / 2);
+        header.style.pointerEvents = '';
+        if (!target) return;
+      }
       const brightness = getBrightness(target);
       if (brightness < 128) {
         header.classList.add('header--inverted');
