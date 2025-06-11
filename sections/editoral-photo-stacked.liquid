@@ -377,6 +377,7 @@
     var container = document.getElementById("editorial-slider-stack");
     if (!container) return;
     var slides = Array.prototype.slice.call(container.querySelectorAll(".editorial-slide-block"));
+    var autoTransitionsEnabled = {{ section.settings.enable_auto_transitions | default: true | json }};
 
     container.querySelectorAll('.focus-point__button').forEach(function(btn) {
       btn.addEventListener('click', function(e) {
@@ -412,16 +413,59 @@
     }
 
     function nextSlide() {
-      index += 1;
-      if (index < slides.length) {
+      if (index < slides.length - 1) {
+        index += 1;
         scrollToSlide(index);
-        if (index < slides.length - 1) {
+        if (autoTransitionsEnabled && index < slides.length - 1) {
           setTimeout(nextSlide, 5000);
         }
       }
     }
 
-    setTimeout(nextSlide, 5000);
+    function prevSlide() {
+      if (index > 0) {
+        index -= 1;
+        scrollToSlide(index);
+      }
+    }
+
+    var isScrolling = false;
+    var touchStartY = 0;
+
+    function handleWheel(e) {
+      e.preventDefault();
+      if (isScrolling) return;
+      if (e.deltaY > 0) {
+        nextSlide();
+      } else if (e.deltaY < 0) {
+        prevSlide();
+      }
+      isScrolling = true;
+      setTimeout(function(){ isScrolling = false; }, 800);
+    }
+
+    function handleTouchStart(e) {
+      touchStartY = e.touches[0].clientY;
+    }
+
+    function handleTouchEnd(e) {
+      var diff = e.changedTouches[0].clientY - touchStartY;
+      if (Math.abs(diff) > 30) {
+        if (diff < 0) {
+          nextSlide();
+        } else {
+          prevSlide();
+        }
+      }
+    }
+
+    container.addEventListener('wheel', handleWheel, { passive: false });
+    container.addEventListener('touchstart', handleTouchStart, { passive: true });
+    container.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+    if (autoTransitionsEnabled) {
+      setTimeout(nextSlide, 5000);
+    }
   });
 </script>
 
@@ -435,6 +479,12 @@
       "type": "header",
       "content": "Editorial Photo Stacked",
       "info": "Full-height slider with responsive images, captions, and buttons."
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_auto_transitions",
+      "label": "Enable automatic transitions",
+      "default": true
     }
   ],
   "blocks": [
