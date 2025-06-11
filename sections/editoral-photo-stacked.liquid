@@ -427,6 +427,7 @@
 
     var isScrolling = false;
     var touchStartY = 0;
+    var TOUCH_THRESHOLD = 30;
 
     function handleWheel(e) {
       if (isScrolling) {
@@ -455,23 +456,28 @@
       touchStartY = e.touches[0].clientY;
     }
 
-    function handleTouchEnd(e) {
-      var diff = e.changedTouches[0].clientY - touchStartY;
-      if (Math.abs(diff) > 30) {
-        if (index === slides.length - 1 && diff < 0) {
-          return; // let user scroll to footer
-        }
-        if (diff < 0) {
+    function handleTouchMove(e) {
+      var diff = e.touches[0].clientY - touchStartY;
+      var movingDown = diff > 0;
+      if (Math.abs(diff) > TOUCH_THRESHOLD && !isScrolling) {
+        if (movingDown) {
+          prevSlide();
+        } else if (index < slides.length - 1) {
           nextSlide();
         } else {
-          prevSlide();
+          return; // allow scrolling to footer
         }
+        isScrolling = true;
+        setTimeout(function(){ isScrolling = false; }, 800);
+      }
+      if (!(index === slides.length - 1 && !movingDown)) {
+        e.preventDefault();
       }
     }
 
     container.addEventListener('wheel', handleWheel, { passive: false });
     container.addEventListener('touchstart', handleTouchStart, { passive: true });
-    container.addEventListener('touchend', handleTouchEnd, { passive: true });
+    container.addEventListener('touchmove', handleTouchMove, { passive: false });
 
   });
 </script>
