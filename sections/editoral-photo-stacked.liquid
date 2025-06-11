@@ -403,7 +403,7 @@
 
     var firstMargin = parseFloat(getComputedStyle(slides[0]).marginTop) || 0;
     var index = 0;
-    var lastSlideOffset = slides[slides.length - 1].getBoundingClientRect().top + window.pageYOffset - firstMargin;
+    var snappingEnabled = true;
 
     function scrollToSlide(i) {
       var target = slides[i];
@@ -419,84 +419,45 @@
       }
     }
 
-    function prevSlide() {
-      if (index > 0) {
-        index -= 1;
-        scrollToSlide(index);
-      }
-    }
-
     var isScrolling = false;
     var touchStartY = 0;
-    var startScrollY = 0;
     var TOUCH_THRESHOLD = 30;
 
     function handleWheel(e) {
+      if (!snappingEnabled) return;
       if (isScrolling) {
         e.preventDefault();
         return;
       }
-      if (index === slides.length - 1 && e.deltaY > 0) {
-        return; // allow scrolling past the last block to the footer
-      }
 
-      var movingDown = e.deltaY > 0;
-      e.preventDefault();
-      if (movingDown) {
-        nextSlide();
-      } else if (e.deltaY < 0) {
-        prevSlide();
-      }
-
-      if (!(movingDown && index === slides.length - 1)) {
-        isScrolling = true;
-        setTimeout(function(){ isScrolling = false; }, 800);
+      if (e.deltaY > 0) {
+        if (index < slides.length - 1) {
+          e.preventDefault();
+          nextSlide();
+          isScrolling = true;
+          setTimeout(function(){ isScrolling = false; }, 800);
+        } else {
+          snappingEnabled = false;
+        }
       }
     }
 
     function handleTouchStart(e) {
       touchStartY = e.touches[0].clientY;
-      startScrollY = window.pageYOffset || document.documentElement.scrollTop;
     }
 
     function handleTouchMove(e) {
+      if (!snappingEnabled) return;
       var diff = e.touches[0].clientY - touchStartY;
-      var movingDown = diff > 0;
 
-      // Prevent early default scrolling unless moving to the footer
-      if (!(index === slides.length - 1 && !movingDown)) {
-        e.preventDefault();
+      if (index === slides.length - 1 && diff < -TOUCH_THRESHOLD) {
+        snappingEnabled = false;
+        return; // allow scrolling to footer
       }
 
-      if (Math.abs(diff) > TOUCH_THRESHOLD && !isScrolling) {
-        if (movingDown) {
-          prevSlide();
-        } else if (index < slides.length - 1) {
-          nextSlide();
-        } else {
-          return; // allow scrolling to footer
-        }
-        isScrolling = true;
-        setTimeout(function(){ isScrolling = false; }, 800);
-      }
-    }
-
-    function globalTouchMove(e) {
-      var diff = e.touches[0].clientY - touchStartY;
-      if (startScrollY > lastSlideOffset && diff < -TOUCH_THRESHOLD && !isScrolling) {
+      if (diff < -TOUCH_THRESHOLD && !isScrolling) {
         e.preventDefault();
-        index = slides.length - 1;
-        scrollToSlide(index);
-        isScrolling = true;
-        setTimeout(function(){ isScrolling = false; }, 800);
-      }
-    }
-
-    function globalWheel(e) {
-      if (startScrollY > lastSlideOffset && e.deltaY < 0 && !isScrolling) {
-        e.preventDefault();
-        index = slides.length - 1;
-        scrollToSlide(index);
+        nextSlide();
         isScrolling = true;
         setTimeout(function(){ isScrolling = false; }, 800);
       }
@@ -506,8 +467,6 @@
     container.addEventListener('touchmove', handleTouchMove, { passive: false });
 
     document.addEventListener('touchstart', handleTouchStart, { passive: true });
-    document.addEventListener('touchmove', globalTouchMove, { passive: false });
-    document.addEventListener('wheel', globalWheel, { passive: false });
 
   });
 </script>
