@@ -377,7 +377,6 @@
     var container = document.getElementById("editorial-slider-stack");
     if (!container) return;
     var slides = Array.prototype.slice.call(container.querySelectorAll(".editorial-slide-block"));
-    var autoTransitionsEnabled = {{ section.settings.enable_auto_transitions | default: true | json }};
 
     container.querySelectorAll('.focus-point__button').forEach(function(btn) {
       btn.addEventListener('click', function(e) {
@@ -416,9 +415,6 @@
       if (index < slides.length - 1) {
         index += 1;
         scrollToSlide(index);
-        if (autoTransitionsEnabled && index < slides.length - 1) {
-          setTimeout(nextSlide, 5000);
-        }
       }
     }
 
@@ -463,9 +459,6 @@
     container.addEventListener('touchstart', handleTouchStart, { passive: true });
     container.addEventListener('touchend', handleTouchEnd, { passive: true });
 
-    if (autoTransitionsEnabled) {
-      setTimeout(nextSlide, 5000);
-    }
   });
 </script>
 
@@ -479,12 +472,6 @@
       "type": "header",
       "content": "Editorial Photo Stacked",
       "info": "Full-height slider with responsive images, captions, and buttons."
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_auto_transitions",
-      "label": "Enable automatic transitions",
-      "default": true
     }
   ],
   "blocks": [
