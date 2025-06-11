@@ -2137,7 +2137,9 @@ input[type='checkbox'] {
   pointer-events: none;
 }
 
-
+#cart-icon-bubble > span.header__icon-mobile > div > span {
+  color: black!important;
+}
 
 /* utility-bar */
 .utility-bar {
