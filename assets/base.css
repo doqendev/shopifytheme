@@ -3782,7 +3782,7 @@ font-style: normal;
       "heading icons";
     align-items: center;
     gap: 1rem;
-    padding: 1rem 1.5rem;
+    padding: 1rem 0;
   }
 
   .header__heading,
@@ -3919,7 +3919,7 @@ font-style: normal;
       "hamburger-area  right-icons-area"  /* Row 1: Hamburger on left, Search/Cart on right */
       "logo-area       logo-area";        /* Row 2: Logo spans both columns */
     align-items: start; /* CRITICAL: Aligns items in each row to the top of that row */
-    padding: 1rem 1.5rem;
+    padding: 1rem 0;
     row-gap: 0.5rem; /* Optional: Adds a small space between the first and second row */
   }
 
