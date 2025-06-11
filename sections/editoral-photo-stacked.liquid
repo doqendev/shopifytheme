@@ -403,6 +403,7 @@
 
     var firstMargin = parseFloat(getComputedStyle(slides[0]).marginTop) || 0;
     var index = 0;
+    var lastSlideOffset = slides[slides.length - 1].getBoundingClientRect().top + window.pageYOffset - firstMargin;
 
     function scrollToSlide(i) {
       var target = slides[i];
@@ -427,6 +428,7 @@
 
     var isScrolling = false;
     var touchStartY = 0;
+    var startScrollY = 0;
     var TOUCH_THRESHOLD = 30;
 
     function handleWheel(e) {
@@ -454,6 +456,7 @@
 
     function handleTouchStart(e) {
       touchStartY = e.touches[0].clientY;
+      startScrollY = window.pageYOffset || document.documentElement.scrollTop;
     }
 
     function handleTouchMove(e) {
@@ -478,9 +481,33 @@
       }
     }
 
+    function globalTouchMove(e) {
+      var diff = e.touches[0].clientY - touchStartY;
+      if (startScrollY > lastSlideOffset && diff < -TOUCH_THRESHOLD && !isScrolling) {
+        e.preventDefault();
+        index = slides.length - 1;
+        scrollToSlide(index);
+        isScrolling = true;
+        setTimeout(function(){ isScrolling = false; }, 800);
+      }
+    }
+
+    function globalWheel(e) {
+      if (startScrollY > lastSlideOffset && e.deltaY < 0 && !isScrolling) {
+        e.preventDefault();
+        index = slides.length - 1;
+        scrollToSlide(index);
+        isScrolling = true;
+        setTimeout(function(){ isScrolling = false; }, 800);
+      }
+    }
+
     container.addEventListener('wheel', handleWheel, { passive: false });
-    container.addEventListener('touchstart', handleTouchStart, { passive: true });
     container.addEventListener('touchmove', handleTouchMove, { passive: false });
+
+    document.addEventListener('touchstart', handleTouchStart, { passive: true });
+    document.addEventListener('touchmove', globalTouchMove, { passive: false });
+    document.addEventListener('wheel', globalWheel, { passive: false });
 
   });
 </script>
