@@ -429,8 +429,14 @@
     var touchStartY = 0;
 
     function handleWheel(e) {
+      if (isScrolling) {
+        e.preventDefault();
+        return;
+      }
+      if (index === slides.length - 1 && e.deltaY > 0) {
+        return; // allow scrolling past the last block to the footer
+      }
       e.preventDefault();
-      if (isScrolling) return;
       if (e.deltaY > 0) {
         nextSlide();
       } else if (e.deltaY < 0) {
@@ -447,6 +453,9 @@
     function handleTouchEnd(e) {
       var diff = e.changedTouches[0].clientY - touchStartY;
       if (Math.abs(diff) > 30) {
+        if (index === slides.length - 1 && diff < 0) {
+          return; // let user scroll to footer
+        }
         if (diff < 0) {
           nextSlide();
         } else {
