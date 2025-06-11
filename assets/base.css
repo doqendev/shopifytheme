@@ -3820,6 +3820,7 @@ font-style: normal;
 }
 
 /* Hamburger/X icon overlap trick */
+/* Basic menu icon positioning */
 .header__icon--menu {
   width: 40px;
   height: 40px;
@@ -3831,11 +3832,12 @@ font-style: normal;
 .header__icon--menu .icon-hamburger,
 .header__icon--menu .icon-close {
   position: absolute;
-  left: 40px;
-  top: 50px;
+  left: 50%;
+  top: 50%;
   width: 24px;
   height: 24px;
-  transition: opacity 0.2s;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
 .header__icon--menu .icon-close {
   opacity: 0;
@@ -3874,7 +3876,7 @@ font-style: normal;
     grid-template-areas:
       "hamburger-area  right-icons-area"  /* Row 1: Hamburger on left, Search/Cart on right */
       "logo-area       logo-area";        /* Row 2: Logo spans both columns */
-    align-items: start; /* CRITICAL: Aligns items in each row to the top of that row */
+      align-items: center; /* Align items consistently within the row */
     padding: 1rem 1.5rem;
     row-gap: 0.5rem; /* Optional: Adds a small space between the first and second row */
   }
@@ -3920,36 +3922,32 @@ font-style: normal;
     position: relative; /* For positioning SVGs inside */
   }
 
-  /* Centering and toggle for hamburger/X SVGs (this part was likely okay) */
-  .header__icon--menu .icon-hamburger,
-  .header__icon--menu .icon-close {
-    position: absolute;
-    left: 25PX !important;
-    top: 10px!important;
-    transform: none;
-    width: 24px; /* Adjust to actual SVG size */
-    height: 24px; /* Adjust to actual SVG size */
-    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
-  }
+    /* Center the hamburger and close icons within the button */
+    .header__icon--menu .icon-hamburger,
+    .header__icon--menu .icon-close {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 24px;
+      height: 24px;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+    }
 
-  .header__icon--menu .icon-close {
-    opacity: 0;
-    pointer-events: none;
+    .header__icon--menu .icon-close {
+      opacity: 0;
+      pointer-events: none;
+    }
 
-  bottom: 30%;
-  left: 90%;
-  transform: translate(-50%);
-  width: 16px;
-  height: 16px;
-  color: #3c3c3c;
-  top: 50%;
-  left: calc(100% + 0.5rem);
-  transform: translateY(-50%);
-  flex-direction: column;
-    opacity: 1;
-    pointer-events: auto;
-    transform: scale(1);
-  }
+    .menu-open .header__icon--menu .icon-hamburger {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .menu-open .header__icon--menu .icon-close {
+      opacity: 1;
+      pointer-events: auto;
+    }
 }
 
 /* ... (rest of base.css) ... */
@@ -4022,22 +4020,6 @@ font-style: normal;
 .product-card-plus .size-option.sold-out {
   opacity: 0.5;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
