@@ -459,6 +459,12 @@
     function handleTouchMove(e) {
       var diff = e.touches[0].clientY - touchStartY;
       var movingDown = diff > 0;
+
+      // Prevent early default scrolling unless moving to the footer
+      if (!(index === slides.length - 1 && !movingDown)) {
+        e.preventDefault();
+      }
+
       if (Math.abs(diff) > TOUCH_THRESHOLD && !isScrolling) {
         if (movingDown) {
           prevSlide();
@@ -469,9 +475,6 @@
         }
         isScrolling = true;
         setTimeout(function(){ isScrolling = false; }, 800);
-      }
-      if (!(index === slides.length - 1 && !movingDown)) {
-        e.preventDefault();
       }
     }
 
