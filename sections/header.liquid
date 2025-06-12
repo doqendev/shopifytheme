@@ -19,8 +19,19 @@
   
     {% if template == 'index' %}
 
-    .header__icon {
-      color: white;
+    .header__icon,
+    .header__icon-mobile,
+    .header__icon-desktop {
+      color: var(--icon-color, rgb(var(--color-foreground))) !important;
+    }
+    .header__icon .svg-wrapper > svg {
+      fill: currentColor;
+      stroke: currentColor;
+    }
+    .header__icon svg {
+      fill: currentColor;
+      stroke: currentColor;
+      color: currentColor !important;
     }
 
     .nav-menu-new {
@@ -37,7 +48,7 @@
     .nav-menu-new a {
     margin: 0 15px;
     font-size: 16px;
-    color: white;
+    color: var(--icon-color, rgb(var(--color-foreground)));
     text-decoration: none;
     text-transform: uppercase;
     transition: color 0.3s;
@@ -45,7 +56,7 @@
     .nav-menu-new a {
     position: relative;
     margin-top: 10px;
-    color: white;
+    color: var(--icon-color, rgb(var(--color-foreground)));
     text-decoration: none;
     text-transform: uppercase;
     transition: color 0s;
@@ -60,7 +71,7 @@
     transform: translateX(-50%); /* Adjust for perfect centering */;
     width: 50%;
     height: 1px; /* Reduced height for smaller underline */
-    background-color: #ffffff; /* Color for underline */
+    background-color: currentColor; /* Color for underline */
     transition: width 0.3s ease-in-out;
 }
 
@@ -201,6 +212,8 @@ body.menu-drawer-open .nav-menu-new a.active::after {
             display: none !important;
         }
     }
+
+    /* Logo color is handled by swapping the SVG source */
 </style>
 
 {%- style -%}
@@ -307,16 +320,17 @@ body.menu-drawer-open .nav-menu-new a.active::after {
             
             {% if template == 'index' %}
               <div class="header__heading-logo-wrapper">
-                <img 
-                  src="https://cdn.shopify.com/s/files/1/0911/7843/4884/files/cheyenne_final_black.svg?v=1740399056" 
-                  alt="{{ shop.name }}" 
-                  class="header__heading-logo motion-reduce" 
-                  sizes="(max-width: {{ settings.logo_width | times: 2 }}px) 50vw, {{ settings.logo_width }}px" 
-                  srcset="https://cdn.shopify.com/s/files/1/0911/7843/4884/files/cheyenne_final_black.svg?v=1740399056 {{ settings.logo_width }}, 
-                          https://cdn.shopify.com/s/files/1/0911/7843/4884/files/cheyenne_final_black.svg?v=1740399056 {{ settings.logo_width | times: 1.5 | round }}, 
-                          https://cdn.shopify.com/s/files/1/0911/7843/4884/files/cheyenne_final_black.svg?v=1740399056 {{ settings.logo_width | times: 2 }}" 
-                  width="{{ settings.logo_width }}" 
-                  height="{{ settings.logo_width | divided_by: settings.logo.aspect_ratio }}" 
+                <img
+                  id="main-header-logo"
+                  src="https://cdn.shopify.com/s/files/1/0911/7843/4884/files/cheyenne_final_black_trans.svg?v=1749724445"
+                  alt="{{ shop.name }}"
+                  class="header__heading-logo motion-reduce"
+                  sizes="(max-width: {{ settings.logo_width | times: 2 }}px) 50vw, {{ settings.logo_width }}px"
+                  srcset="https://cdn.shopify.com/s/files/1/0911/7843/4884/files/cheyenne_final_black_trans.svg?v=1749724445 {{ settings.logo_width }},
+                          https://cdn.shopify.com/s/files/1/0911/7843/4884/files/cheyenne_final_black_trans.svg?v=1749724445 {{ settings.logo_width | times: 1.5 | round }},
+                          https://cdn.shopify.com/s/files/1/0911/7843/4884/files/cheyenne_final_black_trans.svg?v=1749724445 {{ settings.logo_width | times: 2 }}"
+                  width="{{ settings.logo_width }}"
+                  height="{{ settings.logo_width | divided_by: settings.logo.aspect_ratio }}"
                 >
               </div>
             {% else %}
