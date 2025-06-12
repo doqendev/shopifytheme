@@ -10,6 +10,9 @@
         class="editorial-slide-block color-{{ block.settings.color_scheme }}{% if forloop.first %} is-active-slide{% endif %}{% if block.settings.video_desktop != blank %} has-desktop-video{% endif %}{% if block.settings.video_mobile != blank %} has-mobile-video{% endif %}"
         data-slide-index="{{ forloop.index0 }}"
         data-color-scheme="{{ block.settings.color_scheme }}"
+        data-header-scheme="{{ block.settings.header_color_scheme }}"
+        data-icon-color="{{ block.settings.header_icon_color }}"
+        data-logo-invert="{{ block.settings.invert_logo }}"
         style="
           --border-color: {{ block.settings.border_color }};
           --border-width: {{ block.settings.border_width }}px;
@@ -125,7 +128,7 @@
       {% endif %}
       </div>
     {% when 'footer' %}
-      <div class="editorial-slide-block footer-slide color-{{ block.settings.color_scheme }}{% if forloop.first %} is-active-slide{% endif %}" data-slide-index="{{ forloop.index0 }}" data-color-scheme="{{ block.settings.color_scheme }}" style="--border-width:0px;">
+      <div class="editorial-slide-block footer-slide color-{{ block.settings.color_scheme }}{% if forloop.first %} is-active-slide{% endif %}" data-slide-index="{{ forloop.index0 }}" data-color-scheme="{{ block.settings.color_scheme }}" data-header-scheme="{{ block.settings.header_color_scheme }}" data-icon-color="{{ block.settings.header_icon_color }}" data-logo-invert="{{ block.settings.invert_logo }}" style="--border-width:0px;">
         <div class="footer-desktop">
           {% render 'footer-drawer-desktop', section: block %}
         </div>
@@ -423,8 +426,20 @@
       newSlide.classList.add('is-active-slide');
       void newSlide.offsetWidth;
 
-      if (headerWrapper && newSlide.dataset.colorScheme) {
-        headerWrapper.className = headerWrapper.className.replace(/color-[^ ]+/g, 'color-' + newSlide.dataset.colorScheme);
+      if (headerWrapper) {
+        if (newSlide.dataset.headerScheme) {
+          headerWrapper.className = headerWrapper.className.replace(/color-[^ ]+/g, 'color-' + newSlide.dataset.headerScheme);
+        }
+        if (newSlide.dataset.iconColor) {
+          headerWrapper.style.setProperty('--icon-color', newSlide.dataset.iconColor);
+        } else {
+          headerWrapper.style.removeProperty('--icon-color');
+        }
+        if (newSlide.dataset.logoInvert === 'true') {
+          headerWrapper.style.setProperty('--logo-filter', 'brightness(0) invert(1)');
+        } else {
+          headerWrapper.style.setProperty('--logo-filter', 'none');
+        }
       }
 
       newSlide.style.transition = 'transform 0.55s cubic-bezier(.65,0,.35,1)';
@@ -550,6 +565,24 @@
           "id": "caption_color",
           "label": "Caption Color",
           "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "header_icon_color",
+          "label": "Header Icon Color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "checkbox",
+          "id": "invert_logo",
+          "label": "Invert Logo",
+          "default": false
+        },
+        {
+          "type": "color_scheme",
+          "id": "header_color_scheme",
+          "label": "Header Color Scheme",
+          "default": "scheme-1"
         },
         {
           "type": "range",
@@ -783,6 +816,24 @@
           "type": "color_scheme",
           "id": "color_scheme",
           "label": "Color Scheme",
+          "default": "scheme-1"
+        },
+        {
+          "type": "color",
+          "id": "header_icon_color",
+          "label": "Header Icon Color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "checkbox",
+          "id": "invert_logo",
+          "label": "Invert Logo",
+          "default": false
+        },
+        {
+          "type": "color_scheme",
+          "id": "header_color_scheme",
+          "label": "Header Color Scheme",
           "default": "scheme-1"
         },
         {
