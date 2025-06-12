@@ -394,6 +394,14 @@
 
     var currentIndex = 0;
 
+    slides.forEach(function(slide, index) {
+      if (index === 0) {
+        slide.style.display = 'block';
+      } else {
+        slide.style.display = 'none';
+      }
+    });
+
     function changeSlide(next, reverse) {
       if (next < 0 || next >= slides.length || next === currentIndex) return;
 
@@ -401,22 +409,25 @@
       var newSlide = slides[next];
 
       if (oldSlide) {
-        oldSlide.style.transition = 'none';
-        oldSlide.style.transform = 'translateY(0)';
-        oldSlide.style.opacity = '1';
         oldSlide.style.zIndex = '0';
         oldSlide.classList.remove('is-active-slide');
       }
 
+      newSlide.style.display = 'block';
       newSlide.style.transition = 'none';
       newSlide.style.transform = reverse ? 'translateY(-100vh)' : 'translateY(100vh)';
-      newSlide.style.opacity = '1';
       newSlide.style.zIndex = '1';
       newSlide.classList.add('is-active-slide');
       void newSlide.offsetWidth;
 
       newSlide.style.transition = 'transform 0.55s cubic-bezier(.65,0,.35,1)';
       newSlide.style.transform = 'translateY(0)';
+
+      (function(oldEl){
+        setTimeout(function(){
+          oldEl.style.display = 'none';
+        }, 600);
+      })(oldSlide);
 
       currentIndex = next;
 
