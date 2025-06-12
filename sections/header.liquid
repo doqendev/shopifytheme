@@ -19,8 +19,10 @@
   
     {% if template == 'index' %}
 
-    .header__icon {
-      color: var(--icon-color, rgb(var(--color-foreground)));
+    .header__icon,
+    .header__icon-mobile,
+    .header__icon-desktop {
+      color: var(--icon-color, rgb(var(--color-foreground))) !important;
     }
 
     .nav-menu-new {
