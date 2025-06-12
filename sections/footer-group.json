@@ -13,6 +13,7 @@
   "sections": {
     "footers_MJGUrj": {
       "type": "FOOTERS",
+      "disabled": true,
       "custom_css": [],
       "settings": {}
     },
