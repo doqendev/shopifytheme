@@ -225,7 +225,7 @@
           "type": "footer",
           "settings": {
             "color_scheme": "scheme-1",
-            "header_icon_color": "#ffffff",
+            "header_icon_color": "#000000",
             "invert_logo": false,
             "header_color_scheme": "",
             "margin_top": 100,
