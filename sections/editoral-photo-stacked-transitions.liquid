@@ -410,7 +410,8 @@
 
       if (oldSlide) {
         oldSlide.style.zIndex = '0';
-        oldSlide.classList.remove('is-active-slide');
+        oldSlide.style.pointerEvents = 'none';
+        // Keep old slide visible during the transition so it remains the background
       }
 
       newSlide.style.display = 'block';
@@ -425,7 +426,9 @@
 
       (function(oldEl){
         setTimeout(function(){
+          if (!oldEl) return;
           oldEl.style.display = 'none';
+          oldEl.classList.remove('is-active-slide');
         }, 600);
       })(oldSlide);
 
