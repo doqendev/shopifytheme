@@ -120,7 +120,7 @@
             "border_color": "#eaeada",
             "caption_color": "#ffffff",
             "header_icon_color": "#ffffff",
-            "invert_logo": true,
+            "invert_logo": false,
             "header_color_scheme": "",
             "border_width": 0,
             "max_width": 840,
