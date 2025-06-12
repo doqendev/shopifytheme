@@ -367,14 +367,6 @@
     if (slides.length === 0) return;
 
     var currentIndex = 0;
-    var autoTimeout;
-
-    function scheduleNext() {
-      clearTimeout(autoTimeout);
-      if (currentIndex < slides.length - 1) {
-        autoTimeout = setTimeout(nextSlide, 5000);
-      }
-    }
 
     function changeSlide(next, reverse) {
       if (next < 0 || next >= slides.length || next === currentIndex) return;
@@ -401,7 +393,6 @@
       newSlide.style.transform = 'translateY(0)';
 
       currentIndex = next;
-      scheduleNext();
 
       if (currentIndex === slides.length - 1) {
         document.body.style.overflow = '';
@@ -419,7 +410,6 @@
     }
 
     document.body.style.overflow = 'hidden';
-    scheduleNext();
 
     var lastScroll = 0;
     var cooldown = 700;
@@ -450,13 +440,13 @@
 
 {% schema %}
 {
-  "name": "Stacked Photo Transitions",
+  "name": "Stacked Transitions",
   "tag": "section",
   "max_blocks": 10,
   "settings": [
     {
       "type": "header",
-      "content": "Stacked Photo Transitions",
+      "content": "Stacked Transitions",
       "info": "Full-screen stacked slider with scroll transitions."
     }
   ],
@@ -742,7 +732,7 @@
   ],
   "presets": [
     {
-      "name": "Stacked Photo Transitions",
+      "name": "Stacked Transitions",
       "category": "Image",
       "blocks": [
         { 
