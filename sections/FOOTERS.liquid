@@ -27,10 +27,13 @@
 </style>
 
 
-<div class=footer-desktop>
-  {% render 'footer-drawer-desktop'%}
-</div>
+{% unless request.page_type == 'index' %}
+  <div class="footer-desktop">
+    {% render 'footer-drawer-desktop' %}
+  </div>
 
-<div class=footer-mobile>
-  {% render 'footer-drawer'%}
-</div>
+  <div class="footer-mobile">
+    {% render 'footer-drawer' %}
+  </div>
+{% endunless %}
+
