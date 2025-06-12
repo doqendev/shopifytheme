@@ -427,12 +427,25 @@
             "margin_right_mobile": 0,
             "full_width_mobile": false
           }
+        },
+        "footer_3Fnq7J": {
+          "type": "footer",
+          "settings": {
+            "color_scheme": "scheme-1",
+            "header_icon_color": "#ffffff",
+            "invert_logo": false,
+            "header_color_scheme": "scheme-1",
+            "margin_top": 0,
+            "padding_top": 36,
+            "padding_bottom": 0
+          }
         }
       },
       "block_order": [
         "photo_fEXUdH",
         "photo_QVffPr",
-        "photo_Vhc6pb"
+        "photo_Vhc6pb",
+        "footer_3Fnq7J"
       ],
       "name": "Stacked Transitions",
       "settings": {}
