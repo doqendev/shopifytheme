@@ -208,14 +208,7 @@ body.menu-drawer-open .nav-menu-new a.active::after {
         }
     }
 
-    .header-wrapper.color-scheme-4 .header__heading-logo,
-    .header-wrapper.color-scheme-5 .header__heading-logo {
-      filter: brightness(0) invert(1);
-    }
-
-    .header__heading-logo {
-      filter: var(--logo-filter, none) !important;
-    }
+    /* Logo color is handled by swapping the SVG source */
 </style>
 
 {%- style -%}
@@ -322,16 +315,17 @@ body.menu-drawer-open .nav-menu-new a.active::after {
             
             {% if template == 'index' %}
               <div class="header__heading-logo-wrapper">
-                <img 
-                  src="https://cdn.shopify.com/s/files/1/0911/7843/4884/files/cheyenne_final_black_trans.svg?v=1749724445" 
-                  alt="{{ shop.name }}" 
-                  class="header__heading-logo motion-reduce" 
-                  sizes="(max-width: {{ settings.logo_width | times: 2 }}px) 50vw, {{ settings.logo_width }}px" 
-                  srcset="https://cdn.shopify.com/s/files/1/0911/7843/4884/files/cheyenne_final_black_trans.svg?v=1749724445 {{ settings.logo_width }}, 
-                          https://cdn.shopify.com/s/files/1/0911/7843/4884/files/cheyenne_final_black_trans.svg?v=1749724445 {{ settings.logo_width | times: 1.5 | round }}, 
-                          https://cdn.shopify.com/s/files/1/0911/7843/4884/files/cheyenne_final_black_trans.svg?v=1749724445 {{ settings.logo_width | times: 2 }}" 
-                  width="{{ settings.logo_width }}" 
-                  height="{{ settings.logo_width | divided_by: settings.logo.aspect_ratio }}" 
+                <img
+                  id="main-header-logo"
+                  src="https://cdn.shopify.com/s/files/1/0911/7843/4884/files/cheyenne_final_black_trans.svg?v=1749724445"
+                  alt="{{ shop.name }}"
+                  class="header__heading-logo motion-reduce"
+                  sizes="(max-width: {{ settings.logo_width | times: 2 }}px) 50vw, {{ settings.logo_width }}px"
+                  srcset="https://cdn.shopify.com/s/files/1/0911/7843/4884/files/cheyenne_final_black_trans.svg?v=1749724445 {{ settings.logo_width }},
+                          https://cdn.shopify.com/s/files/1/0911/7843/4884/files/cheyenne_final_black_trans.svg?v=1749724445 {{ settings.logo_width | times: 1.5 | round }},
+                          https://cdn.shopify.com/s/files/1/0911/7843/4884/files/cheyenne_final_black_trans.svg?v=1749724445 {{ settings.logo_width | times: 2 }}"
+                  width="{{ settings.logo_width }}"
+                  height="{{ settings.logo_width | divided_by: settings.logo.aspect_ratio }}"
                 >
               </div>
             {% else %}

@@ -395,6 +395,7 @@
 
     var slides = Array.from(container.querySelectorAll('.editorial-slide-block'));
     var headerWrapper = document.querySelector('.header-wrapper');
+    var headerLogo = headerWrapper ? headerWrapper.querySelector('#main-header-logo') : null;
     if (slides.length === 0) return;
 
     var currentIndex = 0;
@@ -435,10 +436,12 @@
         } else {
           headerWrapper.style.removeProperty('--icon-color');
         }
-        if (newSlide.dataset.logoInvert === 'true') {
-          headerWrapper.style.setProperty('--logo-filter', 'brightness(0) invert(1)');
-        } else {
-          headerWrapper.style.setProperty('--logo-filter', 'none');
+        if (headerLogo) {
+          var logoSrc = newSlide.dataset.logoInvert === 'true'
+            ? 'https://cdn.shopify.com/s/files/1/0911/7843/4884/files/cheyenne_final_white_trans.svg?v=1749724697'
+            : 'https://cdn.shopify.com/s/files/1/0911/7843/4884/files/cheyenne_final_black_trans.svg?v=1749724445';
+          headerLogo.src = logoSrc;
+          headerLogo.srcset = logoSrc;
         }
       }
 
