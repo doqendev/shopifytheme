@@ -157,7 +157,7 @@
             "border_color": "#eaeada",
             "caption_color": "#ffffff",
             "header_icon_color": "#ffffff",
-            "invert_logo": false,
+            "invert_logo": true,
             "header_color_scheme": "",
             "border_width": 0,
             "max_width": 840,
