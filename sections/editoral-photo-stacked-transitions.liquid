@@ -408,6 +408,27 @@
       }
     });
 
+    function applyHeaderForSlide(slide) {
+      if (!headerWrapper || !slide) return;
+      if (slide.dataset.headerScheme) {
+        headerWrapper.className = headerWrapper.className.replace(/color-[^ ]+/g, 'color-' + slide.dataset.headerScheme);
+      }
+      if (slide.dataset.iconColor) {
+        headerWrapper.style.setProperty('--icon-color', slide.dataset.iconColor);
+      } else {
+        headerWrapper.style.removeProperty('--icon-color');
+      }
+      if (headerLogo) {
+        var logoSrc = slide.dataset.logoInvert === 'true'
+          ? 'https://cdn.shopify.com/s/files/1/0911/7843/4884/files/cheyenne_final_white_trans.svg?v=1749724697'
+          : 'https://cdn.shopify.com/s/files/1/0911/7843/4884/files/cheyenne_final_black_trans.svg?v=1749724445';
+        headerLogo.src = logoSrc;
+        headerLogo.srcset = logoSrc;
+      }
+    }
+
+    applyHeaderForSlide(slides[currentIndex]);
+
     function changeSlide(next, reverse) {
       if (next < 0 || next >= slides.length || next === currentIndex) return;
 
@@ -428,21 +449,7 @@
       void newSlide.offsetWidth;
 
       if (headerWrapper) {
-        if (newSlide.dataset.headerScheme) {
-          headerWrapper.className = headerWrapper.className.replace(/color-[^ ]+/g, 'color-' + newSlide.dataset.headerScheme);
-        }
-        if (newSlide.dataset.iconColor) {
-          headerWrapper.style.setProperty('--icon-color', newSlide.dataset.iconColor);
-        } else {
-          headerWrapper.style.removeProperty('--icon-color');
-        }
-        if (headerLogo) {
-          var logoSrc = newSlide.dataset.logoInvert === 'true'
-            ? 'https://cdn.shopify.com/s/files/1/0911/7843/4884/files/cheyenne_final_white_trans.svg?v=1749724697'
-            : 'https://cdn.shopify.com/s/files/1/0911/7843/4884/files/cheyenne_final_black_trans.svg?v=1749724445';
-          headerLogo.src = logoSrc;
-          headerLogo.srcset = logoSrc;
-        }
+        applyHeaderForSlide(newSlide);
       }
 
       newSlide.style.transition = 'transform 0.55s cubic-bezier(.65,0,.35,1)';
