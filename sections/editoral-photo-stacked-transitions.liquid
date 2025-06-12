@@ -4,24 +4,26 @@
 {% endcomment %}
 <section class="editorial-slider-stack-transitions" id="editorial-slider-stack-transitions">
   {% for block in section.blocks %}
-    <div
-      class="editorial-slide-block{% if forloop.first %} is-active-slide{% endif %}{% if block.settings.video_desktop != blank %} has-desktop-video{% endif %}{% if block.settings.video_mobile != blank %} has-mobile-video{% endif %}"
-      data-slide-index="{{ forloop.index0 }}"
-      style="
-        --border-color: {{ block.settings.border_color }};
-        --border-width: {{ block.settings.border_width }}px;
-        --caption-color: {{ block.settings.caption_color | default: "#FFFFFF" }};
-        --image-rotation: {{ block.settings.image_rotation | default: 0 }}deg;
-        --f1-left: {{ block.settings.focus1_x | default: 50 }}%;
-        --f1-top: {{ block.settings.focus1_y | default: 50 }}%;
-        --f1-left-mobile: {{ block.settings.focus1_x_mobile | default: 50 }}%;
-        --f1-top-mobile: {{ block.settings.focus1_y_mobile | default: 50 }}%;
-        --f2-left: {{ block.settings.focus2_x | default: 50 }}%;
-        --f2-top: {{ block.settings.focus2_y | default: 50 }}%;
-        --f2-left-mobile: {{ block.settings.focus2_x_mobile | default: 50 }}%;
-        --f2-top-mobile: {{ block.settings.focus2_y_mobile | default: 50 }}%;
-      "
-    >
+    {% case block.type %}
+    {% when 'photo' %}
+      <div
+        class="editorial-slide-block{% if forloop.first %} is-active-slide{% endif %}{% if block.settings.video_desktop != blank %} has-desktop-video{% endif %}{% if block.settings.video_mobile != blank %} has-mobile-video{% endif %}"
+        data-slide-index="{{ forloop.index0 }}"
+        style="
+          --border-color: {{ block.settings.border_color }};
+          --border-width: {{ block.settings.border_width }}px;
+          --caption-color: {{ block.settings.caption_color | default: '#FFFFFF' }};
+          --image-rotation: {{ block.settings.image_rotation | default: 0 }}deg;
+          --f1-left: {{ block.settings.focus1_x | default: 50 }}%;
+          --f1-top: {{ block.settings.focus1_y | default: 50 }}%;
+          --f1-left-mobile: {{ block.settings.focus1_x_mobile | default: 50 }}%;
+          --f1-top-mobile: {{ block.settings.focus1_y_mobile | default: 50 }}%;
+          --f2-left: {{ block.settings.focus2_x | default: 50 }}%;
+          --f2-top: {{ block.settings.focus2_y | default: 50 }}%;
+          --f2-left-mobile: {{ block.settings.focus2_x_mobile | default: 50 }}%;
+          --f2-top-mobile: {{ block.settings.focus2_y_mobile | default: 50 }}%;
+        "
+      >
       {%- assign desktop_image = block.settings.image_desktop -%}
       {%- assign mobile_image = block.settings.image_mobile -%}
       {%- assign desktop_video = block.settings.video_desktop -%}
@@ -120,7 +122,17 @@
           </div>
         </div>
       {% endif %}
-    </div>
+      </div>
+    {% when 'footer' %}
+      <div class="editorial-slide-block footer-slide{% if forloop.first %} is-active-slide{% endif %}" data-slide-index="{{ forloop.index0 }}" style="--border-width:0px;">
+        <div class="footer-desktop">
+          {% render 'footer-drawer-desktop' %}
+        </div>
+        <div class="footer-mobile">
+          {% render 'footer-drawer' %}
+        </div>
+      </div>
+    {% endcase %}
   {% endfor %}
 </section>
 
@@ -196,6 +208,14 @@
 
   .editorial-slide-video-mobile {
     display: none;
+  }
+
+  /* Footer visibility */
+  @media (max-width: 750px) {
+    .footer-desktop { display: none; }
+  }
+  @media (min-width: 751px) {
+    .footer-mobile { display: none; }
   }
 
   .editorial-slide-placeholder {
@@ -726,6 +746,48 @@
           "type": "checkbox",
           "id": "full_width_mobile",
           "label": "Full Width (Mobile)"
+        }
+      ]
+    },
+    {
+      "type": "footer",
+      "name": "Footer",
+      "settings": [
+        {
+          "type": "color_scheme",
+          "id": "color_scheme",
+          "label": "Color Scheme",
+          "default": "scheme-1"
+        },
+        {
+          "type": "range",
+          "id": "margin_top",
+          "label": "Margin Top",
+          "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "padding_top",
+          "label": "Padding Top",
+          "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "default": 36
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom",
+          "label": "Padding Bottom",
+          "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "default": 36
         }
       ]
     }
