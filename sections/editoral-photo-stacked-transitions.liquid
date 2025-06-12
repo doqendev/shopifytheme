@@ -1,35 +1,33 @@
 {% comment %}
-  Editorial Hero Static - stacked version without transitions.
-  Based on v7.8.
+  Editorial Photo Stacked with transitions.
+  Each slide fills the viewport and moves on scroll.
 {% endcomment %}
-<section class="editorial-slider-stack" id="editorial-slider-stack">
+<section class="editorial-slider-stack-transitions" id="editorial-slider-stack-transitions">
   {% for block in section.blocks %}
-    <div
-      class="editorial-slide-block{% if block.settings.full_width %} is-full-width{% endif %}{% if block.settings.full_width_mobile %} is-full-width-mobile{% endif %}{% if block.settings.video_desktop != blank %} has-desktop-video{% endif %}{% if block.settings.video_mobile != blank %} has-mobile-video{% endif %}"
-      style="
-        --border-color: {{ block.settings.border_color }};
-        --border-width: {{ block.settings.border_width }}px;
-        --max-width: {{ block.settings.max_width }}px;
-        --margin-top: {{ block.settings.margin_top }}px;
-        --mobile-border-width: {{ block.settings.border_width_mobile }}px;
-        --mobile-max-width: {{ block.settings.max_width_mobile }}px;
-        --mobile-margin-top: {{ block.settings.margin_top_mobile }}px;
-        --image-rotation: {{ block.settings.image_rotation | default: 0 }}deg;
-        --f1-left: {{ block.settings.focus1_x | default: 50 }}%;
-        --f1-top: {{ block.settings.focus1_y | default: 50 }}%;
-        --f1-left-mobile: {{ block.settings.focus1_x_mobile | default: 50 }}%;
-        --f1-top-mobile: {{ block.settings.focus1_y_mobile | default: 50 }}%;
-        --f2-left: {{ block.settings.focus2_x | default: 50 }}%;
-        --f2-top: {{ block.settings.focus2_y | default: 50 }}%;
-        --f2-left-mobile: {{ block.settings.focus2_x_mobile | default: 50 }}%;
-        --f2-top-mobile: {{ block.settings.focus2_y_mobile | default: 50 }}%;
-        --margin-left: {% if block.settings.margin_left != blank %}{{ block.settings.margin_left }}px{% else %}auto{% endif %};
-        --margin-right: {% if block.settings.margin_right != blank %}{{ block.settings.margin_right }}px{% else %}auto{% endif %};
-        --mobile-margin-left: {% if block.settings.margin_left_mobile != blank %}{{ block.settings.margin_left_mobile }}px{% else %}auto{% endif %};
-        --mobile-margin-right: {% if block.settings.margin_right_mobile != blank %}{{ block.settings.margin_right_mobile }}px{% else %}auto{% endif %};
-        --caption-color: {{ block.settings.caption_color | default: "#FFFFFF" }};
-      "
-    >
+    {% case block.type %}
+    {% when 'photo' %}
+      <div
+        class="editorial-slide-block color-{{ block.settings.color_scheme }}{% if forloop.first %} is-active-slide{% endif %}{% if block.settings.video_desktop != blank %} has-desktop-video{% endif %}{% if block.settings.video_mobile != blank %} has-mobile-video{% endif %}"
+        data-slide-index="{{ forloop.index0 }}"
+        data-color-scheme="{{ block.settings.color_scheme }}"
+        data-header-scheme="{{ block.settings.header_color_scheme }}"
+        data-icon-color="{{ block.settings.header_icon_color }}"
+        data-logo-invert="{{ block.settings.invert_logo }}"
+        style="
+          --border-color: {{ block.settings.border_color }};
+          --border-width: {{ block.settings.border_width }}px;
+          --caption-color: {{ block.settings.caption_color | default: '#FFFFFF' }};
+          --image-rotation: {{ block.settings.image_rotation | default: 0 }}deg;
+          --f1-left: {{ block.settings.focus1_x | default: 50 }}%;
+          --f1-top: {{ block.settings.focus1_y | default: 50 }}%;
+          --f1-left-mobile: {{ block.settings.focus1_x_mobile | default: 50 }}%;
+          --f1-top-mobile: {{ block.settings.focus1_y_mobile | default: 50 }}%;
+          --f2-left: {{ block.settings.focus2_x | default: 50 }}%;
+          --f2-top: {{ block.settings.focus2_y | default: 50 }}%;
+          --f2-left-mobile: {{ block.settings.focus2_x_mobile | default: 50 }}%;
+          --f2-top-mobile: {{ block.settings.focus2_y_mobile | default: 50 }}%;
+        "
+      >
       {%- assign desktop_image = block.settings.image_desktop -%}
       {%- assign mobile_image = block.settings.image_mobile -%}
       {%- assign desktop_video = block.settings.video_desktop -%}
@@ -128,36 +126,48 @@
           </div>
         </div>
       {% endif %}
-    </div>
+      </div>
+    {% when 'footer' %}
+      <div class="editorial-slide-block footer-slide color-{{ block.settings.color_scheme }}{% if forloop.first %} is-active-slide{% endif %}" data-slide-index="{{ forloop.index0 }}" data-color-scheme="{{ block.settings.color_scheme }}" data-header-scheme="{{ block.settings.header_color_scheme }}" data-icon-color="{{ block.settings.header_icon_color }}" data-logo-invert="{{ block.settings.invert_logo }}" style="--border-width:0px;">
+        <div class="footer-desktop">
+          {% render 'footer-drawer-desktop', section: block %}
+        </div>
+        <div class="footer-mobile">
+          {% render 'footer-drawer', section: block %}
+        </div>
+      </div>
+    {% endcase %}
   {% endfor %}
 </section>
 
 <style>
-  .editorial-slider-stack {
+  .editorial-slider-stack-transitions {
+    position: relative;
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    height: 100vh;
+    overflow: hidden;
     background: transparent;
   }
 
   .editorial-slide-block {
-    position: relative;
-    margin-top: var(--margin-top, 200px);
-    margin-left: var(--margin-left, auto);
-    margin-right: var(--margin-right, auto);
-    max-width: var(--max-width, 840px);
-    width: calc(100% - 40px);
-    padding: var(--border-width, 24px);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    padding: var(--border-width, 0px);
     background: var(--border-color, #eaeada);
     box-sizing: border-box;
+    opacity: 0;
+    transform: translateY(100vh);
+    transition: transform 0.55s cubic-bezier(.65,0,.35,1), opacity 0.65s cubic-bezier(.55,0,.35,1);
+    pointer-events: none;
   }
 
-  .editorial-slide-block.is-full-width {
-    margin-left: 0;
-    margin-right: 0;
-    max-width: none;
-    width: 100%;
+  .editorial-slide-block.is-active-slide {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
   }
 
   /* Hide images when a corresponding video exists */
@@ -202,6 +212,14 @@
 
   .editorial-slide-video-mobile {
     display: none;
+  }
+
+  /* Footer visibility */
+  @media (max-width: 750px) {
+    .footer-desktop { display: none; }
+  }
+  @media (min-width: 751px) {
+    .footer-mobile { display: none; }
   }
 
   .editorial-slide-placeholder {
@@ -319,19 +337,17 @@
     visibility: visible;
   }
 
+  /* Ensure footer slide sits flush with the bottom */
+  .footer-slide .footer {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
   @media (max-width: 700px) {
     .editorial-slide-block {
-      margin-top: var(--mobile-margin-top, 40px);
-        margin-left: var(--mobile-margin-left, auto);
-        margin-right: var(--mobile-margin-right, auto);
-      max-width: var(--mobile-max-width, 360px);
-      padding: var(--mobile-border-width, 8px);
-    }
-    .editorial-slide-block.is-full-width-mobile {
-      margin-left: 0;
-      margin-right: 0;
-      max-width: none;
+      height: 100vh;
       width: 100%;
+      padding: var(--mobile-border-width, 0px);
     }
     .editorial-slide-video-desktop {
       display: none;
@@ -373,114 +389,136 @@
 </style>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    var container = document.getElementById("editorial-slider-stack");
+  document.addEventListener('DOMContentLoaded', function() {
+    var container = document.getElementById('editorial-slider-stack-transitions');
     if (!container) return;
-    var slides = Array.prototype.slice.call(container.querySelectorAll(".editorial-slide-block"));
 
-    container.querySelectorAll('.focus-point__button').forEach(function(btn) {
-      btn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        var point = btn.parentElement;
-        var isOpen = point.classList.toggle('is-open');
-        if (isOpen) {
-          container.querySelectorAll('.focus-point.is-open').forEach(function(other){
-            if (other !== point) other.classList.remove('is-open');
-          });
-        }
-      });
-    });
-    document.addEventListener('click', function(e) {
-      if (!container.contains(e.target)) return;
-      if (!e.target.closest('.focus-point')) {
-        container.querySelectorAll('.focus-point.is-open').forEach(function(p){
-          p.classList.remove('is-open');
-        });
+    var slides = Array.from(container.querySelectorAll('.editorial-slide-block'));
+    var headerWrapper = document.querySelector('.header-wrapper');
+    var headerLogo = headerWrapper ? headerWrapper.querySelector('#main-header-logo') : null;
+    if (slides.length === 0) return;
+
+    var currentIndex = 0;
+
+    slides.forEach(function(slide, index) {
+      if (index === 0) {
+        slide.style.display = 'block';
+      } else {
+        slide.style.display = 'none';
       }
     });
 
-    if (slides.length <= 1) return;
+    function applyHeaderForSlide(slide) {
+      if (!headerWrapper || !slide) return;
+      if (slide.dataset.headerScheme) {
+        headerWrapper.className = headerWrapper.className.replace(/color-[^ ]+/g, 'color-' + slide.dataset.headerScheme);
+      }
+      if (slide.dataset.iconColor) {
+        headerWrapper.style.setProperty('--icon-color', slide.dataset.iconColor);
+      } else {
+        headerWrapper.style.removeProperty('--icon-color');
+      }
+      if (headerLogo) {
+        var logoSrc = slide.dataset.logoInvert === 'true'
+          ? 'https://cdn.shopify.com/s/files/1/0911/7843/4884/files/cheyenne_final_white_trans.svg?v=1749724697'
+          : 'https://cdn.shopify.com/s/files/1/0911/7843/4884/files/cheyenne_final_black_trans.svg?v=1749724445';
+        headerLogo.src = logoSrc;
+        headerLogo.srcset = logoSrc;
+      }
+    }
 
-    var firstMargin = parseFloat(getComputedStyle(slides[0]).marginTop) || 0;
-    var index = 0;
-    var snappingEnabled = true;
+    applyHeaderForSlide(slides[currentIndex]);
 
-    function scrollToSlide(i) {
-      var target = slides[i];
-      var rect = target.getBoundingClientRect();
-      var offset = rect.top + window.pageYOffset - firstMargin;
-      window.scrollTo({ top: offset, behavior: "smooth" });
+    function changeSlide(next, reverse) {
+      if (next < 0 || next >= slides.length || next === currentIndex) return;
+
+      var oldSlide = slides[currentIndex];
+      var newSlide = slides[next];
+
+      if (oldSlide) {
+        oldSlide.style.zIndex = '0';
+        oldSlide.style.pointerEvents = 'none';
+        // Keep old slide visible during the transition so it remains the background
+      }
+
+      newSlide.style.display = 'block';
+      newSlide.style.transition = 'none';
+      newSlide.style.transform = reverse ? 'translateY(-100vh)' : 'translateY(100vh)';
+      newSlide.style.zIndex = '1';
+      newSlide.classList.add('is-active-slide');
+      void newSlide.offsetWidth;
+
+      if (headerWrapper) {
+        applyHeaderForSlide(newSlide);
+      }
+
+      newSlide.style.transition = 'transform 0.55s cubic-bezier(.65,0,.35,1)';
+      newSlide.style.transform = 'translateY(0)';
+
+      (function(oldEl){
+        setTimeout(function(){
+          if (!oldEl) return;
+          oldEl.style.display = 'none';
+          oldEl.classList.remove('is-active-slide');
+        }, 600);
+      })(oldSlide);
+
+      currentIndex = next;
+
+      if (currentIndex === slides.length - 1) {
+        document.body.style.overflow = '';
+      } else {
+        document.body.style.overflow = 'hidden';
+      }
     }
 
     function nextSlide() {
-      if (index < slides.length - 1) {
-        index += 1;
-        scrollToSlide(index);
-      }
+      changeSlide(currentIndex + 1, false);
     }
 
-    var isScrolling = false;
-    var touchStartY = 0;
-    var TOUCH_THRESHOLD = 30;
+    function previousSlide() {
+      changeSlide(currentIndex - 1, true);
+    }
 
-    function handleWheel(e) {
-      if (!snappingEnabled) return;
-      if (isScrolling) {
-        e.preventDefault();
-        return;
-      }
+    document.body.style.overflow = 'hidden';
 
+    var lastScroll = 0;
+    var cooldown = 700;
+
+    window.addEventListener('wheel', function(e) {
+      var now = Date.now();
+      if (now - lastScroll < cooldown) return;
       if (e.deltaY > 0) {
-        if (index < slides.length - 1) {
-          e.preventDefault();
-          nextSlide();
-          isScrolling = true;
-          setTimeout(function(){ isScrolling = false; }, 800);
-        } else {
-          snappingEnabled = false;
-        }
-      }
-    }
-
-    function handleTouchStart(e) {
-      touchStartY = e.touches[0].clientY;
-    }
-
-    function handleTouchMove(e) {
-      if (!snappingEnabled) return;
-      var diff = e.touches[0].clientY - touchStartY;
-
-      if (index === slides.length - 1 && diff < -TOUCH_THRESHOLD) {
-        snappingEnabled = false;
-        return; // allow scrolling to footer
-      }
-
-      if (diff < -TOUCH_THRESHOLD && !isScrolling) {
-        e.preventDefault();
         nextSlide();
-        isScrolling = true;
-        setTimeout(function(){ isScrolling = false; }, 800);
+      } else if (e.deltaY < 0) {
+        previousSlide();
       }
-    }
+      lastScroll = now;
+    }, { passive: true });
 
-    container.addEventListener('wheel', handleWheel, { passive: false });
-    container.addEventListener('touchmove', handleTouchMove, { passive: false });
-
-    document.addEventListener('touchstart', handleTouchStart, { passive: true });
-
+    var touchStartY = 0;
+    window.addEventListener('touchstart', function(e) {
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+    window.addEventListener('touchend', function(e) {
+      var delta = touchStartY - e.changedTouches[0].clientY;
+      if (Math.abs(delta) > 30) {
+        if (delta > 0) nextSlide(); else previousSlide();
+      }
+    }, { passive: true });
   });
 </script>
 
 {% schema %}
 {
-  "name": "Editorial Photo Stacked",
+  "name": "Stacked Transitions",
   "tag": "section",
   "max_blocks": 10,
   "settings": [
     {
       "type": "header",
-      "content": "Editorial Photo Stacked",
-      "info": "Full-height slider with responsive images, captions, and buttons."
+      "content": "Stacked Transitions",
+      "info": "Full-screen stacked slider with scroll transitions."
     }
   ],
   "blocks": [
@@ -537,6 +575,24 @@
           "id": "caption_color",
           "label": "Caption Color",
           "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "header_icon_color",
+          "label": "Header Icon Color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "checkbox",
+          "id": "invert_logo",
+          "label": "Invert Logo",
+          "default": false
+        },
+        {
+          "type": "color_scheme",
+          "id": "header_color_scheme",
+          "label": "Header Color Scheme",
+          "default": "scheme-1"
         },
         {
           "type": "range",
@@ -761,11 +817,71 @@
           "label": "Full Width (Mobile)"
         }
       ]
+    },
+    {
+      "type": "footer",
+      "name": "Footer",
+      "settings": [
+        {
+          "type": "color_scheme",
+          "id": "color_scheme",
+          "label": "Color Scheme",
+          "default": "scheme-1"
+        },
+        {
+          "type": "color",
+          "id": "header_icon_color",
+          "label": "Header Icon Color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "checkbox",
+          "id": "invert_logo",
+          "label": "Invert Logo",
+          "default": false
+        },
+        {
+          "type": "color_scheme",
+          "id": "header_color_scheme",
+          "label": "Header Color Scheme",
+          "default": "scheme-1"
+        },
+        {
+          "type": "range",
+          "id": "margin_top",
+          "label": "Margin Top",
+          "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "padding_top",
+          "label": "Padding Top",
+          "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "default": 36
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom",
+          "label": "Padding Bottom",
+          "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "default": 0
+        }
+      ]
     }
   ],
   "presets": [
     {
-      "name": "Editorial Photo Stacked",
+      "name": "Stacked Transitions",
       "category": "Image",
       "blocks": [
         { 

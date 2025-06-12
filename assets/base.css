@@ -2085,7 +2085,7 @@ input[type='checkbox'] {
 .cart-count-bubble {
     position: absolute;
     background-color: transparent;/*rgb(var(--color-button)); */
-    color: black!important;/*rgb(var(--color-button-text));*/
+    color: var(--header-icon-color, black); /*rgb(var(--color-button-text));*/
     height: 1.5rem;
     width: 1.2rem;
     border-radius: 100%;
@@ -2101,7 +2101,7 @@ input[type='checkbox'] {
 .cart-count-bubble-black {
     position: absolute;
     background-color: transparent;/*rgb(var(--color-button)); */
-    color: white;/*rgb(var(--color-button-text));*/
+    color: var(--header-icon-color, white); /*rgb(var(--color-button-text));*/
     height: 1.5rem;
     width: 1.2rem;
     border-radius: 100%;
@@ -2112,8 +2112,31 @@ input[type='checkbox'] {
     bottom: 1.1rem;
     left: 1.8rem;
     font-weight: 700;
-    line-height: calc(1 + 0.1 / var(--font-body-scale));
-  }
+  line-height: calc(1 + 0.1 / var(--font-body-scale));
+}
+
+/* Mobile cart count bubble overlays the heart icon */
+.cart-count-bubble-mobile:empty {
+  display: none;
+}
+
+.cart-count-bubble-mobile {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1.2rem;
+  height: 1.5rem;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: calc(1 + 0.1 / var(--font-body-scale));
+  pointer-events: none;
+  color: var(--header-icon-color, rgb(var(--color-foreground)));
+}
 
 
 
@@ -2566,7 +2589,7 @@ input[type='checkbox'] {
   
 }
 .header__icon {
-  color: rgb(var(--color-foreground));
+  color: var(--header-icon-color, rgb(var(--color-foreground)));
 }
 
 
@@ -2591,7 +2614,7 @@ input[type='checkbox'] {
   width: 2rem;
   fill: none;
   vertical-align: middle;
-  color: black;
+  color: var(--header-icon-color, black);
 }
 
 
@@ -2760,6 +2783,27 @@ details[open] .modal-overlay::after {
   .search-modal__close-button {
     position: initial;
     margin-left: 0.5rem;
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .search-modal {
+    min-height: auto;
+    height: auto;
+  }
+
+  .search-modal__content {
+    align-items: flex-start;
+    justify-content: center;
+    height: auto;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .search-modal__content-bottom,
+  .search-modal__content-top {
+    top: 0;
+    bottom: auto;
   }
 }
 
@@ -3739,7 +3783,7 @@ font-style: normal;
       "heading icons";
     align-items: center;
     gap: 1rem;
-    padding: 1rem 1.5rem;
+    padding: 1rem 0;
   }
 
   .header__heading,
@@ -3820,6 +3864,7 @@ font-style: normal;
 }
 
 /* Hamburger/X icon overlap trick */
+/* Basic menu icon positioning */
 .header__icon--menu {
   width: 40px;
   height: 40px;
@@ -3875,7 +3920,7 @@ font-style: normal;
       "hamburger-area  right-icons-area"  /* Row 1: Hamburger on left, Search/Cart on right */
       "logo-area       logo-area";        /* Row 2: Logo spans both columns */
     align-items: start; /* CRITICAL: Aligns items in each row to the top of that row */
-    padding: 1rem 1.5rem;
+    padding: 1rem 0;
     row-gap: 0.5rem; /* Optional: Adds a small space between the first and second row */
   }
 
@@ -3932,24 +3977,20 @@ font-style: normal;
     transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
   }
 
-  .header__icon--menu .icon-close {
-    opacity: 0;
-    pointer-events: none;
+    .header__icon--menu .icon-close {
+      opacity: 0;
+      pointer-events: none;
+    }
 
-  bottom: 30%;
-  left: 90%;
-  transform: translate(-50%);
-  width: 16px;
-  height: 16px;
-  color: #3c3c3c;
-  top: 50%;
-  left: calc(100% + 0.5rem);
-  transform: translateY(-50%);
-  flex-direction: column;
-    opacity: 1;
-    pointer-events: auto;
-    transform: scale(1);
-  }
+    .menu-open .header__icon--menu .icon-hamburger {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .menu-open .header__icon--menu .icon-close {
+      opacity: 1;
+      pointer-events: auto;
+    }
 }
 
 /* ... (rest of base.css) ... */
@@ -4022,6 +4063,33 @@ font-style: normal;
 .product-card-plus .size-option.sold-out {
   opacity: 0.5;
 }
+
+/* Auto color switch for sticky header based on background */
+.header {
+  --header-icon-color: #000;
+}
+
+.header--inverted {
+  --header-icon-color: #fff;
+}
+
+.header__icon svg path,
+.header__icon svg line,
+.header__icon svg circle {
+  fill: var(--header-icon-color) !important;
+  stroke: var(--header-icon-color) !important;
+}
+
+.header--inverted .header__heading-logo {
+  filter: brightness(0) invert(1);
+}
+
+
+
+
+
+
+
 
 
 
