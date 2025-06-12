@@ -7,8 +7,9 @@
     {% case block.type %}
     {% when 'photo' %}
       <div
-        class="editorial-slide-block{% if forloop.first %} is-active-slide{% endif %}{% if block.settings.video_desktop != blank %} has-desktop-video{% endif %}{% if block.settings.video_mobile != blank %} has-mobile-video{% endif %}"
+        class="editorial-slide-block color-{{ block.settings.color_scheme }}{% if forloop.first %} is-active-slide{% endif %}{% if block.settings.video_desktop != blank %} has-desktop-video{% endif %}{% if block.settings.video_mobile != blank %} has-mobile-video{% endif %}"
         data-slide-index="{{ forloop.index0 }}"
+        data-color-scheme="{{ block.settings.color_scheme }}"
         style="
           --border-color: {{ block.settings.border_color }};
           --border-width: {{ block.settings.border_width }}px;
@@ -124,7 +125,7 @@
       {% endif %}
       </div>
     {% when 'footer' %}
-      <div class="editorial-slide-block footer-slide{% if forloop.first %} is-active-slide{% endif %}" data-slide-index="{{ forloop.index0 }}" style="--border-width:0px;">
+      <div class="editorial-slide-block footer-slide color-{{ block.settings.color_scheme }}{% if forloop.first %} is-active-slide{% endif %}" data-slide-index="{{ forloop.index0 }}" data-color-scheme="{{ block.settings.color_scheme }}" style="--border-width:0px;">
         <div class="footer-desktop">
           {% render 'footer-drawer-desktop', section: block %}
         </div>
@@ -390,6 +391,7 @@
     if (!container) return;
 
     var slides = Array.from(container.querySelectorAll('.editorial-slide-block'));
+    var headerWrapper = document.querySelector('.header-wrapper');
     if (slides.length === 0) return;
 
     var currentIndex = 0;
@@ -420,6 +422,10 @@
       newSlide.style.zIndex = '1';
       newSlide.classList.add('is-active-slide');
       void newSlide.offsetWidth;
+
+      if (headerWrapper && newSlide.dataset.colorScheme) {
+        headerWrapper.className = headerWrapper.className.replace(/color-[^ ]+/g, 'color-' + newSlide.dataset.colorScheme);
+      }
 
       newSlide.style.transition = 'transform 0.55s cubic-bezier(.65,0,.35,1)';
       newSlide.style.transform = 'translateY(0)';

@@ -20,7 +20,7 @@
     {% if template == 'index' %}
 
     .header__icon {
-      color: white;
+      color: rgb(var(--color-foreground));
     }
 
     .nav-menu-new {
@@ -37,7 +37,7 @@
     .nav-menu-new a {
     margin: 0 15px;
     font-size: 16px;
-    color: white;
+    color: rgb(var(--color-foreground));
     text-decoration: none;
     text-transform: uppercase;
     transition: color 0.3s;
@@ -45,7 +45,7 @@
     .nav-menu-new a {
     position: relative;
     margin-top: 10px;
-    color: white;
+    color: rgb(var(--color-foreground));
     text-decoration: none;
     text-transform: uppercase;
     transition: color 0s;
@@ -60,7 +60,7 @@
     transform: translateX(-50%); /* Adjust for perfect centering */;
     width: 50%;
     height: 1px; /* Reduced height for smaller underline */
-    background-color: #ffffff; /* Color for underline */
+    background-color: currentColor; /* Color for underline */
     transition: width 0.3s ease-in-out;
 }
 
@@ -200,6 +200,11 @@ body.menu-drawer-open .nav-menu-new a.active::after {
         .nav-menu-new {
             display: none !important;
         }
+    }
+
+    .header-wrapper.color-scheme-4 .header__heading-logo,
+    .header-wrapper.color-scheme-5 .header__heading-logo {
+      filter: brightness(0) invert(1);
     }
 </style>
 
