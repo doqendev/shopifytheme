@@ -126,10 +126,10 @@
     {% when 'footer' %}
       <div class="editorial-slide-block footer-slide{% if forloop.first %} is-active-slide{% endif %}" data-slide-index="{{ forloop.index0 }}" style="--border-width:0px;">
         <div class="footer-desktop">
-          {% render 'footer-drawer-desktop' %}
+          {% render 'footer-drawer-desktop', section: block %}
         </div>
         <div class="footer-mobile">
-          {% render 'footer-drawer' %}
+          {% render 'footer-drawer', section: block %}
         </div>
       </div>
     {% endcase %}
@@ -331,6 +331,12 @@
   .focus-point.is-open .focus-popout {
     opacity: 1;
     visibility: visible;
+  }
+
+  /* Ensure footer slide sits flush with the bottom */
+  .footer-slide .footer {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
   }
 
   @media (max-width: 700px) {
@@ -787,7 +793,7 @@
           "max": 100,
           "step": 4,
           "unit": "px",
-          "default": 36
+          "default": 0
         }
       ]
     }
