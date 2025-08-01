@@ -46,38 +46,6 @@
   }
 </style>
 
-<style>
-  /* Match collection grid styles */
-  #product-grid {
-    display: grid;
-    gap: 0.6rem;
-    margin-block-start: 0px;
-  }
-  #product-grid .grid__item {
-    display: flex;
-    flex-direction: column;
-    justify-content: stretch;
-  }
-  #product-grid .card-wrapper {
-    display: flex;
-    flex-direction: column;
-    height: 100%!important;
-  }
-  #product-grid .card-wrapper > * {
-    flex-grow: 1;
-  }
-  @media screen and (max-width: 749px) {
-    #product-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-  @media screen and (min-width: 750px) {
-    #product-grid {
-      grid-template-columns: repeat(6, 1fr);
-    }
-  }
-</style>
-
 {%- liquid
   assign sort_by = search.sort_by | default: search.default_sort_by
   assign terms = search.terms | escape
@@ -181,41 +149,6 @@
       {%- endif -%}
     </div>
     {%- if search.performed -%}
-      <div class="grid-controls page-width">
-        <div class="layout-options">
-          <button type="button" id="layout-one-col" class="layout-option-button">
-            <span class="grid-icon grid-icon--full">
-              {{ 'square_full.svg' | inline_asset_content }}
-            </span>
-            <span class="grid-icon grid-icon--empty">
-              {{ 'square.svg' | inline_asset_content }}
-            </span>
-          </button>
-          <button type="button" id="layout-two-col" class="layout-option-button active">
-            <span class="grid-icon grid-icon--full">
-              {{ 'grid_1_full_3.svg' | inline_asset_content }}
-            </span>
-            <span class="grid-icon grid-icon--empty">
-              {{ 'grid_1_empty_3.svg' | inline_asset_content }}
-            </span>
-          </button>
-          <button type="button" id="layout-three-col" class="layout-option-button">
-            <span class="grid-icon grid-icon--full">
-              {{ 'grid_2_full.svg' | inline_asset_content }}
-            </span>
-            <span class="grid-icon grid-icon--empty">
-              {{ 'grid_2_empty.svg' | inline_asset_content }}
-            </span>
-          </button>
-        </div>
-        <div class="facets-toggle-container">
-          <button type="button" id="facets-toggle-button" class="facets-toggle-button">
-            <span class="facets-icon">
-              {{ 'filtro.svg' | inline_asset_content }}
-            </span>
-          </button>
-        </div>
-      </div>
       {%- if section.settings.enable_sorting
         and section.settings.filter_type == 'vertical'
         and search.filters != empty
@@ -403,69 +336,6 @@
 {% if section.settings.image_shape == 'arch' %}
   {{ 'mask-arch.svg' | inline_asset_content }}
 {%- endif -%}
-
-<!-- Grid Options and Facets Toggle Script -->
-<script>
-  window.initializeGridOptions = function() {
-    var grid = document.getElementById('product-grid');
-    var btnOneCol = document.getElementById('layout-one-col');
-    var btnTwoCol = document.getElementById('layout-two-col');
-    var btnThreeCol = document.getElementById('layout-three-col');
-
-    if (!grid || !btnOneCol || !btnTwoCol || !btnThreeCol) return;
-
-    btnOneCol.replaceWith(btnOneCol.cloneNode(true));
-    btnTwoCol.replaceWith(btnTwoCol.cloneNode(true));
-    btnThreeCol.replaceWith(btnThreeCol.cloneNode(true));
-
-    btnOneCol = document.getElementById('layout-one-col');
-    btnTwoCol = document.getElementById('layout-two-col');
-    btnThreeCol = document.getElementById('layout-three-col');
-
-    function setActive(button) {
-      [btnOneCol, btnTwoCol, btnThreeCol].forEach(function(btn) {
-        if (btn) btn.classList.toggle('active', btn === button);
-      });
-    }
-
-    btnOneCol.addEventListener('click', function() {
-      grid.classList.remove('two-col', 'three-col');
-      grid.classList.add('one-col');
-      setActive(btnOneCol);
-    });
-
-    btnTwoCol.addEventListener('click', function() {
-      grid.classList.remove('one-col', 'three-col');
-      grid.classList.add('two-col');
-      setActive(btnTwoCol);
-    });
-
-    btnThreeCol.addEventListener('click', function() {
-      grid.classList.remove('one-col', 'two-col');
-      grid.classList.add('three-col');
-      setActive(btnThreeCol);
-    });
-  };
-
-  document.addEventListener('DOMContentLoaded', function() {
-    window.initializeGridOptions();
-
-    var facetsToggleBtn = document.getElementById('facets-toggle-button');
-    var facetsDrawerSummary = document.querySelector('menu-drawer details.mobile-facets__disclosure summary.mobile-facets__open-wrapper');
-    var facetsWrapper = document.getElementById('main-search-filters');
-
-    if (facetsToggleBtn) {
-      facetsToggleBtn.addEventListener('click', function() {
-        if (facetsDrawerSummary) {
-          facetsDrawerSummary.click();
-        } else if (facetsWrapper) {
-          facetsWrapper.classList.toggle('active');
-          facetsToggleBtn.classList.toggle('active');
-        }
-      });
-    }
-  });
-</script>
 
 {% schema %}
 {
