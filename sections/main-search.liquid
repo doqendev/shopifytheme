@@ -46,6 +46,38 @@
   }
 </style>
 
+<style>
+  /* Match collection grid styles */
+  #product-grid {
+    display: grid;
+    gap: 0.6rem;
+    margin-block-start: 0px;
+  }
+  #product-grid .grid__item {
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+  }
+  #product-grid .card-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%!important;
+  }
+  #product-grid .card-wrapper > * {
+    flex-grow: 1;
+  }
+  @media screen and (max-width: 749px) {
+    #product-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media screen and (min-width: 750px) {
+    #product-grid {
+      grid-template-columns: repeat(6, 1fr);
+    }
+  }
+</style>
+
 {%- liquid
   assign sort_by = search.sort_by | default: search.default_sort_by
   assign terms = search.terms | escape
