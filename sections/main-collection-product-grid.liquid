@@ -122,27 +122,30 @@
   
   /* New layout options CSS */
   @media (max-width: 749px) {
+    .product-grid.one-col {
+      grid-template-columns: 1fr !important;
+    }
     .product-grid.two-col {
       grid-template-columns: repeat(2, 1fr) !important;
     }
-    .product-grid.mixed-layout {
-      grid-template-columns: repeat(2, 1fr) !important;
-    }
-    .product-grid.mixed-layout li:nth-child(3n+1) {
-      grid-column: span 2;
+    .product-grid.three-col {
+      grid-template-columns: repeat(3, 1fr) !important;
     }
   }
   @media (min-width: 750px) {
-    .product-grid.mixed-layout {
-      grid-template-columns: repeat(12, 1fr) !important;
+    .product-grid.one-col {
+      grid-template-columns: 1fr !important;
     }
-    .product-grid.mixed-layout li:nth-child(3n+1) {
-      grid-column: span 1;
+    .product-grid.two-col {
+      grid-template-columns: repeat(2, 1fr) !important;
     }
-    .product-grid.mixed-layout .card__content,
-    .product-grid.mixed-layout .product-card-plus {
-      display: none !important;
+    .product-grid.three-col {
+      grid-template-columns: repeat(3, 1fr) !important;
     }
+  }
+  .product-grid.three-col .card__content,
+  .product-grid.three-col .product-card-plus {
+    display: none !important;
   }
   .grid-controls {
     display: flex;
@@ -266,7 +269,16 @@
   <!-- Grid Controls: Layout options and Facets toggle button in the same row -->
   <div class="grid-controls page-width">
     <div class="layout-options">
-      <!-- Two-Column Button -->
+      <!-- One Column Button -->
+      <button type="button" id="layout-one-col" class="layout-option-button">
+        <span class="grid-icon grid-icon--full">
+          {{ 'square_full.svg' | inline_asset_content }}
+        </span>
+        <span class="grid-icon grid-icon--empty">
+          {{ 'square.svg' | inline_asset_content }}
+        </span>
+      </button>
+      <!-- Two Column Button -->
       <button type="button" id="layout-two-col" class="layout-option-button active">
         <span class="grid-icon grid-icon--full">
           {{ 'grid_1_full_3.svg' | inline_asset_content }}
@@ -275,13 +287,13 @@
           {{ 'grid_1_empty_3.svg' | inline_asset_content }}
         </span>
       </button>
-      <!-- Mixed Layout Button -->
-      <button type="button" id="layout-mixed" class="layout-option-button">
+      <!-- Three Column (Images Only) Button -->
+      <button type="button" id="layout-three-col" class="layout-option-button">
         <span class="grid-icon grid-icon--full">
-          {{ 'grid_2_full_2.svg' | inline_asset_content }}
+          {{ 'grid_2_full.svg' | inline_asset_content }}
         </span>
         <span class="grid-icon grid-icon--empty">
-          {{ 'grid_2_empty_3.svg' | inline_asset_content }}
+          {{ 'grid_2_empty.svg' | inline_asset_content }}
         </span>
       </button>
     </div>
@@ -409,34 +421,44 @@
   // Global initializer for grid options
   window.initializeGridOptions = function() {
     var grid = document.getElementById('product-grid');
+    var btnOneCol = document.getElementById('layout-one-col');
     var btnTwoCol = document.getElementById('layout-two-col');
-    var btnMixed = document.getElementById('layout-mixed');
-    
-    if (!grid || !btnTwoCol || !btnMixed) return;
-    
+    var btnThreeCol = document.getElementById('layout-three-col');
+
+    if (!grid || !btnOneCol || !btnTwoCol || !btnThreeCol) return;
+
     // Optionally, remove any previously bound events
+    btnOneCol.replaceWith(btnOneCol.cloneNode(true));
     btnTwoCol.replaceWith(btnTwoCol.cloneNode(true));
-    btnMixed.replaceWith(btnMixed.cloneNode(true));
-    
+    btnThreeCol.replaceWith(btnThreeCol.cloneNode(true));
+
     // Re-select after cloning
+    btnOneCol = document.getElementById('layout-one-col');
     btnTwoCol = document.getElementById('layout-two-col');
-    btnMixed = document.getElementById('layout-mixed');
-    
-    btnTwoCol.addEventListener('click', function() {
-      grid.classList.remove('mixed-layout');
-      if (window.innerWidth < 750) {
-        grid.classList.add('two-col');
-      } else {
-        grid.classList.remove('two-col');
-      }
-      btnTwoCol.classList.add('active');
-      btnMixed.classList.remove('active');
+    btnThreeCol = document.getElementById('layout-three-col');
+
+    function setActive(button) {
+      [btnOneCol, btnTwoCol, btnThreeCol].forEach(function(btn) {
+        if (btn) btn.classList.toggle('active', btn === button);
+      });
+    }
+
+    btnOneCol.addEventListener('click', function() {
+      grid.classList.remove('two-col', 'three-col');
+      grid.classList.add('one-col');
+      setActive(btnOneCol);
     });
-    btnMixed.addEventListener('click', function() {
-      grid.classList.remove('two-col');
-      grid.classList.add('mixed-layout');
-      btnMixed.classList.add('active');
-      btnTwoCol.classList.remove('active');
+
+    btnTwoCol.addEventListener('click', function() {
+      grid.classList.remove('one-col', 'three-col');
+      grid.classList.add('two-col');
+      setActive(btnTwoCol);
+    });
+
+    btnThreeCol.addEventListener('click', function() {
+      grid.classList.remove('one-col', 'two-col');
+      grid.classList.add('three-col');
+      setActive(btnThreeCol);
     });
   };
 
