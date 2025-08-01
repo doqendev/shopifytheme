@@ -122,18 +122,30 @@
   
   /* New layout options CSS */
   @media (max-width: 749px) {
-    .product-grid.one-col { grid-template-columns: repeat(1, 1fr) !important; }
-    .product-grid.two-col { grid-template-columns: repeat(2, 1fr) !important; }
-    .product-grid.three-col { grid-template-columns: repeat(3, 1fr) !important; }
+    .product-grid.one-col {
+      grid-template-columns: 1fr !important;
+    }
+    .product-grid.two-col {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+    .product-grid.three-col {
+      grid-template-columns: repeat(3, 1fr) !important;
+    }
   }
   @media (min-width: 750px) {
-    .product-grid.one-col { grid-template-columns: repeat(1, 1fr) !important; }
-    .product-grid.two-col { grid-template-columns: repeat(2, 1fr) !important; }
-    .product-grid.three-col { grid-template-columns: repeat(3, 1fr) !important; }
-    .product-grid.three-col .card__content,
-    .product-grid.three-col .product-card-plus {
-      display: none !important;
+    .product-grid.one-col {
+      grid-template-columns: 1fr !important;
     }
+    .product-grid.two-col {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+    .product-grid.three-col {
+      grid-template-columns: repeat(3, 1fr) !important;
+    }
+  }
+  .product-grid.three-col .card__content,
+  .product-grid.three-col .product-card-plus {
+    display: none !important;
   }
   .grid-controls {
     display: flex;
@@ -257,9 +269,33 @@
   <!-- Grid Controls: Layout options and Facets toggle button in the same row -->
   <div class="grid-controls page-width">
     <div class="layout-options">
-      <button type="button" id="layout-one-col" class="layout-option-button">1</button>
-      <button type="button" id="layout-two-col" class="layout-option-button active">2</button>
-      <button type="button" id="layout-three-col" class="layout-option-button">3</button>
+      <!-- One Column Button -->
+      <button type="button" id="layout-one-col" class="layout-option-button">
+        <span class="grid-icon grid-icon--full">
+          {{ 'square_full.svg' | inline_asset_content }}
+        </span>
+        <span class="grid-icon grid-icon--empty">
+          {{ 'square.svg' | inline_asset_content }}
+        </span>
+      </button>
+      <!-- Two Column Button -->
+      <button type="button" id="layout-two-col" class="layout-option-button active">
+        <span class="grid-icon grid-icon--full">
+          {{ 'grid_1_full_3.svg' | inline_asset_content }}
+        </span>
+        <span class="grid-icon grid-icon--empty">
+          {{ 'grid_1_empty_3.svg' | inline_asset_content }}
+        </span>
+      </button>
+      <!-- Three Column (Images Only) Button -->
+      <button type="button" id="layout-three-col" class="layout-option-button">
+        <span class="grid-icon grid-icon--full">
+          {{ 'grid_2_full.svg' | inline_asset_content }}
+        </span>
+        <span class="grid-icon grid-icon--empty">
+          {{ 'grid_2_empty.svg' | inline_asset_content }}
+        </span>
+      </button>
     </div>
     <div class="facets-toggle-container">
       <button type="button" id="facets-toggle-button" class="facets-toggle-button">
@@ -391,34 +427,38 @@
 
     if (!grid || !btnOneCol || !btnTwoCol || !btnThreeCol) return;
 
+    // Optionally, remove any previously bound events
     btnOneCol.replaceWith(btnOneCol.cloneNode(true));
     btnTwoCol.replaceWith(btnTwoCol.cloneNode(true));
     btnThreeCol.replaceWith(btnThreeCol.cloneNode(true));
 
+    // Re-select after cloning
     btnOneCol = document.getElementById('layout-one-col');
     btnTwoCol = document.getElementById('layout-two-col');
     btnThreeCol = document.getElementById('layout-three-col');
 
+    function setActive(button) {
+      [btnOneCol, btnTwoCol, btnThreeCol].forEach(function(btn) {
+        if (btn) btn.classList.toggle('active', btn === button);
+      });
+    }
+
     btnOneCol.addEventListener('click', function() {
       grid.classList.remove('two-col', 'three-col');
       grid.classList.add('one-col');
-      btnOneCol.classList.add('active');
-      btnTwoCol.classList.remove('active');
-      btnThreeCol.classList.remove('active');
+      setActive(btnOneCol);
     });
+
     btnTwoCol.addEventListener('click', function() {
       grid.classList.remove('one-col', 'three-col');
       grid.classList.add('two-col');
-      btnTwoCol.classList.add('active');
-      btnOneCol.classList.remove('active');
-      btnThreeCol.classList.remove('active');
+      setActive(btnTwoCol);
     });
+
     btnThreeCol.addEventListener('click', function() {
       grid.classList.remove('one-col', 'two-col');
       grid.classList.add('three-col');
-      btnThreeCol.classList.add('active');
-      btnOneCol.classList.remove('active');
-      btnTwoCol.classList.remove('active');
+      setActive(btnThreeCol);
     });
   };
 
