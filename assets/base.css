@@ -2403,7 +2403,7 @@ input[type='checkbox'] {
 
 /* section-header */
 .section-header.shopify-section-group-header-group {
-  z-index: 3;
+  z-index: 60; /* Ensure predictive search overlays sticky product bar */
 }
 
 .shopify-section-header-sticky {
@@ -2424,7 +2424,7 @@ input[type='checkbox'] {
 }
 
 .shopify-section-group-header-group {
-  z-index: 4;
+  z-index: 60;
 }
 
 .section-header ~ .shopify-section-group-header-group {
