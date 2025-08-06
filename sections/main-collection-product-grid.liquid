@@ -133,14 +133,34 @@
     }
   }
   @media (min-width: 750px) {
+    /* Desktop layout adjustments */
     .product-grid.one-col {
-      grid-template-columns: 1fr !important;
+      grid-template-columns: repeat(6, 1fr) !important;
+    }
+    .product-grid.one-col .grid__item {
+      max-width: none;
+    }
+    /* Mosaic pattern for grid option one */
+    .product-grid.one-col .grid__item:nth-child(7n + 1) {
+      grid-column: 2 / span 4;
+    }
+    .product-grid.one-col .grid__item:nth-child(7n + 2),
+    .product-grid.one-col .grid__item:nth-child(7n + 3),
+    .product-grid.one-col .grid__item:nth-child(7n + 4) {
+      grid-column: span 2;
+    }
+    .product-grid.one-col .grid__item:nth-child(7n + 5) {
+      grid-column: 2 / span 4;
+    }
+    .product-grid.one-col .grid__item:nth-child(7n + 6),
+    .product-grid.one-col .grid__item:nth-child(7n + 7) {
+      grid-column: span 3;
     }
     .product-grid.two-col {
-      grid-template-columns: repeat(2, 1fr) !important;
+      grid-template-columns: repeat(6, 1fr) !important;
     }
     .product-grid.three-col {
-      grid-template-columns: repeat(3, 1fr) !important;
+      grid-template-columns: repeat(8, 1fr) !important;
     }
   }
   .product-grid.three-col .card__content,
