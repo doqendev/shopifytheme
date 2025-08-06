@@ -135,26 +135,34 @@
   @media (min-width: 750px) {
     /* Desktop layout adjustments */
     .product-grid.one-col {
-      grid-template-columns: repeat(6, 1fr) !important;
+      /* Use a high column count so each row can mimic different section splits */
+      grid-template-columns: repeat(280, 1fr) !important;
     }
     .product-grid.one-col .grid__item {
       max-width: none;
     }
     /* Mosaic pattern for grid option one */
+    /* Row pattern: [single centered], [three centered], [single centered], [two centered] */
     .product-grid.one-col .grid__item:nth-child(7n + 1) {
-      grid-column: 2 / span 4;
+      grid-column: 113 / span 56; /* Centered item in a 5-section row */
     }
-    .product-grid.one-col .grid__item:nth-child(7n + 2),
-    .product-grid.one-col .grid__item:nth-child(7n + 3),
+    .product-grid.one-col .grid__item:nth-child(7n + 2) {
+      grid-column: 81 / span 40; /* First of three items in a 7-section row */
+    }
+    .product-grid.one-col .grid__item:nth-child(7n + 3) {
+      grid-column: 121 / span 40; /* Second item in 7-section row */
+    }
     .product-grid.one-col .grid__item:nth-child(7n + 4) {
-      grid-column: span 2;
+      grid-column: 161 / span 40; /* Third item in 7-section row */
     }
     .product-grid.one-col .grid__item:nth-child(7n + 5) {
-      grid-column: 2 / span 4;
+      grid-column: 113 / span 56; /* Repeat single centered row */
     }
-    .product-grid.one-col .grid__item:nth-child(7n + 6),
+    .product-grid.one-col .grid__item:nth-child(7n + 6) {
+      grid-column: 106 / span 35; /* First of two items in an 8-section row */
+    }
     .product-grid.one-col .grid__item:nth-child(7n + 7) {
-      grid-column: span 3;
+      grid-column: 141 / span 35; /* Second item in 8-section row */
     }
     .product-grid.two-col {
       grid-template-columns: repeat(6, 1fr) !important;
