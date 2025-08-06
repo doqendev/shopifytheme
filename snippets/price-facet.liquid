@@ -1,0 +1,58 @@
+{% comment %}
+  price-facet.liquid
+  Ensures that if there's no active filter on load,
+  we default to filter.range_min / filter.range_max
+  rather than showing blank "€ - €".
+{% endcomment %}
+
+{% assign current_min = filter.min_value.value %}
+{% assign current_max = filter.max_value.value %}
+
+{%- comment -%}
+  If there's no active min or max (blank), fall back
+  to the filter's full range
+{%- endcomment -%}
+{% if current_min == blank %}
+  {% assign current_min = filter.range_min %}
+{% endif %}
+{% if current_max == blank %}
+  {% assign current_max = filter.range_max %}
+{% endif %}
+
+<!-- Slider Container with ARIA Attributes for Accessibility -->
+<div
+  id="{{ id_prefix }}PriceRangeSlider"
+  class="price-slider"
+  role="slider"
+  aria-labelledby="{{ id_prefix }}PriceRangeSliderLabel"
+  aria-valuemin="{{ filter.range_min | money_without_currency }}"
+  aria-valuemax="{{ filter.range_max | money_without_currency }}"
+  aria-valuenow="{{ current_min | money_without_currency }}"
+  aria-valuetext="{{ current_min | money_without_currency }} {{ cart.currency.symbol }}"
+  data-min="{{ filter.range_min | money_without_currency }}"
+  data-max="{{ filter.range_max | money_without_currency }}"
+>
+</div>
+
+<!-- Dynamic Price Labels -->
+<div class="price-slider__labels">
+  <span class="price-slider__min">{{ current_min | money_without_currency }}€</span>
+  <span class="price-slider__range"> - </span>
+  <span class="price-slider__max">{{ current_max | money_without_currency }}€</span>
+</div>
+
+<!-- Hidden Inputs to Store Slider Values -->
+<input
+  type="hidden"
+  name="{{ filter.min_value.param_name }}"
+  id="{{ id_prefix }}price_min"
+  value="{{ current_min | money_without_currency }}"
+  data-default="{{ filter.range_min | money_without_currency }}"
+>
+<input
+  type="hidden"
+  name="{{ filter.max_value.param_name }}"
+  id="{{ id_prefix }}price_max"
+  value="{{ current_max | money_without_currency }}"
+  data-default="{{ filter.range_max | money_without_currency }}"
+>
