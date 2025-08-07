@@ -4078,6 +4078,7 @@ font-style: normal;
   position: relative;
   margin-left: auto;
   z-index: 20;
+  margin-right: 5px;
 }
 
 .product-card-plus .plus-icon {
