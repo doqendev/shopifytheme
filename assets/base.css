@@ -4105,7 +4105,7 @@ font-style: normal;
   align-items: stretch;
   justify-content: center;
   gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 1);
   z-index: 1000;
 }
 
