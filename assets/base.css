@@ -4110,10 +4110,10 @@ font-style: normal;
 }
 
 .product-card-plus .overlay-sizes {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  gap: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 3rem;
 }
 
 .product-card-plus.active .size-options {
