@@ -4129,13 +4129,13 @@ font-style: normal;
     border: 1px solid #84848400;
     background: none;
     padding: .75rem 1rem;
-    font-size: 1rem;
+    font-size: 1.2rem;
     font-family: Figtree;
     font-weight: 500;
     cursor: pointer;
     border-radius: 0%;
     width: 100%;
-    text-align: center;
+    text-align: left;
 }
 
 .product-card-plus .size-option.sold-out {
