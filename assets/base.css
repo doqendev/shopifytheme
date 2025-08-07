@@ -4096,22 +4096,24 @@ font-style: normal;
 
 .product-card-plus .size-options {
   display: none;
-  position: absolute;
-  top: calc(100% + 0.25rem);
-  right: 0;
-  width: max-content;
-  padding: 0.5rem 0.5rem;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem;
   flex-direction: column;
   align-items: stretch;
   justify-content: center;
   gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
+  z-index: 1000;
 }
 
 .product-card-plus .overlay-sizes {
   display: flex;
+  flex-direction: column;
   width: 100%;
-  gap: 0.25rem;
+  gap: 0.5rem;
 }
 
 .product-card-plus.active .size-options {
@@ -4125,13 +4127,13 @@ font-style: normal;
 .product-card-plus .size-option {
   border: 1px solid #848484;
   background: none;
-  padding: 0.3rem 0.6rem;
+  padding: 0.75rem 1rem;
   font-size: 1rem;
   font-family: Figtree;
   font-weight: 500;
   cursor: pointer;
   border-radius: 0%;
-  flex: 1 1 0;
+  width: 100%;
   text-align: center;
 }
 
@@ -4146,14 +4148,13 @@ font-style: normal;
     height: 3rem;
   }
   .product-card-plus .size-options {
-    padding: 0.2rem;
+    padding: 1rem;
     gap: 0.75rem;
   }
   .product-card-plus .size-option {
-    padding: 0.5rem 0.75rem;
+    padding: 0.75rem 1rem;
     font-size: 1.3rem;
     font-family: Figtree;
-    flex: 1 1 0;
   }
 }
 
