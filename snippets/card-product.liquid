@@ -200,21 +200,8 @@
         {% endif %}
       {% endfor %}
     </div>
+
     <div class="swiper-pagination"></div>
-    {% if size_option_index != -1 %}
-      <div class="product-card-plus">
-        <button type="button" class="plus-icon" aria-label="{{ 'products.product.add_to_cart' | t }}" tabindex="0">
-          {{ 'icon-plus.svg' | inline_asset_content }}
-        </button>
-        <div class="size-options" tabindex="-1">
-          <div class="overlay-sizes">
-            {% for size in all_sizes %}
-              <button type="button" class="size-option{% unless available_sizes contains size %} sold-out{% endunless %}" data-size="{{ size }}" {% unless available_sizes contains size %}disabled="disabled"{% endunless %}>{{ size }}</button>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-    {% endif %}
   </div>
 {% endif %}
 
@@ -288,6 +275,20 @@
                     {% endfor %}
                     {% if additional_swatch_count > 0 %}
                       <span class="additional-swatch-count">+{{ additional_swatch_count }}</span>
+                    {% endif %}
+                    {% if size_option_index != -1 %}
+                      <div class="product-card-plus">
+                        <button type="button" class="plus-icon" aria-label="{{ 'products.product.add_to_cart' | t }}" tabindex="0">
+                          {{ 'icon-plus.svg' | inline_asset_content }}
+                        </button>
+                        <div class="size-options" tabindex="-1">
+                          <div class="overlay-sizes">
+                            {% for size in all_sizes %}
+                              <button type="button" class="size-option{% unless available_sizes contains size %} sold-out{% endunless %}" data-size="{{ size }}" {% unless available_sizes contains size %}disabled="disabled"{% endunless %}>{{ size }}</button>
+                            {% endfor %}
+                          </div>
+                        </div>
+                      </div>
                     {% endif %}
                   </div>
                 {% endif %}
