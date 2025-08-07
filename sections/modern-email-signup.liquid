@@ -1,0 +1,78 @@
+{{ 'modern-email-signup.css' | asset_url | stylesheet_tag }}
+
+<div
+  id="ComingSoonNewsletter-{{ section.id }}"
+  class="coming-soon-section"
+  {% if section.settings.background_image != blank %}
+    style="background-image: url({{ section.settings.background_image | image_url: '2048x' }});"
+  {% endif %}
+>
+  <div class="coming-soon-content">
+    <!-- Main Heading -->
+    <h1 class="coming-soon-title">COMING SOON</h1>
+
+    <!-- Subheading -->
+    <p class="coming-soon-subtitle">Subscribe to our newsletter</p>
+
+    <!-- Email-Signup Form -->
+    <div class="coming-soon-form-wrapper">
+      {% form 'customer', class: 'coming-soon-form' %}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+
+        <div class="coming-soon-field">
+          <input
+            id="ComingSoonEmail-{{ section.id }}"
+            type="email"
+            name="contact[email]"
+            placeholder="Enter your email"
+            required
+            aria-required="true"
+          >
+          <button
+            type="submit"
+            class="coming-soon-button"
+            aria-label="{{ 'newsletter.button_label' | t }}"
+          >
+            Subscribe
+          </button>
+        </div>
+
+        {% if form.errors %}
+          <p class="coming-soon-error" tabindex="-1">
+            {{ form.errors.messages.email }}
+          </p>
+        {% endif %}
+
+        {% if form.posted_successfully? %}
+          <p class="coming-soon-success" tabindex="-1">
+            {{ 'newsletter.success' | t }}
+          </p>
+        {% endif %}
+      {% endform %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Coming Soon Newsletter",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image",
+      "info": "Choose a full-bleed background photo or illustration."
+    }
+  ],
+  "blocks": [],
+  "presets": [
+    {
+      "name": "Coming Soon Newsletter",
+      "category": "Newsletter",
+      "settings": {
+        "background_image": ""
+      }
+    }
+  ]
+}
+{% endschema %}
