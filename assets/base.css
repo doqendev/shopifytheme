@@ -4185,3 +4185,40 @@ font-style: normal;
     overscroll-behavior-y: none;
   }
 }
+
+/* --- Size-drawer header row --- */
+.size-options-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;              /* keeps text and link tidy on small screens */
+  margin-bottom: 1rem;    /* space above the size buttons */
+}
+
+/* Left label */
+.size-options-title {
+  font-family: Figtree, sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: .03em;
+}
+
+/* Right “Guia de tamanhos” link */
+.size-guide-link {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  font-size: 1.2rem;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  color: rgb(var(--color-foreground));
+}
+
+.size-guide-link:hover { opacity: .7; }
+
+/* Ruler icon keeps the same colour as text */
+.icon--ruler {
+  width: 1.2rem;
+  height: 1.2rem;
+  flex-shrink: 0;
+}
