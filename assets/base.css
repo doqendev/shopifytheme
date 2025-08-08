@@ -4077,7 +4077,6 @@ font-style: normal;
 .product-card-plus {
   position: relative;
   margin-left: auto;
-  z-index: 20;
   margin-right: 8px;
 }
 
@@ -4136,6 +4135,15 @@ font-style: normal;
     border-radius: 0%;
     width: 100%;
     text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.product-card-plus .low-stock-message {
+  color: #a30000;
+  font-size: 1.2rem;
+  display: none;
 }
 
 .product-card-plus .size-option.sold-out {
