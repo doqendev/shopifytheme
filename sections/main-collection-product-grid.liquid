@@ -1,0 +1,734 @@
+{% comment %}
+  main-collection-product-grid.liquid
+  (PRODUCT-level color references)
+  ------------------------------------------------------------------
+  - Collects base colors from the product's color metaobject references
+  - Collects sizes from variants
+  - Filters by base color, size, product type, etc.
+{% endcomment %}
+
+{{ 'template-collection.css' | asset_url | stylesheet_tag }}
+{{ 'swatches-cheyenne.css' | asset_url | stylesheet_tag }}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+
+{% if section.settings.image_shape == 'blob' %}
+  {{ 'mask-blobs.css' | asset_url | stylesheet_tag }}
+{% endif %}
+
+{% unless section.settings.quick_add == 'none' %}
+  {{ 'quick-add.css' | asset_url | stylesheet_tag }}
+{% endunless %}
+
+{% if section.settings.quick_add == 'standard' %}
+  <script src="{{ 'quick-add.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+{% endif %}
+
+{% if section.settings.quick_add == 'bulk' %}
+  <script src="{{ 'quick-add-bulk.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'quantity-popover.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'price-per-item.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'quick-order-list.js' | asset_url }}" defer="defer"></script>
+{% endif %}
+
+<style>
+  /* Existing grid styles */
+  #product-grid {
+    display: grid;
+    gap: 0.6rem;
+    margin-block-start: 0px;
+  }
+  #product-grid .grid__item {
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+  }
+  #product-grid .card-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%!important; /* Ensure cards take full height */
+  }
+  #product-grid .card-wrapper > * {
+    flex-grow: 1; /* Ensures all cards align to the tallest one */
+  }
+  @media screen and (max-width: 749px) {
+    #product-grid {
+      grid-template-columns: repeat(2, 1fr); /* Two products per row on mobile */
+    }
+  }
+  @media screen and (min-width: 750px) {
+    #product-grid {
+      grid-template-columns: repeat(6, 1fr); /* Six products per row on desktop */
+    }
+  }
+</style>
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<style>
+  /* Minimal styling for the custom filter drawer and layout options */
+  @media screen and (max-width: 749px) {
+    #product-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    #product-grid .grid__item {
+      display: flex;
+      flex-direction: column;
+    }
+    /* Collection heading on mobile */
+    #shopify-section-template--24389098570052__product-grid > div > div.collection-header.page-width > h1 {
+      margin-left: 20px;
+      font-weight: 500;
+      font-size: 16px;
+      letter-spacing: .56px;
+      margin-bottom: 0px!important;
+    }
+  }
+  @media screen and (min-width: 750px) {
+    #product-grid {
+      grid-template-columns: repeat(6, 1fr);
+    }
+    #product-grid .grid__item {
+      display: flex;
+      flex-direction: column;
+    }
+    /* Collection heading on desktop */
+    #shopify-section-template--24389098570052__product-grid > div > div.collection-header.page-width > h1 {
+      margin-left: 25px;
+      font-weight: 600;
+      font-size: 20px;
+      line-height: 18px;
+      letter-spacing: .56px;
+    }
+  }
+  #product-grid .grid__item {
+    width: 100%;
+    box-sizing: border-box;
+    align-self: start;
+    height: 100%!important;
+  }
+  
+  /* New layout options CSS */
+  @media (max-width: 749px) {
+    .product-grid.one-col {
+      grid-template-columns: 1fr !important;
+    }
+    .product-grid.two-col {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+    .product-grid.three-col {
+      grid-template-columns: repeat(3, 1fr) !important;
+    }
+  }
+  @media (min-width: 750px) {
+    /* Desktop layout adjustments */
+    .product-grid.one-col {
+      /* Use a high column count so each row can mimic different section splits */
+      grid-template-columns: repeat(280, 1fr) !important;
+    }
+    .product-grid.one-col .grid__item {
+      max-width: none;
+    }
+    /* Mosaic pattern for grid option one */
+    /* Row pattern: [single centered], [three centered], [single centered], [two centered] */
+    .product-grid.one-col .grid__item:nth-child(7n + 1) {
+      grid-column: 113 / span 56; /* Centered item in a 5-section row */
+    }
+    .product-grid.one-col .grid__item:nth-child(7n + 2) {
+      grid-column: 81 / span 40; /* First of three items in a 7-section row */
+    }
+    .product-grid.one-col .grid__item:nth-child(7n + 3) {
+      grid-column: 121 / span 40; /* Second item in 7-section row */
+    }
+    .product-grid.one-col .grid__item:nth-child(7n + 4) {
+      grid-column: 161 / span 40; /* Third item in 7-section row */
+    }
+    .product-grid.one-col .grid__item:nth-child(7n + 5) {
+      grid-column: 113 / span 56; /* Repeat single centered row */
+    }
+    .product-grid.one-col .grid__item:nth-child(7n + 6) {
+      grid-column: 106 / span 35; /* First of two items in an 8-section row */
+    }
+    .product-grid.one-col .grid__item:nth-child(7n + 7) {
+      grid-column: 141 / span 35; /* Second item in 8-section row */
+    }
+    .product-grid.two-col {
+      grid-template-columns: repeat(6, 1fr) !important;
+    }
+    .product-grid.three-col {
+      grid-template-columns: repeat(8, 1fr) !important;
+    }
+  }
+  .product-grid.three-col .card__content,
+  .product-grid.three-col .product-card-plus {
+    display: none !important;
+  }
+  .grid-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .layout-options .layout-option-button {
+    border: none;
+    background: #fff;
+    cursor: pointer;
+  }
+  .layout-options .layout-option-button.active {
+    background: transparent;
+    color: #fff;
+  }
+  /* Facets toggle button styling */
+  .facets-toggle-button {
+    border: 1px solid #ccc;
+    background: #fff;
+    cursor: pointer;
+  }
+  .facets-toggle-button.active {
+    background: #000;
+    color: #fff;
+  }
+  /* Grid icon display rules using your custom inline assets */
+  /* First, set a fixed size for the inline SVG icons */
+  .layout-option-button .grid-icon {
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+  }
+  /* Only display the full version on active buttons and the empty version on non-active buttons */
+  .layout-option-button.active .grid-icon--full {
+    display: inline-block;
+  }
+  .layout-option-button.active .grid-icon--empty {
+    display: none;
+  }
+  .layout-option-button:not(.active) .grid-icon--full {
+    display: none;
+  }
+  .layout-option-button:not(.active) .grid-icon--empty {
+    display: inline-block;
+  }
+
+  /* Optional additional style overrides */
+  #main-collection-filters > div.facets-container.facets-container-drawer > menu-drawer > details > summary > span.mobile-facets__open {
+    display: none; 
+  }
+  #main-collection-filters > div.active-facets.active-facets-mobile.medium-hide.large-up-hide > facet-remove.active-facets__button-wrapper > a {
+    color: black;
+  }
+
+
+#FacetsWrapperMobile > div.mobile-facet.mobile-facet-filter\.p\.tag > ul > li > label > input{
+  display:none;
+}
+
+
+#FacetsWrapperMobile > div.mobile-facet.mobile-facet-filter\.p\.tag > ul {
+  margin-left: 20px;
+}
+
+  
+#FacetsWrapperMobile > div.mobile-facet.mobile-facet-filter\.p\.tag > ul > li > label > span {
+  flex: 0 0 calc(100% / 4);
+    border: 1px solid #969696;
+    padding: 5px 10px;
+    margin-right: 10px;
+}
+
+  #FacetsWrapperMobile > div.mobile-facet.mobile-facet-filter\.p\.tag > ul {
+    max-width: 100% !important;
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+  .layout-options {
+    margin-left: 14px;
+    margin-top: 3px;
+  }
+
+  #facets-toggle-button > span > svg {
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+  }
+
+  #facets-toggle-button {
+    border: none;
+  }
+
+  #shopify-section-template--24389098570052__product-grid > div > div.grid-controls.page-width > div.facets-toggle-container {
+    margin-right: 14px;
+  }
+
+
+
+@media (max-width: 750px) {
+  .footer-desktop {
+    display: none;
+    }
+  }
+
+  @media (min-width: 751px) {
+  .footer-mobile {
+    display: none;
+    }
+  }
+  
+</style>
+
+<div class="section-{{ section.id }}-padding gradient color-{{ section.settings.color_scheme }}">
+  <!-- Collection Heading -->
+  <div class="collection-header page-width" style="margin-bottom: 1rem;">
+    <h1 class="collection-title">{{ collection.title }}</h1>
+  </div>
+
+  <!-- Grid Controls: Layout options and Facets toggle button in the same row -->
+  <div class="grid-controls page-width">
+    <div class="layout-options">
+      <!-- One Column Button -->
+      <button type="button" id="layout-one-col" class="layout-option-button">
+        <span class="grid-icon grid-icon--full">
+          {{ 'grid_1_thinner_active.svg' | inline_asset_content }}
+        </span>
+        <span class="grid-icon grid-icon--empty">
+          {{ 'grid_1_thinner.svg' | inline_asset_content }}
+        </span>
+      </button>
+      <!-- Two Column Button -->
+      <button type="button" id="layout-two-col" class="layout-option-button active">
+        <span class="grid-icon grid-icon--full">
+          {{ 'grid_2_thinner_active.svg' | inline_asset_content }}
+        </span>
+        <span class="grid-icon grid-icon--empty">
+          {{ 'grid_2_thinner.svg' | inline_asset_content }}
+        </span>
+      </button>
+      <!-- Three Column (Images Only) Button -->
+      <button type="button" id="layout-three-col" class="layout-option-button">
+        <span class="grid-icon grid-icon--full">
+          {{ 'grid_4_thinner_active.svg' | inline_asset_content }}
+        </span>
+        <span class="grid-icon grid-icon--empty">
+          {{ 'grid_4_thinner.svg' | inline_asset_content }}
+        </span>
+      </button>
+    </div>
+    <div class="facets-toggle-container">
+      <button type="button" id="facets-toggle-button" class="facets-toggle-button">
+        <span class="facets-icon" style="Font-size: 12px;">
+          FILTROS
+        </span>
+      </button>
+    </div>
+  </div>
+
+  {%- paginate collection.products by section.settings.products_per_page -%}
+  
+    {% if section.settings.enable_sorting and section.settings.filter_type == 'vertical' %}
+      <facet-filters-form class="facets facets-vertical-sort page-width small-hide">
+        <form class="facets-vertical-form" id="FacetSortForm">
+          <!-- existing sorting code -->
+        </form>
+      </facet-filters-form>
+    {% endif %}
+
+    <div class="{% if section.settings.filter_type == 'vertical' %} facets-vertical page-width{% endif %}">
+      {{ 'component-facets.css' | asset_url | stylesheet_tag }}
+      <script src="{{ 'facets.js' | asset_url }}" defer="defer"></script>
+      
+      {% if section.settings.enable_filtering or section.settings.enable_sorting %}
+        <aside
+          aria-labelledby="verticalTitle"
+          class="facets-wrapper{% unless section.settings.enable_filtering %} facets-wrapper--no-filters{% endunless %}{% if section.settings.filter_type != 'vertical' %} page-width{% endif %}"
+          id="main-collection-filters"
+          data-id="{{ section.id }}"
+        >
+          {% render 'facets',
+            results: collection,
+            enable_filtering: section.settings.enable_filtering,
+            enable_sorting: section.settings.enable_sorting,
+            filter_type: section.settings.filter_type,
+            paginate: paginate
+          %}
+        </aside>
+      {% endif %}
+
+      <div
+        class="product-grid-container{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+        id="ProductGridContainer"
+        {% if settings.animations_reveal_on_scroll %}
+          data-cascade
+        {% endif %}
+      >
+        {% if collection.products.size == 0 %}
+          <div class="collection collection--empty page-width" id="product-grid" data-id="{{ section.id }}">
+            <div class="loading-overlay gradient"></div>
+            <div class="title-wrapper center">
+              <h2 class="title title--primary">
+                {{ 'sections.collection_template.empty' | t -}}
+                <br>
+                {{
+                  'sections.collection_template.use_fewer_filters_html'
+                  | t: link: collection.url, class: 'underlined-link link'
+                }}
+              </h2>
+            </div>
+          </div>
+        {% else %}
+          <div class="collection{% if section.settings.filter_type != 'vertical' %} page-width{% endif %}">
+            <div class="loading-overlay gradient"></div>
+            <ul
+              id="product-grid"
+              data-id="{{ section.id }}"
+              class="
+                grid product-grid
+                grid--{{ section.settings.columns_mobile }}-col-tablet-down
+                grid--{{ section.settings.columns_desktop }}-col-desktop
+                {% if section.settings.quick_add == 'bulk' %} collection-quick-add-bulk{% endif %}
+              "
+            >
+              {% assign skip_card_product_styles = false %}
+              {% for product in collection.products %}
+                {% assign lazy_load = false %}
+                {% if forloop.index > 2 %}
+                  {% assign lazy_load = true %}
+                {% endif %}
+                <li
+                  class="grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+                  {% if settings.animations_reveal_on_scroll %}
+                    data-cascade
+                    style="--animation-order: {{ forloop.index }};"
+                  {% endif %}
+                >
+                  {% render 'card-product',
+                    card_product: product,
+                    media_aspect_ratio: section.settings.image_ratio,
+                    image_shape: section.settings.image_shape,
+                    show_secondary_image: section.settings.show_secondary_image,
+                    show_vendor: section.settings.show_vendor,
+                    show_rating: section.settings.show_rating,
+                    lazy_load: lazy_load,
+                    skip_styles: skip_card_product_styles,
+                    quick_add: section.settings.quick_add,
+                    section_id: section.id
+                  %}
+                </li>
+                {% assign skip_card_product_styles = true %}
+              {% endfor %}
+            </ul>
+
+            {% if paginate.pages > 1 %}
+              {% render 'pagination', paginate: paginate, anchor: '' %}
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  {%- endpaginate -%}
+
+  {% if section.settings.image_shape == 'arch' %}
+    {{ 'mask-arch.svg' | inline_asset_content }}
+  {% endif %}
+</div>
+
+
+<!-- Grid Options and Facets Toggle Script -->
+<script>
+  // Global initializer for grid options
+  window.initializeGridOptions = function() {
+    var grid = document.getElementById('product-grid');
+    var btnOneCol = document.getElementById('layout-one-col');
+    var btnTwoCol = document.getElementById('layout-two-col');
+    var btnThreeCol = document.getElementById('layout-three-col');
+
+    if (!grid || !btnOneCol || !btnTwoCol || !btnThreeCol) return;
+
+    // Optionally, remove any previously bound events
+    btnOneCol.replaceWith(btnOneCol.cloneNode(true));
+    btnTwoCol.replaceWith(btnTwoCol.cloneNode(true));
+    btnThreeCol.replaceWith(btnThreeCol.cloneNode(true));
+
+    // Re-select after cloning
+    btnOneCol = document.getElementById('layout-one-col');
+    btnTwoCol = document.getElementById('layout-two-col');
+    btnThreeCol = document.getElementById('layout-three-col');
+
+    function setActive(button) {
+      [btnOneCol, btnTwoCol, btnThreeCol].forEach(function(btn) {
+        if (btn) btn.classList.toggle('active', btn === button);
+      });
+    }
+
+    btnOneCol.addEventListener('click', function() {
+      grid.classList.remove('two-col', 'three-col');
+      grid.classList.add('one-col');
+      setActive(btnOneCol);
+    });
+
+    btnTwoCol.addEventListener('click', function() {
+      grid.classList.remove('one-col', 'three-col');
+      grid.classList.add('two-col');
+      setActive(btnTwoCol);
+    });
+
+    btnThreeCol.addEventListener('click', function() {
+      grid.classList.remove('one-col', 'two-col');
+      grid.classList.add('three-col');
+      setActive(btnThreeCol);
+    });
+  };
+
+  document.addEventListener('DOMContentLoaded', function() {
+    window.initializeGridOptions();
+
+    // Facets toggle functionality
+    var facetsToggleBtn = document.getElementById('facets-toggle-button');
+    var facetsDrawerSummary = document.querySelector('menu-drawer details.mobile-facets__disclosure summary.mobile-facets__open-wrapper');
+    var facetsWrapper = document.getElementById('main-collection-filters');
+    
+    if (facetsToggleBtn) {
+      facetsToggleBtn.addEventListener('click', function() {
+        if (facetsDrawerSummary) {
+          facetsDrawerSummary.click();
+        } else if (facetsWrapper) {
+          facetsWrapper.classList.toggle('active');
+          facetsToggleBtn.classList.toggle('active');
+        }
+      });
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "t:sections.main-collection-product-grid.name",
+  "class": "section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 8,
+      "max": 36,
+      "step": 4,
+      "default": 16,
+      "label": "t:sections.main-collection-product-grid.settings.products_per_page.label"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 4,
+      "label": "t:sections.main-collection-product-grid.settings.columns_desktop.label"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "info": "t:sections.all.colors.has_cards_info",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.main-collection-product-grid.settings.header__3.content"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "t:sections.main-collection-product-grid.settings.image_ratio.options__1.label"
+        },
+        {
+          "value": "portrait",
+          "label": "t:sections.main-collection-product-grid.settings.image_ratio.options__2.label"
+        },
+        {
+          "value": "square",
+          "label": "t:sections.main-collection-product-grid.settings.image_ratio.options__3.label"
+        }
+      ],
+      "default": "adapt",
+      "label": "t:sections.main-collection-product-grid.settings.image_ratio.label"
+    },
+    {
+      "type": "select",
+      "id": "image_shape",
+      "options": [
+        {
+          "value": "default",
+          "label": "t:sections.all.image_shape.options__1.label"
+        },
+        {
+          "value": "arch",
+          "label": "t:sections.all.image_shape.options__2.label"
+        },
+        {
+          "value": "blob",
+          "label": "t:sections.all.image_shape.options__3.label"
+        },
+        {
+          "value": "chevronleft",
+          "label": "t:sections.all.image_shape.options__4.label"
+        },
+        {
+          "value": "chevronright",
+          "label": "t:sections.all.image_shape.options__5.label"
+        },
+        {
+          "value": "diamond",
+          "label": "t:sections.all.image_shape.options__6.label"
+        },
+        {
+          "value": "parallelogram",
+          "label": "t:sections.all.image_shape.options__7.label"
+        },
+        {
+          "value": "round",
+          "label": "t:sections.all.image_shape.options__8.label"
+        }
+      ],
+      "default": "default",
+      "label": "t:sections.all.image_shape.label",
+      "info": "t:sections.all.image_shape.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_secondary_image",
+      "default": false,
+      "label": "t:sections.main-collection-product-grid.settings.show_secondary_image.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "default": false,
+      "label": "t:sections.main-collection-product-grid.settings.show_vendor.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "default": false,
+      "label": "t:sections.main-collection-product-grid.settings.show_rating.label",
+      "info": "t:sections.main-collection-product-grid.settings.show_rating.info"
+    },
+    {
+      "type": "select",
+      "id": "quick_add",
+      "default": "none",
+      "label": "t:sections.main-collection-product-grid.settings.quick_add.label",
+      "info": "t:sections.main-collection-product-grid.settings.quick_add.info",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.main-collection-product-grid.settings.quick_add.options.option_1"
+        },
+        {
+          "value": "standard",
+          "label": "t:sections.main-collection-product-grid.settings.quick_add.options.option_2"
+        },
+        {
+          "value": "bulk",
+          "label": "t:sections.main-collection-product-grid.settings.quick_add.options.option_3"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:sections.main-collection-product-grid.settings.header__1.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "default": true,
+      "label": "t:sections.main-collection-product-grid.settings.enable_filtering.label",
+      "info": "t:sections.main-collection-product-grid.settings.enable_filtering.info"
+    },
+    {
+      "type": "select",
+      "id": "filter_type",
+      "options": [
+        {
+          "value": "horizontal",
+          "label": "t:sections.main-collection-product-grid.settings.filter_type.options__1.label"
+        },
+        {
+          "value": "vertical",
+          "label": "t:sections.main-collection-product-grid.settings.filter_type.options__2.label"
+        },
+        {
+          "value": "drawer",
+          "label": "t:sections.main-collection-product-grid.settings.filter_type.options__3.label"
+        }
+      ],
+      "default": "horizontal",
+      "label": "t:sections.main-collection-product-grid.settings.filter_type.label",
+      "info": "t:sections.main-collection-product-grid.settings.filter_type.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "default": true,
+      "label": "t:sections.main-collection-product-grid.settings.enable_sorting.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.main-collection-product-grid.settings.header_mobile.content"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "default": "2",
+      "label": "t:sections.main-collection-product-grid.settings.columns_mobile.label",
+      "options": [
+        {
+          "value": "1",
+          "label": "t:sections.main-collection-product-grid.settings.columns_mobile.options__1.label"
+        },
+        {
+          "value": "2",
+          "label": "t:sections.main-collection-product-grid.settings.columns_mobile.options__2.label"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ]
+}
+{% endschema %}
