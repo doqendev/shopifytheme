@@ -302,7 +302,10 @@
 
                           <div class="overlay-sizes">
                             {% for size in all_sizes %}
-                              <button type="button" class="size-option{% unless available_sizes contains size %} sold-out{% endunless %}" data-size="{{ size }}" {% unless available_sizes contains size %}disabled="disabled"{% endunless %}>{{ size }}</button>
+                              <button type="button" class="size-option{% unless available_sizes contains size %} sold-out{% endunless %}" data-size="{{ size }}" {% unless available_sizes contains size %}disabled="disabled"{% endunless %}>
+                                <span class="size-label">{{ size }}</span>
+                                <span class="low-stock" hidden>Poucas unidades</span>
+                              </button>
                             {% endfor %}
                           </div>
                         </div>
@@ -407,30 +410,36 @@
         var selectedColor = activeSwatch ? activeSwatch.dataset.color : null;
 
         var sizeAvailability = {};
+        var sizeInventory = {};
         variants.forEach(function(v) {
           if (selectedColor && colorIndex !== -1 && v.options[colorIndex] != selectedColor) return;
           var sizeVal = v.options[sizeIndex];
           if (!sizeVal) return;
-          if (sizeAvailability[sizeVal] === undefined) {
-            sizeAvailability[sizeVal] = v.available;
-          } else {
-            sizeAvailability[sizeVal] = sizeAvailability[sizeVal] || v.available;
-          }
+          sizeAvailability[sizeVal] = v.available;
+          sizeInventory[sizeVal] = v.inventory_quantity;
         });
 
         var buttons = card.querySelectorAll('.size-options .size-option');
         buttons.forEach(function(btn) {
           var sizeVal = btn.dataset.size;
+          var lowStockEl = btn.querySelector('.low-stock');
           if (sizeAvailability[sizeVal] === undefined) {
             btn.style.display = 'none';
           } else {
             btn.style.display = '';
+            var inventoryQty = sizeInventory[sizeVal] || 0;
             if (sizeAvailability[sizeVal]) {
               btn.classList.remove('sold-out');
               btn.disabled = false;
+              if (inventoryQty > 0 && inventoryQty < 5) {
+                lowStockEl.hidden = false;
+              } else {
+                lowStockEl.hidden = true;
+              }
             } else {
               btn.classList.add('sold-out');
               btn.disabled = true;
+              lowStockEl.hidden = true;
             }
           }
         });

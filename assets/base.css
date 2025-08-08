@@ -4136,6 +4136,14 @@ font-style: normal;
     border-radius: 0%;
     width: 100%;
     text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.product-card-plus .size-option .low-stock {
+  font-size: 1rem;
+  color: red;
 }
 
 .product-card-plus .size-option.sold-out {
