@@ -1,6 +1,6 @@
 .price-and-swatch {
   position:relative;
-  z-index: 1;
+
   display: flex;
   flex-direction: column; /* Default for mobile */
   align-items: flex-start;
