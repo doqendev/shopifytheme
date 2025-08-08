@@ -8,11 +8,15 @@
   display: flex;
   justify-content: flex-end;
   background-color: rgba(var(--color-foreground), 0.5);
-  transition: visibility var(--duration-default) ease;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s linear var(--duration-default), opacity var(--duration-default) ease;
 }
 
 .drawer.active {
   visibility: visible;
+  opacity: 1;
+  transition: visibility 0s linear 0s, opacity var(--duration-default) ease;
 }
 
 .drawer__inner {
