@@ -46,8 +46,15 @@
   .swiper-slide {
     width: 100%;
   }
-  .swiper-pagination-bullet {
+.swiper-pagination-bullet {
     display: none;
+  }
+
+  .size-option.low-stock::after {
+    content: attr(data-low-stock-text);
+    display: block;
+    font-size: 12px;
+    color: #d02e2e;
   }
 
 @media screen and (min-width: 750px) {
@@ -281,7 +288,7 @@
                         <button type="button" class="plus-icon" aria-label="{{ 'products.product.add_to_cart' | t }}" tabindex="0">
                           {{ 'icon-plus.svg' | inline_asset_content }}
                         </button>
-                        <div class="size-options" tabindex="-1">
+                          <div class="size-options" tabindex="-1" data-low-stock-text="Poucas unidades">
 
                           <div class="size-options-header">
     <span class="size-options-title">Seleciona o tamanho</span>
@@ -393,48 +400,64 @@
       var plusEls = document.querySelectorAll('.product-card-plus');
       var productCards = document.querySelectorAll('.product-card-wrapper');
 
-      function updateSizeButtons(card) {
-        if (!card) return;
-        var variants = [];
-        try {
-          variants = JSON.parse(card.dataset.variants);
-        } catch (e) {}
-        var colorIndex = parseInt(card.dataset.colorIndex || '-1', 10);
-        var sizeIndex = parseInt(card.dataset.sizeIndex || '-1', 10);
-        if (sizeIndex === -1) return;
+        function updateSizeButtons(card) {
+          if (!card) return;
+          var variants = [];
+          try {
+            variants = JSON.parse(card.dataset.variants);
+          } catch (e) {}
+          var colorIndex = parseInt(card.dataset.colorIndex || '-1', 10);
+          var sizeIndex = parseInt(card.dataset.sizeIndex || '-1', 10);
+          if (sizeIndex === -1) return;
 
-        var activeSwatch = card.querySelector('.swatch.active');
-        var selectedColor = activeSwatch ? activeSwatch.dataset.color : null;
+          var activeSwatch = card.querySelector('.swatch.active');
+          var selectedColor = activeSwatch ? activeSwatch.dataset.color : null;
 
-        var sizeAvailability = {};
-        variants.forEach(function(v) {
-          if (selectedColor && colorIndex !== -1 && v.options[colorIndex] != selectedColor) return;
-          var sizeVal = v.options[sizeIndex];
-          if (!sizeVal) return;
-          if (sizeAvailability[sizeVal] === undefined) {
-            sizeAvailability[sizeVal] = v.available;
-          } else {
-            sizeAvailability[sizeVal] = sizeAvailability[sizeVal] || v.available;
-          }
-        });
-
-        var buttons = card.querySelectorAll('.size-options .size-option');
-        buttons.forEach(function(btn) {
-          var sizeVal = btn.dataset.size;
-          if (sizeAvailability[sizeVal] === undefined) {
-            btn.style.display = 'none';
-          } else {
-            btn.style.display = '';
-            if (sizeAvailability[sizeVal]) {
-              btn.classList.remove('sold-out');
-              btn.disabled = false;
+          var sizeAvailability = {};
+          var sizeLowStock = {};
+          variants.forEach(function(v) {
+            if (selectedColor && colorIndex !== -1 && v.options[colorIndex] != selectedColor) return;
+            var sizeVal = v.options[sizeIndex];
+            if (!sizeVal) return;
+            if (sizeAvailability[sizeVal] === undefined) {
+              sizeAvailability[sizeVal] = v.available;
             } else {
-              btn.classList.add('sold-out');
-              btn.disabled = true;
+              sizeAvailability[sizeVal] = sizeAvailability[sizeVal] || v.available;
             }
-          }
-        });
-      }
+            if (v.available && typeof v.inventory_quantity === 'number' && v.inventory_quantity < 5) {
+              sizeLowStock[sizeVal] = true;
+            }
+          });
+
+          var sizeOptionsEl = card.querySelector('.size-options');
+          var lowStockText = sizeOptionsEl ? sizeOptionsEl.dataset.lowStockText : 'Poucas unidades';
+
+          var buttons = card.querySelectorAll('.size-options .size-option');
+          buttons.forEach(function(btn) {
+            var sizeVal = btn.dataset.size;
+            if (sizeAvailability[sizeVal] === undefined) {
+              btn.style.display = 'none';
+            } else {
+              btn.style.display = '';
+              if (sizeAvailability[sizeVal]) {
+                btn.classList.remove('sold-out');
+                btn.disabled = false;
+                if (sizeLowStock[sizeVal]) {
+                  btn.classList.add('low-stock');
+                  btn.dataset.lowStockText = lowStockText;
+                } else {
+                  btn.classList.remove('low-stock');
+                  delete btn.dataset.lowStockText;
+                }
+              } else {
+                btn.classList.add('sold-out');
+                btn.disabled = true;
+                btn.classList.remove('low-stock');
+                delete btn.dataset.lowStockText;
+              }
+            }
+          });
+        }
 
       productCards.forEach(function(card){
         updateSizeButtons(card);
