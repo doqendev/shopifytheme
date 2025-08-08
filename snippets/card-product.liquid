@@ -144,6 +144,12 @@
     {% endfor %}
   {% endif %}
 
+  {% capture variant_inventory_map %}{
+  {% for variant in card_product.variants %}
+    "{{ variant.id }}": {{ variant.inventory_quantity | default: 0 }}{% unless forloop.last %},{% endunless %}
+  {% endfor %}
+  }{% endcapture %}
+
   <div
     class="card-wrapper product-card-wrapper product-card underline-links-hover"
     data-product-handle="{{ card_product.handle }}"
@@ -153,6 +159,7 @@
     data-product-types="{{ product_type_values_str }}"
     data-tags="{{ card_product.tags | join: ',' | downcase }}"
     data-variants='{{ card_product.variants | json | escape }}'
+    data-variant-inventory='{{ variant_inventory_map | strip_newlines | escape }}'
     data-color-index="{{ color_option_index }}"
     data-size-index="{{ size_option_index }}"
   >
@@ -402,6 +409,10 @@
         try {
           variants = JSON.parse(card.dataset.variants);
         } catch (e) {}
+        var variantInventory = {};
+        try {
+          variantInventory = JSON.parse(card.dataset.variantInventory || '{}');
+        } catch (e) {}
         var colorIndex = parseInt(card.dataset.colorIndex || '-1', 10);
         var sizeIndex = parseInt(card.dataset.sizeIndex || '-1', 10);
         if (sizeIndex === -1) return;
@@ -415,13 +426,14 @@
           if (selectedColor && colorIndex !== -1 && v.options[colorIndex] != selectedColor) return;
           var sizeVal = v.options[sizeIndex];
           if (!sizeVal) return;
+          var qty = variantInventory[v.id];
           if (sizeAvailability[sizeVal] === undefined) {
             sizeAvailability[sizeVal] = v.available;
-            sizeInventory[sizeVal] = v.inventory_quantity;
+            sizeInventory[sizeVal] = qty;
           } else {
             sizeAvailability[sizeVal] = sizeAvailability[sizeVal] || v.available;
-            if (sizeInventory[sizeVal] === undefined || v.inventory_quantity < sizeInventory[sizeVal]) {
-              sizeInventory[sizeVal] = v.inventory_quantity;
+            if (qty !== undefined && (sizeInventory[sizeVal] === undefined || qty < sizeInventory[sizeVal])) {
+              sizeInventory[sizeVal] = qty;
             }
           }
         });
@@ -437,7 +449,8 @@
             if (sizeAvailability[sizeVal]) {
               btn.classList.remove('sold-out');
               btn.disabled = false;
-              if (sizeInventory[sizeVal] !== undefined && sizeInventory[sizeVal] > 0 && sizeInventory[sizeVal] < 5) {
+              var qty = sizeInventory[sizeVal];
+              if (qty !== undefined && qty > 0 && qty < 5) {
                 lowStockEl.classList.remove('hidden');
               } else {
                 lowStockEl.classList.add('hidden');
