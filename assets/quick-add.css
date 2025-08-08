@@ -21,7 +21,6 @@
   width: 100%;
   background: rgba(var(--color-foreground), 0.2);
   height: 100%;
-  transition: opacity 0.25s ease;
 }
 
 .quick-add-modal[open] {
@@ -49,18 +48,13 @@
   position: absolute;
   top: 0;
   left: 50%;
-  transform: translate(-50%, -1.5rem);
+  transform: translateX(-50%);
   margin: var(--modal-height-offset) auto 0;
   width: 100%;
   background-color: rgb(var(--color-background));
   overflow: hidden;
   max-width: var(--page-width);
   width: calc(100% - 3rem);
-  transition: transform 0.25s ease;
-}
-
-.quick-add-modal[open] .quick-add-modal__content {
-  transform: translate(-50%, 0);
 }
 
 @media screen and (min-width: 750px) {
