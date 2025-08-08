@@ -50,6 +50,13 @@
     display: none;
   }
 
+  .low-stock {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    color: rgb(238, 148, 65);
+  }
+
 @media screen and (min-width: 750px) {
 }
 </style>
@@ -407,30 +414,52 @@
         var selectedColor = activeSwatch ? activeSwatch.dataset.color : null;
 
         var sizeAvailability = {};
+        var sizeInventory = {};
         variants.forEach(function(v) {
           if (selectedColor && colorIndex !== -1 && v.options[colorIndex] != selectedColor) return;
           var sizeVal = v.options[sizeIndex];
           if (!sizeVal) return;
           if (sizeAvailability[sizeVal] === undefined) {
             sizeAvailability[sizeVal] = v.available;
+            sizeInventory[sizeVal] = v.inventory_quantity;
           } else {
             sizeAvailability[sizeVal] = sizeAvailability[sizeVal] || v.available;
+            sizeInventory[sizeVal] = v.inventory_quantity;
           }
         });
 
         var buttons = card.querySelectorAll('.size-options .size-option');
         buttons.forEach(function(btn) {
           var sizeVal = btn.dataset.size;
+          var lowStockEl = btn.nextElementSibling;
           if (sizeAvailability[sizeVal] === undefined) {
             btn.style.display = 'none';
+            if (lowStockEl && lowStockEl.classList.contains('low-stock')) {
+              lowStockEl.remove();
+            }
           } else {
             btn.style.display = '';
             if (sizeAvailability[sizeVal]) {
               btn.classList.remove('sold-out');
               btn.disabled = false;
+              if (sizeInventory[sizeVal] > 0 && sizeInventory[sizeVal] < 5) {
+                if (!(lowStockEl && lowStockEl.classList.contains('low-stock'))) {
+                  lowStockEl = document.createElement('div');
+                  lowStockEl.className = 'low-stock';
+                  lowStockEl.textContent = 'Poucas unidades';
+                  btn.insertAdjacentElement('afterend', lowStockEl);
+                } else {
+                  lowStockEl.style.display = '';
+                }
+              } else if (lowStockEl && lowStockEl.classList.contains('low-stock')) {
+                lowStockEl.remove();
+              }
             } else {
               btn.classList.add('sold-out');
               btn.disabled = true;
+              if (lowStockEl && lowStockEl.classList.contains('low-stock')) {
+                lowStockEl.remove();
+              }
             }
           }
         });
