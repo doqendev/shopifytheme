@@ -4136,21 +4136,11 @@ font-style: normal;
     border-radius: 0%;
     width: 100%;
     text-align: left;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
 }
 
 .product-card-plus .size-option.sold-out {
   opacity: 0.5;
   cursor: not-allowed;
-}
-
-.product-card-plus .low-stock-message {
-  margin-top: 0.25rem;
-  font-size: 1.1rem;
-  color: #d00;
-  display: none;
 }
 
 @media screen and (min-width: 1160px) {
