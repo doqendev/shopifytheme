@@ -302,7 +302,10 @@
 
                           <div class="overlay-sizes">
                             {% for size in all_sizes %}
-                              <button type="button" class="size-option{% unless available_sizes contains size %} sold-out{% endunless %}" data-size="{{ size }}" {% unless available_sizes contains size %}disabled="disabled"{% endunless %}>{{ size }}</button>
+                              <button type="button" class="size-option{% unless available_sizes contains size %} sold-out{% endunless %}" data-size="{{ size }}" {% unless available_sizes contains size %}disabled="disabled"{% endunless %}>
+                                <span class="size-option__label">{{ size }}</span>
+                                <span class="size-option__low-stock hidden">Poucas unidades</span>
+                              </button>
                             {% endfor %}
                           </div>
                         </div>
@@ -407,20 +410,26 @@
         var selectedColor = activeSwatch ? activeSwatch.dataset.color : null;
 
         var sizeAvailability = {};
+        var sizeInventory = {};
         variants.forEach(function(v) {
           if (selectedColor && colorIndex !== -1 && v.options[colorIndex] != selectedColor) return;
           var sizeVal = v.options[sizeIndex];
           if (!sizeVal) return;
           if (sizeAvailability[sizeVal] === undefined) {
             sizeAvailability[sizeVal] = v.available;
+            sizeInventory[sizeVal] = v.inventory_quantity;
           } else {
             sizeAvailability[sizeVal] = sizeAvailability[sizeVal] || v.available;
+            if (sizeInventory[sizeVal] === undefined || v.inventory_quantity < sizeInventory[sizeVal]) {
+              sizeInventory[sizeVal] = v.inventory_quantity;
+            }
           }
         });
 
         var buttons = card.querySelectorAll('.size-options .size-option');
         buttons.forEach(function(btn) {
           var sizeVal = btn.dataset.size;
+          var lowStockEl = btn.querySelector('.size-option__low-stock');
           if (sizeAvailability[sizeVal] === undefined) {
             btn.style.display = 'none';
           } else {
@@ -428,9 +437,15 @@
             if (sizeAvailability[sizeVal]) {
               btn.classList.remove('sold-out');
               btn.disabled = false;
+              if (sizeInventory[sizeVal] !== undefined && sizeInventory[sizeVal] > 0 && sizeInventory[sizeVal] < 5) {
+                lowStockEl.classList.remove('hidden');
+              } else {
+                lowStockEl.classList.add('hidden');
+              }
             } else {
               btn.classList.add('sold-out');
               btn.disabled = true;
+              if (lowStockEl) lowStockEl.classList.add('hidden');
             }
           }
         });

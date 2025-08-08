@@ -4138,6 +4138,16 @@ font-style: normal;
     text-align: left;
 }
 
+.product-card-plus .size-option__label,
+.product-card-plus .size-option__low-stock {
+  display: block;
+}
+
+.product-card-plus .size-option__low-stock {
+  font-size: 1rem;
+  color: #ee9441;
+}
+
 .product-card-plus .size-option.sold-out {
   opacity: 0.5;
   cursor: not-allowed;
