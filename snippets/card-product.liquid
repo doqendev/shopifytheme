@@ -411,26 +411,41 @@
           if (selectedColor && colorIndex !== -1 && v.options[colorIndex] != selectedColor) return;
           var sizeVal = v.options[sizeIndex];
           if (!sizeVal) return;
-          if (sizeAvailability[sizeVal] === undefined) {
-            sizeAvailability[sizeVal] = v.available;
-          } else {
-            sizeAvailability[sizeVal] = sizeAvailability[sizeVal] || v.available;
+          var info = sizeAvailability[sizeVal] || { available: false, quantity: null };
+          info.available = info.available || v.available;
+          if (v.inventory_quantity !== null && v.inventory_quantity !== undefined) {
+            info.quantity = v.inventory_quantity;
           }
+          sizeAvailability[sizeVal] = info;
         });
 
         var buttons = card.querySelectorAll('.size-options .size-option');
         buttons.forEach(function(btn) {
           var sizeVal = btn.dataset.size;
-          if (sizeAvailability[sizeVal] === undefined) {
+          var info = sizeAvailability[sizeVal];
+          if (info === undefined) {
             btn.style.display = 'none';
           } else {
             btn.style.display = '';
-            if (sizeAvailability[sizeVal]) {
+            if (info.available) {
               btn.classList.remove('sold-out');
               btn.disabled = false;
             } else {
               btn.classList.add('sold-out');
               btn.disabled = true;
+            }
+            var msg = btn.querySelector('.low-stock-message');
+            if (!msg) {
+              msg = document.createElement('span');
+              msg.className = 'low-stock-message';
+              btn.appendChild(msg);
+            }
+            if (info.available && info.quantity !== null && info.quantity < 5) {
+              msg.textContent = 'Poucas unidades';
+              msg.style.display = 'block';
+            } else {
+              msg.textContent = '';
+              msg.style.display = 'none';
             }
           }
         });
