@@ -302,7 +302,7 @@
 
                           <div class="overlay-sizes">
                             {% for size in all_sizes %}
-                              <button type="button" class="size-option{% unless available_sizes contains size %} sold-out{% endunless %}" data-size="{{ size }}" {% unless available_sizes contains size %}disabled="disabled"{% endunless %}>{{ size }}</button>
+                              <button type="button" class="size-option{% unless available_sizes contains size %} sold-out{% endunless %}" data-size="{{ size }}" {% unless available_sizes contains size %}disabled="disabled"{% endunless %}>{{ size }}<span class="low-stock-message"></span></button>
                             {% endfor %}
                           </div>
                         </div>
@@ -406,34 +406,46 @@
         var activeSwatch = card.querySelector('.swatch.active');
         var selectedColor = activeSwatch ? activeSwatch.dataset.color : null;
 
-        var sizeAvailability = {};
-        variants.forEach(function(v) {
-          if (selectedColor && colorIndex !== -1 && v.options[colorIndex] != selectedColor) return;
-          var sizeVal = v.options[sizeIndex];
-          if (!sizeVal) return;
-          if (sizeAvailability[sizeVal] === undefined) {
-            sizeAvailability[sizeVal] = v.available;
-          } else {
-            sizeAvailability[sizeVal] = sizeAvailability[sizeVal] || v.available;
-          }
-        });
-
-        var buttons = card.querySelectorAll('.size-options .size-option');
-        buttons.forEach(function(btn) {
-          var sizeVal = btn.dataset.size;
-          if (sizeAvailability[sizeVal] === undefined) {
-            btn.style.display = 'none';
-          } else {
-            btn.style.display = '';
-            if (sizeAvailability[sizeVal]) {
-              btn.classList.remove('sold-out');
-              btn.disabled = false;
+          var sizeAvailability = {};
+          var sizeLowStock = {};
+          variants.forEach(function(v) {
+            if (selectedColor && colorIndex !== -1 && v.options[colorIndex] != selectedColor) return;
+            var sizeVal = v.options[sizeIndex];
+            if (!sizeVal) return;
+            if (sizeAvailability[sizeVal] === undefined) {
+              sizeAvailability[sizeVal] = v.available;
             } else {
-              btn.classList.add('sold-out');
-              btn.disabled = true;
+              sizeAvailability[sizeVal] = sizeAvailability[sizeVal] || v.available;
             }
-          }
-        });
+            if (v.available && typeof v.inventory_quantity === 'number' && v.inventory_quantity < 5) {
+              sizeLowStock[sizeVal] = true;
+            }
+          });
+
+          var buttons = card.querySelectorAll('.size-options .size-option');
+          buttons.forEach(function(btn) {
+            var sizeVal = btn.dataset.size;
+            var lowStockEl = btn.querySelector('.low-stock-message');
+            if (sizeAvailability[sizeVal] === undefined) {
+              btn.style.display = 'none';
+              if (lowStockEl) { lowStockEl.textContent = ''; lowStockEl.style.display = 'none'; }
+            } else {
+              btn.style.display = '';
+              if (sizeAvailability[sizeVal]) {
+                btn.classList.remove('sold-out');
+                btn.disabled = false;
+                if (sizeLowStock[sizeVal]) {
+                  if (lowStockEl) { lowStockEl.textContent = 'Poucas unidades'; lowStockEl.style.display = ''; }
+                } else {
+                  if (lowStockEl) { lowStockEl.textContent = ''; lowStockEl.style.display = 'none'; }
+                }
+              } else {
+                btn.classList.add('sold-out');
+                btn.disabled = true;
+                if (lowStockEl) { lowStockEl.textContent = ''; lowStockEl.style.display = 'none'; }
+              }
+            }
+          });
       }
 
       productCards.forEach(function(card){

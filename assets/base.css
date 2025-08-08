@@ -4136,11 +4136,20 @@ font-style: normal;
     border-radius: 0%;
     width: 100%;
     text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .product-card-plus .size-option.sold-out {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.product-card-plus .low-stock-message {
+  color: #a30000;
+  font-size: 1.2rem;
+  display: none;
 }
 
 @media screen and (min-width: 1160px) {
