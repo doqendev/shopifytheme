@@ -99,9 +99,9 @@
             <div class="unified-filters">
               {%- for filter in results.filters -%}
                 {% assign presentation = filter.presentation | default: default_presentation %}
-                <div class="facet facet-{{ filter.param_name }}">
-                  <h3 class="facet__title">{{ filter.label | escape }}</h3>
-                  
+                <details class="facet facet-{{ filter.param_name }}">
+                  <summary class="facet__title">{{ filter.label | escape }}</summary>
+
                   {% case filter.type %}
                     {% when 'boolean', 'list' %}
                       <ul class="facet__options">
@@ -170,7 +170,7 @@
                     {% else %}
                       <!-- Handle other filter types if necessary -->
                   {% endcase %}
-                </div>
+                </details>
               {%- endfor -%}
             </div>
             <!-- Unified Filter Display Ends Here -->
@@ -298,8 +298,8 @@
               {% if enable_filtering %}
                 {%- for filter in results.filters -%}
                   {% assign presentation = filter.presentation | default: default_presentation %}
-                  <div class="mobile-facet mobile-facet-{{ filter.param_name }}">
-                    <h3 class="mobile-facet__title">{{ filter.label | escape }}</h3>
+                  <details class="mobile-facet mobile-facet-{{ filter.param_name }}">
+                    <summary class="mobile-facet__summary mobile-facet__title">{{ filter.label | escape }}</summary>
 
                     {% case filter.type %}
                       {% when 'boolean', 'list' %}
@@ -361,7 +361,7 @@
                       {% else %}
                         <!-- Handle other filter types if necessary -->
                     {% endcase %}
-                  </div>
+                  </details>
                 {%- endfor -%}
               {% endif %}
 
