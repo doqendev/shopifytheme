@@ -298,8 +298,10 @@
               {% if enable_filtering %}
                 {%- for filter in results.filters -%}
                   {% assign presentation = filter.presentation | default: default_presentation %}
-                  <div class="mobile-facet mobile-facet-{{ filter.param_name }}">
-                    <h3 class="mobile-facet__title">{{ filter.label | escape }}</h3>
+                  <details class="mobile-facet mobile-facet-{{ filter.param_name }}">
+                    <summary class="mobile-facet__summary">
+                      <h3 class="mobile-facet__title">{{ filter.label | escape }}</h3>
+                    </summary>
 
                     {% case filter.type %}
                       {% when 'boolean', 'list' %}
@@ -361,7 +363,7 @@
                       {% else %}
                         <!-- Handle other filter types if necessary -->
                     {% endcase %}
-                  </div>
+                  </details>
                 {%- endfor -%}
               {% endif %}
 
@@ -700,9 +702,30 @@
     margin-bottom: 0px;
   }
 
+  .mobile-facet__summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    cursor: pointer;
+  }
+
+  .mobile-facet__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .mobile-facet__summary::after {
+    content: '+';
+    font-weight: bold;
+  }
+
+  .mobile-facet[open] .mobile-facet__summary::after {
+    content: '-';
+  }
+
   .mobile-facet__title {
     font-size: 1.1em;
-    margin-bottom: 10px;
+    margin: 0;
     font-weight: bold;
   }
 
