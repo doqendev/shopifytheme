@@ -298,12 +298,17 @@
               {% if enable_filtering %}
                 {%- for filter in results.filters -%}
                   {% assign presentation = filter.presentation | default: default_presentation %}
-                  <div class="mobile-facet mobile-facet-{{ filter.param_name }}">
-                    <h3 class="mobile-facet__title">{{ filter.label | escape }}</h3>
+                  <details class="mobile-facets__details mobile-facet mobile-facet-{{ filter.param_name }}">
+                    <summary class="mobile-facets__summary">
+                      <div>{{ filter.label | escape }}</div>
+                      <span class="svg-wrapper">
+                        {{- 'icon-caret.svg' | inline_asset_content -}}
+                      </span>
+                    </summary>
 
                     {% case filter.type %}
                       {% when 'boolean', 'list' %}
-                        <ul class="mobile-facet__options">
+                        <ul class="mobile-facets__list mobile-facet__options">
                           {%- for value in filter.values -%}
                             {% assign input_id = 'Filter-' | append: filter.param_name | escape | append: '-mobile-' | append: forloop.index %}
                             {% assign is_disabled = false %}
@@ -361,7 +366,7 @@
                       {% else %}
                         <!-- Handle other filter types if necessary -->
                     {% endcase %}
-                  </div>
+                  </details>
                 {%- endfor -%}
               {% endif %}
 
