@@ -298,17 +298,14 @@
               {% if enable_filtering %}
                 {%- for filter in results.filters -%}
                   {% assign presentation = filter.presentation | default: default_presentation %}
-                  <details class="mobile-facets__details mobile-facet mobile-facet-{{ filter.param_name }}">
-                    <summary class="mobile-facets__summary">
-                      <div>{{ filter.label | escape }}</div>
-                      <span class="svg-wrapper">
-                        {{- 'icon-caret.svg' | inline_asset_content -}}
-                      </span>
+                  <details class="mobile-facet mobile-facet-{{ filter.param_name }}">
+                    <summary class="mobile-facet__summary">
+                      <h3 class="mobile-facet__title">{{ filter.label | escape }}</h3>
                     </summary>
 
                     {% case filter.type %}
                       {% when 'boolean', 'list' %}
-                        <ul class="mobile-facets__list mobile-facet__options">
+                        <ul class="mobile-facet__options">
                           {%- for value in filter.values -%}
                             {% assign input_id = 'Filter-' | append: filter.param_name | escape | append: '-mobile-' | append: forloop.index %}
                             {% assign is_disabled = false %}
@@ -705,9 +702,30 @@
     margin-bottom: 0px;
   }
 
+  .mobile-facet__summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    cursor: pointer;
+  }
+
+  .mobile-facet__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .mobile-facet__summary::after {
+    content: '+';
+    font-weight: bold;
+  }
+
+  .mobile-facet[open] .mobile-facet__summary::after {
+    content: '-';
+  }
+
   .mobile-facet__title {
     font-size: 1.1em;
-    margin-bottom: 10px;
+    margin: 0;
     font-weight: bold;
   }
 
