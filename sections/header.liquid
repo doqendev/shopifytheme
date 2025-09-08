@@ -92,10 +92,6 @@ body.menu-drawer-open .nav-menu-new a.active::after {
       position: absolute !important;
       width: 100% !important;
       top: 0px;
-
-      /*  NEW LINE OF CODE STARTS */
-
-      /*  NEW LINE OF CODE ENDS*/
     }
        {% else %}
 
@@ -108,6 +104,18 @@ body.menu-drawer-open .nav-menu-new a.active::after {
     .header__icon svg {
       fill: currentColor;
       stroke: currentColor;
+    }
+    @media screen and (max-width: 749px) {
+      .header__heading-link {
+        display: flex;
+        align-items: center;
+        height: 100%;
+      }
+      .header__heading-logo {
+        height: 35px;
+        width: auto;
+        display: block;
+      }
     }
     {% endif %}
   
