@@ -831,7 +831,8 @@
     function openSizeChartDrawer(evt){
       if(evt){ evt.preventDefault(); evt.stopPropagation(); }
       if(details && details.open){ details.open = false; }
-      const drawer = document.getElementById('body-measure-drawer');
+      const localContainer = document.querySelector('#SizeChartDetails-{{ section.id }} .size-chart-inline');
+      const drawer = localContainer?.querySelector('#body-measure-drawer') || document.querySelector('.size-chart-inline #body-measure-drawer') || document.getElementById('body-measure-drawer');
       if(drawer){ drawer.classList.add('active'); }
     }
     summary?.addEventListener('click', openSizeChartDrawer, true);

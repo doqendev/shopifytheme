@@ -540,8 +540,11 @@
       const details = document.getElementById('SizeChartDetails-{{ section.id }}');
       function openSizeChartDrawer(evt){
         if(evt){ evt.preventDefault(); evt.stopPropagation(); }
+        // Prevent accordion toggling
         if(details && details.open){ details.open = false; }
-        const drawer = document.getElementById('body-measure-drawer');
+        // Prefer the drawer rendered inside this accordion's size-chart block
+        const localContainer = document.querySelector('#SizeChartDetails-{{ section.id }} .size-chart-inline');
+        const drawer = localContainer?.querySelector('#body-measure-drawer') || document.querySelector('.size-chart-inline #body-measure-drawer') || document.getElementById('body-measure-drawer');
         if(drawer){ drawer.classList.add('active'); }
       }
       summary?.addEventListener('click', openSizeChartDrawer, true);
