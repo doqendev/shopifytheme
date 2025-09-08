@@ -193,10 +193,7 @@
       <!-- normal Dawn popup logic ... -->
     {%- endfor -%}
 
-    <!-- Size chart (original link version) -->
-    <div class="size-chart" style="margin-top: 10px; margin-left: 0;">
-      {% render 'size-chart' %}
-    </div>
+    
 
     {%- if product.media.size > 0 -%}
       <script src="{{ 'product-modal.js' | asset_url }}" defer="defer"></script>
@@ -309,6 +306,9 @@
           {%- if product.description != blank -%}
             <div class="product__description rte quick-add-hidden" {{ block.shopify_attributes }}>
               {{ product.description }}
+            </div>
+            <div class="size-chart" style="margin-top: 10px;">
+              {% render 'size-chart' %}
             </div>
           {%- endif -%}
         {%- when 'sku' -%}
