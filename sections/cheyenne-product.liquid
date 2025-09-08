@@ -228,9 +228,18 @@
     {% endfor %}
   </div>
 
+  <product-info
+    id="MobileProduct-{{ section.id }}"
+    class="mobile-product-info"
+    data-section="{{ section.id }}"
+    data-product-id="{{ product.id }}"
+    data-update-url="false"
+    data-url="{{ product.url }}"
+  >
   <!-- Mobile sticky bar: only title, price, variants, and add to cart -->
   <div class="mobile-sticky-bar">
     <div class="mobile-sticky-bar__inner">
+      {%- assign product_form_id = 'product-form-' | append: section.id -%}
       {%- for block in section.blocks -%}
         {%- case block.type -%}
           {%- when 'title' -%}
@@ -452,6 +461,7 @@
       {%- endcase -%}
     {%- endfor -%}
   </div>
+  </product-info>
 
   <!-- The bottom sheet that contains EVERYTHING else (variants, add to cart, footer, etc.) -->
   <div class="bottom-sheet" id="BottomSheet">
@@ -1064,10 +1074,8 @@
   }
   .mobile-product-page {
     display: block;
-    padding-bottom: 160px; /* space for fixed sticky bar */
+    padding-bottom: 136px; /* space for fixed sticky bar */
   }
-  /* Hide legacy bottom sheet on mobile */
-  .bottom-sheet { display: none !important; }
   /* New sticky bar styles */
   .mobile-sticky-bar {
     position: fixed;
@@ -1079,8 +1087,35 @@
   }
   .mobile-sticky-bar__inner {
     padding: 12px 16px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: 12px;
+    row-gap: 6px;
+    align-items: center;
   }
+  .mobile-sticky-bar .product__title { margin: 0; font-size: 14px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; grid-column: 1 / 2; }
+  .mobile-sticky-bar [id^='price-'], .mobile-sticky-bar .price { grid-column: 2 / 3; justify-self: end; margin: 0; }
+  .mobile-sticky-bar variant-selects, .mobile-sticky-bar .product-form__input { grid-column: 1 / 3; }
+  .mobile-sticky-bar .product-form__input--swatch,
+  .mobile-sticky-bar .product-form__input--pill { display: flex; gap: 8px; overflow-x: auto; white-space: nowrap; padding-bottom: 2px; margin: 6px 0 0; }
+  .mobile-sticky-bar .product-form__input--swatch legend,
+  .mobile-sticky-bar .product-form__input--pill legend { display: none; }
+  .mobile-sticky-bar .product-form__input--dropdown label { display: none; }
+  .mobile-sticky-bar .product-form__input--dropdown .select { width: 100%; }
+  .mobile-sticky-bar .product-form { margin-top: 6px; }
+  .mobile-sticky-bar .product-form__buttons { gap: 8px; }
+  .mobile-sticky-bar .product-form__buttons .button { min-height: 44px; font-size: 16px; }
+  .mobile-sticky-bar .shopify-payment-button,
+  .mobile-sticky-bar .shopify-payment-button__button,
+  .mobile-sticky-bar .shopify-payment-button__more-options,
+  .mobile-sticky-bar .pickup-availability,
+  .mobile-sticky-bar .installment,
+  .mobile-sticky-bar .product__tax,
+  .mobile-sticky-bar .volume-pricing-note { display: none !important; }
 }
+
+/* Ensure legacy bottom sheet is never visible */
+.bottom-sheet, .bottom-sheet__handle, .bottom-sheet__content { display: none !important; }
 @media screen and (min-width: 750px) {
   .desktop-product-layout {
     display: block;
