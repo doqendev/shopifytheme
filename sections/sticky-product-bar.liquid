@@ -40,11 +40,12 @@
   width: 100%;
   background-color: #ffffff;
   box-shadow: 0 -1px 15px rgba(0, 0, 0, 0.1);
-  transition: height 0.3s ease;
-  height: 205px; /* Collapsed height */
+  transform: translateY(0);
+  transition: transform 0.25s ease;
+  height: auto; /* Static height */
   overflow: visible;
   z-index: 1000;
-  cursor: pointer;
+  cursor: default;
 }
 
 .sticky-bar-inner {
@@ -53,22 +54,19 @@
 }
 
 .drawer-content {
-  display: block;
+  display: none !important; /* Hide all non-essential drawer content */
 }
 
 /* Small “grab” bar indicator */
-#sticky-product-bar::before {
-        content: "";
-        display: inline-block;
-        position: relative;
-        left: 50%;
-        transform: translateX(-50%);
-        height: 1px;
-        width: 40px;
-        margin-top: 8px;
-        margin-bottom: 8px;
-        background-color: #002d18;
-}
+#sticky-product-bar::before { display: none; }
+
+/* Ensure any internal size-chart, related, footer blocks are hidden */
+#sticky-product-bar .size-chart,
+#sticky-product-bar .mobile-related-products,
+#sticky-product-bar .drawer-footer { display: none !important; }
+
+/* Hidden state when recommendations are visible */
+#sticky-product-bar.is-hidden-by-recs { transform: translateY(110%); pointer-events: none; }
 
 /* Variant label adjustments */
 #variant-selects-template--24455438926148__sticky_product_bar_HRGKtD > div > label {
@@ -740,6 +738,37 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 {% endraw %}
+
+<!-- Hide sticky bar when recommendations become visible -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const sticky = document.getElementById('sticky-product-bar');
+    if (!sticky) return;
+
+    const targets = Array.from(
+      document.querySelectorAll(
+        'product-recommendations.related-products, product-recommendations.complementary-products, .mobile-related-products'
+      )
+    );
+    if (!targets.length) return;
+
+    const update = () => {
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      const bandTop = vh * 0.15, bandBottom = vh * 0.85;
+      const onScreen = targets.some(el => {
+        const r = el.getBoundingClientRect();
+        return r.top < bandBottom && r.bottom > bandTop;
+      });
+      sticky.classList.toggle('is-hidden-by-recs', onScreen);
+    };
+
+    const io = new IntersectionObserver(update, { threshold: [0, 0.1, 0.25, 0.5] });
+    targets.forEach(t => io.observe(t));
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  });
+</script>
 
 <!-- General Accordion Toggle (Click) -->
 <script>
