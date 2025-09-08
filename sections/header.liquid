@@ -107,38 +107,28 @@ body.menu-drawer-open .nav-menu-new a.active::after {
     }
     @media screen and (max-width: 749px) {
       .header {
-        grid-template-columns: auto 1fr auto;
-        grid-template-rows: auto;
-        grid-template-areas: 'left-icons heading icons';
+        display: flex;
         align-items: center;
-        gap: 0;
         padding: 1rem 0;
+      }
+      header-drawer {
+        margin-right: 1rem;
       }
       .header__heading,
       .header__heading-link {
-        grid-area: heading;
-        grid-column: 2;
-        grid-row: 1;
-        justify-self: center;
+        flex: 1;
+        display: flex;
+        justify-content: center;
       }
       .header__icons {
-        grid-area: icons;
-        grid-column: 3;
-        grid-row: 1;
-        justify-self: end;
-        padding-right: 0;
-      }
-      .header > .header__search,
-      .header__icon--menu {
-        grid-area: left-icons;
-        grid-column: 1;
-        grid-row: 1;
-        justify-self: start;
-      }
-      .header__heading-link {
         display: flex;
         align-items: center;
-        height: 100%;
+        gap: 0.5rem;
+        margin-left: auto;
+        padding-right: 0;
+      }
+      .header > .header__search {
+        display: none;
       }
       .header__heading-logo {
         height: 35px;
