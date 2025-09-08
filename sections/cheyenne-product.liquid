@@ -340,7 +340,10 @@
             </button>
           </modal-opener>
         {%- when 'share' -%}
-          {% liquid assign share_url = product.selected_variant.url | default: product.url | prepend: request.origin; render 'share-button', block: block, share_link: share_url %}
+          {% liquid
+            assign share_url = product.selected_variant.url | default: product.url | prepend: request.origin
+            render 'share-button', block: block, share_link: share_url
+          %}
         {%- when 'rating' -%}
           {%- if product.metafields.reviews.rating.value != blank -%}
             <div class="rating-wrapper">
