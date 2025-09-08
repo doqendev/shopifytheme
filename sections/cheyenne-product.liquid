@@ -480,6 +480,12 @@
     
 
     <div class="mobile-extra-info" style="margin: 2.5rem 0;">
+      <details id="SizeChartDetails-{{ section.id }}">
+        <summary id="SizeChartSummary-{{ section.id }}" class="h5" style="padding: 12px 0;">Guia de tamanhos</summary>
+        <div class="rte size-chart-inline" style="padding-bottom: 12px;">
+          {% render 'size-chart' %}
+        </div>
+      </details>
       <details>
         <summary class="h5" style="padding: 12px 0;">Composição e cuidados</summary>
         <div class="rte" style="padding-bottom: 12px;">
@@ -524,6 +530,24 @@
     </div>
   </div>
   </product-info>
+  <style>
+    /* Hide the internal size-chart trigger link when placed inside accordion */
+    .size-chart-inline .body-measure-link { display: none !important; }
+  </style>
+  <script>
+    (function(){
+      const summary = document.getElementById('SizeChartSummary-{{ section.id }}');
+      const details = document.getElementById('SizeChartDetails-{{ section.id }}');
+      function openSizeChartDrawer(evt){
+        if(evt){ evt.preventDefault(); evt.stopPropagation(); }
+        if(details && details.open){ details.open = false; }
+        const drawer = document.getElementById('body-measure-drawer');
+        if(drawer){ drawer.classList.add('active'); }
+      }
+      summary?.addEventListener('click', openSizeChartDrawer, true);
+      details?.addEventListener('toggle', ()=>{ if(details.open){ details.open = false; } });
+    })();
+  </script>
 
   <!-- The bottom sheet that contains EVERYTHING else (variants, add to cart, footer, etc.) -->
   <div class="bottom-sheet" id="BottomSheet">
