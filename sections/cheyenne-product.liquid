@@ -475,9 +475,8 @@
           {{- 'icon-caret.svg' | inline_asset_content -}}
         </button>
       </div>
-      <div class="size-chart-inline">
-        {% render 'size-chart' %}
-      </div>
+      
+      <div class="product__accordion accordion">
       <details>
         <summary class="h5" style="padding: 12px 0;">Composição e cuidados</summary>
         <div class="rte" style="padding-bottom: 12px;">
@@ -510,6 +509,10 @@
           <p><a href="#">Facebook</a> | <a href="#">Instagram</a> | <a href="#">Twitter</a></p>
         </div>
       </details>
+      </div>
+      <div class="size-chart-inline">
+        {% render 'size-chart' %}
+      </div>
     </div>
 
     <div class="mobile-related-products" style="margin: 0 0 1.5rem;">
