@@ -109,6 +109,16 @@ body.menu-drawer-open .nav-menu-new a.active::after {
       fill: currentColor;
       stroke: currentColor;
     }
+    @media screen and (max-width: 749px) {
+      .header__heading-link {
+        display: flex;
+        align-items: center;
+      }
+      .header__heading-logo {
+        max-height: 35px;
+        width: auto;
+      }
+    }
     {% endif %}
   
   header-drawer {
