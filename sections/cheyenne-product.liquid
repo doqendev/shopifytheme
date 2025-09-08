@@ -476,7 +476,6 @@
         </button>
       </div>
       
-      <div class="product__accordion accordion">
       <details>
         <summary class="h5" style="padding: 12px 0;">Composição e cuidados</summary>
         <div class="rte" style="padding-bottom: 12px;">
@@ -509,7 +508,6 @@
           <p><a href="#">Facebook</a> | <a href="#">Instagram</a> | <a href="#">Twitter</a></p>
         </div>
       </details>
-      </div>
       <div class="size-chart-inline">
         {% render 'size-chart' %}
       </div>
@@ -529,8 +527,12 @@
     /* Hide the internal size-chart trigger link when embedded */
     .size-chart-inline .body-measure-link { display: none !important; }
     /* Button styled like accordion summary */
-    .size-chart-trigger { width: 100%; display: flex; align-items: center; justify-content: space-between; background: none; border: 0; padding: 1.5rem 0; cursor: pointer; line-height: 1; }
+    .size-chart-trigger { width: 100%; display: flex; position: relative; align-items: center; justify-content: space-between; background: none; border: 0; padding: 1.5rem 0; cursor: pointer; line-height: 1; text-align: left; }
     .size-chart-trigger .accordion__title { margin: 0; }
+    .size-chart-trigger .icon-caret { transition: transform .2s ease; }
+    .size-chart-trigger.is-open .icon-caret { transform: rotate(180deg); }
+    /* Add separator line below the button like native sections */
+    .product__accordion .size-chart-trigger + details { border-top: 0.1rem solid rgba(var(--color-foreground), 0.08); }
   </style>
   <script>
     (function(){
@@ -539,7 +541,12 @@
         if(evt){ evt.preventDefault(); evt.stopPropagation(); }
         const localContainer = document.querySelector('.size-chart-inline');
         const drawer = localContainer?.querySelector('#body-measure-drawer') || document.getElementById('body-measure-drawer');
-        if(drawer){ drawer.classList.add('active'); }
+        if(drawer){
+          drawer.classList.add('active');
+          btn?.classList.add('is-open');
+          const close = drawer.querySelector('#close-body-measure');
+          close?.addEventListener('click', () => btn?.classList.remove('is-open'), { once: true });
+        }
       }
       btn?.addEventListener('click', openSizeChartDrawer);
     })();
