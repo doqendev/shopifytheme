@@ -460,6 +460,55 @@
           {% render 'icon-with-text', block: block %}
       {%- endcase -%}
     {%- endfor -%}
+
+    <!-- Moved from sticky-product-bar: size chart, info accordion, recommendations, and footer -->
+    <div class="size-chart" style="margin-top: 10px; margin-left: 5%;">
+      {% render 'size-chart' %}
+    </div>
+
+    <div class="mobile-extra-info" style="margin: 2.5rem 5%;">
+      <details>
+        <summary class="h5" style="padding: 12px 0;">Composição e cuidados</summary>
+        <div class="rte" style="padding-bottom: 12px;">
+          <p>Exemplo: 100% Algodão. Lavar à máquina a 30ºC.</p>
+        </div>
+      </details>
+      <details>
+        <summary class="h5" style="padding: 12px 0;">Envios, trocas e devoluções</summary>
+        <div class="rte" style="padding-bottom: 12px;">
+          <h3>Métodos de envio</h3>
+          <ul>
+            <li>Recolha na loja <strong>GRÁTIS</strong>.</li>
+            <li>Envio para o ponto de entrega <strong>3,99 €</strong></li>
+            <li>Envio normal <strong>4,99 €</strong></li>
+            <li>Envio normal (Açores e Madeira) <strong>29,99 €</strong></li>
+          </ul>
+          <h3>Trocas e devoluções</h3>
+          <p>Podes devolver um artigo até 30 dias após receberes o e-mail de confirmação de envio da tua encomenda.</p>
+        </div>
+      </details>
+      <details>
+        <summary class="h5" style="padding: 12px 0;">Disponibilidade na loja</summary>
+        <div class="rte" style="padding-bottom: 12px;">
+          <p>Exemplo: Disponível em todas as lojas da região.</p>
+        </div>
+      </details>
+      <details>
+        <summary class="h5" style="padding: 12px 0;">Partilhar</summary>
+        <div class="rte" style="padding-bottom: 12px;">
+          <p><a href="#">Facebook</a> | <a href="#">Instagram</a> | <a href="#">Twitter</a></p>
+        </div>
+      </details>
+    </div>
+
+    <div class="mobile-related-products" style="margin: 0 5% 1.5rem;">
+      <h2 class="also" style="margin-bottom: 1em;">Talvez lhe possa interessar</h2>
+      {% render 'random-collection-grid' %}
+    </div>
+
+    <div class="drawer-footer" style="margin-top: 20px;">
+      {% render 'footer-drawer' %}
+    </div>
   </div>
   </product-info>
 
