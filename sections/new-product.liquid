@@ -744,6 +744,67 @@
     <script type="application/ld+json">
       {{ product | structured_data }}
     </script>
+    
+    <!-- Mobile extras moved from sticky bar: below images/content -->
+    <style>
+      @media screen and (max-width: 749px) {
+        .mobile-extras { display: block; margin: 2.5rem 5%; }
+        .mobile-extras .drawer-description { color: #333; font-size: 14px; line-height: 1.5; margin: 2rem 0; }
+        .mobile-extras details { border-top: 1px solid rgba(0,0,0,0.08); }
+        .mobile-extras details > summary { list-style: none; padding: 12px 0; cursor: pointer; }
+        .mobile-extras details > summary::-webkit-details-marker { display: none; }
+      }
+      @media screen and (min-width: 750px) { .mobile-extras { display: none; } }
+    </style>
+    <div class="mobile-extras">
+      <div class="size-chart">
+        {% render 'size-chart' %}
+      </div>
+      <div class="drawer-description">
+        {{ product.content }}
+      </div>
+      <div class="product-info-accordion">
+        <details>
+          <summary class="h5">Composição e cuidados</summary>
+          <div class="rte" style="padding-bottom: 12px;">
+            <p>Exemplo: 100% Algodão. Lavar à máquina a 30ºC.</p>
+          </div>
+        </details>
+        <details>
+          <summary class="h5">Envios, trocas e devoluções</summary>
+          <div class="rte" style="padding-bottom: 12px;">
+            <h3>Métodos de envio</h3>
+            <ul>
+              <li>Recolha na loja <strong>GRÁTIS</strong>.</li>
+              <li>Envio para o ponto de entrega <strong>3,99 €</strong></li>
+              <li>Envio normal <strong>4,99 €</strong></li>
+              <li>Envio normal (Açores e Madeira) <strong>29,99 €</strong></li>
+            </ul>
+            <h3>Trocas e devoluções</h3>
+            <p>Podes devolver um artigo até 30 dias após receberes o e-mail de confirmação de envio da tua encomenda.</p>
+          </div>
+        </details>
+        <details>
+          <summary class="h5">Disponibilidade na loja</summary>
+          <div class="rte" style="padding-bottom: 12px;">
+            <p>Exemplo: Disponível em todas as lojas da região.</p>
+          </div>
+        </details>
+        <details>
+          <summary class="h5">Partilhar</summary>
+          <div class="rte" style="padding-bottom: 12px;">
+            <p><a href="#">Facebook</a> | <a href="#">Instagram</a> | <a href="#">Twitter</a></p>
+          </div>
+        </details>
+      </div>
+      <div class="mobile-related-products" style="margin: 0 0 1.5rem;">
+        <h2 class="also" style="margin-bottom: 1em;">Talvez lhe possa interessar</h2>
+        {% render 'random-collection-grid' %}
+      </div>
+      <div class="drawer-footer" style="margin-top: 20px;">
+        {% render 'footer-drawer' %}
+      </div>
+    </div>
   </div>
 </product-info>
 
