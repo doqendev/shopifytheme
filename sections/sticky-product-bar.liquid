@@ -43,6 +43,8 @@
   height: auto; /* Static bar height */
   overflow: visible;
   z-index: 1000;
+  transform: translateY(0);
+  transition: transform 0.25s ease;
 }
 
 .sticky-bar-inner {
@@ -55,6 +57,12 @@
 
 /* Small “grab” bar indicator */
 #sticky-product-bar::before { display: none; }
+
+/* Hide sticky bar when recommendations are visible */
+#sticky-product-bar.is-hidden-by-recs {
+  transform: translateY(110%);
+  pointer-events: none;
+}
 
 /* Variant label adjustments */
 #variant-selects-template--24455438926148__sticky_product_bar_HRGKtD > div > label {
@@ -728,6 +736,45 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 {% endraw %}
 
+<!-- Hide sticky bar when recommendations are visible -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const sticky = document.getElementById('sticky-product-bar');
+  if (!sticky) return;
+
+  // Potential recommendation containers to observe
+  const targets = Array.from(
+    document.querySelectorAll(
+      'product-recommendations.related-products, product-recommendations.complementary-products, .mobile-related-products'
+    )
+  );
+  if (!targets.length) return;
+
+  const updateVisibility = () => {
+    const viewportH = window.innerHeight || document.documentElement.clientHeight;
+    const anyVisible = targets.some((el) => {
+      const r = el.getBoundingClientRect();
+      // Consider visible when a middle band of the viewport intersects the element
+      const bandTop = viewportH * 0.15;
+      const bandBottom = viewportH * 0.85;
+      return r.top < bandBottom && r.bottom > bandTop;
+    });
+    sticky.classList.toggle('is-hidden-by-recs', anyVisible);
+  };
+
+  // Observe intersections and also update on scroll/resize to be robust
+  const io = new IntersectionObserver(() => updateVisibility(), {
+    root: null,
+    threshold: [0, 0.1, 0.25, 0.5],
+  });
+  targets.forEach((t) => io.observe(t));
+
+  window.addEventListener('scroll', updateVisibility, { passive: true });
+  window.addEventListener('resize', updateVisibility);
+  updateVisibility();
+});
+</script>
+
 <!-- General Accordion Toggle (Click) -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -825,6 +872,4 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
-
-
 
