@@ -40,11 +40,11 @@
   width: 100%;
   background-color: #ffffff;
   box-shadow: 0 -1px 15px rgba(0, 0, 0, 0.1);
-  height: auto; /* Static bar height */
+  transition: height 0.3s ease;
+  height: 205px; /* Collapsed height */
   overflow: visible;
   z-index: 1000;
-  transform: translateY(0);
-  transition: transform 0.25s ease;
+  cursor: pointer;
 }
 
 .sticky-bar-inner {
@@ -52,16 +52,22 @@
   overflow: hidden;
 }
 
-.drawer-content { display: none !important; }
-#sticky-product-bar .size-chart { display: none !important; }
+.drawer-content {
+  display: block;
+}
 
 /* Small “grab” bar indicator */
-#sticky-product-bar::before { display: none; }
-
-/* Hide sticky bar when recommendations are visible */
-#sticky-product-bar.is-hidden-by-recs {
-  transform: translateY(110%);
-  pointer-events: none;
+#sticky-product-bar::before {
+        content: "";
+        display: inline-block;
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+        height: 1px;
+        width: 40px;
+        margin-top: 8px;
+        margin-bottom: 8px;
+        background-color: #002d18;
 }
 
 /* Variant label adjustments */
@@ -243,7 +249,9 @@
 
 .size-chart {
   margin-top: 10px;
-  margin-left: 5%;
+  margin-left: 4%;
+  margin-bottom: 6px;
+
 }
 </style>
 
@@ -338,7 +346,6 @@
       </div>
     </div>
   </div>
-
     
     <!-- DRAWER MARKUP: Place this outside the sticky bar, typically near the bottom of the body -->
 <div id="envios-drawer" class="drawer-modal">
@@ -406,8 +413,6 @@
 <!-- JS for sticky bar drag + momentum + recalc/clamp -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  // Disabled interactive drawer behavior for static sticky bar
-  return;
   const stickyBar = document.getElementById('sticky-product-bar');
   
   // Disable default touch actions so pointer events work reliably.
@@ -736,45 +741,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 {% endraw %}
 
-<!-- Hide sticky bar when recommendations are visible -->
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const sticky = document.getElementById('sticky-product-bar');
-  if (!sticky) return;
-
-  // Potential recommendation containers to observe
-  const targets = Array.from(
-    document.querySelectorAll(
-      'product-recommendations.related-products, product-recommendations.complementary-products, .mobile-related-products'
-    )
-  );
-  if (!targets.length) return;
-
-  const updateVisibility = () => {
-    const viewportH = window.innerHeight || document.documentElement.clientHeight;
-    const anyVisible = targets.some((el) => {
-      const r = el.getBoundingClientRect();
-      // Consider visible when a middle band of the viewport intersects the element
-      const bandTop = viewportH * 0.15;
-      const bandBottom = viewportH * 0.85;
-      return r.top < bandBottom && r.bottom > bandTop;
-    });
-    sticky.classList.toggle('is-hidden-by-recs', anyVisible);
-  };
-
-  // Observe intersections and also update on scroll/resize to be robust
-  const io = new IntersectionObserver(() => updateVisibility(), {
-    root: null,
-    threshold: [0, 0.1, 0.25, 0.5],
-  });
-  targets.forEach((t) => io.observe(t));
-
-  window.addEventListener('scroll', updateVisibility, { passive: true });
-  window.addEventListener('resize', updateVisibility);
-  updateVisibility();
-});
-</script>
-
 <!-- General Accordion Toggle (Click) -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -872,4 +838,9 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+
+
+
+
+
 
