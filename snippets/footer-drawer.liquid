@@ -139,7 +139,8 @@
   <!-- Scrolling Marquee -->
   <!-- Scrolling Marquee -->
 
-  <!-- Newsletter Section: Always visible -->
+  {% unless request.page_type == 'product' %}
+  <!-- Newsletter + Mobile Menu (hidden on product pages) -->
   <div class="footer__content-top page-width">
     <div class="footer-block--newsletter">
       <div class="footer-block__newsletter">
@@ -283,6 +284,7 @@
       </nav>
     </div>
   </div>
+  {% endunless %}
 
   <!-- Footer Bottom: Copyright & Policies -->
   <div class="footer__content-bottom">
