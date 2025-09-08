@@ -761,8 +761,13 @@
       @media screen and (min-width: 750px) { .mobile-extras { display: none; } }
     </style>
     <div class="mobile-extras">
-      <div class="size-chart">
-        {% render 'size-chart' %}
+      <div class="product-info-accordion">
+        <details>
+          <summary class="h5">Guia de tamanhos</summary>
+          <div class="rte" style="padding-bottom: 12px;">
+            {% render 'size-chart' %}
+          </div>
+        </details>
       </div>
       <div class="drawer-description">
         {{ product.content }}

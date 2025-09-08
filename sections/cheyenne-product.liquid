@@ -462,11 +462,15 @@
     {%- endfor -%}
 
     <!-- Moved from sticky-product-bar: size chart, info accordion, recommendations, and footer -->
-    <div class="size-chart" style="margin-top: 10px; margin-left: 0;">
-      {% render 'size-chart' %}
-    </div>
+    
 
     <div class="mobile-extra-info" style="margin: 2.5rem 0;">
+      <details>
+        <summary class="h5" style="padding: 12px 0;">Guia de tamanhos</summary>
+        <div class="rte" style="padding-bottom: 12px;">
+          {% render 'size-chart' %}
+        </div>
+      </details>
       <details>
         <summary class="h5" style="padding: 12px 0;">Composição e cuidados</summary>
         <div class="rte" style="padding-bottom: 12px;">
