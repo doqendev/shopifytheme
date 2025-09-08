@@ -462,11 +462,11 @@
     {%- endfor -%}
 
     <!-- Moved from sticky-product-bar: size chart, info accordion, recommendations, and footer -->
-    <div class="size-chart" style="margin-top: 10px; margin-left: 5%;">
+    <div class="size-chart" style="margin-top: 10px; margin-left: 0;">
       {% render 'size-chart' %}
     </div>
 
-    <div class="mobile-extra-info" style="margin: 2.5rem 5%;">
+    <div class="mobile-extra-info" style="margin: 2.5rem 0;">
       <details>
         <summary class="h5" style="padding: 12px 0;">Composição e cuidados</summary>
         <div class="rte" style="padding-bottom: 12px;">
@@ -501,7 +501,7 @@
       </details>
     </div>
 
-    <div class="mobile-related-products" style="margin: 0 5% 1.5rem;">
+    <div class="mobile-related-products" style="margin: 0 0 1.5rem;">
       <h2 class="also" style="margin-bottom: 1em;">Talvez lhe possa interessar</h2>
       {% render 'random-collection-grid' %}
     </div>
@@ -1216,6 +1216,16 @@
 /* When .bottom-sheet has an “open” class, it slides fully up */
 .bottom-sheet.open {
   transform: translateY(0);
+}
+
+/* Mobile spacing for details below media */
+@media screen and (max-width: 749px) {
+  .mobile-details { margin-left: 0; margin-right: 0; }
+  .mobile-extra-info { margin-left: 0; margin-right: 0; }
+  .mobile-details .product__description,
+  .mobile-details .product__sku,
+  .mobile-details .product__accordion { margin-left: 16px; margin-right: 16px; }
+  .size-chart, .mobile-related-products, .drawer-footer { margin-left: 0 !important; margin-right: 0 !important; }
 }
 </style>
 
