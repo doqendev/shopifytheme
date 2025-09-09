@@ -22,7 +22,8 @@ if (!customElements.get('product-form')) {
         if (this.submitButton.getAttribute('aria-disabled') === 'true') return;
 
         const isMobile = window.innerWidth < 750;
-        const hasSizeOption = this.querySelector('.product-variant-picker--size');
+        const productInfo = this.closest('product-info');
+        const hasSizeOption = productInfo ? productInfo.querySelector('.product-variant-picker--size') : null;
 
         if (isMobile && hasSizeOption) {
           const sizeSelectorDrawer = document.querySelector('size-selector-drawer');
