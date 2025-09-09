@@ -69,7 +69,7 @@
             </div>
           </div>
         </div>
-      {%- elsif option.name contains "Size" -%}
+      {%- elsif option.name contains "Size" or option.name contains "Tamanho" -%}
         <div class="product-variant-picker--size mobile-hidden">
           <div class="product-form__input product-form__input--dropdown" data-variant-picker="size">
             <label class="form__label" for="Option-{{ section.id }}-{{ forloop.index0 }}">
