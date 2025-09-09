@@ -1,0 +1,175 @@
+/* =============================================================================
+   assets/coming-soon-newsletter.css
+   =============================================================================
+   Styles for a full-screen “Coming Soon” hero with a centered email signup.
+   ============================================================================= */
+
+/* 1. Host “Playfair Display” locally from Assets */
+@font-face {
+  font-family: 'Playfair Display';
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url('{{ "PlayfairDisplay-VariableFont_wght.ttf" | asset_url }}')
+       format('truetype');
+}
+
+/* 2. Root container: full viewport, background-cover */
+.coming-soon-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 3. Centered content column */
+.coming-soon-content {
+  position: relative;
+  text-align: center;
+  color: #ffffff;
+  padding: 0 1rem;        /* small padding on narrow screens */
+  max-width: 800px;
+  width: 100%;
+}
+
+/* 4. “COMING SOON” heading (uses Playfair Display) */
+.coming-soon-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 10rem;       /* desktop size */
+  line-height: 1.1;
+  margin: 0 0 1rem;      
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+/* 5. Subheading */
+.coming-soon-subtitle {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 1.25rem;
+  margin: 0 0 2rem;      
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* 6. Form wrapper: centers the field horizontally */
+.coming-soon-form-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+/* 7. Rounded, shadowed container for input + button */
+.coming-soon-field {
+  display: flex;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* 8. Email input styling */
+.coming-soon-field input[type="email"] {
+  flex: 1;
+  padding: 1rem 1rem;                    
+  border: none;
+  background: rgba(255, 255, 255, 0.5);    /* semi-transparent white */
+  color: #ffffff;                        
+  font-size: 1rem;
+  outline: none;
+}
+
+/* 9. Placeholder text inside the input */
+.coming-soon-field input[type="email"]::placeholder {
+  color: rgba(255, 255, 255, 0.8);        
+}
+
+/* 10. Submit button styling */
+.coming-soon-button {
+  padding: 1rem 1.5rem;
+  background: #000000;                  
+  color: #ffffff;                        
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+/* 11. Button hover state */
+.coming-soon-button:hover {
+  background: #333333;                   
+}
+
+/* 12. Error & success message styles below the form */
+.coming-soon-error,
+.coming-soon-success {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+}
+
+/* 13. Error text = red, success text = green */
+.coming-soon-error {
+  color: #ff6b6b;
+}
+
+.coming-soon-success {
+  color: #6bff9e;
+}
+
+/* 14. Responsive tweaks (for screens ≤ 768px) */
+@media (max-width: 768px) {
+  .coming-soon-title {
+    font-size: 4rem;  
+  }
+  .coming-soon-subtitle {
+    font-size: 1rem;   
+    letter-spacing: 0;
+  }
+  .coming-soon-field {
+    flex-direction: column;  
+  }
+  .coming-soon-field input[type="email"],
+  .coming-soon-button {
+    width: 100%;
+    border-radius: 0;        
+  }
+  .coming-soon-button {
+    margin-top: 1rem;       
+  }
+}
+
+
+/* -------------------------------------------
+   LOGO (absolutely positioned over background)
+   ------------------------------------------- */
+
+/* 1) Base (desktop) */
+.coming-soon-logo {
+  position: absolute;
+  top: 2rem;        /* adjust this margin-from-top as needed */
+  left: 4rem;       /* “aligned to the left” on desktop */
+  z-index: 2;       /* make sure it’s above the background */
+}
+
+.coming-soon-logo img {
+  display: block;
+  width: 200px;     /* desktop size; tweak if you want it bigger/smaller */
+  height: auto;
+}
+
+/* 2) Mobile tweaks (screens ≤ 768px) */
+@media (max-width: 768px) {
+  .coming-soon-logo {
+    top: 1.5rem;         /* maybe bring it a bit closer on mobile */
+    left: 50%;           /* center it horizontally */
+    transform: translateX(-50%);
+  }
+  .coming-soon-logo img {
+    width: 150px;        /* slightly smaller on mobile */
+    height: auto;
+  }
+}
