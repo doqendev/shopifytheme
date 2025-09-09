@@ -29,17 +29,17 @@
       -%}
       
       {%- comment %}
-        For Size options, prefer buttons on mobile to avoid native selects.
+        For Size options, force dropdown so we can add a placeholder.
       {%- endcomment -%}
       {%- if option.name contains "Size" -%}
-        {% assign picker_type = "button" %}
+        {% assign picker_type = "dropdown" %}
       {%- endif -%}
       
       {%- comment %}
-        For Color options, use swatch buttons (no native select).
+        For Color options, force swatch dropdown so the swatch is shown.
       {%- endcomment -%}
       {%- if option.name contains "Color" or option.name contains "Cor" -%}
-        {% assign picker_type = "swatch" %}
+        {% assign picker_type = "swatch_dropdown" %}
       {%- endif -%}
       
       {%- if picker_type == 'swatch' -%}
