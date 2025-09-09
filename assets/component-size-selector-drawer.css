@@ -72,35 +72,28 @@
   overflow-y: auto;
 }
 
+.desktop-only-block {
+  display: block;
+}
+
+.mobile-only-block {
+  display: none;
+}
+
 .mobile-hidden {
     display: block;
 }
 
 @media screen and (max-width: 749px) {
+  .desktop-only-block {
+    display: none;
+  }
+
+  .mobile-only-block {
+    display: block;
+  }
+
   .mobile-hidden {
     display: none;
-  }
-
-  .mobile-swatches .select {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .mobile-swatches .select__select,
-  .mobile-swatches .svg-wrapper {
-    display: none;
-  }
-
-  .mobile-swatches .dropdown-swatch {
-    display: none; /* Hide the selected swatch */
-  }
-
-  /* The variant options are rendered inside product-variant-options snippet */
-  /* We need to style the labels that are the swatches */
-  .mobile-swatches .product-variant-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
   }
 }
