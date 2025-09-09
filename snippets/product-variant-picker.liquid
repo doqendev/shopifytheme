@@ -8,6 +8,22 @@
   Usage:
   {% render 'product-variant-picker', product: product, block: block, product_form_id: product_form_id %}
 {% endcomment %}
+{%- liquid
+  assign is_sticky_bar = false
+  if section.id contains 'sticky_product_bar'
+    assign is_sticky_bar = true
+  endif
+
+  assign has_color = false
+  assign has_size = false
+  for opt in product.options_with_values
+    if opt.name == 'Color' or opt.name == 'Cor'
+      assign has_color = true
+    elsif opt.name == 'Size'
+      assign has_size = true
+    endif
+  endfor
+-%}
 {%- unless product.has_only_default_variant -%}
   <variant-selects
     id="variant-selects-{{ section.id }}"
@@ -15,6 +31,9 @@
     {{ block.shopify_attributes }}
   >
     {%- for option in product.options_with_values -%}
+      {%- if is_sticky_bar and has_color and has_size and option.name == 'Size' -%}
+        {%- continue -%}
+      {%- endif -%}
       {%- liquid
         assign swatch_count = option.values | map: 'swatch' | compact | size
         assign picker_type = block.settings.picker_type
