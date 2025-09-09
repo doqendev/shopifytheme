@@ -74,7 +74,15 @@
           %}
         </fieldset>
       {%- else -%}
-        <div class="product-form__input product-form__input--dropdown{% if is_sticky_bar and has_color and has_size %} sticky-bar__size-picker--hidden{% endif %}" data-variant-picker="size">
+        {%- liquid
+          assign picker_class = ''
+          if option.name contains 'Color' or option.name contains 'Cor'
+            assign picker_class = 'product-variant-picker--color mobile-swatches'
+          elsif option.name contains 'Size'
+            assign picker_class = 'product-variant-picker--size mobile-hidden'
+          endif
+        -%}
+        <div class="product-form__input product-form__input--dropdown{% if is_sticky_bar and has_color and has_size %} sticky-bar__size-picker--hidden{% endif %} {{ picker_class }}" data-variant-picker="size">
           <label class="form__label" for="Option-{{ section.id }}-{{ forloop.index0 }}">
             {{ option.name }}
           </label>

@@ -21,6 +21,20 @@ if (!customElements.get('product-form')) {
         evt.preventDefault();
         if (this.submitButton.getAttribute('aria-disabled') === 'true') return;
 
+        const isMobile = window.innerWidth < 750;
+        const hasSizeOption = this.querySelector('.product-variant-picker--size');
+
+        if (isMobile && hasSizeOption) {
+          const sizeSelectorDrawer = document.querySelector('size-selector-drawer');
+          if (sizeSelectorDrawer) {
+            sizeSelectorDrawer.open(this);
+          }
+        } else {
+          this.submitForm();
+        }
+      }
+
+      submitForm() {
         this.handleErrorMessage();
 
         this.submitButton.setAttribute('aria-disabled', true);

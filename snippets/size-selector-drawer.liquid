@@ -1,10 +1,10 @@
-<div id="size-selector-drawer" class="size-selector-drawer" aria-hidden="true">
+<size-selector-drawer class="size-selector-drawer" aria-hidden="true">
   <div class="drawer-overlay" data-action="close-drawer"></div>
   <div class="drawer-container">
     <div class="drawer-header">
-      <h2 class="drawer-title">Select Size</h2>
-      <button class="drawer-close" data-action="close-drawer" aria-label="Close">
-        &times;
+      <h2 class="drawer-title">{{ 'products.product.select_size' | t }}</h2>
+      <button class="drawer-close" data-action="close-drawer" aria-label="{{ 'accessibility.close' | t }}">
+        {%- render 'icon-close' -%}
       </button>
     </div>
     <div class="drawer-body">
@@ -12,4 +12,4 @@
       <div class="buy-buttons-placeholder"></div>
     </div>
   </div>
-</div>
+</size-selector-drawer>
