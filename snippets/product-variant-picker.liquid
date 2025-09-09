@@ -45,7 +45,7 @@
         For Color options, force swatch dropdown so the swatch is shown.
       {%- endcomment -%}
       {%- if option.name contains "Color" or option.name contains "Cor" -%}
-        {% assign picker_type = "swatch_dropdown" %}
+        {% assign picker_type = "swatch" %}
       {%- endif -%}
       
       {%- if picker_type == 'swatch' -%}
@@ -74,7 +74,7 @@
           %}
         </fieldset>
       {%- else -%}
-        <div class="product-form__input product-form__input--dropdown{% if is_sticky_bar and has_color and has_size %} sticky-bar__size-picker--hidden{% endif %}" data-variant-picker="size">
+        <div class="product-form__input product-form__input--dropdown{% if is_sticky_bar and has_color and has_size and option.name contains 'Size' %} sticky-bar__size-picker--hidden{% endif %}" {% if option.name contains 'Size' %}data-variant-picker="size"{% endif %}>
           <label class="form__label" for="Option-{{ section.id }}-{{ forloop.index0 }}">
             {{ option.name }}
           </label>
