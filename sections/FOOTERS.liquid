@@ -32,7 +32,9 @@
     {% render 'footer-drawer-desktop' %}
   </div>
 
-  <div class="footer-mobile">
-    {% render 'footer-drawer' %}
-  </div>
+  {% if request.page_type != 'product' %}
+    <div class="footer-mobile">
+      {% render 'footer-drawer' %}
+    </div>
+  {% endif %}
 {% endunless %}
