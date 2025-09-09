@@ -13,6 +13,14 @@
 {% comment %} Create a dummy block object with default settings {% endcomment %}
 {% assign dummy_block = '{ "settings": { "picker_type": "button", "swatch_shape": "circle" }, "shopify_attributes": "" }' | parse_json %}
 
+{% assign color_option = product.options_with_values | where: 'name', 'Color' | first %}
+{% if color_option == blank %}
+  {% assign color_option = product.options_with_values | where: 'name', 'Cor' | first %}
+{% endif %}
+{% assign size_option = product.options_with_values | where: 'name', 'Size' | first %}
+{% if size_option == blank %}
+  {% assign size_option = product.options_with_values | where: 'name', 'Tamanho' | first %}
+{% endif %}
 {% unless product.has_only_default_variant %}
   {{ 'component-product-variant-picker.css' | asset_url | stylesheet_tag }}
   {{ 'component-swatch.css' | asset_url | stylesheet_tag }}
@@ -252,6 +260,34 @@
   margin-bottom: 6px;
 
 }
+
+#size-picker-drawer {
+  display: none;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background: #fff;
+  padding: 20px;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+  z-index: 2000;
+}
+#size-picker-drawer.active {
+  display: block;
+}
+#size-picker-drawer .size-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+#size-picker-drawer .drawer-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+}
 </style>
 
 <!-- Provide the product data in JSON -->
@@ -274,7 +310,26 @@
           </div>
           {% unless product.has_only_default_variant %}
           <div class="product-variants">
-            {% render 'product-variant-picker', product: product, block: dummy_block, product_form_id: 'product-form-' | append: section.id %}
+            <variant-selects id="variant-selects-{{ section.id }}" data-section="{{ section.id }}">
+              {% if color_option %}
+                <fieldset class="js product-form__input product-form__input--swatch color-options">
+                  <legend class="visually-hidden">{{ color_option.name }}</legend>
+                  {% render 'product-variant-options', product: product, option: color_option, block: dummy_block, picker_type: 'swatch' %}
+                </fieldset>
+              {% endif %}
+              {% if size_option %}
+                <div id="size-picker-drawer">
+                  <button class="drawer-close" aria-label="Close">&times;</button>
+                  <fieldset class="js product-form__input product-form__input--pill size-options">
+                    <legend>{{ size_option.name }}</legend>
+                    {% render 'product-variant-options', product: product, option: size_option, block: dummy_block, picker_type: 'button' %}
+                  </fieldset>
+                </div>
+              {% endif %}
+              <script type="application/json" data-selected-variant>
+                {{ product.selected_or_first_available_variant | json }}
+              </script>
+            </variant-selects>
           </div>
           {% endunless %}
         </div>
@@ -628,7 +683,7 @@ document.addEventListener('DOMContentLoaded', function() {
     return;
   }
   
-  const optionInputs = variantPickerEl.querySelectorAll('input[name^="options"], select[name^="options"]');
+  const optionInputs = variantPickerEl.querySelectorAll('input[name], select[name]');
   if (!optionInputs.length) {
     console.warn("No variant option inputs found in variant-picker");
     return;
@@ -636,11 +691,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function getSelectedOptions() {
     const selected = [];
+    const processed = new Set();
     optionInputs.forEach(input => {
-      if (input.tagName.toLowerCase() === 'select' && input.value === "") {
-        selected.push(null);
+      if (processed.has(input.name)) return;
+      processed.add(input.name);
+
+      if (input.tagName.toLowerCase() === 'select') {
+        selected.push(input.value === "" ? null : input.value.trim());
       } else {
-        selected.push(input.value.trim());
+        const checked = variantPickerEl.querySelector('input[name="' + CSS.escape(input.name) + '"]:checked');
+        selected.push(checked ? checked.value.trim() : null);
       }
     });
     return selected;
@@ -672,6 +732,41 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const addBtn = document.getElementById('ProductSubmitButton-{{ section.id }}');
+  const sizeDrawer = document.getElementById('size-picker-drawer');
+  const sizeInputs = sizeDrawer ? sizeDrawer.querySelectorAll('input[type="radio"]') : [];
+  const form = document.querySelector('#sticky-product-bar .add-to-cart form');
+
+  if (addBtn && sizeDrawer && sizeInputs.length) {
+    addBtn.addEventListener('click', function(e) {
+      const anySelected = Array.from(sizeInputs).some(input => input.checked);
+      if (!anySelected) {
+        e.preventDefault();
+        sizeDrawer.classList.add('active');
+      }
+    });
+
+    sizeInputs.forEach(input => {
+      input.addEventListener('change', function() {
+        sizeDrawer.classList.remove('active');
+        if (form) {
+          form.requestSubmit();
+        }
+      });
+    });
+
+    const closeBtn = sizeDrawer.querySelector('.drawer-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function() {
+        sizeDrawer.classList.remove('active');
+      });
+    }
+  }
+});
+</script>
+
 {% raw %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -691,8 +786,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Gather selected options from the picker.
     var selectedOptions = [];
-    variantPicker.querySelectorAll('input[name^="options"], select[name^="options"]').forEach(function(input) {
-      selectedOptions.push(input.value.trim());
+    var processed = {};
+    variantPicker.querySelectorAll('input[name], select[name]').forEach(function(input) {
+      if(processed[input.name]) return;
+      processed[input.name] = true;
+      if (input.tagName.toLowerCase() === 'select') {
+        selectedOptions.push(input.value.trim());
+      } else {
+        var checked = variantPicker.querySelector('input[name="' + CSS.escape(input.name) + '"]:checked');
+        if (checked) selectedOptions.push(checked.value.trim());
+      }
     });
     console.log("Selected options:", selectedOptions);
 
