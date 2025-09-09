@@ -151,22 +151,6 @@
   font-weight: bold;
 }
 
-/* Size selector drawer */
-.size-selector {
-  display: none;
-}
-.size-selector.open {
-  display: block;
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: #fff;
-  padding: 20px;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
-  z-index: 1001;
-}
-
   }
 
 
@@ -290,49 +274,7 @@
           </div>
           {% unless product.has_only_default_variant %}
           <div class="product-variants">
-            <variant-selects id="variant-selects-{{ section.id }}" data-section="{{ section.id }}">
-              {% for option in product.options_with_values %}
-                {% if option.name contains 'Color' or option.name contains 'Cor' %}
-                  <fieldset class="js product-form__input product-form__input--swatch">
-                    <legend class="visually-hidden">{{ option.name }}</legend>
-                    {% render 'product-variant-options',
-                      product: product,
-                      option: option,
-                      block: dummy_block,
-                      picker_type: 'swatch'
-                    %}
-                  </fieldset>
-                {% elsif option.name contains 'Size' %}
-                  <div class="product-form__input product-form__input--dropdown size-selector">
-                    <label class="form__label" for="Option-{{ section.id }}-{{ forloop.index0 }}">
-                      {{ option.name }}
-                    </label>
-                    <div class="select">
-                      <select
-                        id="Option-{{ section.id }}-{{ forloop.index0 }}"
-                        class="select__select"
-                        name="options[{{ option.name | escape }}]"
-                        form="product-form-{{ section.id }}"
-                      >
-                        <option value="" disabled selected>Size</option>
-                        {% render 'product-variant-options',
-                          product: product,
-                          option: option,
-                          block: dummy_block,
-                          picker_type: 'dropdown'
-                        %}
-                      </select>
-                      <span class="svg-wrapper">
-                        {{- 'icon-caret.svg' | inline_asset_content -}}
-                      </span>
-                    </div>
-                  </div>
-                {% endif %}
-              {% endfor %}
-              <script type="application/json" data-selected-variant>
-                {{ product.selected_or_first_available_variant | json }}
-              </script>
-            </variant-selects>
+            {% render 'product-variant-picker', product: product, block: dummy_block, product_form_id: 'product-form-' | append: section.id %}
           </div>
           {% endunless %}
         </div>
@@ -655,33 +597,6 @@ stickyBar.addEventListener('pointerdown', function(e) {
         recalcMaxHeight();
       }, 300);
     });
-  });
-});
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  var addBtn = document.querySelector('#sticky-product-bar .product-form__submit');
-  var sizeSelector = document.querySelector('#variant-selects-{{ section.id }} .size-selector');
-  if (!addBtn || !sizeSelector) return;
-
-  addBtn.addEventListener('click', function(e) {
-    var select = sizeSelector.querySelector('select');
-    if (select && !select.value) {
-      e.preventDefault();
-      sizeSelector.classList.add('open');
-    }
-  });
-
-  sizeSelector.addEventListener('change', function() {
-    var select = sizeSelector.querySelector('select');
-    if (select && select.value) {
-      sizeSelector.classList.remove('open');
-      var form = document.getElementById('product-form-{{ section.id }}');
-      if (form) {
-        form.requestSubmit();
-      }
-    }
   });
 });
 </script>
