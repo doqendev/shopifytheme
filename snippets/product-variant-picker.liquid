@@ -8,12 +8,6 @@
   Usage:
   {% render 'product-variant-picker', product: product, block: block, product_form_id: product_form_id %}
 {% endcomment %}
-{%- liquid
-  assign is_sticky_bar = false
-  if section.id contains 'sticky_product_bar'
-    assign is_sticky_bar = true
-  endif
--%}
 {%- unless product.has_only_default_variant -%}
   <variant-selects
     id="variant-selects-{{ section.id }}"
@@ -21,152 +15,96 @@
     {{ block.shopify_attributes }}
   >
     {%- for option in product.options_with_values -%}
+      {%- liquid
+        assign swatch_count = option.values | map: 'swatch' | compact | size
+        assign picker_type = block.settings.picker_type
+
+        if swatch_count > 0 and block.settings.swatch_shape != 'none'
+          if block.settings.picker_type == 'dropdown'
+            assign picker_type = 'swatch_dropdown'
+          else
+            assign picker_type = 'swatch'
+          endif
+        endif
+      -%}
+      
+      {%- comment %}
+        For Size options, force dropdown so we can add a placeholder.
+      {%- endcomment -%}
+      {%- if option.name contains "Size" -%}
+        {% assign picker_type = "dropdown" %}
+      {%- endif -%}
+      
+      {%- comment %}
+        For Color options, force swatch dropdown so the swatch is shown.
+      {%- endcomment -%}
       {%- if option.name contains "Color" or option.name contains "Cor" -%}
-        <div class="product-variant-picker--color mobile-only-block">
-          <fieldset class="js product-form__input product-form__input--swatch">
-            <legend class="form__label">
-              {{ option.name }}:
-              <span data-selected-value>
-                {{- option.selected_value -}}
-              </span>
-            </legend>
-            {% render 'product-variant-options',
-              product: product,
-              option: option,
-              block: block,
-              picker_type: 'swatch'
-            %}
-          </fieldset>
-        </div>
-        <div class="product-variant-picker--color desktop-only-block">
-          <div class="product-form__input product-form__input--dropdown">
-            <label class="form__label" for="Option-{{ section.id }}-{{ forloop.index0 }}-desktop">
-              {{ option.name }}
-            </label>
-            <div class="select">
+        {% assign picker_type = "swatch_dropdown" %}
+      {%- endif -%}
+      
+      {%- if picker_type == 'swatch' -%}
+        <fieldset class="js product-form__input product-form__input--swatch">
+          <legend class="form__label">
+            {{ option.name }}:
+            <span data-selected-value>
+              {{- option.selected_value -}}
+            </span>
+          </legend>
+          {% render 'product-variant-options',
+            product: product,
+            option: option,
+            block: block,
+            picker_type: picker_type
+          %}
+        </fieldset>
+      {%- elsif picker_type == 'button' -%}
+        <fieldset class="js product-form__input product-form__input--pill">
+          <legend class="form__label">{{ option.name }}</legend>
+          {% render 'product-variant-options',
+            product: product,
+            option: option,
+            block: block,
+            picker_type: picker_type
+          %}
+        </fieldset>
+      {%- else -%}
+        <div class="product-form__input product-form__input--dropdown">
+          <label class="form__label" for="Option-{{ section.id }}-{{ forloop.index0 }}">
+            {{ option.name }}
+          </label>
+          <div class="select">
+            {%- if picker_type == 'swatch_dropdown' -%}
               <span
                 data-selected-value
                 class="dropdown-swatch"
               >
                 {% render 'swatch', swatch: option.selected_value.swatch, shape: block.settings.swatch_shape %}
               </span>
-              <select
-                id="Option-{{ section.id }}-{{ forloop.index0 }}-desktop"
-                class="select__select"
-                name="options[{{ option.name | escape }}]"
-                form="{{ product_form_id }}"
-              >
-                {% render 'product-variant-options',
-                  product: product,
-                  option: option,
-                  block: block,
-                  picker_type: 'swatch_dropdown'
-                %}
-              </select>
-              <span class="svg-wrapper">
-                {{- 'icon-caret.svg' | inline_asset_content -}}
-              </span>
-            </div>
-          </div>
-        </div>
-      {%- elsif option.name contains "Size" or option.name contains "Tamanho" -%}
-        <div class="product-variant-picker--size mobile-hidden">
-          <div class="product-form__input product-form__input--dropdown" data-variant-picker="size">
-            <label class="form__label" for="Option-{{ section.id }}-{{ forloop.index0 }}">
-              {{ option.name }}
-            </label>
-            <div class="select">
-              <select
-                id="Option-{{ section.id }}-{{ forloop.index0 }}"
-                class="select__select"
-                name="options[{{ option.name | escape }}]"
-                form="{{ product_form_id }}"
-              >
+            {%- endif -%}
+            <select
+              id="Option-{{ section.id }}-{{ forloop.index0 }}"
+              class="select__select"
+              name="options[{{ option.name | escape }}]"
+              form="{{ product_form_id }}"
+            >
+              {%- comment %}
+                If this is a size option, insert a placeholder.
+              {%- endcomment -%}
+              {%- if option.name contains "Size" -%}
                 <option value="" disabled selected>Size</option>
-                {% render 'product-variant-options',
-                  product: product,
-                  option: option,
-                  block: block,
-                  picker_type: 'dropdown'
-                %}
-              </select>
-              <span class="svg-wrapper">
-                {{- 'icon-caret.svg' | inline_asset_content -}}
-              </span>
-            </div>
+              {%- endif -%}
+              {% render 'product-variant-options',
+                product: product,
+                option: option,
+                block: block,
+                picker_type: picker_type
+              %}
+            </select>
+            <span class="svg-wrapper">
+              {{- 'icon-caret.svg' | inline_asset_content -}}
+            </span>
           </div>
         </div>
-      {%- else -%}
-        {%- liquid
-          assign swatch_count = option.values | map: 'swatch' | compact | size
-          assign picker_type = block.settings.picker_type
-
-          if swatch_count > 0 and block.settings.swatch_shape != 'none'
-            if block.settings.picker_type == 'dropdown'
-              assign picker_type = 'swatch_dropdown'
-            else
-              assign picker_type = 'swatch'
-            endif
-          endif
-        -%}
-        {%- if picker_type == 'swatch' -%}
-          <fieldset class="js product-form__input product-form__input--swatch">
-            <legend class="form__label">
-              {{ option.name }}:
-              <span data-selected-value>
-                {{- option.selected_value -}}
-              </span>
-            </legend>
-            {% render 'product-variant-options',
-              product: product,
-              option: option,
-              block: block,
-              picker_type: picker_type
-            %}
-          </fieldset>
-        {%- elsif picker_type == 'button' -%}
-          <fieldset class="js product-form__input product-form__input--pill">
-            <legend class="form__label">{{ option.name }}</legend>
-            {% render 'product-variant-options',
-              product: product,
-              option: option,
-              block: block,
-              picker_type: picker_type
-            %}
-          </fieldset>
-        {%- else -%}
-          <div class="product-form__input product-form__input--dropdown{% if is_sticky_bar and has_color and has_size %} sticky-bar__size-picker--hidden{% endif %}" data-variant-picker="size">
-            <label class="form__label" for="Option-{{ section.id }}-{{ forloop.index0 }}">
-              {{ option.name }}
-            </label>
-            <div class="select">
-              {%- if picker_type == 'swatch_dropdown' -%}
-                <span
-                  data-selected-value
-                  class="dropdown-swatch"
-                >
-                  {% render 'swatch', swatch: option.selected_value.swatch, shape: block.settings.swatch_shape %}
-                </span>
-              {%- endif -%}
-              <select
-                id="Option-{{ section.id }}-{{ forloop.index0 }}"
-                class="select__select"
-                name="options[{{ option.name | escape }}]"
-                form="{{ product_form_id }}"
-              >
-                {% render 'product-variant-options',
-                  product: product,
-                  option: option,
-                  block: block,
-                  picker_type: picker_type
-                %}
-              </select>
-              <span class="svg-wrapper">
-                {{- 'icon-caret.svg' | inline_asset_content -}}
-              </span>
-            </div>
-          </div>
-        {%- endif -%}
       {%- endif -%}
     {%- endfor -%}
 

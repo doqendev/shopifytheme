@@ -260,19 +260,7 @@
 </script>
 
 <!-- Sticky Product Bar Container -->
-{%- liquid
-  assign has_color = false
-  assign has_size = false
-  for option in product.options_with_values
-    if option.name == 'Color' or option.name == 'Cor'
-      assign has_color = true
-    elsif option.name == 'Size' or option.name == 'Tamanho'
-      assign has_size = true
-    endif
-  endfor
-  assign show_drawer_trigger = has_color and has_size
--%}
-<div id="sticky-product-bar" class="sticky-bar" aria-expanded="false" data-has-color-and-size="{{ show_drawer_trigger }}">
+<div id="sticky-product-bar" class="sticky-bar" aria-expanded="false">
   <div class="sticky-bar-inner">
     <div class="sticky-bar-header">
       <!-- Left side: Title, Price, Variant Picker -->
@@ -286,35 +274,25 @@
           </div>
           {% unless product.has_only_default_variant %}
           <div class="product-variants">
-            {% render 'product-variant-picker', product: product, block: dummy_block, product_form_id: 'product-form-' | append: section.id, has_color: has_color, has_size: has_size %}
+            {% render 'product-variant-picker', product: product, block: dummy_block, product_form_id: 'product-form-' | append: section.id %}
           </div>
           {% endunless %}
         </div>
       </div>
       <!-- Right side: Add to Cart button(s) -->
       <div class="add-to-cart">
-        <div {% if show_drawer_trigger %}style="display: none;"{% endif %}>
-          {% render 'buy-buttons',
-              block: dummy_block,
-              product: product,
-              product_form_id: 'product-form-' | append: section.id,
-              show_pickup_availability: false
-          %}
-        </div>
-        {% if show_drawer_trigger %}
-          <button type="button" class="button button--primary button--full-width" data-action="open-size-drawer">
-            {{ 'products.product.select_options' | t }}
-          </button>
-        {% endif %}
+        {% render 'buy-buttons',
+            block: dummy_block,
+            product: product,
+            product_form_id: 'product-form-' | append: section.id,
+            show_pickup_availability: false
+        %}
       </div>
     </div>
   </div>
   <div class="size-chart">
   {% render 'size-chart' %}
     </div>
-  {% if show_drawer_trigger %}
-    {% render 'size-selector-drawer' %}
-  {% endif %}
   <!-- Drawer Content -->
   <div class="drawer-content" style="background: #fff;">
     <div class="drawer-description" style="color: #333; font-size: 14px; line-height: 1.5; margin-left: 5%; margin-right: 5%; margin-top: 4rem;">
