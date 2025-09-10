@@ -1150,7 +1150,7 @@ class ProductRecommendations extends HTMLElement {
         const recommendations = html.querySelector('product-recommendations');
 
         if (recommendations?.innerHTML.trim().length) {
-          const links = recommendations.querySelectorAll('link[rel="stylesheet"]');
+          const links = html.querySelectorAll('link[rel="stylesheet"]');
           links.forEach((link) => {
             const href = link.getAttribute('href');
             if (href && !document.querySelector(`link[href="${href}"]`)) {
@@ -1159,7 +1159,7 @@ class ProductRecommendations extends HTMLElement {
             link.remove();
           });
 
-          const scripts = recommendations.querySelectorAll('script');
+          const scripts = html.querySelectorAll('script');
           scripts.forEach((script) => {
             const src = script.getAttribute('src');
             if (src && !document.querySelector(`script[src="${src}"]`)) {
