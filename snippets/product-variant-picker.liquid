@@ -36,10 +36,10 @@
       {%- endif -%}
       
       {%- comment %}
-        For Color options, force swatch dropdown so the swatch is shown.
+        For Color options on mobile, use swatches instead of a dropdown.
       {%- endcomment -%}
       {%- if option.name contains "Color" or option.name contains "Cor" -%}
-        {% assign picker_type = "swatch_dropdown" %}
+        {% assign picker_type = "swatch" %}
       {%- endif -%}
       
       {%- if picker_type == 'swatch' -%}
@@ -54,7 +54,8 @@
             product: product,
             option: option,
             block: block,
-            picker_type: picker_type
+            picker_type: picker_type,
+            product_form_id: product_form_id
           %}
         </fieldset>
       {%- elsif picker_type == 'button' -%}
@@ -64,7 +65,8 @@
             product: product,
             option: option,
             block: block,
-            picker_type: picker_type
+            picker_type: picker_type,
+            product_form_id: product_form_id
           %}
         </fieldset>
       {%- else -%}
@@ -97,7 +99,8 @@
                 product: product,
                 option: option,
                 block: block,
-                picker_type: picker_type
+                picker_type: picker_type,
+                product_form_id: product_form_id
               %}
             </select>
             <span class="svg-wrapper">
