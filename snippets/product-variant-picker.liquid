@@ -36,10 +36,10 @@
       {%- endif -%}
       
       {%- comment %}
-        For Color options, force swatch dropdown so the swatch is shown.
+        For Color options on mobile, use swatches instead of a dropdown.
       {%- endcomment -%}
       {%- if option.name contains "Color" or option.name contains "Cor" -%}
-        {% assign picker_type = "swatch_dropdown" %}
+        {% assign picker_type = "swatch" %}
       {%- endif -%}
       
       {%- if picker_type == 'swatch' -%}
