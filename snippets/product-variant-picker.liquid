@@ -54,7 +54,8 @@
             product: product,
             option: option,
             block: block,
-            picker_type: picker_type
+            picker_type: picker_type,
+            product_form_id: product_form_id
           %}
         </fieldset>
       {%- elsif picker_type == 'button' -%}
@@ -64,7 +65,8 @@
             product: product,
             option: option,
             block: block,
-            picker_type: picker_type
+            picker_type: picker_type,
+            product_form_id: product_form_id
           %}
         </fieldset>
       {%- else -%}
@@ -97,7 +99,8 @@
                 product: product,
                 option: option,
                 block: block,
-                picker_type: picker_type
+                picker_type: picker_type,
+                product_form_id: product_form_id
               %}
             </select>
             <span class="svg-wrapper">
