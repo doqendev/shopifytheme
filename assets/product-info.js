@@ -61,15 +61,7 @@ if (!customElements.get('product-info')) {
       }
 
       handleOptionValueChange({ data: { event, target, selectedOptionValues } }) {
-        if (!this.contains(event.target)) {
-          const formId = event.target.getAttribute('form');
-          if (
-            formId !== `product-form-${this.dataset.section}` &&
-            formId !== `product-form-installment-${this.dataset.section}`
-          ) {
-            return;
-          }
-        }
+        if (!this.contains(event.target)) return;
 
         this.resetProductFormState();
 
@@ -220,15 +212,13 @@ if (!customElements.get('product-info')) {
       }
 
       updateVariantInputs(variantId) {
-        document
-          .querySelectorAll(
-            `#product-form-${this.dataset.section}, #product-form-installment-${this.dataset.section}`
-          )
-          .forEach((productForm) => {
-            const input = productForm.querySelector('input[name="id"]');
-            input.value = variantId ?? '';
-            input.dispatchEvent(new Event('change', { bubbles: true }));
-          });
+        this.querySelectorAll(
+          `#product-form-${this.dataset.section}, #product-form-installment-${this.dataset.section}`
+        ).forEach((productForm) => {
+          const input = productForm.querySelector('input[name="id"]');
+          input.value = variantId ?? '';
+          input.dispatchEvent(new Event('change', { bubbles: true }));
+        });
       }
 
       updateURL(url, variantId) {
