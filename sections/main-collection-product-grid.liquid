@@ -488,6 +488,14 @@
       grid.classList.add('three-col');
       setActive(btnThreeCol);
     });
+
+    // Ensure the grid reflects the currently active layout button on load
+    const initialActiveButton = [btnOneCol, btnTwoCol, btnThreeCol].find((btn) =>
+      btn.classList.contains('active')
+    );
+    if (initialActiveButton) {
+      initialActiveButton.click();
+    }
   };
 
   document.addEventListener('DOMContentLoaded', function() {
