@@ -393,7 +393,7 @@
               id="product-grid"
               data-id="{{ section.id }}"
               class="
-                grid product-grid
+                grid product-grid two-col
                 grid--{{ section.settings.columns_mobile }}-col-tablet-down
                 grid--{{ section.settings.columns_desktop }}-col-desktop
                 {% if section.settings.quick_add == 'bulk' %} collection-quick-add-bulk{% endif %}
@@ -488,6 +488,15 @@
       grid.classList.add('three-col');
       setActive(btnThreeCol);
     });
+
+    // Apply the layout corresponding to the active button without triggering a click
+    if (btnOneCol.classList.contains('active')) {
+      grid.classList.add('one-col');
+    } else if (btnTwoCol.classList.contains('active')) {
+      grid.classList.add('two-col');
+    } else if (btnThreeCol.classList.contains('active')) {
+      grid.classList.add('three-col');
+    }
   };
 
   document.addEventListener('DOMContentLoaded', function() {
