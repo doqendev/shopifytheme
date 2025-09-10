@@ -47,10 +47,6 @@
     {{ option.name }}-{{ option.position }}
   {%- endcapture -%}
 
-  {%- capture swatch_input_name -%}
-    options[{{ option.name | escape }}]
-  {%- endcapture -%}
-
   {%- capture input_dataset -%}
     data-product-url="{{ value.product_url }}"
     data-option-value-id="{{ value.id }}"
@@ -70,7 +66,7 @@
     {%
       render 'swatch-input',
       id: input_id,
-      name: swatch_input_name,
+      name: input_name,
       value: value | escape,
       swatch: value.swatch,
       product_form_id: product_form_id,
