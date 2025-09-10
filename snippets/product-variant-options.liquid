@@ -16,8 +16,14 @@
     picker_type: picker_type
   %}
 {% endcomment %}
+{%- comment %}
+  product_form_id is passed in from the parent snippet. If it isn't provided,
+  fall back to the default product form id based on the section.
+{%- endcomment -%}
 {%- liquid
-  assign product_form_id = 'product-form-' | append: section.id
+  if product_form_id == blank
+    assign product_form_id = 'product-form-' | append: section.id
+  endif
 -%}
 
 {%- for value in option.values -%}
@@ -44,7 +50,7 @@
   {%- endcapture -%}
 
   {%- capture input_name -%}
-    {{ option.name }}-{{ option.position }}
+    {{ option.name }}-{{ option.position }}-{{ product_form_id }}
   {%- endcapture -%}
 
   {%- capture input_dataset -%}
