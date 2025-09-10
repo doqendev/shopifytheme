@@ -84,37 +84,37 @@
 }
 
 #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span {
-  width:23px!important;
-  height: 23px!important;
-  margin-right: 5px!important;
-  border-radius: 20px;  
+  width: 23px !important;
+  height: 23px !important;
+  margin-right: 5px !important;
+  border-radius: 20px;
 }
 
 @media screen and (min-width: 750px) and (max-width: 850px) {
   #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span {
-    width:13px!important;
-    height: 13px!important;
-    margin-right: 5px!important;
+    width: 13px !important;
+    height: 13px !important;
+    margin-right: 5px !important;
     border-radius: 20px;
+  }
 }
 
 @media screen and (min-width: 851px) and (max-width: 1000px) {
   #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span {
-    width:19px!important;
-    height: 19px!important;
-    margin-right: 5px!important;
+    width: 19px !important;
+    height: 19px !important;
+    margin-right: 5px !important;
     border-radius: 20px;
+  }
 }
 
 #FacetsWrapperMobile > div.mobile-facet.mobile-facet-filter\.v\.t\.shopify\.color-pattern > ul > li > div > label.swatch-input__label > span {
-  width: 25px!important;
-  height: 25px!important;
+  width: 25px !important;
+  height: 25px !important;
 }
-
-#FacetsWrapperMobile > div.mobile-facet.mobile-facet-filter\.v\.t\.shopify\.color-pattern > ul > li
 
 #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch.active {
   border: 2px solid white;
   box-shadow: 0 0 0 1px #000;
-  
 }
+

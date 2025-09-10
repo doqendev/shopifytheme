@@ -1150,7 +1150,36 @@ class ProductRecommendations extends HTMLElement {
         const recommendations = html.querySelector('product-recommendations');
 
         if (recommendations?.innerHTML.trim().length) {
+          const links = html.querySelectorAll('link[rel="stylesheet"]');
+          links.forEach((link) => {
+            const href = link.getAttribute('href');
+            if (href && !document.querySelector(`link[href="${href}"]`)) {
+              document.head.appendChild(link.cloneNode(true));
+            }
+            link.remove();
+          });
+
+          const scripts = html.querySelectorAll('script');
+          const newScripts = [];
+          scripts.forEach((script) => {
+            const src = script.getAttribute('src');
+            if (src) {
+              if (!document.querySelector(`script[src="${src}"]`)) {
+                const newScript = document.createElement('script');
+                newScript.src = src;
+                if (script.getAttribute('defer') !== null) newScript.defer = true;
+                newScripts.push(newScript);
+              }
+            } else if (script.textContent) {
+              const inlineScript = document.createElement('script');
+              inlineScript.textContent = script.textContent;
+              newScripts.push(inlineScript);
+            }
+            script.remove();
+          });
+
           this.innerHTML = recommendations.innerHTML;
+          newScripts.forEach((script) => document.body.appendChild(script));
         }
 
         if (!this.querySelector('slideshow-component') && this.classList.contains('complementary-products')) {
