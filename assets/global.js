@@ -1110,7 +1110,7 @@ class VariantSelects extends HTMLElement {
 
   get selectedOptionValues() {
     return Array.from(this.querySelectorAll('select option[selected], fieldset input:checked')).map(
-      (element) => element.dataset.optionValueId || element.value
+      ({ dataset }) => dataset.optionValueId
     );
   }
 }
