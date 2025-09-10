@@ -11,7 +11,7 @@
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
-  width: fit-content;
+  width: 100%;
   margin-bottom: 5px; /* Ensure space between swatches and price */
   margin-left: 1px;
   margin-top: -4px;
@@ -117,4 +117,8 @@
   border: 2px solid white;
   box-shadow: 0 0 0 1px #000;
   
+}
+
+.complementary-products .product-card-plus {
+  margin-left: 10px;
 }
