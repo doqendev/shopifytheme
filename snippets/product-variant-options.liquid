@@ -16,14 +16,8 @@
     picker_type: picker_type
   %}
 {% endcomment %}
-{%- comment %}
-  product_form_id is passed in from the parent snippet. If it isn't provided,
-  fall back to the default product form id based on the section.
-{%- endcomment -%}
 {%- liquid
-  if product_form_id == blank
-    assign product_form_id = 'product-form-' | append: section.id
-  endif
+  assign product_form_id = 'product-form-' | append: section.id
 -%}
 
 {%- for value in option.values -%}
@@ -53,8 +47,6 @@
     {{ option.name }}-{{ option.position }}
   {%- endcapture -%}
 
-  {%- capture option_input_name -%}options[{{ option.name | escape }}]{%- endcapture -%}
-
   {%- capture input_dataset -%}
     data-product-url="{{ value.product_url }}"
     data-option-value-id="{{ value.id }}"
@@ -74,7 +66,7 @@
     {%
       render 'swatch-input',
       id: input_id,
-      name: option_input_name,
+      name: input_name,
       value: value | escape,
       swatch: value.swatch,
       product_form_id: product_form_id,
