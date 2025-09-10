@@ -1160,18 +1160,20 @@ class ProductRecommendations extends HTMLElement {
           });
 
           const scripts = html.querySelectorAll('script');
+          const newScripts = [];
           scripts.forEach((script) => {
             const src = script.getAttribute('src');
             if (src && !document.querySelector(`script[src="${src}"]`)) {
               const newScript = document.createElement('script');
               newScript.src = src;
               if (script.getAttribute('defer') !== null) newScript.defer = true;
-              document.body.appendChild(newScript);
+              newScripts.push(newScript);
             }
             script.remove();
           });
 
           this.innerHTML = recommendations.innerHTML;
+          newScripts.forEach((script) => document.body.appendChild(script));
         }
 
         if (!this.querySelector('slideshow-component') && this.classList.contains('complementary-products')) {
