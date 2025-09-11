@@ -108,7 +108,7 @@
     transition: transform 0.3s ease;
   }
   .mobile-menu .menu-item.open .submenu-arrow {
-    transform: rotate(90deg);
+    transform: rotate(180deg);
   }
 
   /* Bold open title in mobile footer */
@@ -131,6 +131,39 @@
 
   #shopify-section-sections--24361744990532__footers_MJGUrj > div.footer-mobile > footer > div.footer__content-top.page-width > div.mobile-menu > nav > ul > li.menu-item.has-submenu.open > div > ul {
     padding: 5px!important;
+  }
+
+  @media screen and (max-width: 749px) {
+    .footer {
+      background-color: #000;
+      color: #fff;
+    }
+
+    .mobile-menu .menu-link {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0;
+      color: #fff;
+      text-decoration: none;
+      border-top: 1px solid #333;
+    }
+
+    .mobile-menu .menu-item:last-child .menu-link {
+      border-bottom: 1px solid #333;
+    }
+
+    .mobile-menu .submenu-list {
+      padding-bottom: 16px;
+    }
+
+    .mobile-menu .submenu-list a {
+      color: #fff;
+    }
+
+    .mobile-menu .submenu-arrow {
+      color: #fff;
+    }
   }
   
 {%- endstyle -%}
@@ -220,12 +253,10 @@
     <div class="mobile-menu" style="margin-top: 20px; margin-left: 5%; margin-right: 5%;">
       <nav class="menu-drawer__navigation static-menu">
         <ul class="menu-drawer__menu list-menu" role="list">
-          <li class="menu-separator"></li>
-          <li class="menu-separator"></li>
           <li class="menu-item has-submenu">
             <a href="#" class="menu-link">
               AJUDA
-              <span class="submenu-arrow">▶</span>
+              <span class="submenu-arrow">▼</span>
             </a>
             <div class="submenu">
               <ul class="submenu-list">
@@ -240,7 +271,7 @@
           <li class="menu-item has-submenu">
             <a href="#" class="menu-link">
               APOIO AO CLIENTE
-              <span class="submenu-arrow">▶</span>
+              <span class="submenu-arrow">▼</span>
             </a>
             <div class="submenu">
               <ul class="submenu-list">
@@ -254,7 +285,7 @@
           <li class="menu-item has-submenu">
             <a href="#" class="menu-link">
               EMPRESA
-              <span class="submenu-arrow">▶</span>
+              <span class="submenu-arrow">▼</span>
             </a>
             <div class="submenu">
               <ul class="submenu-list">
@@ -266,7 +297,7 @@
           <li class="menu-item has-submenu">
             <a href="#" class="menu-link">
               MÉTODOS DE PAGAMENTO
-              <span class="submenu-arrow">▶</span>
+              <span class="submenu-arrow">▼</span>
             </a>
             <div class="submenu">
               <ul class="submenu-list">
