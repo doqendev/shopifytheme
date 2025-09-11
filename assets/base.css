@@ -4249,3 +4249,7 @@ font-style: normal;
 #NewsletterForm--footer_WxCyyB {
   color: white;
 }
+
+#ContactFooter > div > div > label {
+  color: #fff;
+}
