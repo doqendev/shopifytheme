@@ -260,7 +260,7 @@ details[open].menu-opening > .menu-drawer__submenu {
 }
 
 .menu-drawer__menu a:hover {
-  color: #fff; /* White text on hover */
+  color: #000; /* White text on hover */
   font-weight: bold!important;
 }
 
