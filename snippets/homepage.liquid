@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Saldos | Fashion Sale</title>
+  <meta name="description" content="Explore nossos artigos em saldos para mulher, homem e criança." />
+  <!-- Open Graph -->
+  <meta property="og:title" content="Fashion Sale | Saldos" />
+  <meta property="og:description" content="Explore nossos artigos em saldos para mulher, homem e criança." />
+  <meta property="og:image" content="https://cdn.shopify.com/s/files/1/0911/7843/4884/files/hero_woman.jpg?v=1747744739" />
+  <meta property="og:type" content="website" />
+  <!-- AOS CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  <style>
+    :root {
+      --color-primary: #000;
+      --color-light: #fff;
+      --transition: 0.3s ease;
+      --breakpoint-md: 768px;
+    }
+    /* Utility */
+    .img-fluid { width:100%; height:auto; display:block; }
+    .btn-home { background:transparent; color:var(--color-light); border:2px solid var(--color-light); padding:0.75rem 1.5rem; text-transform:uppercase; font-weight:bold; transition:background var(--transition),color var(--transition); text-decoration: none;}
+    .btn-home:hover { background:var(--color-light); color:var(--color-primary); }
+    body { margin:0; font-family:Arial, sans-serif; color:var(--color-primary); }
+    .trending-now-container { position:relative; overflow:hidden; }
+    .trending-now__picture img { width:100%; height:100%; object-fit:cover; }
+    .trending-now__overlay { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; color:var(--color-light); }
+    .trending-now__overlay h1 { font-size:calc(2rem + 2vw); margin:0 0 1rem; }
+    .section-container { display:none; opacity:0; transition:opacity var(--transition); }
+    .section-container.active { display:block; opacity:1; }
+    .additional-images { display:grid; gap:0; }
+    @media(min-width:var(--breakpoint-md)) { .additional-images { grid-template-columns:repeat(2,1fr); } .image-full { grid-column:span 2; } }
+    @media(max-width:calc(var(--breakpoint-md)-1px)) { .additional-images { display:flex; flex-direction:column; } }
+    .image-container { position:relative; }
+    .image-caption { position:absolute; bottom:10%; left:50%; transform:translateX(-50%); text-align:center; color:var(--color-light); }
+    .image-caption h2 { margin:0 0 .5rem; }
+  </style>
+</head>
+<body>
+  {% comment %} header.liquid renders <nav class="nav-menu-new"> with links to #mulher, #homem, #crianca {% endcomment %}
+
+  <!-- Trending Now -->
+  <section class="trending-now-container">
+    <picture class="trending-now__picture">
+      <source media="(min-width:768px)" srcset="https://cdn.shopify.com/s/files/1/0911/7843/4884/files/20250603_1027_Timeless_Elegance_Portrait_simple_compose_01jwthtbqresdbksgpsaxvf7jd.png?v=1748943000" />
+      <img src="https://cdn.shopify.com/s/files/1/0911/7843/4884/files/20250603_1027_Timeless_Elegance_Portrait_simple_compose_01jwthtbqresdbksgpsaxvf7jd.png?v=1748943000" alt="Mulher em fundo preto e branco" class="img-fluid" loading="eager" />
+    </picture>
+    <div class="trending-now__overlay">
+      <h1>SALDOS</h1>
+      <a href="https://cheyenne.pt/collections/saldos" class="btn-home">Ver agora</a>
+    </div>
+  </section>
+
+  <!-- Mulher Section -->
+  <div id="mulher" class="section-container image-section-mulher active">
+    <div class="additional-images">
+      <!-- Mulher Novidades -->
+      <div class="image-container" data-aos="fade-up">
+        <picture>
+          <source media="(min-width:768px)" srcset="https://cdn.shopify.com/s/files/1/0911/7843/4884/files/A_1.webp?v=1736957644" />
+          <img src="https://cdn.shopify.com/s/files/1/0911/7843/4884/files/A_1.webp?v=1736957644" alt="Mulher - Novidades coleção primavera" class="img-fluid" loading="lazy" />
+        </picture>
+        <div class="image-caption"><h2>Novidades</h2><a href="/collections/novidades" class="btn-home">Ver agora</a></div>
+      </div>
+      <!-- Mulher Sobretudos -->
+      <div class="image-container" data-aos="fade-up" data-aos-delay="100">
+        <picture>
+          <source media="(min-width:768px)" srcset="https://cdn.shopify.com/s/files/1/0911/7843/4884/files/A_1_3.webp?v=1737113728" />
+          <img src="https://cdn.shopify.com/s/files/1/0911/7843/4884/files/A_1_3.webp?v=1737113728" alt="Mulher - Sobretudos em lã" class="img-fluid" loading="lazy" />
+        </picture>
+        <div class="image-caption"><h2>Sobretudos</h2><a href="#sobretudos" class="btn-home">Ver agora</a></div>
+      </div>
+      <!-- Mulher Malha Full -->
+      <div class="image-container image-full" data-aos="fade-up" data-aos-delay="200">
+        <picture>
+          <source media="(min-width:768px)" srcset="https://cdn.shopify.com/s/files/1/0911/7843/4884/files/S_2.webp?v=1736961078" />
+          <img src="https://cdn.shopify.com/s/files/1/0911/7843/4884/files/S_2.webp?v=1736961078" alt="Mulher - Malha confortável" class="img-fluid" loading="lazy" />
+        </picture>
+        <div class="image-caption"><h2>Malha</h2><a href="#malha" class="btn-home">Ver agora</a></div>
+      </div>
+      <!-- Mulher Acessórios -->
+      <div class="image-container" data-aos="fade-up" data-aos-delay="300">
+        <picture>
+          <source media="(min-width:768px)" srcset="https://cdn.shopify.com/s/files/1/0911/7843/4884/files/D_1_1.webp?v=1737113729" />
+          <img src="https://cdn.shopify.com/s/files/1/0911/7843/4884/files/D_1_1.webp?v=1737113729" alt="Mulher - Acessórios de moda" class="img-fluid" loading="lazy" />
+        </picture>
+        <div class="image-caption"><h2>Acessórios</h2><a href="#acessorios" class="btn-home">Ver agora</a></div>
+      </div>
+      <!-- Mulher Sapatos -->
+      <div class="image-container" data-aos="fade-up" data-aos-delay="400">
+        <picture>
+          <source media="(min-width:768px)" srcset="https://cdn.shopify.com/s/files/1/0911/7843/4884/files/D_2_1.webp?v=1737113729" />
+          <img src="https://cdn.shopify.com/s/files/1/0911/7843/4884/files/D_2_1.webp?v=1737113729" alt="Mulher - Coleção de sapatos" class="img-fluid" loading="lazy" />
+        </picture>
+        <div class="image-caption"><h2>Sapatos</h2><a href="#sapatos" class="btn-home">Ver agora</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Homem Section -->
+  <div id="homem" class="section-container image-section-homem">
+    <div class="additional-images">
+      <!-- Homem Novidades -->
+      <div class="image-container" data-aos="fade-up">…</div>
+      <!-- Homem Sobretudos -->
+      <div class="image-container" data-aos="fade-up" data-aos-delay="100">…</div>
+      <!-- etc. -->
+    </div>
+  </div>
+
+  <!-- Criança Section -->
+  <div id="crianca" class="section-container image-section-crianca">
+    <div class="additional-images">
+      <!-- Criança Novidades -->
+      <div class="image-container image-full" data-aos="fade-up">…</div>
+      <!-- Criança Novidades 2 -->
+      <div class="image-container image-full" data-aos="fade-up" data-aos-delay="100">…</div>
+    </div>
+  </div>
+
+  <!-- AOS & Dynamic JS -->
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js" defer></script>
+  <script defer>
+    document.addEventListener("DOMContentLoaded", () => {
+      AOS.init();
+
+      const navLinks = document.querySelectorAll(".nav-menu-new a");
+      const mulherSection = document.querySelector(".image-section-mulher");
+      const homemSection = document.querySelector(".image-section-homem");
+      const criancaSection = document.querySelector(".image-section-crianca");
+      const trendingSource = document.querySelector(".trending-now__picture source");
+      const trendingImg = document.querySelector(".trending-now__picture img");
+
+      function showSection(section) {
+        mulherSection.style.display = "none";
+        homemSection.style.display = "none";
+        criancaSection.style.display = "none";
+        section.style.display = "block";
+      }
+      function updateActiveLink(activeLink) {
+        navLinks.forEach(link => link.classList.remove("active"));
+        activeLink.classList.add("active");
+      }
+      function updateTrendingNow(category) {
+        if (category === "mulher") {
+          trendingSource.srcset = "https://cdn.shopify.com/s/files/1/0911/7843/4884/files/fashion-model-in-black-white.jpg?v=1743757550";
+          trendingImg.src = "https://cdn.shopify.com/s/files/1/0911/7843/4884/files/hero_woman.jpg?v=1747744739";
+          trendingImg.alt = "Trending Mulher";
+        } else if (category === "homem") {
+          trendingSource.srcset = "https://cdn.shopify.com/s/files/1/0911/7843/4884/files/S_1_1.jpg?v=1744018021";
+          trendingImg.src = "https://cdn.shopify.com/s/files/1/0911/7843/4884/files/A_1_6.webp?v=1744017915";
+          trendingImg.alt = "Trending Homem";
+        } else if (category === "crianca") {
+          trendingSource.srcset = "https://cdn.shopify.com/s/files/1/0911/7843/4884/files/S_1.jpg?v=1744016515";
+          trendingImg.src = "https://cdn.shopify.com/s/files/1/0911/7843/4884/files/A_1_5.webp?v=1744016919";
+          trendingImg.alt = "Trending Criança";
+        }
+      }
+      // Initial state
+      showSection(mulherSection);
+      const defaultLink = document.querySelector(".nav-menu-new a[href='#mulher']");
+      if (defaultLink) {
+        updateActiveLink(defaultLink);
+        updateTrendingNow("mulher");
+      }
+      navLinks.forEach(link => {
+        link.addEventListener("click", e => {
+          e.preventDefault();
+          const href = link.getAttribute("href");
+          if (href === "#homem") {
+            showSection(homemSection);
+            updateTrendingNow("homem");
+          } else if (href === "#crianca") {
+            showSection(criancaSection);
+            updateTrendingNow("crianca");
+          } else {
+            showSection(mulherSection);
+            updateTrendingNow("mulher");
+          }
+          updateActiveLink(link);
+        });
+      });
+    });
+  </script>
+</body>
+</html>

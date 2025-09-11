@@ -1,0 +1,44 @@
+<section id="il-wishlist-page" class="page-width">
+  <div id="il-wishlist-list"></div>
+</section>
+
+<script>
+(async () => {
+  const root = document.getElementById('il-wishlist-list');
+  if (!root) return;
+
+  const res = await fetch('/apps/wishlist', { credentials: 'same-origin' });
+  if (res.status === 401) {
+    root.innerHTML = '<p>Please log in to view your wishlist.</p>';
+    return;
+  }
+  if (!res.ok) {
+    root.innerHTML = '<p>Could not load wishlist.</p>';
+    return;
+  }
+  const data = await res.json();
+  const items = data.items || [];
+  if (!items.length) {
+    root.innerHTML = '<p>Your wishlist is empty.</p>';
+    return;
+  }
+  root.innerHTML = `
+    <ul class="il-wishlist-grid">
+      ${items.map(i => `
+        <li class="il-wishlist-card">
+          <a href="/products/${i.handle}">
+            <img src="${i.image}" alt="${i.title}">
+            <div class="il-wishlist-card__title">${i.title}</div>
+          </a>
+        </li>
+      `).join('')}
+    </ul>`;
+})();
+</script>
+
+<style>
+.il-wishlist-grid{list-style:none;padding:0;margin:0;display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+.il-wishlist-card{border:1px solid #eee;border-radius:10px;overflow:hidden;background:#fff}
+.il-wishlist-card img{width:100%;height:auto;display:block}
+.il-wishlist-card__title{padding:10px;font-size:.95rem}
+</style>
