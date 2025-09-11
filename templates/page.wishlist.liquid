@@ -94,8 +94,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   grid.innerHTML = 'A carregar favoritos...';
 
   // Try fetching, even if not logged in
-  const res = await fetch('/apps/wishlist?action=get', { credentials: 'include' });
-  const data = await res.json();
+  let data = { products: [] };
+  try {
+    const res = await fetch('/apps/wishlist?action=get', { credentials: 'include' });
+    if (!res.ok) throw new Error('Wishlist request failed');
+    data = await res.json();
+  } catch (err) {
+    console.error('Failed to load wishlist', err);
+    grid.innerHTML = '<p>No items in wishlist.</p>';
+    return;
+  }
 
   if (!data.products || data.products.length === 0) {
     grid.innerHTML = '<p>No items in wishlist.</p>';
