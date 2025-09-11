@@ -1,0 +1,39 @@
+{% comment %}Wishlist page section{% endcomment %}
+<div class="page-width">
+  <h1 class="section-header">Favoritos</h1>
+  <div class="collection page-width">
+    <ul id="wishlist-grid" class="grid product-grid grid--2-col-tablet-down grid--6-col-desktop">
+      <!-- Wishlist product cards loaded here -->
+    </ul>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  const grid = document.getElementById('wishlist-grid');
+  grid.innerHTML = 'A carregar favoritos...';
+  try {
+    const res = await fetch('/apps/wishlist', { credentials: 'include' });
+    const data = await res.json();
+    if (!data.items || data.items.length === 0) {
+      grid.innerHTML = '<p>No items in wishlist.</p>';
+      return;
+    }
+    grid.innerHTML = '';
+    for (const item of data.items) {
+      const html = await fetch(`/products/${item.handle}?view=wishlist-card`).then(r => r.text());
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = html.trim();
+      const card = wrapper.querySelector('.product-card-wrapper');
+      if (card) {
+        const li = document.createElement('li');
+        li.className = 'grid__item';
+        li.appendChild(card);
+        grid.appendChild(li);
+      }
+    }
+  } catch (e) {
+    grid.innerHTML = '<p>Failed to load wishlist.</p>';
+  }
+});
+</script>

@@ -1,0 +1,63 @@
+.il-wishlist-overlay {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 2;
+}
+
+.product__media-wrapper {
+  position: relative;
+}
+
+.wishlist-button {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.wishlist-button svg {
+  width: 24px;
+  height: 24px;
+  stroke: #333;
+  fill: transparent;
+  transition: fill 0.2s ease, stroke 0.2s ease;
+}
+
+.wishlist-button.is-active svg {
+  fill: #e0245e;
+  stroke: #e0245e;
+}
+
+#wishlist-login-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+#wishlist-login-modal.active {
+  display: flex;
+}
+
+#wishlist-login-modal .modal-content {
+  background: #fff;
+  padding: 1.5rem;
+  max-width: 300px;
+  width: 90%;
+  text-align: center;
+  position: relative;
+}
+
+#wishlist-login-modal [data-wishlist-modal-close] {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}

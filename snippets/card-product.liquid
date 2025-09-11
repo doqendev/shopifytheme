@@ -179,7 +179,7 @@
         class="card__inner {% if settings.card_style == 'standard' %}color-{{ settings.card_color_scheme }} gradient{% endif %}{% if card_product.featured_media or settings.card_style == 'standard' %} ratio{% endif %}"
         style="--ratio-percent: {{ 1 | divided_by: ratio | times: 100 }}%;"
       >
-       {% if card_product.featured_media %}
+{% if card_product.featured_media %}
   <div class="card__media swiper-container">
     <div class="swiper-wrapper">
       {% for media in card_product.media %}
@@ -211,6 +211,10 @@
     <div class="swiper-pagination"></div>
   </div>
 {% endif %}
+
+      <div class="il-wishlist-overlay">
+        {% render 'wishlist-heart', product: card_product %}
+      </div>
 
       </div>
 
