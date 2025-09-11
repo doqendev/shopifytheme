@@ -1610,7 +1610,7 @@ details[open] > .share-button__fallback {
   bottom: 0;
   left: 0;
   border-radius: var(--inputs-radius-outset);
-   box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 1);
+   box-shadow: 0 0 0 0.5px rgb(255, 255, 255);
     var(--inputs-shadow-blur-radius) rgba(var(--color-shadow), var(--popup-shadow-opacity));
   z-index: -1;
 }
