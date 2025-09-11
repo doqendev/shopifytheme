@@ -253,50 +253,6 @@
   margin-bottom: 6px;
 
 }
-
-.size-picker-button-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 8px;
-}
-
-.size-picker-button {
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  background: #fff;
-  border-radius: 4px;
-}
-
-.size-drawer { display: none; }
-.size-drawer.open { display: block; }
-.size-drawer__overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
-}
-.size-drawer__content {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #fff;
-  transform: translateY(100%);
-  transition: transform 0.3s ease;
-  padding: 20px;
-}
-.size-drawer.open .size-drawer__content { transform: translateY(0); }
-.size-drawer__option {
-  display: block;
-  width: 100%;
-  padding: 12px;
-  border: 0;
-  border-bottom: 1px solid #eee;
-  background: none;
-  text-align: center;
-}
 </style>
 
 <!-- Provide the product data in JSON -->
@@ -321,28 +277,6 @@
           <div class="product-variants">
             {% render 'product-variant-picker', product: product, block: dummy_block, product_form_id: 'product-form-' | append: section.id %}
           </div>
-          {% assign size_option = product.options_with_values | where: 'name', 'Size' | first %}
-          {% if size_option == blank %}
-            {% assign size_option = product.options_with_values | where: 'name', 'Tamanho' | first %}
-          {% endif %}
-          {% if size_option %}
-          <div class="size-picker-button-container">
-            <button type="button" id="open-size-drawer" class="size-picker-button">
-              {{ size_option.name }}: <span id="current-size-label">{{ size_option.selected_value | default: 'Select' }}</span>
-            </button>
-          </div>
-          <div id="size-drawer" class="size-drawer">
-            <div class="size-drawer__overlay"></div>
-            <div class="size-drawer__content">
-              <button type="button" class="size-drawer__close" aria-label="Close">&times;</button>
-              <div class="size-drawer__options">
-                {% for value in size_option.values %}
-                <button type="button" class="size-drawer__option" data-value="{{ value | escape }}">{{ value }}</button>
-                {% endfor %}
-              </div>
-            </div>
-          </div>
-          {% endif %}
           {% endunless %}
         </div>
       </div>
@@ -867,37 +801,6 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
-});
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const sizeSelect = document.querySelector('#sticky-product-bar select[name*="Size"], #sticky-product-bar select[name*="Tamanho"]');
-  if (!sizeSelect) return;
-  const sizeWrapper = sizeSelect.closest('.product-form__input');
-  if (sizeWrapper) sizeWrapper.style.display = 'none';
-
-  const drawer = document.getElementById('size-drawer');
-  const overlay = drawer.querySelector('.size-drawer__overlay');
-  const closeBtn = drawer.querySelector('.size-drawer__close');
-  const openBtn = document.getElementById('open-size-drawer');
-  const currentLabel = document.getElementById('current-size-label');
-
-  function openDrawer() { drawer.classList.add('open'); }
-  function closeDrawer() { drawer.classList.remove('open'); }
-
-  openBtn.addEventListener('click', openDrawer);
-  overlay.addEventListener('click', closeDrawer);
-  closeBtn.addEventListener('click', closeDrawer);
-
-  drawer.querySelectorAll('.size-drawer__option').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      sizeSelect.value = this.dataset.value;
-      sizeSelect.dispatchEvent(new Event('change', { bubbles: true }));
-      currentLabel.textContent = this.dataset.value;
-      closeDrawer();
-    });
-  });
 });
 </script>
 
