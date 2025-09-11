@@ -54,7 +54,7 @@
     border: none !important;
     outline: none !important;
     box-shadow: none !important;
-    border-bottom: 1px solid blue;
+    border-bottom: none;
     padding: 8px 0;
   }
 
@@ -68,11 +68,7 @@
     border: none;
   }
 
-  li.menu-item {
-    margin-bottom: 10px!important;
-  }
-
-.footer-block--newsletter {
+  .footer-block--newsletter {
     margin-top: 50px;
     margin-bottom: 100px;
     margin-right: 40px;
@@ -108,7 +104,7 @@
     transition: transform 0.3s ease;
   }
   .mobile-menu .menu-item.open .submenu-arrow {
-    transform: rotate(90deg);
+    transform: rotate(180deg);
   }
 
   /* Bold open title in mobile footer */
@@ -129,10 +125,66 @@
     margin-top: auto;
   }
 
-  #shopify-section-sections--24361744990532__footers_MJGUrj > div.footer-mobile > footer > div.footer__content-top.page-width > div.mobile-menu > nav > ul > li.menu-item.has-submenu.open > div > ul {
-    padding: 5px!important;
+  /* Mobile footer theme */
+  .footer-mobile .footer {
+    background-color: #000;
+    color: #fff;
   }
-  
+  .footer-mobile .footer a {
+    color: #fff;
+  }
+
+  /* Newsletter styling */
+  .footer-mobile .newsletter-title,
+  .footer-mobile .newsletter-description {
+    color: #fff;
+  }
+  .footer-mobile .field__input {
+    border-bottom: 1px solid #fff;
+    background: transparent;
+    color: #fff;
+  }
+  .footer-mobile .field__label {
+    color: #fff;
+  }
+  .footer-mobile .field__input::placeholder {
+    color: #fff;
+    opacity: 0.7;
+  }
+  .footer-mobile .newsletter-form__button {
+    color: #fff;
+    background: transparent;
+  }
+
+  /* Accordion modern look */
+  .footer-mobile .mobile-menu .menu-item {
+    border-bottom: 1px solid #333;
+    margin-bottom: 0;
+  }
+  .footer-mobile .mobile-menu .menu-item:first-child {
+    border-top: 1px solid #333;
+  }
+  .footer-mobile .mobile-menu .menu-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 0;
+    color: #fff;
+    text-decoration: none;
+  }
+  .footer-mobile .mobile-menu .submenu {
+    padding: 0 0 1.2rem 0;
+  }
+  .footer-mobile .mobile-menu .submenu-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+  .footer-mobile .mobile-menu .submenu-list a {
+    color: #fff;
+    font-size: 0.875rem;
+  }
+
 {%- endstyle -%}
 
 <footer class="footer color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding{% if editorial_mode %} editorial-footer{% endif %}">
@@ -220,12 +272,10 @@
     <div class="mobile-menu" style="margin-top: 20px; margin-left: 5%; margin-right: 5%;">
       <nav class="menu-drawer__navigation static-menu">
         <ul class="menu-drawer__menu list-menu" role="list">
-          <li class="menu-separator"></li>
-          <li class="menu-separator"></li>
           <li class="menu-item has-submenu">
             <a href="#" class="menu-link">
               AJUDA
-              <span class="submenu-arrow">▶</span>
+              <span class="submenu-arrow">▼</span>
             </a>
             <div class="submenu">
               <ul class="submenu-list">
@@ -240,7 +290,7 @@
           <li class="menu-item has-submenu">
             <a href="#" class="menu-link">
               APOIO AO CLIENTE
-              <span class="submenu-arrow">▶</span>
+              <span class="submenu-arrow">▼</span>
             </a>
             <div class="submenu">
               <ul class="submenu-list">
@@ -254,7 +304,7 @@
           <li class="menu-item has-submenu">
             <a href="#" class="menu-link">
               EMPRESA
-              <span class="submenu-arrow">▶</span>
+              <span class="submenu-arrow">▼</span>
             </a>
             <div class="submenu">
               <ul class="submenu-list">
@@ -266,7 +316,7 @@
           <li class="menu-item has-submenu">
             <a href="#" class="menu-link">
               MÉTODOS DE PAGAMENTO
-              <span class="submenu-arrow">▶</span>
+              <span class="submenu-arrow">▼</span>
             </a>
             <div class="submenu">
               <ul class="submenu-list">
