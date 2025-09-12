@@ -36,10 +36,10 @@
       {%- endif -%}
       
       {%- comment %}
-        For Color options, force swatch rendering.
+        For Color options, force swatch dropdown so the swatch is shown.
       {%- endcomment -%}
       {%- if option.name contains "Color" or option.name contains "Cor" -%}
-        {% assign picker_type = "swatch" %}
+        {% assign picker_type = "swatch_dropdown" %}
       {%- endif -%}
       
       {%- if picker_type == 'swatch' -%}
