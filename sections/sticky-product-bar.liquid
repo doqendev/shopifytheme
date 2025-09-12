@@ -237,15 +237,85 @@
     overflow-y: auto;
 }
 
-.drawer-close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
+  .drawer-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+
+  /* Hide default dropdown for size inside sticky bar */
+  #variant-selects-{{ section.id }} .product-form__input--dropdown {
+    display: none;
+  }
+
+  /* Size picker trigger button */
+  .size-trigger {
+    display: inline-block;
+    padding: 6px 12px;
+    border: 1px solid #000;
+    background: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 4px;
+  }
+
+  /* Bottom drawer for size options */
+  .size-drawer {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1200;
+  }
+
+  .size-drawer.open {
+    display: block;
+  }
+
+  .size-drawer__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+  }
+
+  .size-drawer__panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -100%;
+    background: #fff;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.2);
+    padding: 20px;
+    transition: bottom 0.3s ease;
+  }
+
+  .size-drawer.open .size-drawer__panel {
+    bottom: 0;
+  }
+
+  .size-drawer__options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .size-drawer__option {
+    padding: 8px 12px;
+    border: 1px solid #000;
+    background: #fff;
+    cursor: pointer;
+  }
 
 .size-chart {
   margin-top: 10px;
@@ -276,6 +346,30 @@
           {% unless product.has_only_default_variant %}
           <div class="product-variants">
             {% render 'product-variant-picker', product: product, block: dummy_block, product_form_id: 'product-form-' | append: section.id %}
+            {% assign size_option = nil %}
+            {% for opt in product.options_with_values %}
+              {% if opt.name contains 'Size' %}
+                {% assign size_option = opt %}
+              {% endif %}
+            {% endfor %}
+            {% if size_option %}
+              <button type="button" id="size-trigger-{{ section.id }}" class="size-trigger">
+                {{ size_option.selected_value | default: 'Size' }}
+              </button>
+              <div id="size-drawer-{{ section.id }}" class="size-drawer">
+                <div class="size-drawer__overlay"></div>
+                <div class="size-drawer__panel">
+                  <div class="size-drawer__header">
+                    <span>Seleciona o tamanho</span>
+                  </div>
+                  <div class="size-drawer__options">
+                    {% for value in size_option.values %}
+                      <button type="button" class="size-drawer__option" data-value="{{ value }}">{{ value }}</button>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            {% endif %}
           </div>
           {% endunless %}
         </div>
@@ -603,6 +697,37 @@ document.addEventListener('DOMContentLoaded', function() {
   // Listen for changes to variant picker
   optionInputs.forEach(input => {
     input.addEventListener('change', updateVariant);
+  });
+});
+</script>
+
+<!-- Size drawer interaction -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var trigger = document.getElementById('size-trigger-{{ section.id }}');
+  var drawer = document.getElementById('size-drawer-{{ section.id }}');
+  if (!trigger || !drawer) return;
+
+  var sizeSelect = document.querySelector('#variant-selects-{{ section.id }} select[name^="options"][name*="Size"]');
+
+  trigger.addEventListener('click', function() {
+    drawer.classList.add('open');
+  });
+
+  drawer.querySelector('.size-drawer__overlay').addEventListener('click', function() {
+    drawer.classList.remove('open');
+  });
+
+  drawer.querySelectorAll('.size-drawer__option').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var value = btn.getAttribute('data-value');
+      if (sizeSelect) {
+        sizeSelect.value = value;
+        sizeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      trigger.textContent = value;
+      drawer.classList.remove('open');
+    });
   });
 });
 </script>

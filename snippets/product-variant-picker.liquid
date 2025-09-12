@@ -35,12 +35,12 @@
         {% assign picker_type = "dropdown" %}
       {%- endif -%}
       
-      {%- comment %}
-        For Color options, force swatch dropdown so the swatch is shown.
-      {%- endcomment -%}
-      {%- if option.name contains "Color" or option.name contains "Cor" -%}
-        {% assign picker_type = "swatch_dropdown" %}
-      {%- endif -%}
+    {%- comment %}
+      For Color options, force plain swatches so colors are shown directly.
+    {%- endcomment -%}
+    {%- if option.name contains "Color" or option.name contains "Cor" -%}
+      {% assign picker_type = "swatch" %}
+    {%- endif -%}
       
       {%- if picker_type == 'swatch' -%}
         <fieldset class="js product-form__input product-form__input--swatch">
