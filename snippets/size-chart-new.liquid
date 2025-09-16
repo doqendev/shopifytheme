@@ -1,0 +1,238 @@
+{%- comment -%}
+  SNIPPET: size-guide.liquid
+  Uso: {% render 'size-guide' %}
+  Como funciona:
+  - Procura nas tags do produto algo do tipo "sizechart:IDENTIFICADOR".
+  - Exemplos incluídos: hoodie, tshirt, calcas.
+  - Para adicionar novos, duplica um "when" no switch e muda rótulos/valores.
+  - Os valores estão em CM; o comutador converte para IN (1 in = 2.54 cm).
+{%- endcomment -%}
+
+{%- if product -%}
+  {%- assign sg_id = 'sizeguide-drawer-' | append: product.id -%}
+
+  {%- assign sizechart_key = '' -%}
+  {%- for tag in product.tags -%}
+    {%- if tag contains 'sizechart:' -%}
+      {%- assign sizechart_key = tag | split: ':' | last | downcase | strip -%}
+      {%- break -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+  <button type="button"
+          class="sg-link"
+          aria-haspopup="dialog"
+          aria-controls="{{ sg_id }}"
+          aria-expanded="false">
+    Guia de tamanhos
+  </button>
+
+  <div class="sg-root" id="{{ sg_id }}" hidden role="dialog" aria-modal="true" aria-label="Guia de tamanhos">
+    <div class="sg-overlay" data-sg-close></div>
+    <aside class="sg-panel" tabindex="-1">
+      <header class="sg-header">
+        <h3 class="sg-title">Dimensões do produto</h3>
+        <button class="sg-close" type="button" data-sg-close aria-label="Fechar">✕</button>
+      </header>
+
+      <div class="sg-media">
+        {%- assign first_media = product.featured_media | default: product.media.first -%}
+        {%- if first_media -%}
+          {%- if first_media.preview_image -%}
+            <img
+              src="{{ first_media | image_url: width: 800 }}"
+              srcset="{{ first_media | image_url: width: 400 }} 400w, {{ first_media | image_url: width: 800 }} 800w, {{ first_media | image_url: width: 1200 }} 1200w"
+              sizes="(max-width: 740px) 100vw, 600px"
+              alt="{{ first_media.alt | escape }}"
+              loading="lazy" class="sg-img">
+          {%- else -%}
+            <img
+              src="{{ product.featured_image | image_url: width: 800 }}"
+              alt="{{ product.title | escape }}" loading="lazy" class="sg-img">
+          {%- endif -%}
+        {%- else -%}
+          <div class="sg-img sg-img--placeholder" aria-hidden="true"></div>
+        {%- endif -%}
+      </div>
+
+      <p class="sg-note">As medidas podem apresentar pequenas variações devido ao processo de produção. A peça de roupa está medida esticada.</p>
+
+      <div class="sg-unit-switch" role="tablist" aria-label="Unidades">
+        <button class="sg-unit is-active" data-sg-unit="cm" role="tab" aria-selected="true">CM</button>
+        <button class="sg-unit" data-sg-unit="in" role="tab" aria-selected="false">IN</button>
+      </div>
+
+      {%- comment -%} ---------- TABELAS POR TAG ---------- {%- endcomment -%}
+      <div class="sg-table-wrap" data-sg-table>
+        {%- case sizechart_key -%}
+
+          {%- when 'hoodie' -%}
+          {%- assign sizes = 'M|L|XL|XXL' | split: '|' -%}
+          {%- assign row_labels = 'Peito|Comprimento à frente|Comprimento da manga|Largura das costas|Largura do braço' | split: '|' -%}
+          {%- assign peito = '61|64|67|70' | split: '|' -%}
+          {%- assign comp_frente = '68.5|70|71|72' | split: '|' -%}
+          {%- assign comp_manga = '63.5|64|65|66' | split: '|' -%}
+          {%- assign larg_costas = '53|55.5|58|60.5' | split: '|' -%}
+          {%- assign larg_braco = '26|27|28|29' | split: '|' -%}
+          {%- assign rows = 'peito,comp_frente,comp_manga,larg_costas,larg_braco' | split: ',' -%}
+          <table class="sg-table" aria-label="Tabela de tamanhos para hoodie">
+            <thead>
+              <tr>
+                <th scope="col">Zona</th>
+                {%- for s in sizes -%}<th scope="col">{{ s }}</th>{%- endfor -%}
+              </tr>
+            </thead>
+            <tbody>
+              {%- for label in row_labels -%}
+                <tr>
+                  <th scope="row">{{ label }}</th>
+                  {%- assign idx = forloop.index0 -%}
+                  <td data-cm="{{ peito[idx] }}">{{ peito[idx] }}</td>
+                  <td data-cm="{{ comp_frente[idx] }}">{{ comp_frente[idx] }}</td>
+                  <td data-cm="{{ comp_manga[idx] }}">{{ comp_manga[idx] }}</td>
+                  <td data-cm="{{ larg_costas[idx] }}">{{ larg_costas[idx] }}</td>
+                  <td data-cm="{{ larg_braco[idx] }}">{{ larg_braco[idx] }}</td>
+                </tr>
+              {%- endfor -%}
+            </tbody>
+          </table>
+
+          {%- when 'tshirt' -%}
+          {%- assign sizes = 'S|M|L|XL|XXL' | split: '|' -%}
+          {%- assign labels = 'Peito|Comprimento|Manga' | split: '|' -%}
+          {%- assign peito = '50|53|56|59|62' | split: '|' -%}
+          {%- assign comp = '70|72|74|76|78' | split: '|' -%}
+          {%- assign manga = '20|21|22|23|24' | split: '|' -%}
+          <table class="sg-table" aria-label="Tabela de tamanhos para t-shirt">
+            <thead><tr><th>Zona</th>{% for s in sizes %}<th>{{ s }}</th>{% endfor %}</tr></thead>
+            <tbody>
+              <tr><th scope="row">{{ labels[0] }}</th>{% for v in peito %}<td data-cm="{{ v }}">{{ v }}</td>{% endfor %}</tr>
+              <tr><th scope="row">{{ labels[1] }}</th>{% for v in comp %}<td data-cm="{{ v }}">{{ v }}</td>{% endfor %}</tr>
+              <tr><th scope="row">{{ labels[2] }}</th>{% for v in manga %}<td data-cm="{{ v }}">{{ v }}</td>{% endfor %}</tr>
+            </tbody>
+          </table>
+
+          {%- when 'calcas' -%}
+          {%- assign sizes = '28|30|32|34|36' | split: '|' -%}
+          {%- assign labels = 'Cintura|Anca|Comprimento (entrepernas)' | split: '|' -%}
+          {%- assign cintura = '72|77|82|87|92' | split: '|' -%}
+          {%- assign anca = '92|97|102|107|112' | split: '|' -%}
+          {%- assign entrepernas = '76|78|80|82|84' | split: '|' -%}
+          <table class="sg-table" aria-label="Tabela de tamanhos para calças">
+            <thead><tr><th>Zona</th>{% for s in sizes %}<th>{{ s }}</th>{% endfor %}</tr></thead>
+            <tbody>
+              <tr><th scope="row">{{ labels[0] }}</th>{% for v in cintura %}<td data-cm="{{ v }}">{{ v }}</td>{% endfor %}</tr>
+              <tr><th scope="row">{{ labels[1] }}</th>{% for v in anca %}<td data-cm="{{ v }}">{{ v }}</td>{% endfor %}</tr>
+              <tr><th scope="row">{{ labels[2] }}</th>{% for v in entrepernas %}<td data-cm="{{ v }}">{{ v }}</td>{% endfor %}</tr>
+            </tbody>
+          </table>
+
+          {%- else -%}
+          <div class="sg-empty">
+            <p><strong>Sem tabela específica</strong></p>
+            <p>Este produto não tem uma tabela associada. Adiciona uma tag como <code>sizechart:hoodie</code>, <code>sizechart:tshirt</code> ou <code>sizechart:calcas</code>.</p>
+          </div>
+        {%- endcase -%}
+      </div>
+
+      <p class="sg-howto">
+        Consulta <a href="/pages/como-medir" target="_blank" rel="noopener">como medir a peça de roupa</a>.
+      </p>
+    </aside>
+  </div>
+
+  <style>
+    .sg-link{
+      background:transparent;border:0;padding:0;color:#111;text-decoration:underline;cursor:pointer;font:inherit
+    }
+    .sg-root{position:fixed;inset:0;z-index:9999;display:grid;grid-template-columns:1fr;align-items:stretch}
+    .sg-overlay{background:rgba(0,0,0,.4)}
+    .sg-panel{
+      position:fixed;top:0;right:0;height:100%;width:min(720px,100%);
+      background:#fff;box-shadow:-10px 0 30px rgba(0,0,0,.2);
+      display:flex;flex-direction:column;gap:16px;padding:20px;overflow:auto
+    }
+    .sg-header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .sg-title{margin:0;font-size:18px;letter-spacing:.02em}
+    .sg-close{background:#f2f2f2;border:1px solid #e5e5e5;border-radius:10px;padding:6px 10px;cursor:pointer}
+    .sg-media{display:flex;justify-content:center}
+    .sg-img{max-width:420px;width:100%;height:auto;border-radius:8px;background:#f3f4f6}
+    .sg-img--placeholder{width:320px;height:420px;border-radius:8px;background:linear-gradient(90deg,#f3f4f6,#eee,#f3f4f6)}
+    .sg-note{font-size:13px;color:#666;margin:0}
+    .sg-unit-switch{display:flex;gap:8px;margin-top:2px}
+    .sg-unit{border:1px solid #e5e5e5;background:#f8f9fb;border-radius:8px;padding:6px 10px;cursor:pointer}
+    .sg-unit.is-active{border-color:#111;background:#fff;font-weight:600}
+    .sg-table{width:100%;border-collapse:collapse;margin-top:6px}
+    .sg-table th,.sg-table td{border-top:1px solid #e5e7eb;padding:10px 8px;text-align:center;font-size:14px}
+    .sg-table th[scope="row"]{text-align:left;font-weight:500;color:#111}
+    .sg-table thead th{font-weight:600;color:#111;background:#fafafa}
+    .sg-empty{background:#fff7ed;border:1px solid #ffedd5;padding:12px;border-radius:10px}
+    .sg-howto{font-size:14px;color:#555}
+    @media (max-width:740px){
+      .sg-panel{padding:16px}
+      .sg-img{max-width:100%}
+    }
+  </style>
+
+  <script>
+  (function(){
+    const rootId = "{{ sg_id }}";
+    const root = document.getElementById(rootId);
+    const openBtn = document.querySelector('[aria-controls="'+rootId+'"]');
+    if(!root || !openBtn) return;
+
+    const panel = root.querySelector('.sg-panel');
+    const overlay = root.querySelector('.sg-overlay');
+    const closeBtns = root.querySelectorAll('[data-sg-close]');
+    const unitBtns = root.querySelectorAll('.sg-unit');
+    const tableWrap = root.querySelector('[data-sg-table]');
+
+    function open(){
+      root.hidden = false;
+      document.documentElement.style.overflow = 'hidden';
+      openBtn.setAttribute('aria-expanded','true');
+      panel.focus();
+    }
+    function close(){
+      root.hidden = true;
+      document.documentElement.style.overflow = '';
+      openBtn.setAttribute('aria-expanded','false');
+      openBtn.focus();
+    }
+
+    openBtn.addEventListener('click', open);
+    closeBtns.forEach(b=>b.addEventListener('click', close));
+    overlay?.addEventListener('click', close);
+    document.addEventListener('keydown', (e)=>{ if(!root.hidden && e.key==='Escape') close(); });
+
+    // Units toggle (CM / IN)
+    let currentUnit = 'cm';
+    function toIn(cm){ return (parseFloat(cm)/2.54).toFixed(1); }
+    function toCm(inch){ return (parseFloat(inch)*2.54).toFixed(1); }
+
+    function renderUnit(unit){
+      if(!tableWrap) return;
+      const cells = tableWrap.querySelectorAll('td[data-cm]');
+      cells.forEach(td=>{
+        const cm = td.getAttribute('data-cm');
+        if(unit==='cm'){
+          td.textContent = cm;
+        } else {
+          td.textContent = toIn(cm);
+        }
+      });
+      unitBtns.forEach(btn=>{
+        const active = btn.getAttribute('data-sg-unit') === unit;
+        btn.classList.toggle('is-active', active);
+        btn.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+      currentUnit = unit;
+    }
+    unitBtns.forEach(btn=>{
+      btn.addEventListener('click', ()=> renderUnit(btn.getAttribute('data-sg-unit')));
+    });
+    // inicial
+    renderUnit('cm');
+  })();
+  </script>
+{%- endif -%}
