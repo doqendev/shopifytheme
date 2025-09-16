@@ -1,0 +1,229 @@
+{%- comment -%}
+  Renders the size guide drawer for product pages.
+  Expects:
+  - product: Product object.
+  - section_id: Optional unique id to avoid duplicated element ids.
+{%- endcomment -%}
+{%- assign size_guide_prefix = 'size-guide-' -%}
+{%- assign prefix_length = size_guide_prefix | size -%}
+{%- assign size_guide_key = '' -%}
+{%- for tag in product.tags -%}
+  {%- assign normalized_tag = tag | strip | downcase -%}
+  {%- assign normalized_length = normalized_tag | size -%}
+  {%- if normalized_length >= prefix_length and normalized_tag | slice: 0, prefix_length == size_guide_prefix -%}
+    {%- assign remainder_length = normalized_length | minus: prefix_length -%}
+    {%- assign remainder = normalized_tag | slice: prefix_length, remainder_length -%}
+    {%- assign size_guide_key = remainder | handleize -%}
+    {%- break -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- assign size_guide_title = 'Dimensões do produto' -%}
+{%- assign size_guide_eyebrow = 'Guia de tamanhos' -%}
+{%- assign size_guide_description = 'As medidas podem apresentar pequenas variações devido ao processo de produção. A peça de roupa está medida esticada.' -%}
+{%- assign size_guide_help_text = 'Consulta como medir a peça de roupa' -%}
+{%- assign size_guide_help_link = '/pages/guia-de-tamanhos' -%}
+
+{%- assign size_guide_json = '' -%}
+{%- case size_guide_key -%}
+  {%- when 'hoodie', 'sweatshirt', 'sweat', 'casaco', 'camisola' -%}
+    {% capture size_guide_json %}
+    {
+      "title": {{ size_guide_title | json }},
+      "description": {{ size_guide_description | json }},
+      "help_text": {{ size_guide_help_text | json }},
+      "help_link": {{ size_guide_help_link | json }},
+      "base_unit": "cm",
+      "columns": ["S", "M", "L", "XL"],
+      "rows": [
+        { "label": "Peito", "values": [61, 64.5, 67, 69.5] },
+        { "label": "Comprimento à frente", "values": [68.5, 70, 71.5, 73] },
+        { "label": "Comprimento da manga", "values": [63, 64, 65, 66] },
+        { "label": "Largura das costas", "values": [55, 56.5, 58, 59.5] },
+        { "label": "Largura do braço", "values": [26, 27, 28, 29] }
+      ]
+    }
+    {% endcapture %}
+  {%- when 'tshirt', 'tee', 't-shirt', 'camiseta', 'camiseta-manga-curta' -%}
+    {% capture size_guide_json %}
+    {
+      "title": {{ size_guide_title | json }},
+      "description": {{ size_guide_description | json }},
+      "help_text": {{ size_guide_help_text | json }},
+      "help_link": {{ size_guide_help_link | json }},
+      "base_unit": "cm",
+      "columns": ["XS", "S", "M", "L", "XL"],
+      "rows": [
+        { "label": "Peito", "values": [46, 49, 52, 55, 58] },
+        { "label": "Comprimento", "values": [64, 66, 68, 70, 72] },
+        { "label": "Comprimento da manga", "values": [19, 20, 21, 22, 23] }
+      ]
+    }
+    {% endcapture %}
+  {%- when 'calcas', 'pants', 'jeans', 'trousers' -%}
+    {% capture size_guide_json %}
+    {
+      "title": {{ size_guide_title | json }},
+      "description": {{ size_guide_description | json }},
+      "help_text": {{ size_guide_help_text | json }},
+      "help_link": {{ size_guide_help_link | json }},
+      "base_unit": "cm",
+      "columns": ["34", "36", "38", "40", "42"],
+      "rows": [
+        { "label": "Cintura", "values": [66, 70, 74, 78, 82] },
+        { "label": "Anca", "values": [90, 94, 98, 102, 106] },
+        { "label": "Comprimento exterior", "values": [96, 98, 100, 102, 104] },
+        { "label": "Comprimento interior", "values": [74, 75, 76, 77, 78] }
+      ]
+    }
+    {% endcapture %}
+  {%- when 'calcado', 'calçado', 'shoes', 'sapatilhas' -%}
+    {% capture size_guide_json %}
+    {
+      "title": {{ size_guide_title | json }},
+      "description": {{ size_guide_description | json }},
+      "help_text": {{ size_guide_help_text | json }},
+      "help_link": {{ size_guide_help_link | json }},
+      "base_unit": "cm",
+      "columns": ["35", "36", "37", "38", "39", "40", "41"],
+      "rows": [
+        { "label": "Comprimento do pé", "values": [22.8, 23.5, 24.1, 24.8, 25.5, 26.1, 26.8] }
+      ]
+    }
+    {% endcapture %}
+{%- endcase -%}
+
+{%- assign size_guide = nil -%}
+{%- if size_guide_json != '' -%}
+  {%- assign size_guide = size_guide_json | strip | parse_json -%}
+{%- endif -%}
+
+{%- assign base_unit = 'cm' -%}
+{%- if size_guide and size_guide.base_unit != blank -%}
+  {%- assign base_unit = size_guide.base_unit -%}
+{%- endif -%}
+
+{%- assign has_table = false -%}
+{%- if size_guide and size_guide.rows and size_guide.rows.size > 0 -%}
+  {%- assign has_table = true -%}
+{%- endif -%}
+
+{%- assign size_guide_heading = size_guide_title -%}
+{%- if size_guide and size_guide.title != blank -%}
+  {%- assign size_guide_heading = size_guide.title -%}
+{%- endif -%}
+
+{%- assign size_guide_description_text = size_guide_description -%}
+{%- if size_guide and size_guide.description != blank -%}
+  {%- assign size_guide_description_text = size_guide.description -%}
+{%- endif -%}
+
+{%- assign size_guide_section_id = section_id | default: product.id -%}
+{%- assign drawer_id = 'SizeGuideDrawer-' | append: size_guide_section_id -%}
+
+<div class="product-size-guide" data-size-guide>
+  <button
+    type="button"
+    class="product-size-guide__trigger size-guide-link"
+    data-size-guide-trigger
+    aria-controls="{{ drawer_id }}"
+    aria-expanded="false"
+  >
+    <span class="product-size-guide__trigger-icon" aria-hidden="true">
+      {{ 'icon-ruler.svg' | inline_asset_content }}
+    </span>
+    <span>Guia de tamanhos</span>
+  </button>
+
+  <div
+    class="product-size-guide__drawer"
+    id="{{ drawer_id }}"
+    role="dialog"
+    aria-modal="true"
+    aria-hidden="true"
+    data-size-guide-drawer
+  >
+    <div class="product-size-guide__overlay" data-size-guide-close aria-hidden="true"></div>
+    <aside class="product-size-guide__panel" role="document">
+      <header class="product-size-guide__header">
+        <div>
+          <p class="product-size-guide__eyebrow">{{ size_guide_eyebrow }}</p>
+          <h2 class="product-size-guide__heading">{{ size_guide_heading }}</h2>
+        </div>
+        <button
+          type="button"
+          class="product-size-guide__close"
+          data-size-guide-close
+          aria-label="{{ 'accessibility.close' | t }}"
+        >
+          {{ 'icon-close.svg' | inline_asset_content }}
+        </button>
+      </header>
+      <div class="product-size-guide__body">
+        {%- if product.featured_media -%}
+          <div class="product-size-guide__media">
+            {{ product.featured_media | image_url: width: 800 | image_tag: class: 'product-size-guide__image', alt: product.featured_media.alt | default: product.title, loading: 'lazy' }}
+          </div>
+        {%- endif -%}
+
+        {%- if size_guide_description_text != blank -%}
+          <p class="product-size-guide__description">{{ size_guide_description_text }}</p>
+        {%- endif -%}
+
+        {%- if size_guide and size_guide.help_text != blank -%}
+          <p class="product-size-guide__help">
+            {%- if size_guide.help_link != blank -%}
+              <a class="product-size-guide__help-link" href="{{ size_guide.help_link }}">{{ size_guide.help_text }}</a>
+            {%- else -%}
+              {{ size_guide.help_text }}
+            {%- endif -%}
+          </p>
+        {%- endif -%}
+
+        {%- if has_table -%}
+          <div class="product-size-guide__unit-toggle" role="group" aria-label="Unidades">
+            <button type="button" class="product-size-guide__unit-button is-active" data-size-guide-unit data-unit="cm" aria-pressed="true">CM</button>
+            <button type="button" class="product-size-guide__unit-button" data-size-guide-unit data-unit="in" aria-pressed="false">IN</button>
+          </div>
+
+          <div
+            class="product-size-guide__table"
+            data-size-guide-table
+            data-base-unit="{{ base_unit }}"
+            data-table="{{ size_guide | json | escape }}"
+          >
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Zona</th>
+                  {%- for column in size_guide.columns -%}
+                    <th scope="col">{{ column }}</th>
+                  {%- endfor -%}
+                </tr>
+              </thead>
+              <tbody>
+                {%- for row in size_guide.rows -%}
+                  <tr>
+                    <th scope="row">{{ row.label }}</th>
+                    {%- for value in row.values -%}
+                      <td>{{ value }}</td>
+                    {%- endfor -%}
+                  </tr>
+                {%- endfor -%}
+              </tbody>
+            </table>
+          </div>
+        {%- else -%}
+          <div class="product-size-guide__empty">
+            <p>Ainda não existe uma tabela de tamanhos específica para este produto.</p>
+            <p>
+              <a class="product-size-guide__help-link" href="{{ size_guide_help_link }}">
+                Consulta o nosso guia geral de tamanhos.
+              </a>
+            </p>
+          </div>
+        {%- endif -%}
+      </div>
+    </aside>
+  </div>
+</div>
