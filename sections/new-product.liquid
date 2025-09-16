@@ -765,9 +765,7 @@
         {{ product.content }}
       </div>
       <!-- Size chart (original link version) -->
-      <div class="size-chart" style="margin-top: 10px;">
-        {% render 'size-chart' %}
-      </div>
+      {% render 'product-size-guide', product: product, section_id: section.id %}
       <div class="product-info-accordion">
         <details>
           <summary class="h5">Composição e cuidados</summary>
