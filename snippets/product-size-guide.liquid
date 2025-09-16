@@ -1,0 +1,324 @@
+{% comment %}
+  Size guide drawer for product pages.
+  - Define measurement tables below and match them with product tags.
+  - The first matching tag determines which table is shown. If none match, the
+    entry marked with "default": true is used.
+  - Add additional table definitions inside `size_guide_json` as needed.
+{% endcomment %}
+
+{% capture size_guide_json %}
+[
+  {
+    "tag": "guide-hoodie",
+    "trigger_text": "Guia de tamanhos",
+    "title": "Dimensões do produto",
+    "description": "As medidas podem apresentar pequenas variações devido ao processo de produção. A peça de roupa está medida esticada.",
+    "helper_html": "Consulta <a href=\"/pages/guia-de-tamanhos\">como medir a peça de roupa</a>.",
+    "row_label": "Zona",
+    "unit_labels": {"cm": "CM", "inch": "IN"},
+    "sizes": ["S", "M", "L", "XL"],
+    "rows": [
+      {"label": "Peito", "values": [61, 64.5, 67, 71]},
+      {"label": "Comprimento à frente", "values": [63.5, 70, 71.5, 75]},
+      {"label": "Comprimento da manga", "values": [63, 63.5, 65, 66.5]},
+      {"label": "Largura das costas", "values": [53, 55.5, 58, 60]},
+      {"label": "Largura do braço", "values": [26, 27, 27.5, 28]}
+    ]
+  },
+  {
+    "tag": "guide-default",
+    "default": true,
+    "trigger_text": "Guia de tamanhos",
+    "title": "Dimensões do produto",
+    "description": "As medidas podem apresentar pequenas variações devido ao processo de produção. A peça de roupa está medida esticada.",
+    "helper_html": "Consulta <a href=\"/pages/guia-de-tamanhos\">como medir a peça de roupa</a>.",
+    "row_label": "Zona",
+    "unit_labels": {"cm": "CM", "inch": "IN"},
+    "sizes": ["S", "M", "L", "XL"],
+    "rows": [
+      {"label": "Peito", "values": [61, 64.5, 67, 71]},
+      {"label": "Comprimento à frente", "values": [63.5, 70, 71.5, 75]},
+      {"label": "Comprimento da manga", "values": [63, 63.5, 65, 66.5]},
+      {"label": "Largura das costas", "values": [53, 55.5, 58, 60]},
+      {"label": "Largura do braço", "values": [26, 27, 27.5, 28]}
+    ]
+  }
+]
+{% endcapture %}
+
+{% assign size_guide_tables = size_guide_json | strip | parse_json %}
+{% assign size_guide_config = nil %}
+
+{% if product and size_guide_tables %}
+  {% for table in size_guide_tables %}
+    {% if product.tags contains table.tag %}
+      {% assign size_guide_config = table %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+
+  {% if size_guide_config == nil %}
+    {% for table in size_guide_tables %}
+      {% if table.default %}
+        {% assign size_guide_config = table %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endif %}
+
+{% if size_guide_config %}
+  {% liquid
+    assign guide_identifier = section_id | default: product.id
+    assign guide_identifier = guide_identifier | append: ''
+    assign root_id = 'size-guide-' | append: guide_identifier
+    assign drawer_id = root_id | append: '-drawer'
+    assign heading_id = root_id | append: '-title'
+    assign open_button_id = root_id | append: '-open'
+
+    assign featured_media = product.selected_or_first_available_variant.featured_media | default: product.featured_media
+    if featured_media == blank and product.media.size > 0
+      assign featured_media = product.media | first
+    endif
+    assign size_guide_image_alt = featured_media.alt | default: product.title
+  %}
+
+  <div class="product-size-guide" data-size-guide="{{ root_id }}">
+    <button
+      type="button"
+      class="product-size-guide__trigger size-guide-link"
+      id="{{ open_button_id }}"
+      aria-controls="{{ drawer_id }}"
+      aria-expanded="false"
+      data-size-guide-open
+    >
+      {{ size_guide_config.trigger_text | default: 'Guia de tamanhos' }}
+    </button>
+
+    <div
+      class="product-size-guide__drawer"
+      id="{{ drawer_id }}"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="{{ heading_id }}"
+      aria-hidden="true"
+      data-size-guide-drawer
+    >
+      <div class="product-size-guide__backdrop" data-size-guide-close></div>
+      <div class="product-size-guide__panel" data-size-guide-panel>
+        <button
+          type="button"
+          class="product-size-guide__close"
+          data-size-guide-close
+          aria-label="Fechar guia de tamanhos"
+        >&times;</button>
+
+        <div class="product-size-guide__content">
+          <h2 class="product-size-guide__title" id="{{ heading_id }}">
+            {{ size_guide_config.title | default: 'Guia de tamanhos' }}
+          </h2>
+
+          {% if size_guide_config.description != blank %}
+            <p class="product-size-guide__description">{{ size_guide_config.description }}</p>
+          {% endif %}
+
+          {% if featured_media %}
+            <div class="product-size-guide__media">
+              {{ featured_media | image_url: width: 900 | image_tag: class: 'product-size-guide__image', loading: 'lazy', alt: size_guide_image_alt | escape }}
+            </div>
+          {% endif %}
+
+          {% if size_guide_config.helper_html != blank %}
+            <p class="product-size-guide__helper">{{ size_guide_config.helper_html }}</p>
+          {% endif %}
+
+          <div class="product-size-guide__unit-toggle" role="group" aria-label="Unidades">
+            <button
+              type="button"
+              class="product-size-guide__unit is-active"
+              data-size-guide-unit="cm"
+              aria-pressed="true"
+            >
+              {{ size_guide_config.unit_labels.cm | default: 'CM' }}
+            </button>
+            <button
+              type="button"
+              class="product-size-guide__unit"
+              data-size-guide-unit="inch"
+              aria-pressed="false"
+            >
+              {{ size_guide_config.unit_labels.inch | default: 'IN' }}
+            </button>
+          </div>
+
+          <div class="product-size-guide__table-wrapper">
+            <table class="product-size-guide__table" data-size-guide-table>
+              <thead>
+                <tr>
+                  <th scope="col">{{ size_guide_config.row_label | default: 'Zona' }}</th>
+                  {% for size in size_guide_config.sizes %}
+                    <th scope="col">{{ size }}</th>
+                  {% endfor %}
+                </tr>
+              </thead>
+              <tbody>
+                {% for row in size_guide_config.rows %}
+                  <tr>
+                    <th scope="row">{{ row.label }}</th>
+                    {% for value in row.values %}
+                      <td data-size-guide-value="{{ value }}">{{ value }}</td>
+                    {% endfor %}
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var root = document.querySelector('[data-size-guide="{{ root_id }}"]');
+      if (!root || root.dataset.sizeGuideReady === 'true') {
+        return;
+      }
+      root.dataset.sizeGuideReady = 'true';
+
+      var drawer = root.querySelector('[data-size-guide-drawer]');
+      var panel = root.querySelector('[data-size-guide-panel]');
+      var openButton = root.querySelector('[data-size-guide-open]');
+      var closeButtons = root.querySelectorAll('[data-size-guide-close]');
+      var unitButtons = root.querySelectorAll('[data-size-guide-unit]');
+      var table = root.querySelector('[data-size-guide-table]');
+      var activeUnit = 'cm';
+      var focusableSelectors = 'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
+      var focusableElements = [];
+      var firstFocusable = null;
+      var lastFocusable = null;
+
+      function setFocusableElements() {
+        if (!panel) { return; }
+        focusableElements = Array.prototype.slice.call(panel.querySelectorAll(focusableSelectors));
+        firstFocusable = focusableElements.length ? focusableElements[0] : null;
+        lastFocusable = focusableElements.length ? focusableElements[focusableElements.length - 1] : null;
+      }
+
+      function openDrawer() {
+        if (!drawer) { return; }
+        root.classList.add('is-open');
+        drawer.setAttribute('aria-hidden', 'false');
+        if (openButton) {
+          openButton.setAttribute('aria-expanded', 'true');
+        }
+        document.body.classList.add('size-guide-open');
+        setFocusableElements();
+        if (firstFocusable) {
+          firstFocusable.focus();
+        }
+      }
+
+      function closeDrawer() {
+        if (!drawer) { return; }
+        root.classList.remove('is-open');
+        drawer.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('size-guide-open');
+        if (openButton) {
+          openButton.setAttribute('aria-expanded', 'false');
+          openButton.focus();
+        }
+      }
+
+      function handleFocusTrap(event) {
+        if (event.key !== 'Tab' || focusableElements.length === 0) {
+          return;
+        }
+
+        if (event.shiftKey) {
+          if (document.activeElement === firstFocusable || !document.activeElement) {
+            event.preventDefault();
+            lastFocusable.focus();
+          }
+        } else if (document.activeElement === lastFocusable) {
+          event.preventDefault();
+          firstFocusable.focus();
+        }
+      }
+
+      function handleKeydown(event) {
+        if (!root.classList.contains('is-open')) {
+          return;
+        }
+
+        if (event.key === 'Escape' || event.key === 'Esc') {
+          closeDrawer();
+        } else {
+          handleFocusTrap(event);
+        }
+      }
+
+      function formatValue(baseValue, unit) {
+        var numeric = parseFloat(baseValue);
+        if (isNaN(numeric)) {
+          return baseValue;
+        }
+        if (unit === 'inch') {
+          numeric = numeric / 2.54;
+        }
+        return numeric.toFixed(1);
+      }
+
+      function updateTable(unit) {
+        if (!table) { return; }
+        var cells = table.querySelectorAll('[data-size-guide-value]');
+        cells.forEach(function(cell) {
+          var base = cell.getAttribute('data-size-guide-value');
+          cell.textContent = formatValue(base, unit);
+        });
+        activeUnit = unit;
+        unitButtons.forEach(function(button) {
+          var isActive = button.dataset.sizeGuideUnit === unit;
+          button.classList.toggle('is-active', isActive);
+          button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        });
+      }
+
+      if (openButton) {
+        openButton.addEventListener('click', function(event) {
+          event.preventDefault();
+          openDrawer();
+        });
+      }
+
+      closeButtons.forEach(function(button) {
+        button.addEventListener('click', function(event) {
+          event.preventDefault();
+          closeDrawer();
+        });
+      });
+
+      if (drawer) {
+        drawer.addEventListener('click', function(event) {
+          if (event.target === drawer) {
+            closeDrawer();
+          }
+        });
+      }
+
+      unitButtons.forEach(function(button) {
+        button.addEventListener('click', function(event) {
+          event.preventDefault();
+          var requestedUnit = button.dataset.sizeGuideUnit;
+          if (!requestedUnit || requestedUnit === activeUnit) {
+            return;
+          }
+          updateTable(requestedUnit);
+        });
+      });
+
+      document.addEventListener('keydown', handleKeydown);
+      updateTable(activeUnit);
+    })();
+  </script>
+{% endif %}
