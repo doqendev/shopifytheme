@@ -25,6 +25,8 @@
 {{ 'component-swatch-input.css' | asset_url | stylesheet_tag }}
 {{ 'component-product-variant-picker.css' | asset_url | stylesheet_tag }}
 {{ 'component-swatch.css' | asset_url | stylesheet_tag }}
+{{ 'component-size-guide.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'size-guide-drawer.js' | asset_url }}" defer="defer"></script>
 
 <style>
   /* Hide this entire desktop section on mobile, to avoid conflict */
@@ -423,8 +425,8 @@
 
     <!-- Description container (will be filled by JS) -->
     <div class="product-description" id="DesktopDescContainer">{{ product.description }}</div>
-        <div>
-    {% render 'size-chart-desktop' %}
+    <div>
+      {% render 'product-size-guide', product: product, section_id: section.id | append: '-desktop' %}
     </div>
     {% unless product.has_only_default_variant %}
       <!-- Variant Picker -->

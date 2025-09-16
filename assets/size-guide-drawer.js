@@ -1,4 +1,9 @@
-(function () {
+if (typeof window === 'undefined' || !window.ShopifySizeGuideDrawerLoaded) {
+  if (typeof window !== 'undefined') {
+    window.ShopifySizeGuideDrawerLoaded = true;
+  }
+
+  (function () {
   const SELECTOR = '[data-size-guide]';
   const instances = new WeakMap();
 
@@ -290,4 +295,5 @@
   document.addEventListener('shopify:section:unload', (event) => {
     destroy(event.target);
   });
-})();
+  })();
+}
