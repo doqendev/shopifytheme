@@ -423,7 +423,9 @@
 
     <!-- Description container (will be filled by JS) -->
     <div class="product-description" id="DesktopDescContainer">{{ product.description }}</div>
-    {% render 'product-size-guide', product: product, section_id: section.id %}
+        <div>
+    {% render 'size-chart-desktop' %}
+    </div>
     {% unless product.has_only_default_variant %}
       <!-- Variant Picker -->
       <div class="product-variants">

@@ -60,7 +60,8 @@
 /* Small “grab” bar indicator */
 #sticky-product-bar::before { display: none; }
 
-/* Ensure any internal related/footer blocks are hidden */
+/* Ensure any internal size-chart, related, footer blocks are hidden */
+#sticky-product-bar .size-chart,
 #sticky-product-bar .mobile-related-products,
 #sticky-product-bar .drawer-footer { display: none !important; }
 
@@ -246,10 +247,11 @@
   cursor: pointer;
 }
 
-#sticky-product-bar .product-size-guide {
+.size-chart {
   margin-top: 10px;
   margin-left: 4%;
   margin-bottom: 6px;
+
 }
 </style>
 
@@ -289,7 +291,9 @@
       </div>
     </div>
   </div>
-  {% render 'product-size-guide', product: product, section_id: section.id %}
+  <div class="size-chart">
+  {% render 'size-chart' %}
+    </div>
   <!-- Drawer Content -->
   <div class="drawer-content" style="background: #fff;">
     <div class="drawer-description" style="color: #333; font-size: 14px; line-height: 1.5; margin-left: 5%; margin-right: 5%; margin-top: 4rem;">
