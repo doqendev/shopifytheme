@@ -1,9 +1,8 @@
 {%- comment -%}
   SNIPPET: size-guide.liquid
-  - Renderiza link "Guia de tamanhos"; abre um drawer ao clicar.
+  - Link "Guia de tamanhos" que abre um drawer.
   - Lê tag "sizechart:IDENT" (ex.: camisola, tshirt, calcas) para escolher a tabela.
-  - A tabela tem 1ª coluna fixa ("ZONA") e as colunas de tamanhos com swipe/scroll horizontal.
-  - Comutador CM/IN com conversão automática (valores base em CM).
+  - Só CM (sem IN). A 1ª coluna (ZONA) é sticky; as colunas de tamanhos têm swipe/scroll horizontal.
 {%- endcomment -%}
 
 {%- if product -%}
@@ -45,19 +44,13 @@
 
       <p class="sg-note">As medidas podem apresentar pequenas variações devido ao processo de produção. A peça de roupa está medida esticada.</p>
 
-      <div class="sg-unit-switch" role="tablist" aria-label="Unidades">
-        <button class="sg-unit is-active" data-sg-unit="cm" role="tab" aria-selected="true">CM</button>
-        <button class="sg-unit" data-sg-unit="in" role="tab" aria-selected="false">IN</button>
-      </div>
-
       <div class="sg-table-wrap" data-sg-table>
         {%- case sizechart_key -%}
 
           {%- when 'camisola' -%}
           <div class="sg-scroll" data-sg-swipe>
-            <button class="sg-arrow sg-arrow--left" type="button" aria-label="Anterior" data-sg-prev hidden>‹</button>
-            <div class="sg-viewport" data-sg-viewport>
-              <table class="sg-table" aria-label="Tabela de tamanhos: Camisola">
+            <div class="sg-viewport" data-sg-viewport tabindex="0" aria-label="Tabela de tamanhos com scroll horizontal">
+              <table class="sg-table" aria-label="Tabela de tamanhos: Camisola (cm)">
                 <thead>
                   <tr>
                     <th class="sg-sticky">ZONA</th>
@@ -70,37 +63,35 @@
                 <tbody>
                   <tr>
                     <th scope="row" class="sg-sticky">Peito</th>
-                    <td data-cm="61">61</td><td data-cm="64">64</td><td data-cm="67">67</td><td data-cm="70">70</td>
+                    <td>61</td><td>64</td><td>67</td><td>70</td>
                   </tr>
                   <tr>
                     <th scope="row" class="sg-sticky">Comprimento à frente</th>
-                    <td data-cm="68.5">68.5</td><td data-cm="70">70</td><td data-cm="71.5">71.5</td><td data-cm="73">73</td>
+                    <td>68.5</td><td>70</td><td>71.5</td><td>73</td>
                   </tr>
                   <tr>
                     <th scope="row" class="sg-sticky">Comprimento da manga</th>
-                    <td data-cm="62.5">62.5</td><td data-cm="64.5">64.5</td><td data-cm="65.5">65.5</td><td data-cm="66.5">66.5</td>
+                    <td>62.5</td><td>64.5</td><td>65.5</td><td>66.5</td>
                   </tr>
                   <tr>
                     <th scope="row" class="sg-sticky">Largura das costas</th>
-                    <td data-cm="50.5">50.5</td><td data-cm="55.5">55.5</td><td data-cm="58">58</td><td data-cm="60.5">60.5</td>
+                    <td>50.5</td><td>55.5</td><td>58</td><td>60.5</td>
                   </tr>
                   <tr>
                     <th scope="row" class="sg-sticky">Largura do braço</th>
-                    <td data-cm="25">25</td><td data-cm="27">27</td><td data-cm="28">28</td><td data-cm="29">29</td>
+                    <td>25</td><td>27</td><td>28</td><td>29</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <button class="sg-arrow sg-arrow--right" type="button" aria-label="Seguinte" data-sg-next hidden>›</button>
             <div class="sg-fade sg-fade--left" aria-hidden="true"></div>
             <div class="sg-fade sg-fade--right" aria-hidden="true"></div>
           </div>
 
           {%- when 'tshirt' -%}
           <div class="sg-scroll" data-sg-swipe>
-            <button class="sg-arrow sg-arrow--left" type="button" aria-label="Anterior" data-sg-prev hidden>‹</button>
-            <div class="sg-viewport" data-sg-viewport>
-              <table class="sg-table" aria-label="Tabela de tamanhos: T-shirt">
+            <div class="sg-viewport" data-sg-viewport tabindex="0" aria-label="Tabela de tamanhos com scroll horizontal">
+              <table class="sg-table" aria-label="Tabela de tamanhos: T-shirt (cm)">
                 <thead>
                   <tr>
                     <th class="sg-sticky">ZONA</th>
@@ -113,27 +104,25 @@
                 </thead>
                 <tbody>
                   <tr><th scope="row" class="sg-sticky">Peito</th>
-                    <td data-cm="50">50</td><td data-cm="53">53</td><td data-cm="56">56</td><td data-cm="59">59</td><td data-cm="62">62</td>
+                    <td>50</td><td>53</td><td>56</td><td>59</td><td>62</td>
                   </tr>
                   <tr><th scope="row" class="sg-sticky">Comprimento</th>
-                    <td data-cm="70">70</td><td data-cm="72">72</td><td data-cm="74">74</td><td data-cm="76">76</td><td data-cm="78">78</td>
+                    <td>70</td><td>72</td><td>74</td><td>76</td><td>78</td>
                   </tr>
                   <tr><th scope="row" class="sg-sticky">Manga</th>
-                    <td data-cm="20">20</td><td data-cm="21">21</td><td data-cm="22">22</td><td data-cm="23">23</td><td data-cm="24">24</td>
+                    <td>20</td><td>21</td><td>22</td><td>23</td><td>24</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <button class="sg-arrow sg-arrow--right" type="button" aria-label="Seguinte" data-sg-next hidden>›</button>
             <div class="sg-fade sg-fade--left" aria-hidden="true"></div>
             <div class="sg-fade sg-fade--right" aria-hidden="true"></div>
           </div>
 
           {%- when 'calcas' -%}
           <div class="sg-scroll" data-sg-swipe>
-            <button class="sg-arrow sg-arrow--left" type="button" aria-label="Anterior" data-sg-prev hidden>‹</button>
-            <div class="sg-viewport" data-sg-viewport>
-              <table class="sg-table" aria-label="Tabela de tamanhos: Calças">
+            <div class="sg-viewport" data-sg-viewport tabindex="0" aria-label="Tabela de tamanhos com scroll horizontal">
+              <table class="sg-table" aria-label="Tabela de tamanhos: Calças (cm)">
                 <thead>
                   <tr>
                     <th class="sg-sticky">ZONA</th>
@@ -146,18 +135,17 @@
                 </thead>
                 <tbody>
                   <tr><th scope="row" class="sg-sticky">Cintura</th>
-                    <td data-cm="72">72</td><td data-cm="77">77</td><td data-cm="82">82</td><td data-cm="87">87</td><td data-cm="92">92</td>
+                    <td>72</td><td>77</td><td>82</td><td>87</td><td>92</td>
                   </tr>
                   <tr><th scope="row" class="sg-sticky">Anca</th>
-                    <td data-cm="92">92</td><td data-cm="97">97</td><td data-cm="102">102</td><td data-cm="107">107</td><td data-cm="112">112</td>
+                    <td>92</td><td>97</td><td>102</td><td>107</td><td>112</td>
                   </tr>
                   <tr><th scope="row" class="sg-sticky">Entrepernas</th>
-                    <td data-cm="76">76</td><td data-cm="78">78</td><td data-cm="80">80</td><td data-cm="82">82</td><td data-cm="84">84</td>
+                    <td>76</td><td>78</td><td>80</td><td>82</td><td>84</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <button class="sg-arrow sg-arrow--right" type="button" aria-label="Seguinte" data-sg-next hidden>›</button>
             <div class="sg-fade sg-fade--left" aria-hidden="true"></div>
             <div class="sg-fade sg-fade--right" aria-hidden="true"></div>
           </div>
@@ -202,11 +190,10 @@
     .sg-table thead th{font-weight:600;color:#111;background:#fafafa}
     .sg-table th[scope="row"]{text-align:left;font-weight:500;color:#111}
 
-    /* Larguras base */
     :root{ --sg-label-col: 210px; --sg-size-col: 96px; }
     .sg-size{min-width:var(--sg-size-col)}
     .sg-sticky{
-      position:sticky; left:0; z-index:2; background:#fff; /* fixa a coluna ZONA/labels */
+      position:sticky; left:0; z-index:2; background:#fff;
       min-width:var(--sg-label-col); max-width:var(--sg-label-col)
     }
     thead .sg-sticky{background:#fafafa; z-index:3}
@@ -214,22 +201,12 @@
     .sg-scroll{position:relative}
     .sg-viewport{
       overflow-x:auto; -webkit-overflow-scrolling:touch;
-      scroll-snap-type:x proximity; /* snap suave por coluna */
+      scroll-snap-type:x proximity;
       border-bottom:1px solid #e5e7eb
     }
-    /* sombreado nas extremidades para indicar scroll */
-    .sg-fade{position:absolute; top:42px; bottom:0; width:20px; pointer-events:none}
+    .sg-fade{position:absolute; top:42px; bottom:0; width:20px; pointer-events:none; opacity:0; transition:opacity .2s}
     .sg-fade--left{left:var(--sg-label-col); background:linear-gradient(90deg,#fff,rgba(255,255,255,0))}
     .sg-fade--right{right:0; background:linear-gradient(270deg,#fff,rgba(255,255,255,0))}
-
-    /* Setas */
-    .sg-arrow{
-      position:absolute; top:10px; transform:translateY(-50%);
-      width:28px; height:28px; border-radius:999px; border:1px solid #e5e5e5; background:#fff; cursor:pointer;
-      display:grid; place-items:center; z-index:4
-    }
-    .sg-arrow--left{ right:64px; }  /* junto ao título/unidades */
-    .sg-arrow--right{ right:28px; }
 
     @media (max-width:740px){
       .sg-panel{padding:16px}
@@ -248,8 +225,6 @@
     const panel = root.querySelector('.sg-panel');
     const overlay = root.querySelector('.sg-overlay');
     const closeBtns = root.querySelectorAll('[data-sg-close]');
-    const unitBtns = root.querySelectorAll('.sg-unit');
-    const tableWrap = root.querySelector('[data-sg-table]');
 
     function trapFocus(e){
       if(e.key !== 'Tab') return;
@@ -266,8 +241,8 @@
       panel.focus();
       document.addEventListener('keydown', onKeydown);
       document.addEventListener('keydown', trapFocus);
-      // ao abrir, garantir que começa no início do scroll
-      root.querySelectorAll('[data-sg-viewport]').forEach(v => v.scrollTo({left:0, behavior:'instant'}));
+      // reset scroll & fades ao abrir
+      root.querySelectorAll('[data-sg-viewport]').forEach(v => { v.scrollLeft = 0; updateFades(v.closest('[data-sg-swipe]')); });
     }
     function closeDrawer(){
       root.hidden = true;
@@ -283,57 +258,49 @@
     overlay.addEventListener('click', closeDrawer);
     closeBtns.forEach(b=> b.addEventListener('click', closeDrawer));
 
-    // Conversão CM <-> IN
-    function toIn(cm){ return (parseFloat(cm)/2.54).toFixed(1); }
-    function renderUnit(unit){
-      const cells = tableWrap ? tableWrap.querySelectorAll('td[data-cm]') : [];
-      cells.forEach(td=>{
-        const cm = td.getAttribute('data-cm');
-        td.textContent = unit === 'cm' ? cm : toIn(cm);
-      });
-      unitBtns.forEach(btn=>{
-        const active = btn.getAttribute('data-sg-unit') === unit;
-        btn.classList.toggle('is-active', active);
-        btn.setAttribute('aria-selected', active ? 'true' : 'false');
-      });
+    // Swipe indicators (fades) + teclado
+    function updateFades(section){
+      if(!section) return;
+      const viewport = section.querySelector('[data-sg-viewport]');
+      const leftFade = section.querySelector('.sg-fade--left');
+      const rightFade = section.querySelector('.sg-fade--right');
+      const hasOverflow = viewport.scrollWidth > viewport.clientWidth + 2;
+      if(!hasOverflow){
+        leftFade.style.opacity = '0';
+        rightFade.style.opacity = '0';
+        return;
+      }
+      const atStart = viewport.scrollLeft <= 2;
+      const atEnd = viewport.scrollLeft >= (viewport.scrollWidth - viewport.clientWidth - 2);
+      leftFade.style.opacity = atStart ? '0' : '1';
+      rightFade.style.opacity = atEnd ? '0' : '1';
     }
-    unitBtns.forEach(btn=> btn.addEventListener('click', ()=> renderUnit(btn.getAttribute('data-sg-unit')) ));
-    renderUnit('cm');
 
-    // Navegação por swipe/teclas nas colunas de tamanho
     root.querySelectorAll('[data-sg-swipe]').forEach(section=>{
       const viewport = section.querySelector('[data-sg-viewport]');
-      const prev = section.querySelector('[data-sg-prev]');
-      const next = section.querySelector('[data-sg-next]');
       if(!viewport) return;
 
-      // Mostrar setas apenas se houver overflow
-      function toggleArrows(){
-        const overflow = viewport.scrollWidth > viewport.clientWidth + 2;
-        prev.hidden = next.hidden = !overflow;
-      }
-      const ro = new ResizeObserver(toggleArrows);
-      ro.observe(viewport); toggleArrows();
+      // Atualiza fades no scroll e no resize
+      viewport.addEventListener('scroll', ()=> updateFades(section));
+      const ro = new ResizeObserver(()=> updateFades(section));
+      ro.observe(viewport);
+      updateFades(section);
 
-      // Quantos tamanhos cabem de cada vez? (exclui a coluna sticky)
+      // Suporte a setas do teclado (sem botões visuais)
       function pageSize(){
-        const sizeCol = viewport.querySelector('th.sg-size, td.sg-size');
-        const colW = sizeCol ? sizeCol.getBoundingClientRect().width : 96;
-        const visible = Math.max(1, Math.floor((viewport.clientWidth - parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--sg-label-col'))) / colW));
-        return { colW, visible };
+        // largura de uma coluna de tamanho (aprox.)
+        const sizeHeader = viewport.querySelector('th.sg-size');
+        const colW = sizeHeader ? sizeHeader.getBoundingClientRect().width : 96;
+        return Math.max(1, Math.floor(viewport.clientWidth / colW));
       }
-
-      function scrollByPage(dir){
-        const { colW, visible } = pageSize();
-        viewport.scrollBy({ left: dir * colW * visible, behavior: 'smooth' });
-      }
-      prev?.addEventListener('click', ()=> scrollByPage(-1));
-      next?.addEventListener('click', ()=> scrollByPage(1));
-
-      // Acessibilidade por setas do teclado quando focado
       viewport.addEventListener('keydown', (e)=>{
-        if(e.key === 'ArrowRight'){ e.preventDefault(); scrollByPage(1); }
-        if(e.key === 'ArrowLeft'){ e.preventDefault(); scrollByPage(-1); }
+        if(e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+        e.preventDefault();
+        const cols = pageSize();
+        const sizeHeader = viewport.querySelector('th.sg-size');
+        const colW = sizeHeader ? sizeHeader.getBoundingClientRect().width : 96;
+        const delta = cols * colW * (e.key === 'ArrowRight' ? 1 : -1);
+        viewport.scrollBy({ left: delta, behavior: 'smooth' });
       });
     });
   })();
