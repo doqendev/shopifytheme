@@ -34,7 +34,7 @@
           <img class="sg-img"
                alt="{{ first_media.alt | default: product.title | escape }}"
                loading="lazy"
-               src="{{ first_media | image_url: width: 900 }}"
+               src="{{ first_media | image_url: width: 300 }}"
                srcset="{{ first_media | image_url: width: 450 }} 450w, {{ first_media | image_url: width: 700 }} 700w, {{ first_media | image_url: width: 900 }} 900w"
                sizes="(max-width: 740px) 100vw, 600px">
         {%- else -%}
