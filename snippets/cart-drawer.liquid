@@ -10,7 +10,6 @@
 
 <script src="{{ 'cart.js' | asset_url }}" defer="defer"></script>
 <script src="{{ 'quantity-popover.js' | asset_url }}" defer="defer"></script>
-<script src="{{ 'wishlist.js' | asset_url }}" defer="defer"></script>
 
 <style>
   .drawer {
@@ -18,10 +17,7 @@
   }
 </style>
 
-<cart-drawer
-  class="drawer{% if cart == empty %} is-empty{% endif %}"
-  data-currency="{{ cart.currency.iso_code | default: shop.currency }}"
->
+<cart-drawer class="drawer{% if cart == empty %} is-empty{% endif %}">
   <div id="CartDrawer" class="cart-drawer">
     <div id="CartDrawer-Overlay" class="cart-drawer__overlay"></div>
     <div
@@ -82,157 +78,126 @@
           </span>
         </button>
       </div>
-      <div class="drawer__tabs" role="tablist">
-        <button
-          type="button"
-          class="drawer__tab is-active"
-          data-drawer-tab="cart"
-          id="CartDrawerTabButton-cart"
-          aria-controls="CartDrawerTabPanel-cart"
-          aria-selected="true"
-          role="tab"
-        >
-          {{ 'sections.cart.title' | t }}
-        </button>
-        <button
-          type="button"
-          class="drawer__tab"
-          data-drawer-tab="wishlist"
-          id="CartDrawerTabButton-wishlist"
-          aria-controls="CartDrawerTabPanel-wishlist"
-          aria-selected="false"
-          role="tab"
-        >
-          {{ 'general.wishlist.title' | t | default: 'Wishlist' }}
-        </button>
-      </div>
-      <div
-        id="CartDrawerTabPanel-cart"
-        class="drawer__tab-panel is-active"
-        data-drawer-panel="cart"
-        role="tabpanel"
-        aria-labelledby="CartDrawerTabButton-cart"
+      <cart-drawer-items
+        {% if cart == empty %}
+          class=" is-empty"
+        {% endif %}
       >
-        <cart-drawer-items
-          {% if cart == empty %}
-            class=" is-empty"
-          {% endif %}
+        <form
+          action="{{ routes.cart_url }}"
+          id="CartDrawer-Form"
+          class="cart__contents cart-drawer__form"
+          method="post"
         >
-          <form
-            action="{{ routes.cart_url }}"
-            id="CartDrawer-Form"
-            class="cart__contents cart-drawer__form"
-            method="post"
-          >
-            <div id="CartDrawer-CartItems" class="drawer__contents js-contents">
-              {%- if cart != empty -%}
-                <div class="drawer__cart-items-wrapper">
-                  <table class="cart-items" role="table">
-                    <thead role="rowgroup">
-                      <tr role="row">
-                        <th id="CartDrawer-ColumnProductImage" role="columnheader">
-                          <span class="visually-hidden">{{ 'sections.cart.headings.image' | t }}</span>
-                        </th>
-                        <th
-                          id="CartDrawer-ColumnProduct"
-                          class="caption-with-letter-spacing"
-                          scope="col"
-                          role="columnheader"
-                        >
-                          {{ 'sections.cart.headings.product' | t }}
-                        </th>
-                        <th
-                          id="CartDrawer-ColumnTotal"
-                          class="right caption-with-letter-spacing"
-                          scope="col"
-                          role="columnheader"
-                        >
-                          {{ 'sections.cart.headings.total' | t }}
-                        </th>
-                        <th id="CartDrawer-ColumnQuantity" role="columnheader">
-                          <span class="visually-hidden">{{ 'sections.cart.headings.quantity' | t }}</span>
-                        </th>
-                      </tr>
-                    </thead>
+          <div id="CartDrawer-CartItems" class="drawer__contents js-contents">
+            {%- if cart != empty -%}
+              <div class="drawer__cart-items-wrapper">
+                <table class="cart-items" role="table">
+                  <thead role="rowgroup">
+                    <tr role="row">
+                      <th id="CartDrawer-ColumnProductImage" role="columnheader">
+                        <span class="visually-hidden">{{ 'sections.cart.headings.image' | t }}</span>
+                      </th>
+                      <th
+                        id="CartDrawer-ColumnProduct"
+                        class="caption-with-letter-spacing"
+                        scope="col"
+                        role="columnheader"
+                      >
+                        {{ 'sections.cart.headings.product' | t }}
+                      </th>
+                      <th
+                        id="CartDrawer-ColumnTotal"
+                        class="right caption-with-letter-spacing"
+                        scope="col"
+                        role="columnheader"
+                      >
+                        {{ 'sections.cart.headings.total' | t }}
+                      </th>
+                      <th id="CartDrawer-ColumnQuantity" role="columnheader">
+                        <span class="visually-hidden">{{ 'sections.cart.headings.quantity' | t }}</span>
+                      </th>
+                    </tr>
+                  </thead>
 
-                    <tbody role="rowgroup">
-                      {%- for item in cart.items -%}
-                        <tr id="CartDrawer-Item-{{ item.index | plus: 1 }}" class="cart-item" role="row">
-                          <td class="cart-item__media" role="cell" headers="CartDrawer-ColumnProductImage">
-                            {% if item.image %}
-                              {% comment %} Leave empty space due to a:empty CSS display: none rule {% endcomment %}
-                              <a href="{{ item.url }}" class="cart-item__link" tabindex="-1" aria-hidden="true"> </a>
-                              <img
-                                class="cart-item__image"
-                                src="{{ item.image | image_url: width: 300 }}"
-                                alt="{{ item.image.alt | escape }}"
-                                loading="lazy"
-                                width="150"
-                                height="{{ 150 | divided_by: item.image.aspect_ratio | ceil }}"
-                              >
-                            {% endif %}
-                          </td>
+                  <tbody role="rowgroup">
+                    {%- for item in cart.items -%}
+                      <tr id="CartDrawer-Item-{{ item.index | plus: 1 }}" class="cart-item" role="row">
+                        <td class="cart-item__media" role="cell" headers="CartDrawer-ColumnProductImage">
+                          {% if item.image %}
+                            {% comment %} Leave empty space due to a:empty CSS display: none rule {% endcomment %}
+                            <a href="{{ item.url }}" class="cart-item__link" tabindex="-1" aria-hidden="true"> </a>
+                            <img
+                              class="cart-item__image"
+                              src="{{ item.image | image_url: width: 300 }}"
+                              alt="{{ item.image.alt | escape }}"
+                              loading="lazy"
+                              width="150"
+                              height="{{ 150 | divided_by: item.image.aspect_ratio | ceil }}"
+                            >
+                          {% endif %}
+                        </td>
 
-                          <td class="cart-item__details" role="cell" headers="CartDrawer-ColumnProduct">
-                            {%- if settings.show_vendor -%}
-                              <p class="caption-with-letter-spacing light">{{ item.product.vendor }}</p>
-                            {%- endif -%}
+                        <td class="cart-item__details" role="cell" headers="CartDrawer-ColumnProduct">
+                          {%- if settings.show_vendor -%}
+                            <p class="caption-with-letter-spacing light">{{ item.product.vendor }}</p>
+                          {%- endif -%}
 
-                            <a href="{{ item.url }}" class="cart-item__name h4 break">
-                              {{- item.product.title | escape -}}
-                            </a>
+                          <a href="{{ item.url }}" class="cart-item__name h4 break">
+                            {{- item.product.title | escape -}}
+                          </a>
 
-                            {%- if item.original_price != item.final_price -%}
-                              <div class="cart-item__discounted-prices">
-                                <span class="visually-hidden">
-                                  {{ 'products.product.price.regular_price' | t }}
-                                </span>
-                                <s class="cart-item__old-price product-option">
-                                  {{- item.original_price | money -}}
-                                </s>
-                                <span class="visually-hidden">
-                                  {{ 'products.product.price.sale_price' | t }}
-                                </span>
-                                <strong class="cart-item__final-price product-option">
-                                  {{ item.final_price | money }}
-                                </strong>
-                              </div>
-                            {%- else -%}
-                              <div class="product-option">
-                                {{ item.original_price | money }}
-                              </div>
-                            {%- endif -%}
+                          {%- if item.original_price != item.final_price -%}
+                            <div class="cart-item__discounted-prices">
+                              <span class="visually-hidden">
+                                {{ 'products.product.price.regular_price' | t }}
+                              </span>
+                              <s class="cart-item__old-price product-option">
+                                {{- item.original_price | money -}}
+                              </s>
+                              <span class="visually-hidden">
+                                {{ 'products.product.price.sale_price' | t }}
+                              </span>
+                              <strong class="cart-item__final-price product-option">
+                                {{ item.final_price | money }}
+                              </strong>
+                            </div>
+                          {%- else -%}
+                            <div class="product-option">
+                              {{ item.original_price | money }}
+                            </div>
+                          {%- endif -%}
 
-                            {%- if item.product.has_only_default_variant == false
-                              or item.properties.size != 0
-                              or item.selling_plan_allocation != null
-                            -%}
-                              <dl>
-                                {%- if item.product.has_only_default_variant == false -%}
-                                  {%- for option in item.options_with_values -%}
-                                    <div class="product-option">
-                                      <dt>{{ option.name }}:</dt>
-                                      <dd>
-                                        {{ option.value -}}
-                                        {%- unless forloop.last %}, {% endunless %}
-                                      </dd>
-                                    </div>
-                                  {%- endfor -%}
-                                {%- endif -%}
+                          {%- if item.product.has_only_default_variant == false
+                            or item.properties.size != 0
+                            or item.selling_plan_allocation != null
+                          -%}
+                            <dl>
+                              {%- if item.product.has_only_default_variant == false -%}
+                                {%- for option in item.options_with_values -%}
+                                  <div class="product-option">
+                                    <dt>{{ option.name }}:</dt>
+                                    <dd>
+                                      {{ option.value -}}
+                                      {%- unless forloop.last %}, {% endunless %}
+                                    </dd>
+                                  </div>
+                                {%- endfor -%}
+                              {%- endif -%}
 
-                                {%- for property in item.properties -%}
-                                  {%- assign property_first_char = property.first | slice: 0 -%}
-                                  {%- if property.last != blank and property_first_char != '_' -%}
-                                    <div class="product-option">
-                                      <dt>{{ property.first }}:</dt>
-                                      <dd>
-                                        {%- if property.last contains '/uploads/' -%}
-                                          <a
-                                            href="{{ property.last }}"
-                                            class="link"
-                                            target="_blank"
-                                            aria-describedby="a11y-new-window-message"
-                                          >
+                              {%- for property in item.properties -%}
+                                {%- assign property_first_char = property.first | slice: 0 -%}
+                                {%- if property.last != blank and property_first_char != '_' -%}
+                                  <div class="product-option">
+                                    <dt>{{ property.first }}:</dt>
+                                    <dd>
+                                      {%- if property.last contains '/uploads/' -%}
+                                        <a
+                                          href="{{ property.last }}"
+                                          class="link"
+                                          target="_blank"
+                                          aria-describedby="a11y-new-window-message"
+                                        >
                                           {{ property.last | split: '/' | last }}
                                         </a>
                                       {%- else -%}
@@ -493,29 +458,6 @@
           <div id="CartDrawer-CartErrors" role="alert"></div>
         </form>
       </cart-drawer-items>
-      </div>
-      <div
-        id="CartDrawerTabPanel-wishlist"
-        class="drawer__tab-panel"
-        data-drawer-panel="wishlist"
-        role="tabpanel"
-        aria-labelledby="CartDrawerTabButton-wishlist"
-        hidden
-      >
-        <div
-          class="wishlist-panel"
-          data-wishlist-panel
-          data-wishlist-add-label="{{ 'products.product.add_to_cart' | t }}"
-          data-wishlist-select-size-label="{{ 'products.product.select_options' | t | default: 'Select a size' }}"
-          data-wishlist-out-of-stock-label="{{ 'products.product.sold_out' | t }}"
-          data-wishlist-remove-label="{{ 'general.wishlist.remove' | t | default: 'Remove from wishlist' }}"
-        >
-          <div class="wishlist-empty" data-wishlist-empty>
-            <p>{{ 'general.wishlist.empty' | t | default: 'Your wishlist is empty.' }}</p>
-          </div>
-          <ul class="wishlist-items" data-wishlist-items role="list"></ul>
-        </div>
-      </div>
       <div class="drawer__footer">
         {%- if settings.show_cart_note -%}
           <details id="Details-CartDrawer">
