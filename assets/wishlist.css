@@ -76,6 +76,7 @@
 .card__inner,
 .product-card-wrapper {
   position: relative;
+  overflow: visible;
 }
 
 @media (max-width: 749px) {
