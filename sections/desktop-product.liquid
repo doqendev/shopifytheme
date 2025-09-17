@@ -275,6 +275,18 @@
     margin-bottom: 0;
   }
 
+  .desktop-product-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 8px;
+  }
+
+  .desktop-product-title-wrapper h1 {
+    flex: 1;
+    margin: 0;
+  }
+
   desktop-related-products {
     display: none;
   }
@@ -379,6 +391,24 @@
 
 </style>
 
+{% liquid
+  assign featured_media = product.featured_media | default: product.featured_image
+  if featured_media
+    assign wishlist_image = featured_media | image_url: width: 360
+  else
+    assign wishlist_image = ''
+  endif
+
+  assign size_option_index = -1
+  for option in product.options_with_values
+    assign option_name = option.name | downcase
+    if option_name == 'size' or option_name == 'tamanho'
+      assign size_option_index = forloop.index0
+      break
+    endif
+  endfor
+%}
+
 <div class="desktop-product-section">
   <!-- Left side: Thumbnails + Scrollable Big Images -->
   <div class="desktop-product-media">
@@ -412,9 +442,30 @@
   <!-- Right side: Sticky Info -->
   <div class="desktop-product-info">
     <!-- Title -->
-    <h1>
-      <a class="product__title-link" href="{{ product.url }}">{{ product.title }}</a>
-    </h1>
+    <div
+      class="desktop-product-title-wrapper product-card-wrapper"
+      data-product-handle="{{ product.handle }}"
+      data-product-title="{{ product.title | escape }}"
+      data-product-url="{{ product.url | escape }}"
+      data-product-image="{{ wishlist_image | escape }}"
+      data-product-price="{{ product.price | money_without_trailing_zeros | escape }}"
+      data-variants='{{ product.variants | json | escape }}'
+      data-size-index="{{ size_option_index }}"
+    >
+      <h1>
+        <a class="product__title-link" href="{{ product.url }}">{{ product.title }}</a>
+      </h1>
+      <button
+        class="wishlist-toggle"
+        type="button"
+        aria-pressed="false"
+        aria-label="{{ 'general.add_to_wishlist' | t | default: 'Add to wishlist' }}"
+      >
+        <svg class="wishlist-toggle__icon" viewBox="0 0 24 24" role="presentation" focusable="false">
+          <path d="M12 21.35 10.55 20.03C6.2 15.99 3 12.99 3 9.31 3 6.28 5.42 4 8.4 4A5.2 5.2 0 0 1 12 5.86 5.2 5.2 0 0 1 15.6 4C18.58 4 21 6.28 21 9.31c0 3.68-3.2 6.68-7.55 10.72z" />
+        </svg>
+      </button>
+    </div>
 
     <!-- Price -->
     <div class="price-container">
