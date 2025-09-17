@@ -66,7 +66,7 @@
         </div>
       {%- endif -%}
       <div class="drawer__header">
-        <h2 class="drawer__heading">{{ 'sections.cart.title' | t }}</h2>
+        <h2 class="drawer__heading" data-wishlist="{{ 'general.wishlist' | t | default: 'Wishlist' }}">{{ 'sections.cart.title' | t }}</h2>
         <button
           class="drawer__close"
           type="button"
@@ -78,6 +78,38 @@
           </span>
         </button>
       </div>
+      <div class="drawer__tabs" role="tablist" aria-label="{{ 'sections.cart.title' | t }}">
+        <button
+          type="button"
+          class="drawer__tab is-active"
+          data-tab-target="cart"
+          id="CartDrawerTab-Cart"
+          role="tab"
+          aria-controls="CartDrawer-CartPanel"
+          aria-selected="true"
+        >
+          {{ 'sections.cart.title' | t }}
+        </button>
+        <button
+          type="button"
+          class="drawer__tab"
+          data-tab-target="wishlist"
+          id="CartDrawerTab-Wishlist"
+          role="tab"
+          aria-controls="CartDrawer-WishlistPanel"
+          aria-selected="false"
+        >
+          {{ 'general.wishlist' | t | default: 'Wishlist' }}
+        </button>
+      </div>
+      <div class="drawer__panels">
+        <div
+          class="drawer__panel drawer__panel--active"
+          id="CartDrawer-CartPanel"
+          data-tab-panel="cart"
+          role="tabpanel"
+          aria-labelledby="CartDrawerTab-Cart"
+        >
       <cart-drawer-items
         {% if cart == empty %}
           class=" is-empty"
@@ -561,5 +593,32 @@
         </div>
       </div>
     </div>
+    <div
+      class="drawer__panel"
+      id="CartDrawer-WishlistPanel"
+      data-tab-panel="wishlist"
+      role="tabpanel"
+      aria-labelledby="CartDrawerTab-Wishlist"
+      hidden
+    >
+      <div id="CartDrawer-Wishlist" class="drawer__wishlist is-empty" data-wishlist-container>
+        <table class="cart-items wishlist-table" role="table" data-wishlist-table hidden>
+          <thead class="visually-hidden">
+            <tr>
+              <th scope="col">{{ 'sections.cart.headings.image' | t }}</th>
+              <th scope="col">{{ 'sections.cart.headings.product' | t }}</th>
+              <th scope="col">{{ 'sections.cart.headings.total' | t }}</th>
+              <th scope="col">{{ 'general.actions' | t | default: 'Actions' }}</th>
+            </tr>
+          </thead>
+          <tbody data-wishlist-items></tbody>
+        </table>
+        <div class="wishlist-empty" data-wishlist-empty>
+          <p class="cart__empty-text">{{ 'general.wishlist_empty' | t | default: 'Your wishlist is empty.' }}</p>
+        </div>
+      </div>
+    </div>
   </div>
+</div>
+</div>
 </cart-drawer>
