@@ -427,7 +427,7 @@ details[open].menu-opening > .menu-drawer__submenu {
 .submenu-list a {
   display: block;
   text-decoration: none;
-  color: rgb(255, 255, 255) !IMPORTANT;
+  color: rgb(49, 49, 49) !IMPORTANT;
   font-size: 14px;
   font-weight: 450;
   padding: 50px; /* Reduced padding for a compact look */

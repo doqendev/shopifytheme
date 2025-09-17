@@ -3329,7 +3329,6 @@ details-disclosure > details {
 .rte img {
   height: auto;
   max-width: 100%;
-  border: var(--media-border-width) solid rgba(var(--color-foreground), var(--media-border-opacity));
   border-radius: var(--media-radius);
   box-shadow: var(--media-shadow-horizontal-offset) var(--media-shadow-vertical-offset) var(--media-shadow-blur-radius)
     rgba(var(--color-shadow), var(--media-shadow-opacity));
@@ -4246,3 +4245,6 @@ font-style: normal;
 }
 }
 
+#main-collection-filters > div > facet-filters-form:nth-child(3) {
+  display: none;
+}

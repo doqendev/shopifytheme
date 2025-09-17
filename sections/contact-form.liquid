@@ -10,6 +10,19 @@
     .section-{{ section.id }}-padding {
       padding-top: {{ section.settings.padding_top }}px;
       padding-bottom: {{ section.settings.padding_bottom }}px;
+        padding-right: 1px;
+        padding-left: 1px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+  }
+
+    @media screen and (max-width: 749px) {
+    .section-{{ section.id }}-padding {
+      padding-top: 1px;
+      padding-bottom: 20px;
+      padding-right: 40px;
+      padding-left: 40px;
     }
   }
 {%- endstyle -%}

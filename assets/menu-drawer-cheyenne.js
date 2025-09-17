@@ -62,11 +62,11 @@ document.addEventListener('DOMContentLoaded', () => {
             </a>
             <div class="submenu hidden">
               <ul class="submenu-list">
-                <li><a href="/collections/encomenda">ESTADO DA TUA ENCOMENDA</a></li>
-                <li><a href="/collections/trocas">TROCAS E DEVOLUÇÕES</a></li>
-                <li><a href="/collections/envio">ENVIO</a></li>
-                <li><a href="/collections/faqs">PERGUNTAS FREQUENTES</a></li>
-                <li><a href="/collections/lojas">LOJAS</a></li>
+                <li><a href="">ESTADO DA TUA ENCOMENDA</a></li>
+                <li><a href="/pages/trocas-e-devolucoes">TROCAS E DEVOLUÇÕES</a></li>
+                <li><a href="/pages/envios">ENVIOS</a></li>
+                <li><a href="/pages/faq">PERGUNTAS FREQUENTES</a></li>
+                <li><a href="/pages/contactos">CONTACTO</a></li>
               </ul>
             </div>
           </li>
@@ -119,11 +119,11 @@ document.addEventListener('DOMContentLoaded', () => {
             </a>
             <div class="submenu hidden">
               <ul class="submenu-list">
-                <li><a href="/collections/homem-encomenda">ESTADO DA TUA ENCOMENDA</a></li>
-                <li><a href="/collections/homem-trocas">TROCAS E DEVOLUÇÕES</a></li>
-                <li><a href="/collections/homem-envio">ENVIO</a></li>
-                <li><a href="/collections/homem-faqs">PERGUNTAS FREQUENTES</a></li>
-                <li><a href="/collections/homem-lojas">LOJAS</a></li>
+                <li><a href="">ESTADO DA TUA ENCOMENDA</a></li>
+                <li><a href="/pages/trocas-e-devolucoes">TROCAS E DEVOLUÇÕES</a></li>
+                <li><a href="/pages/envios">ENVIOS</a></li>
+                <li><a href="/pages/faq">PERGUNTAS FREQUENTES</a></li>
+                <li><a href="/pages/contactos">CONTACTO</a></li>
               </ul>
             </div>
           </li>
@@ -176,11 +176,11 @@ document.addEventListener('DOMContentLoaded', () => {
             </a>
             <div class="submenu hidden">
               <ul class="submenu-list">
-                <li><a href="/collections/crianca-encomenda">ESTADO DA TUA ENCOMENDA</a></li>
-                <li><a href="/collections/crianca-trocas">TROCAS E DEVOLUÇÕES</a></li>
-                <li><a href="/collections/crianca-envio">ENVIO</a></li>
-                <li><a href="/collections/crianca-faqs">PERGUNTAS FREQUENTES</a></li>
-                <li><a href="/collections/crianca-lojas">LOJAS</a></li>
+                <li><a href="">ESTADO DA TUA ENCOMENDA</a></li>
+                <li><a href="/pages/trocas-e-devolucoes">TROCAS E DEVOLUÇÕES</a></li>
+                <li><a href="/pages/envios">ENVIOS</a></li>
+                <li><a href="/pages/faq">PERGUNTAS FREQUENTES</a></li>
+                <li><a href="/pages/contactos">CONTACTO</a></li>
               </ul>
             </div>
           </li>

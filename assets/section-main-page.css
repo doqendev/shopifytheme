@@ -1,6 +1,30 @@
+@media screen and (max-width: 749px) {
 .page-title {
-  margin-top: 0;
+    max-width: 800px;
+    margin: 0 auto;
+    font-size: 2rem;
+    padding-left: 40px;
+    padding-right: 40px;
 }
+}
+
+@media screen and (min-width: 750px) and (max-width: 950px) {
+ .page-title {
+    max-width: 800px;
+    margin: 0 auto;
+    font-size: 2.5rem;
+} 
+}
+
+@media screen and (min-width: 951px) {
+  .page-title {
+    max-width: 800px;
+    margin: 0 auto;
+    font-size: 3rem;
+}
+}
+
+
 
 .main-page-title {
   margin-bottom: 3rem;

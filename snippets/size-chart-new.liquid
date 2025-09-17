@@ -1,12 +1,15 @@
 {%- comment -%}
   SNIPPET: size-guide.liquid
-  - Link "Guia de tamanhos" que abre um drawer.
-  - Lê tag "sizechart:IDENT" (ex.: camisola, tshirt, calcas) para escolher a tabela.
-  - Só CM (sem IN). A 1ª coluna (ZONA) é sticky; as colunas de tamanhos têm swipe/scroll horizontal.
+  - Renders a "Guia de tamanhos" link that opens a drawer.
+  - Picks the table by product tag "sizechart:IDENT" (camisola, tshirt, saia, calcas).
+  - Mobile: swipe for size columns (ZONA sticky).
+  - Desktop (≥1024px): wider drawer, full-width table, no horizontal scroll.
+  - CM only (no inches).
 {%- endcomment -%}
 
 {%- if product -%}
-  {%- assign sg_id = 'sg-' | append: product.id -%}
+  {%- assign _scope_id = section.id | default: block.id | default: product.id -%}
+  {%- assign sg_id = 'sg-' | append: product.id | append: '-' | append: _scope_id -%}
 
   {%- assign sizechart_key = '' -%}
   {%- for tag in product.tags -%}
@@ -16,318 +19,355 @@
     {%- endif -%}
   {%- endfor -%}
 
-  <a href="#{{ sg_id }}" class="sg-link" data-sg-open="{{ sg_id }}" aria-controls="{{ sg_id }}" aria-expanded="false">
-    Guia de tamanhos
-  </a>
+  <div id="sg-wrap-{{ sg_id }}" class="sg-wrap">
+    <a href="#{{ sg_id }}" class="sg-link" data-sg-open="{{ sg_id }}" aria-controls="{{ sg_id }}" aria-expanded="false">
+      Guia de tamanhos
+    </a>
 
-  <div class="sg-root" id="{{ sg_id }}" hidden role="dialog" aria-modal="true" aria-label="Guia de tamanhos">
-    <div class="sg-overlay" data-sg-close></div>
-    <aside class="sg-panel" tabindex="-1">
-      <header class="sg-header">
-        <h3 class="sg-title">Dimensões do produto</h3>
-        <button class="sg-close" type="button" data-sg-close aria-label="Fechar">✕</button>
-      </header>
+    <div class="sg-root" id="{{ sg_id }}" hidden role="dialog" aria-modal="true" aria-label="Guia de tamanhos">
+      <div class="sg-overlay" data-sg-close></div>
+      <aside class="sg-panel" tabindex="-1">
+        <header class="sg-header">
+          <h3 class="sg-title">Dimensões do produto</h3>
+          <button class="sg-close" type="button" data-sg-close aria-label="Fechar">✕</button>
+        </header>
 
-      <div class="sg-media">
-        {%- assign first_media = product.featured_media | default: product.media.first -%}
-        {%- if first_media -%}
-          <img class="sg-img"
-               alt="{{ first_media.alt | default: product.title | escape }}"
-               loading="lazy"
-               src="{{ first_media | image_url: width: 900 }}"
-               srcset="{{ first_media | image_url: width: 450 }} 450w, {{ first_media | image_url: width: 700 }} 700w, {{ first_media | image_url: width: 900 }} 900w"
-               sizes="(max-width: 740px) 100vw, 600px">
-        {%- else -%}
-          <div class="sg-img sg-img--placeholder" aria-hidden="true"></div>
-        {%- endif -%}
-      </div>
+        <div class="sg-media">
+          {%- assign first_media = product.featured_media | default: product.media.first -%}
+          {%- if first_media -%}
+            <img class="sg-img"
+                 alt="{{ first_media.alt | default: product.title | escape }}"
+                 loading="lazy"
+                 src="{{ first_media | image_url: width: 1100 }}"
+                 srcset="{{ first_media | image_url: width: 550 }} 550w, {{ first_media | image_url: width: 900 }} 900w, {{ first_media | image_url: width: 1100 }} 1100w"
+                 sizes="(max-width: 740px) 100vw, 600px">
+          {%- else -%}
+            <div class="sg-img sg-img--placeholder" aria-hidden="true"></div>
+          {%- endif -%}
+        </div>
 
-      <p class="sg-note">As medidas podem apresentar pequenas variações devido ao processo de produção. A peça de roupa está medida esticada.</p>
+        <p class="sg-note">As medidas podem apresentar pequenas variações devido ao processo de produção. A peça de roupa está medida esticada.</p>
 
-      <div class="sg-table-wrap" data-sg-table>
-        {%- case sizechart_key -%}
+        <div class="sg-table-wrap" data-sg-table>
+          {%- case sizechart_key -%}
 
-          {%- when 'camisola' -%}
-          <div class="sg-scroll" data-sg-swipe>
-            <div class="sg-viewport" data-sg-viewport tabindex="0" aria-label="Tabela de tamanhos com scroll horizontal">
-              <table class="sg-table" aria-label="Tabela de tamanhos: Camisola (cm)">
-                <thead>
-                  <tr>
-                    <th class="sg-sticky">ZONA</th>
-                    <th class="sg-size">M</th>
-                    <th class="sg-size">L</th>
-                    <th class="sg-size">XL</th>
-                    <th class="sg-size">XXL</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th scope="row" class="sg-sticky">Peito</th>
-                    <td>61</td><td>64</td><td>67</td><td>70</td>
-                  </tr>
-                  <tr>
-                    <th scope="row" class="sg-sticky">Comprimento frente</th>
-                    <td>68.5</td><td>70</td><td>71.5</td><td>73</td>
-                  </tr>
-                  <tr>
-                    <th scope="row" class="sg-sticky">Comprimento manga</th>
-                    <td>62.5</td><td>64.5</td><td>65.5</td><td>66.5</td>
-                  </tr>
-                  <tr>
-                    <th scope="row" class="sg-sticky">Largura costas</th>
-                    <td>50.5</td><td>55.5</td><td>58</td><td>60.5</td>
-                  </tr>
-                  <tr>
-                    <th scope="row" class="sg-sticky">Largura braço</th>
-                    <td>25</td><td>27</td><td>28</td><td>29</td>
-                  </tr>
-                </tbody>
-              </table>
+            {%- when 'camisola' -%}
+            <div class="sg-scroll" data-sg-swipe>
+              <div class="sg-viewport" data-sg-viewport tabindex="0" aria-label="Tabela de tamanhos com scroll horizontal">
+                <table class="sg-table" aria-label="Tabela de tamanhos: Camisola (cm)">
+                  <thead>
+                    <tr>
+                      <th class="sg-sticky">ZONA</th>
+                      <th class="sg-size">M</th>
+                      <th class="sg-size">L</th>
+                      <th class="sg-size">XL</th>
+                      <th class="sg-size">XXL</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row" class="sg-sticky">Peito</th>
+                      <td>61</td><td>64</td><td>67</td><td>70</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" class="sg-sticky">Comprimento frente</th>
+                      <td>68.5</td><td>70</td><td>71.5</td><td>73</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" class="sg-sticky">Comprimento manga</th>
+                      <td>62.5</td><td>64.5</td><td>65.5</td><td>66.5</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" class="sg-sticky">Largura costas</th>
+                      <td>50.5</td><td>55.5</td><td>58</td><td>60.5</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" class="sg-sticky">Largura braço</th>
+                      <td>25</td><td>27</td><td>28</td><td>29</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="sg-fade sg-fade--left" aria-hidden="true"></div>
+              <div class="sg-fade sg-fade--right" aria-hidden="true"></div>
             </div>
-            <div class="sg-fade sg-fade--left" aria-hidden="true"></div>
-            <div class="sg-fade sg-fade--right" aria-hidden="true"></div>
-          </div>
 
-          {%- when 'tshirt' -%}
-          <div class="sg-scroll" data-sg-swipe>
-            <div class="sg-viewport" data-sg-viewport tabindex="0" aria-label="Tabela de tamanhos com scroll horizontal">
-              <table class="sg-table" aria-label="Tabela de tamanhos: T-shirt (cm)">
-                <thead>
-                  <tr>
-                    <th class="sg-sticky">ZONA</th>
-                    <th class="sg-size">S</th>
-                    <th class="sg-size">M</th>
-                    <th class="sg-size">L</th>
-                    <th class="sg-size">XL</th>
-                    <th class="sg-size">XXL</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><th scope="row" class="sg-sticky">Peito</th>
-                    <td>50</td><td>53</td><td>56</td><td>59</td><td>62</td>
-                  </tr>
-                  <tr><th scope="row" class="sg-sticky">Comprimento</th>
-                    <td>70</td><td>72</td><td>74</td><td>76</td><td>78</td>
-                  </tr>
-                  <tr><th scope="row" class="sg-sticky">Manga</th>
-                    <td>20</td><td>21</td><td>22</td><td>23</td><td>24</td>
-                  </tr>
-                </tbody>
-              </table>
+            {%- when 'tshirt' -%}
+            <div class="sg-scroll" data-sg-swipe>
+              <div class="sg-viewport" data-sg-viewport tabindex="0" aria-label="Tabela de tamanhos com scroll horizontal">
+                <table class="sg-table" aria-label="Tabela de tamanhos: T-shirt (cm)">
+                  <thead>
+                    <tr>
+                      <th class="sg-sticky">ZONA</th>
+                      <th class="sg-size">S</th>
+                      <th class="sg-size">M</th>
+                      <th class="sg-size">L</th>
+                      <th class="sg-size">XL</th>
+                      <th class="sg-size">XXL</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><th scope="row" class="sg-sticky">Peito</th>
+                      <td>50</td><td>53</td><td>56</td><td>59</td><td>62</td>
+                    </tr>
+                    <tr><th scope="row" class="sg-sticky">Comprimento</th>
+                      <td>70</td><td>72</td><td>74</td><td>76</td><td>78</td>
+                    </tr>
+                    <tr><th scope="row" class="sg-sticky">Manga</th>
+                      <td>20</td><td>21</td><td>22</td><td>23</td><td>24</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="sg-fade sg-fade--left" aria-hidden="true"></div>
+              <div class="sg-fade sg-fade--right" aria-hidden="true"></div>
             </div>
-            <div class="sg-fade sg-fade--left" aria-hidden="true"></div>
-            <div class="sg-fade sg-fade--right" aria-hidden="true"></div>
-          </div>
 
-          {%- when 'saia' -%}
-          <div class="sg-scroll" data-sg-swipe>
-            <div class="sg-viewport" data-sg-viewport tabindex="0" aria-label="Tabela de tamanhos com scroll horizontal">
-              <table class="sg-table" aria-label="Tabela de tamanhos: T-shirt (cm)">
-                <thead>
-                  <tr>
-                    <th class="sg-sticky">ZONA</th>
-                    <th class="sg-size">28</th>
-                    <th class="sg-size">30</th>
-                    <th class="sg-size">32</th>
-                    <th class="sg-size">34</th>
-                    <th class="sg-size">36</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><th scope="row" class="sg-sticky">Comprimento</th>
-                    <td>70</td><td>72</td><td>74</td><td>76</td><td>78</td>
-                  </tr>
-                  <tr><th scope="row" class="sg-sticky">Largura</th>
-                    <td>20</td><td>21</td><td>22</td><td>23</td><td>24</td>
-                  </tr>
-                </tbody>
-              </table>
+            {%- when 'saia' -%}
+            <div class="sg-scroll" data-sg-swipe>
+              <div class="sg-viewport" data-sg-viewport tabindex="0" aria-label="Tabela de tamanhos com scroll horizontal">
+                <table class="sg-table" aria-label="Tabela de tamanhos: Saia (cm)">
+                  <thead>
+                    <tr>
+                      <th class="sg-sticky">ZONA</th>
+                      <th class="sg-size">28</th>
+                      <th class="sg-size">30</th>
+                      <th class="sg-size">32</th>
+                      <th class="sg-size">34</th>
+                      <th class="sg-size">36</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><th scope="row" class="sg-sticky">Comprimento</th>
+                      <td>70</td><td>72</td><td>74</td><td>76</td><td>78</td>
+                    </tr>
+                    <tr><th scope="row" class="sg-sticky">Largura</th>
+                      <td>20</td><td>21</td><td>22</td><td>23</td><td>24</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="sg-fade sg-fade--left" aria-hidden="true"></div>
+              <div class="sg-fade sg-fade--right" aria-hidden="true"></div>
             </div>
-            <div class="sg-fade sg-fade--left" aria-hidden="true"></div>
-            <div class="sg-fade sg-fade--right" aria-hidden="true"></div>
-          </div>
 
-
-          {%- when 'calcas' -%}
-          <div class="sg-scroll" data-sg-swipe>
-            <div class="sg-viewport" data-sg-viewport tabindex="0" aria-label="Tabela de tamanhos com scroll horizontal">
-              <table class="sg-table" aria-label="Tabela de tamanhos: Calças (cm)">
-                <thead>
-                  <tr>
-                    <th class="sg-sticky">ZONA</th>
-                    <th class="sg-size">28</th>
-                    <th class="sg-size">30</th>
-                    <th class="sg-size">32</th>
-                    <th class="sg-size">34</th>
-                    <th class="sg-size">36</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><th scope="row" class="sg-sticky">Cintura</th>
-                    <td>72</td><td>77</td><td>82</td><td>87</td><td>92</td>
-                  </tr>
-                  <tr><th scope="row" class="sg-sticky">Anca</th>
-                    <td>92</td><td>97</td><td>102</td><td>107</td><td>112</td>
-                  </tr>
-                  <tr><th scope="row" class="sg-sticky">Entrepernas</th>
-                    <td>76</td><td>78</td><td>80</td><td>82</td><td>84</td>
-                  </tr>
-                </tbody>
-              </table>
+            {%- when 'calcas' -%}
+            <div class="sg-scroll" data-sg-swipe>
+              <div class="sg-viewport" data-sg-viewport tabindex="0" aria-label="Tabela de tamanhos com scroll horizontal">
+                <table class="sg-table" aria-label="Tabela de tamanhos: Calças (cm)">
+                  <thead>
+                    <tr>
+                      <th class="sg-sticky">ZONA</th>
+                      <th class="sg-size">28</th>
+                      <th class="sg-size">30</th>
+                      <th class="sg-size">32</th>
+                      <th class="sg-size">34</th>
+                      <th class="sg-size">36</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><th scope="row" class="sg-sticky">Cintura</th>
+                      <td>72</td><td>77</td><td>82</td><td>87</td><td>92</td>
+                    </tr>
+                    <tr><th scope="row" class="sg-sticky">Anca</th>
+                      <td>92</td><td>97</td><td>102</td><td>107</td><td>112</td>
+                    </tr>
+                    <tr><th scope="row" class="sg-sticky">Entrepernas</th>
+                      <td>76</td><td>78</td><td>80</td><td>82</td><td>84</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="sg-fade sg-fade--left" aria-hidden="true"></div>
+              <div class="sg-fade sg-fade--right" aria-hidden="true"></div>
             </div>
-            <div class="sg-fade sg-fade--left" aria-hidden="true"></div>
-            <div class="sg-fade sg-fade--right" aria-hidden="true"></div>
-          </div>
 
-
-        {%- endcase -%}
-      </div>
-
-      <p class="sg-howto">
-        Consulta <a href="/pages/como-medir" target="_blank" rel="noopener">como medir a peça de roupa</a>.
-      </p>
-    </aside>
+            {%- else -%}
+            <div class="sg-empty">
+              <p><strong>Sem tabela específica</strong></p>
+              <p>Adiciona uma tag como <code>sizechart:camisola</code>, <code>sizechart:tshirt</code>, <code>sizechart:saia</code> ou <code>sizechart:calcas</code>.</p>
+            </div>
+          {%- endcase -%}
+        </div>
+      </aside>
+    </div>
   </div>
 
-  <style>
-    .sg-link{background:transparent;border:0;padding:0;color:inherit;text-decoration:underline;cursor:pointer}
+<style>
+  /* Scope variables to this drawer only */
+  #{{ sg_id }}{ --sg-label-col:210px; --sg-size-col:96px; }
 
-    .sg-root{position:fixed;inset:0;z-index:9999;display:grid}
-    .sg-root[hidden]{display:none}
-    .sg-overlay{background:rgba(0,0,0,.45)}
-    .sg-panel{
-      position:fixed;top:0;right:0;height:100%;width:min(720px,100%);
-      background:#fff;box-shadow:-12px 0 30px rgba(0,0,0,.2);
-      display:flex;flex-direction:column;gap:16px;padding:20px;overflow:auto
-    }
-    .sg-header{display:flex;align-items:center;justify-content:space-between}
-    .sg-title{margin:0;font-size:18px}
-    .sg-close{background:transparent;padding:6px 10px;cursor:pointer;border:none;}
-    .sg-media{display:flex;justify-content:center}
-    .sg-img{max-width:420px;width:60%;height:auto;background:#f3f4f6}
-    .sg-img--placeholder{width:320px;height:420px;background:linear-gradient(90deg,#f3f4f6,#eee,#f3f4f6)}
-    .sg-note{font-size:13px;color:#666;margin:0}
-    .sg-howto{font-size:14px;color:#555}
+  .sg-link{background:transparent;border:0;padding:0;color:inherit;text-decoration:underline;cursor:pointer}
 
-    /* ---------- Tabela + Swipe ---------- */
-    .sg-table{width:max-content;border-collapse:collapse}
-    .sg-table th,.sg-table td{border-top:1px solid #e5e7eb;padding:10px 8px;text-align:center;font-size:14px;white-space:nowrap}
-    .sg-table thead th{font-weight:600;color:#111;background:#fafafa}
-    .sg-table th[scope="row"]{text-align:left;font-weight:500;color:#111}
+  /* Make the root a topmost, isolated stacking context */
+  .sg-root{
+    position:fixed;
+    inset:0;
+    z-index:2147483645;   /* higher than any theme header/menu */
+    display:grid;
+    isolation:isolate;    /* new stacking context */
+  }
+  .sg-root[hidden]{display:none}
 
-    :root{ --sg-label-col: 210px; --sg-size-col: 96px; }
-    .sg-size{min-width:var(--sg-size-col)}
-    .sg-sticky{
-      position:sticky; left:0; z-index:2; background:#fff;
-      min-width:var(--sg-label-col); max-width:var(--sg-label-col)
-    }
-    thead .sg-sticky{background:#fafafa; z-index:3}
+  /* Make overlay and panel fixed + explicit z-order */
+  .sg-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.45);
+    z-index:0;
+  }
+  .sg-panel{
+    position:fixed;
+    top:0; right:0; height:100%;
+    width:min(760px,100%);
+    background:#fff; box-shadow:-12px 0 30px rgba(0,0,0,.2);
+    display:flex; flex-direction:column; gap:16px; padding:20px; overflow:auto;
+    z-index:1; /* above overlay */
+  }
 
-    .sg-scroll{position:relative}
-    .sg-viewport{
-      overflow-x:auto; -webkit-overflow-scrolling:touch;
-      scroll-snap-type:x proximity;
-      border-bottom:1px solid #e5e7eb
-    }
-    .sg-fade{position:absolute; top:42px; bottom:0; width:20px; pointer-events:none; opacity:0; transition:opacity .2s}
-    .sg-fade--left{left:var(--sg-label-col); background:linear-gradient(90deg,#fff,rgba(255,255,255,0))}
-    .sg-fade--right{right:0; background:linear-gradient(270deg,#fff,rgba(255,255,255,0))}
+  .sg-header{display:flex;align-items:center;justify-content:space-between}
+  .sg-title{margin:0;font-size:18px}
+  .sg-close{background:transparent;padding:6px 10px;cursor:pointer;border:none}
+  .sg-media{display:flex;justify-content:center}
+  .sg-img{max-width:420px;width:60%;height:auto;background:#f3f4f6}
+  .sg-img--placeholder{width:320px;height:420px;background:linear-gradient(90deg,#f3f4f6,#eee,#f3f4f6)}
+  .sg-note{font-size:13px;color:#666;margin:0}
+  .sg-howto{font-size:14px;color:#555}
 
-    @media (max-width:740px){
-      .sg-panel{padding:16px}
-      .sg-img{max-width:100%}
-      :root{ --sg-label-col: 180px; --sg-size-col: 88px; }
-    }
-  </style>
+  /* ---------- Tabela + Swipe (mobile) ---------- */
+  .sg-table{width:max-content;border-collapse:collapse}
+  .sg-table th,.sg-table td{border-top:1px solid #e5e7eb;padding:10px 8px;text-align:center;font-size:14px;white-space:nowrap}
+  .sg-table thead th{font-weight:600;color:#111;background:#fafafa}
+  .sg-table th[scope="row"]{text-align:left;font-weight:500;color:#111}
 
-  <script>
-  (function(){
-    const id = "{{ sg_id }}";
-    const root = document.getElementById(id);
-    const openLink = document.querySelector('[data-sg-open="'+id+'"]');
-    if(!root || !openLink) return;
+  .sg-size{min-width:var(--sg-size-col)}
+  .sg-sticky{
+    position:sticky; left:0; z-index:2; background:#fff;
+    min-width:var(--sg-label-col); max-width:var(--sg-label-col)
+  }
+  thead .sg-sticky{background:#fafafa; z-index:3}
 
-    const panel = root.querySelector('.sg-panel');
-    const overlay = root.querySelector('.sg-overlay');
-    const closeBtns = root.querySelectorAll('[data-sg-close]');
+  .sg-scroll{position:relative}
+  .sg-viewport{
+    overflow-x:auto; -webkit-overflow-scrolling:touch;
+    scroll-snap-type:x proximity;
+    border-bottom:1px solid #e5e7eb
+  }
+  .sg-fade{position:absolute; top:42px; bottom:0; width:20px; pointer-events:none; opacity:0; transition:opacity .2s}
+  .sg-fade--left{left:var(--sg-label-col); background:linear-gradient(90deg,#fff,rgba(255,255,255,0))}
+  .sg-fade--right{right:0; background:linear-gradient(270deg,#fff,rgba(255,255,255,0))}
 
-    function trapFocus(e){
-      if(e.key !== 'Tab') return;
-      const focusable = root.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])');
-      const first = focusable[0], last = focusable[focusable.length - 1];
-      if(e.shiftKey && document.activeElement === first){ last.focus(); e.preventDefault(); }
-      else if(!e.shiftKey && document.activeElement === last){ first.focus(); e.preventDefault(); }
-    }
+  /* ---------- Desktop overrides ---------- */
+  @media (min-width: 1024px){
+    .sg-panel{ width:min(600px);}
+    .sg-media{ justify-content:flex-start; }
+    .sg-img{ width:220px; max-width:220px; }
+    .sg-viewport{ overflow-x:visible; scroll-snap-type:none; }
+    .sg-table{ width:100%;}
+    .sg-size{ min-width:auto; }
+    .sg-fade{ display:none; }
+    #{{ sg_id }}{ --sg-label-col:260px; }
+  }
 
-    function openDrawer(){
-      root.hidden = false;
-      document.documentElement.style.overflow = 'hidden';
-      openLink.setAttribute('aria-expanded','true');
-      panel.focus();
-      document.addEventListener('keydown', onKeydown);
-      document.addEventListener('keydown', trapFocus);
-      // reset scroll & fades ao abrir
-      root.querySelectorAll('[data-sg-viewport]').forEach(v => { v.scrollLeft = 0; updateFades(v.closest('[data-sg-swipe]')); });
-    }
-    function closeDrawer(){
-      root.hidden = true;
-      document.documentElement.style.overflow = '';
-      openLink.setAttribute('aria-expanded','false');
-      openLink.focus();
-      document.removeEventListener('keydown', onKeydown);
-      document.removeEventListener('keydown', trapFocus);
-    }
-    function onKeydown(e){ if(e.key === 'Escape') closeDrawer(); }
+  @media (max-width:740px){
+    .sg-panel{padding:16px}
+    .sg-img{max-width:100%}
+    #{{ sg_id }}{ --sg-label-col:180px; --sg-size-col:88px; }
+  }
+</style>
 
-    openLink.addEventListener('click', function(e){ e.preventDefault(); openDrawer(); });
-    overlay.addEventListener('click', closeDrawer);
-    closeBtns.forEach(b=> b.addEventListener('click', closeDrawer));
 
-    // Swipe indicators (fades) + teclado
-    function updateFades(section){
-      if(!section) return;
-      const viewport = section.querySelector('[data-sg-viewport]');
-      const leftFade = section.querySelector('.sg-fade--left');
-      const rightFade = section.querySelector('.sg-fade--right');
-      const hasOverflow = viewport.scrollWidth > viewport.clientWidth + 2;
-      if(!hasOverflow){
-        leftFade.style.opacity = '0';
-        rightFade.style.opacity = '0';
-        return;
-      }
-      const atStart = viewport.scrollLeft <= 2;
-      const atEnd = viewport.scrollLeft >= (viewport.scrollWidth - viewport.clientWidth - 2);
-      leftFade.style.opacity = atStart ? '0' : '1';
-      rightFade.style.opacity = atEnd ? '0' : '1';
-    }
+ <script>
+(function(){
+  const wrap = document.getElementById("sg-wrap-{{ sg_id }}");
+  if(!wrap) return;
 
-    root.querySelectorAll('[data-sg-swipe]').forEach(section=>{
-      const viewport = section.querySelector('[data-sg-viewport]');
-      if(!viewport) return;
+  let root   = wrap.querySelector("#{{ sg_id }}");
+  const openEl = wrap.querySelector('[data-sg-open="{{ sg_id }}"]');
+  if(!root || !openEl) return;
 
-      // Atualiza fades no scroll e no resize
-      viewport.addEventListener('scroll', ()=> updateFades(section));
-      const ro = new ResizeObserver(()=> updateFades(section));
-      ro.observe(viewport);
-      updateFades(section);
+  /* ---- 1) PORTAL: move the drawer to <body> to escape parent stacking contexts ---- */
+  if(!root.hasAttribute('data-sg-portal')){
+    document.body.appendChild(root);           // keep same id (CSS still applies)
+    root.setAttribute('data-sg-portal','true');
+  }
 
-      // Suporte a setas do teclado (sem botões visuais)
-      function pageSize(){
-        // largura de uma coluna de tamanho (aprox.)
-        const sizeHeader = viewport.querySelector('th.sg-size');
-        const colW = sizeHeader ? sizeHeader.getBoundingClientRect().width : 96;
-        return Math.max(1, Math.floor(viewport.clientWidth / colW));
-      }
-      viewport.addEventListener('keydown', (e)=>{
-        if(e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-        e.preventDefault();
-        const cols = pageSize();
-        const sizeHeader = viewport.querySelector('th.sg-size');
-        const colW = sizeHeader ? sizeHeader.getBoundingClientRect().width : 96;
-        const delta = cols * colW * (e.key === 'ArrowRight' ? 1 : -1);
-        viewport.scrollBy({ left: delta, behavior: 'smooth' });
-      });
+  const panel    = root.querySelector('.sg-panel');
+  const overlay  = root.querySelector('.sg-overlay');
+  const closeBtns= root.querySelectorAll('[data-sg-close]');
+
+  function trapFocus(e){
+    if(e.key !== 'Tab') return;
+    const focusable = root.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])');
+    const first = focusable[0], last = focusable[focusable.length - 1];
+    if(e.shiftKey && document.activeElement === first){ last.focus(); e.preventDefault(); }
+    else if(!e.shiftKey && document.activeElement === last){ first.focus(); e.preventDefault(); }
+  }
+
+  function openDrawer(e){
+    if(e) e.preventDefault();
+    root.hidden = false;
+    document.documentElement.style.overflow = 'hidden';
+    openEl.setAttribute('aria-expanded','true');
+    panel.focus();
+    document.addEventListener('keydown', onKeydown);
+    document.addEventListener('keydown', trapFocus);
+    // reset scroll & fades ao abrir
+    root.querySelectorAll('[data-sg-viewport]').forEach(v => { v.scrollLeft = 0; updateFades(v.closest('[data-sg-swipe]')); });
+  }
+  function closeDrawer(){
+    root.hidden = true;
+    document.documentElement.style.overflow = '';
+    openEl.setAttribute('aria-expanded','false');
+    openEl.focus();
+    document.removeEventListener('keydown', onKeydown);
+    document.removeEventListener('keydown', trapFocus);
+  }
+  function onKeydown(e){ if(e.key === 'Escape') closeDrawer(); }
+
+  openEl.addEventListener('click', openDrawer);
+  overlay.addEventListener('click', closeDrawer);
+  closeBtns.forEach(b=> b.addEventListener('click', closeDrawer));
+
+  // Fades apenas quando existe overflow (mobile)
+  function updateFades(section){
+    if(!section) return;
+    const viewport = section.querySelector('[data-sg-viewport]');
+    const leftFade = section.querySelector('.sg-fade--left');
+    const rightFade = section.querySelector('.sg-fade--right');
+    if(!viewport || !leftFade || !rightFade) return;
+
+    const overflow = viewport.scrollWidth > viewport.clientWidth + 2 && getComputedStyle(viewport).overflowX !== 'visible';
+    if(!overflow){ leftFade.style.opacity = '0'; rightFade.style.opacity = '0'; return; }
+
+    const atStart = viewport.scrollLeft <= 2;
+    const atEnd = viewport.scrollLeft >= (viewport.scrollWidth - viewport.clientWidth - 2);
+    leftFade.style.opacity = atStart ? '0' : '1';
+    rightFade.style.opacity = atEnd ? '0' : '1';
+  }
+
+  root.querySelectorAll('[data-sg-swipe]').forEach(section=>{
+    const viewport = section.querySelector('[data-sg-viewport]');
+    if(!viewport) return;
+
+    viewport.addEventListener('scroll', ()=> updateFades(section));
+    const ro = new ResizeObserver(()=> updateFades(section));
+    ro.observe(viewport);
+    updateFades(section);
+
+    // Navegação por teclado quando há overflow
+    viewport.addEventListener('keydown', (e)=>{
+      const overflow = viewport.scrollWidth > viewport.clientWidth + 2 && getComputedStyle(viewport).overflowX !== 'visible';
+      if(!overflow) return;
+      if(e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      e.preventDefault();
+      const sizeHeader = viewport.querySelector('th.sg-size');
+      const colW = sizeHeader ? sizeHeader.getBoundingClientRect().width : 96;
+      const cols = Math.max(1, Math.floor(viewport.clientWidth / colW));
+      viewport.scrollBy({ left: cols * colW * (e.key === 'ArrowRight' ? 1 : -1), behavior: 'smooth' });
     });
-  })();
-  </script>
+  });
+})();
+</script>
+
 {%- endif -%}
