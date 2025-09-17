@@ -78,6 +78,33 @@
   position: relative;
 }
 
+@media (max-width: 749px) {
+  #sticky-product-bar .sticky-bar-wishlist {
+    position: absolute;
+    top: -3.5rem;
+    right: 1.5rem;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 999px;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1100;
+  }
+
+  #sticky-product-bar .sticky-bar-wishlist .wishlist-toggle__icon {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  #sticky-product-bar .sticky-bar-wishlist .wishlist-toggle__icon path {
+    stroke-width: 1.6;
+  }
+}
+
 .drawer__tabs {
   display: flex;
   gap: 0.75rem;
