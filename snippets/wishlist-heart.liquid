@@ -3,8 +3,6 @@
 {%- assign handle = product.handle -%}
 {%- assign title = product.title | escape -%}
 {%- assign image = product.featured_image | img_url: '360x' -%}
-{%- assign url = product.url -%}
-{%- assign price = product.price | money | escape -%}
 
 <button
   class="il-wishlist-btn"
@@ -15,8 +13,6 @@
   data-handle="{{ handle }}"
   data-title="{{ title }}"
   data-image="{{ image }}"
-  data-url="{{ url }}"
-  data-price="{{ price }}"
 >
   <svg class="il-heart" viewBox="0 0 24 24" aria-hidden="true">
     <path class="il-heart-outline"

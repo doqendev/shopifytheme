@@ -1,4 +1,4 @@
-.il-wishlist-overlay{position:absolute;top:12px;right:12px;z-index:3}
+.il-wishlist-overlay{position:absolute;top:8px;left:8px;z-index:3}
 .il-wishlist-btn{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:none;border-radius:999px;background:rgba(255,255,255,.9);color:#d23f57;cursor:pointer;padding:0;transition:transform .12s,background .12s}
 .il-wishlist-btn:hover{transform:scale(1.04)}
 .il-heart{width:22px;height:22px}
