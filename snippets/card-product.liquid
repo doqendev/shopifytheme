@@ -36,6 +36,7 @@
     overflow: hidden;
     pointer-events: auto; /* Ensure pointer events are allowed */
     touch-action: auto; /* Let the browser decide (default behavior) */
+    position: relative;
   }
   .swiper-wrapper {
     display: flex;
@@ -181,6 +182,9 @@
       >
        {% if card_product.featured_media %}
   <div class="card__media swiper-container">
+    <div class="il-wishlist-overlay">
+      {% render 'wishlist-heart', product: card_product %}
+    </div>
     <div class="swiper-wrapper">
       {% for media in card_product.media %}
         {% if media.preview_image != blank %}
