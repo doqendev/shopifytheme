@@ -162,6 +162,10 @@
     data-variant-inventory='{{ variant_inventory_map | strip_newlines | escape }}'
     data-color-index="{{ color_option_index }}"
     data-size-index="{{ size_option_index }}"
+    data-product-title="{{ card_product.title | escape }}"
+    data-product-url="{{ card_product.url | escape }}"
+    data-product-image="{% if card_product.featured_media %}{{ card_product.featured_media | image_url: width: 360 | escape }}{% endif %}"
+    data-product-price="{{ card_product.price | money_without_trailing_zeros | escape }}"
   >
     <div
       class="
@@ -175,6 +179,16 @@
       "
       style="--ratio-percent: {{ 1 | divided_by: ratio | times: 100 }}%;"
     >
+      <button
+        class="wishlist-toggle"
+        type="button"
+        aria-pressed="false"
+        aria-label="{{ 'general.add_to_wishlist' | t | default: 'Add to wishlist' }}"
+      >
+        <svg class="wishlist-toggle__icon" viewBox="0 0 24 24" role="presentation" focusable="false">
+          <path d="M12 21.35 10.55 20.03C6.2 15.99 3 12.99 3 9.31 3 6.28 5.42 4 8.4 4A5.2 5.2 0 0 1 12 5.86 5.2 5.2 0 0 1 15.6 4C18.58 4 21 6.28 21 9.31c0 3.68-3.2 6.68-7.55 10.72z" />
+        </svg>
+      </button>
       <div
         class="card__inner {% if settings.card_style == 'standard' %}color-{{ settings.card_color_scheme }} gradient{% endif %}{% if card_product.featured_media or settings.card_style == 'standard' %} ratio{% endif %}"
         style="--ratio-percent: {{ 1 | divided_by: ratio | times: 100 }}%;"
