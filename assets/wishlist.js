@@ -1,105 +1,173 @@
 (() => {
-  // Using App Proxy: same-origin calls to /apps/wishlist (Shopify forwards to your server /proxy/wishlist)
-  const apiBase = "/apps/wishlist";
+  const STORAGE_KEY = 'theme:wishlist';
+  const HEART_SELECTOR = '.il-wishlist-btn';
+  const doc = document;
+  const subscribers = new Set();
+  const productCache = new Map();
 
-  // UI helpers
-  const qsa = (s, r=document) => Array.from(r.querySelectorAll(s));
-  const setActive = (btn, active) => {
-    btn.classList.toggle("is-active", !!active);
-    btn.setAttribute("aria-pressed", active ? "true" : "false");
-    btn.setAttribute("aria-label", active ? "Remove from wishlist" : "Add to wishlist");
-  };
-  const btnPayload = (btn) => ({
-    product_id: btn.dataset.productId,
-    variant_id: btn.dataset.variantId || "",
-    handle: btn.dataset.handle || "",
-    title: btn.dataset.title || "",
-    image: btn.dataset.image || ""
-  });
-
-  // Modal (login prompt)
-  function openModal(){
-    const m = document.getElementById("il-wishlist-modal"); if(!m) return;
-    m.hidden = false;
-    m.querySelectorAll("[data-il-close]").forEach(b => b.addEventListener("click", closeModal, { once:true }));
-    document.addEventListener("keydown", escClose, { once:true });
-  }
-  function closeModal(){
-    const m = document.getElementById("il-wishlist-modal"); if(!m) return;
-    m.hidden = true; document.removeEventListener("keydown", escClose);
-  }
-  function escClose(e){ if(e.key === "Escape") closeModal(); }
-
-  // API calls via App Proxy
-  async function fetchWishlist(){
-    const res = await fetch(`${apiBase}`, { method: "GET", credentials: "same-origin" });
-    if (res.status === 401) return { loggedIn:false, items:[] };
-    if (!res.ok) return { loggedIn:true, items:[] };
-    const data = await res.json();
-    return { loggedIn:true, items: data.items || [] };
-  }
-  async function addToWishlist(payload){
-    const res = await fetch(`${apiBase}`, {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      credentials:"same-origin",
-      body: JSON.stringify(payload)
-    });
-    if (res.status === 401) return { ok:false, auth:false };
-    return { ok:res.ok, auth:true };
-  }
-  async function removeFromWishlist(product_id, variant_id=""){
-    const url = new URL(apiBase, window.location.origin);
-    url.searchParams.set("product_id", product_id);
-    if (variant_id) url.searchParams.set("variant_id", variant_id);
-    const res = await fetch(url.toString(), { method:"DELETE", credentials:"same-origin" });
-    if (res.status === 401) return { ok:false, auth:false };
-    return { ok:res.ok, auth:true };
+  function qsa(selector, root = document) {
+    return Array.from(root.querySelectorAll(selector));
   }
 
-  async function syncStateFromServer(){
-    const { loggedIn, items } = await fetchWishlist();
-    if (!loggedIn) return; // leave all hearts empty
-    const set = new Set(items.map(i => String(i.product_id) + "::" + (i.variant_id || "")));
-    qsa(".il-wishlist-btn").forEach(btn => {
-      const key = String(btn.dataset.productId) + "::" + (btn.dataset.variantId || "");
-      setActive(btn, set.has(key));
-    });
-  }
-
-  async function onClickHeart(e){
-    const btn = e.currentTarget;
-    const active = btn.classList.contains("is-active");
-    const { product_id, variant_id } = btnPayload(btn);
-
-    // Optimistic UI
-    setActive(btn, !active);
-
-    const outcome = active
-      ? await removeFromWishlist(product_id, variant_id)
-      : await addToWishlist(btnPayload(btn));
-
-    if (!outcome.ok) {
-      setActive(btn, active); // revert
-      if (outcome.auth === false) openModal();
+  function loadState() {
+    try {
+      const raw = window.localStorage.getItem(STORAGE_KEY);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      return [];
     }
   }
 
-  function initHearts(){
-    qsa(".il-wishlist-btn").forEach(btn => {
-      if (btn.dataset.init) return;
-      btn.dataset.init = "1";
-      btn.addEventListener("click", onClickHeart, { passive:true });
-      setActive(btn, false);
-    });
+  function saveState(state) {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {
+      // ignore write errors (private mode, etc.)
+    }
   }
 
-  // Handle dynamic sections / SPA-like theme updates
-  const observer = new MutationObserver(() => initHearts());
-  observer.observe(document.documentElement, { childList:true, subtree:true });
+  let items = loadState();
 
-  document.addEventListener("DOMContentLoaded", async () => {
-    initHearts();
-    await syncStateFromServer();
+  const cloneItems = () => items.map((item) => ({ ...item }));
+
+  function findIndex(productId) {
+    const id = String(productId || '');
+    return items.findIndex((entry) => String(entry.productId) === id);
+  }
+
+  function hasItem(productId) {
+    return findIndex(productId) !== -1;
+  }
+
+  function persist() {
+    saveState(items);
+  }
+
+  function setButtonState(button) {
+    const active = hasItem(button.dataset.productId);
+    button.classList.toggle('is-active', active);
+    button.setAttribute('aria-pressed', active ? 'true' : 'false');
+    button.setAttribute('aria-label', active ? 'Remove from wishlist' : 'Add to wishlist');
+  }
+
+  function updateButtons() {
+    qsa(HEART_SELECTOR).forEach(setButtonState);
+  }
+
+  function notifySubscribers() {
+    const detail = { items: cloneItems() };
+    subscribers.forEach((callback) => {
+      try {
+        callback(detail.items);
+      } catch (e) {
+        console.error(e);
+      }
+    });
+    doc.dispatchEvent(new CustomEvent('theme:wishlist:updated', { detail }));
+  }
+
+  function removeItem(productId) {
+    const index = findIndex(productId);
+    if (index === -1) return;
+    items.splice(index, 1);
+    persist();
+    updateButtons();
+    notifySubscribers();
+  }
+
+  function addItemFromButton(button) {
+    const productId = String(button.dataset.productId || '');
+    if (!productId || hasItem(productId)) return;
+
+    const item = {
+      productId,
+      variantId: button.dataset.variantId ? String(button.dataset.variantId) : '',
+      handle: button.dataset.handle || '',
+      title: button.dataset.title || '',
+      image: button.dataset.image || '',
+      url: button.dataset.url || '',
+      price: button.dataset.price || '',
+    };
+
+    items.push(item);
+    persist();
+    updateButtons();
+    notifySubscribers();
+  }
+
+  function toggleFromButton(button) {
+    const productId = String(button.dataset.productId || '');
+    if (!productId) return;
+
+    if (hasItem(productId)) {
+      removeItem(productId);
+    } else {
+      addItemFromButton(button);
+    }
+  }
+
+  function heartClickHandler(event) {
+    event.preventDefault();
+    toggleFromButton(event.currentTarget);
+  }
+
+  function initHeartButton(button) {
+    if (button.dataset.wishlistInit === '1') return;
+    button.dataset.wishlistInit = '1';
+    button.addEventListener('click', heartClickHandler);
+    setButtonState(button);
+  }
+
+  function initHeartButtons() {
+    qsa(HEART_SELECTOR).forEach(initHeartButton);
+  }
+
+  const observer = new MutationObserver(() => initHeartButtons());
+  observer.observe(document.documentElement, { childList: true, subtree: true });
+
+  async function fetchProduct(handle) {
+    const key = String(handle || '');
+    if (!key) return Promise.reject(new Error('Missing product handle'));
+    if (productCache.has(key)) return productCache.get(key);
+
+    const request = fetch(`/products/${key}.js`).then((response) => {
+      if (!response.ok) {
+        throw new Error(`Failed to load product: ${key}`);
+      }
+      return response.json();
+    });
+
+    productCache.set(key, request);
+    return request;
+  }
+
+  function subscribe(callback) {
+    if (typeof callback !== 'function') return () => {};
+    subscribers.add(callback);
+    return () => subscribers.delete(callback);
+  }
+
+  const ThemeWishlist = {
+    getItems: () => cloneItems(),
+    hasItem: (productId) => hasItem(productId),
+    removeItem: (productId) => removeItem(productId),
+    addFromButton: (button) => addItemFromButton(button),
+    toggleFromButton: (button) => toggleFromButton(button),
+    subscribe,
+    fetchProduct,
+    clearCache: () => productCache.clear(),
+  };
+
+  window.ThemeWishlist = ThemeWishlist;
+
+  initHeartButtons();
+  updateButtons();
+
+  doc.addEventListener('DOMContentLoaded', () => {
+    initHeartButtons();
+    updateButtons();
+    notifySubscribers();
   });
 })();
