@@ -11,7 +11,50 @@
 
 .product-card { position: relative; }
 
-  
+  .card__media {
+    position: relative;
+  }
+
+  .product-card__wishlist {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 5;
+  }
+
+  .wishlist-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 999px;
+    border: none;
+    background: rgba(255, 255, 255, 0.85);
+    color: rgb(var(--color-foreground));
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .wishlist-toggle:hover,
+  .wishlist-toggle:focus {
+    transform: scale(1.05);
+    box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.15);
+  }
+
+  .wishlist-toggle svg {
+    width: 1.8rem;
+    height: 1.8rem;
+    fill: transparent;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    transition: fill 0.2s ease;
+  }
+
+  .wishlist-toggle.is-active svg {
+    fill: currentColor;
+  }
+
   .card__content {
     width: 100%;
   }
@@ -181,6 +224,19 @@
       >
        {% if card_product.featured_media %}
   <div class="card__media swiper-container">
+    <div class="product-card__wishlist">
+      <button
+        type="button"
+        class="wishlist-toggle"
+        aria-pressed="false"
+        aria-label="{{ 'general.wishlist.add' | t | default: 'Add to wishlist' }}"
+        data-product-handle="{{ card_product.handle }}"
+        data-label-add="{{ 'general.wishlist.add' | t | default: 'Add to wishlist' }}"
+        data-label-remove="{{ 'general.wishlist.remove' | t | default: 'Remove from wishlist' }}"
+      >
+        {{- 'icon-heart.svg' | inline_asset_content -}}
+      </button>
+    </div>
     <div class="swiper-wrapper">
       {% for media in card_product.media %}
         {% if media.preview_image != blank %}
