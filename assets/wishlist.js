@@ -28,6 +28,9 @@
 
   const buildWishlistKey = (handle, colorKey = '') => `${handle || ''}::${normalizeOptionValue(colorKey)}`;
 
+  const COLOR_LABEL_PATTERN = /(\bcolor\b|\bcolour\b|\bcor\b)/i;
+  const SIZE_LABEL_PATTERN = /(\bsize\b|\btamanho\b|\btalla\b|\btaille\b)/i;
+
   const normalizeVariants = (variants) => {
     if (!Array.isArray(variants)) return [];
     return variants.map((variant) => ({
@@ -466,6 +469,53 @@
     return sizes;
   };
 
+  const createSizeButtonsMarkup = (item) =>
+    getUniqueSizesForItem(item)
+      .map(
+        (size) => `
+          <button type="button" class="size-option" data-size="${escapeHtml(size)}">
+            <span class="size-option__label">${escapeHtml(size)}</span>
+            <span class="size-option__low-stock hidden">${escapeHtml(
+              window.wishlistStrings?.lowStock || 'Low stock',
+            )}</span>
+          </button>`,
+      )
+      .join('');
+
+  const createQuickAddMarkup = (item) => {
+    if (!item || typeof item.sizeIndex !== 'number' || item.sizeIndex < 0) return '';
+
+    const sizeButtonsMarkup = createSizeButtonsMarkup(item);
+    if (!sizeButtonsMarkup) return '';
+
+    return `
+      <div class="product-card-plus">
+        <button type="button" class="plus-icon" aria-label="${escapeHtml(
+          window.wishlistStrings?.addToCart || 'Add to cart',
+        )}">
+          +
+        </button>
+        <div class="size-options" tabindex="-1">
+          <div class="size-options-header">
+            <span class="size-options-title">${escapeHtml(
+              window.wishlistStrings?.sizeLabel || 'Select a size',
+            )}</span>
+          </div>
+          <div class="overlay-sizes">
+            ${sizeButtonsMarkup}
+          </div>
+        </div>
+      </div>`;
+  };
+
+  const createQuickAddElement = (item) => {
+    const markup = createQuickAddMarkup(item);
+    if (!markup) return null;
+    const template = document.createElement('template');
+    template.innerHTML = markup.trim();
+    return template.content.firstElementChild;
+  };
+
   const createFallbackWishlistMarkup = (item) => {
     const imageMarkup = item.image
       ? `<img class="product-card__image" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" loading="lazy">`
@@ -490,36 +540,7 @@
     const cardHeadingClassName = escapeHtml(item.cardHeadingClassName || 'card__heading');
     const priceWrapperClassName = escapeHtml(item.cardPriceWrapperClassName || 'card-information');
 
-    const sizes = getUniqueSizesForItem(item);
-    const sizeButtonsMarkup = sizes
-      .map(
-        (size) => `
-          <button type="button" class="size-option" data-size="${escapeHtml(size)}">
-            <span class="size-option__label">${escapeHtml(size)}</span>
-            <span class="size-option__low-stock hidden">${escapeHtml(window.wishlistStrings?.lowStock || 'Low stock')}</span>
-          </button>`,
-      )
-      .join('');
-
-    const quickAddMarkup =
-      item.sizeIndex >= 0
-        ? `
-      <div class="product-card-plus">
-        <button type="button" class="plus-icon" aria-label="${escapeHtml(
-          window.wishlistStrings?.addToCart || 'Add to cart',
-        )}">
-          +
-        </button>
-        <div class="size-options" tabindex="-1">
-          <div class="size-options-header">
-            <span class="size-options-title">${escapeHtml(window.wishlistStrings?.sizeLabel || 'Select a size')}</span>
-          </div>
-          <div class="overlay-sizes">
-            ${sizeButtonsMarkup}
-          </div>
-        </div>
-      </div>`
-        : '';
+    const quickAddMarkup = createQuickAddMarkup(item);
 
     return `
       <div class="${cardWrapperClassName}">
@@ -618,6 +639,134 @@
         swatch.classList.remove('active');
       }
     });
+  };
+
+  const sanitizeWishlistVariantInputs = (cardElement) => {
+    if (!cardElement) return;
+
+    const isColorContainer = (element) => {
+      if (!element) return false;
+      const labelText = element.querySelector('legend, .form__label')?.textContent || '';
+      if (COLOR_LABEL_PATTERN.test(labelText)) return true;
+      if (element.querySelector('.swatch')) return true;
+      return false;
+    };
+
+    const isSizeContainer = (element) => {
+      if (!element) return false;
+      const labelText = element.querySelector('legend, .form__label')?.textContent || '';
+      return SIZE_LABEL_PATTERN.test(labelText);
+    };
+
+    cardElement.querySelectorAll('.product-form__input--dropdown').forEach((wrapper) => {
+      if (isColorContainer(wrapper)) {
+        wrapper.querySelectorAll('select').forEach((select) => select.remove());
+        return;
+      }
+      wrapper.remove();
+    });
+
+    cardElement
+      .querySelectorAll('.product-form__input--swatch, .product-form__input--pill, .product-form__input--block')
+      .forEach((wrapper) => {
+        if (isColorContainer(wrapper)) {
+          wrapper.querySelectorAll('input').forEach((input) => {
+            input.setAttribute('disabled', 'disabled');
+            input.setAttribute('tabindex', '-1');
+          });
+          return;
+        }
+        wrapper.remove();
+      });
+
+    cardElement.querySelectorAll('variant-selects').forEach((variantSelects) => {
+      const hasColorInput = Array.from(variantSelects.querySelectorAll('.product-form__input')).some(
+        (input) => isColorContainer(input),
+      );
+      if (!hasColorInput) {
+        variantSelects.remove();
+      }
+    });
+
+    cardElement
+      .querySelectorAll('.quick-add, .card__quick-add, .quick-add__form, .quick-add__buttons')
+      .forEach((element) => {
+        if (!element.closest('.product-card-plus')) {
+          element.remove();
+        }
+      });
+
+    cardElement
+      .querySelectorAll('form[action*="/cart/add"], button[name="add"], .quick-add__submit')
+      .forEach((element) => {
+        if (!element.closest('.product-card-plus')) {
+          element.remove();
+        }
+      });
+
+    cardElement.querySelectorAll('select').forEach((select) => {
+      const name = (select.getAttribute('name') || '').toLowerCase();
+      if (!name.includes('option')) return;
+      const wrapper = select.closest('.product-form__input');
+      if (wrapper && isColorContainer(wrapper)) {
+        select.remove();
+        return;
+      }
+      if (wrapper) {
+        wrapper.remove();
+      } else {
+        select.remove();
+      }
+    });
+
+    cardElement.querySelectorAll('.product-form__input').forEach((wrapper) => {
+      if (isSizeContainer(wrapper)) {
+        wrapper.remove();
+      }
+    });
+  };
+
+  const ensureWishlistQuickAdd = (cardElement, item) => {
+    if (!cardElement) return;
+
+    const quickAddContainer = cardElement.querySelector('.card__content') || cardElement;
+    let quickAdd = cardElement.querySelector('.product-card-plus');
+
+    if (typeof item?.sizeIndex !== 'number' || item.sizeIndex < 0) {
+      if (quickAdd) {
+        quickAdd.remove();
+      }
+      return;
+    }
+
+    const sizeButtonsMarkup = createSizeButtonsMarkup(item);
+    if (!sizeButtonsMarkup) {
+      if (quickAdd) {
+        quickAdd.remove();
+      }
+      return;
+    }
+
+    if (!quickAdd) {
+      quickAdd = createQuickAddElement(item);
+      if (!quickAdd) return;
+      quickAddContainer.appendChild(quickAdd);
+    } else {
+      const overlay = quickAdd.querySelector('.overlay-sizes');
+      if (overlay) {
+        overlay.innerHTML = sizeButtonsMarkup;
+      }
+    }
+
+    const trigger = quickAdd.querySelector('.plus-icon');
+    if (trigger) {
+      trigger.setAttribute('aria-label', window.wishlistStrings?.addToCart || 'Add to cart');
+    }
+
+    const title = quickAdd.querySelector('.size-options-title');
+    if (title) {
+      title.textContent = window.wishlistStrings?.sizeLabel || 'Select a size';
+    }
   };
 
   const updateWishlistSizeButtons = (cardElement, item) => {
@@ -725,6 +874,8 @@
 
     cardElement.wishlistItem = item;
 
+    sanitizeWishlistVariantInputs(cardElement);
+    ensureWishlistQuickAdd(cardElement, item);
     ensureWishlistCardSwatch(cardElement, item);
     updateWishlistSizeButtons(cardElement, item);
 
