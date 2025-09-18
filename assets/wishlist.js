@@ -153,17 +153,64 @@
 
   const getDrawer = () => document.querySelector(DRAWER_SELECTOR);
 
-  const updateDrawerHeading = (drawer, tab) => {
-    const heading = drawer?.querySelector('.drawer__heading');
-    if (!heading) return;
-    if (!heading.dataset.cartTitle) {
-      heading.dataset.cartTitle = heading.textContent.trim();
+  const getActiveDrawerTab = (drawer) =>
+    drawer?.querySelector('[data-tab-target].is-active')?.dataset.tabTarget || TAB_CART;
+
+  const formatDrawerLabel = (label, count) => {
+    const normalizedLabel = label || '';
+    const parsedCount = Number.parseInt(count, 10);
+    const normalizedCount = Number.isNaN(parsedCount) ? 0 : parsedCount;
+    return `${normalizedLabel} (${normalizedCount})`;
+  };
+
+  const getCartItemCount = (drawer) => {
+    const cartItemsElement = drawer?.querySelector('cart-drawer-items');
+    if (!cartItemsElement) return 0;
+
+    const attributeValue = Number.parseInt(cartItemsElement.dataset.cartCount || '', 10);
+    if (!Number.isNaN(attributeValue)) return attributeValue;
+
+    let total = 0;
+    cartItemsElement.querySelectorAll('input[name="updates[]"]').forEach((input) => {
+      const value = Number.parseInt(input.value, 10);
+      if (!Number.isNaN(value)) {
+        total += value;
+      }
+    });
+
+    return total;
+  };
+
+  const getWishlistCount = () => loadWishlist().length;
+
+  const updateDrawerLabels = (drawer, activeTab = TAB_CART) => {
+    if (!drawer) return;
+
+    const cartCount = getCartItemCount(drawer);
+    const wishlistCount = getWishlistCount();
+
+    const heading = drawer.querySelector('.drawer__heading');
+    if (heading) {
+      const cartTitle = heading.dataset.cartTitle || heading.textContent.trim();
+      heading.dataset.cartTitle = cartTitle;
+      const wishlistTitle =
+        heading.dataset.wishlistTitle || heading.dataset.wishlist || window.wishlistStrings?.wishlist || 'Wishlist';
+      heading.dataset.wishlistTitle = wishlistTitle;
+      heading.dataset.cartCount = String(cartCount);
+      heading.dataset.wishlistCount = String(wishlistCount);
+      const isWishlist = activeTab === TAB_WISHLIST;
+      const label = isWishlist ? wishlistTitle : cartTitle;
+      const count = isWishlist ? wishlistCount : cartCount;
+      heading.textContent = formatDrawerLabel(label, count);
     }
-    if (!heading.dataset.wishlistTitle) {
-      heading.dataset.wishlistTitle = heading.dataset.wishlist || 'Wishlist';
-    }
-    const text = tab === TAB_WISHLIST ? heading.dataset.wishlistTitle : heading.dataset.cartTitle;
-    heading.textContent = text;
+
+    drawer.querySelectorAll('[data-tab-target]').forEach((button) => {
+      const baseLabel = button.dataset.baseLabel || button.textContent.trim();
+      button.dataset.baseLabel = baseLabel;
+      const count = button.dataset.tabTarget === TAB_WISHLIST ? wishlistCount : cartCount;
+      button.dataset.count = String(count);
+      button.textContent = formatDrawerLabel(baseLabel, count);
+    });
   };
 
   const setActiveDrawerTab = (tab) => {
@@ -185,7 +232,7 @@
       panel.toggleAttribute('hidden', !isActive);
     });
 
-    updateDrawerHeading(drawer, tab);
+    updateDrawerLabels(drawer, tab);
   };
 
   const initDrawerTabs = () => {
@@ -303,6 +350,11 @@
         list.appendChild(row);
       });
     });
+
+    const drawer = getDrawer();
+    if (drawer) {
+      updateDrawerLabels(drawer, getActiveDrawerTab(drawer));
+    }
   };
 
   const getVariantForDirectAdd = (item) => {
@@ -331,6 +383,12 @@
           drawer.classList.remove('is-empty');
           if (!drawer.classList.contains('active')) {
             drawer.open();
+          }
+          updateDrawerLabels(drawer, getActiveDrawerTab(drawer));
+        } else {
+          const fallbackDrawer = getDrawer();
+          if (fallbackDrawer) {
+            updateDrawerLabels(fallbackDrawer, getActiveDrawerTab(fallbackDrawer));
           }
         }
         if (typeof publish === 'function') {
@@ -459,6 +517,7 @@
       let heartsUpdated = false;
       let wishlistUpdated = false;
       let tabsUpdated = false;
+      let cartItemsUpdated = false;
 
       mutations.forEach((mutation) => {
         mutation.addedNodes.forEach((node) => {
@@ -477,6 +536,9 @@
           ) {
             tabsUpdated = true;
           }
+          if (node.matches?.('cart-drawer-items') || node.querySelector?.('cart-drawer-items')) {
+            cartItemsUpdated = true;
+          }
         });
       });
 
@@ -490,12 +552,22 @@
       if (tabsUpdated) {
         initDrawerTabs();
       }
+      if (cartItemsUpdated) {
+        const drawer = getDrawer();
+        if (drawer) {
+          updateDrawerLabels(drawer, getActiveDrawerTab(drawer));
+        }
+      }
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
   };
 
   const init = () => {
+    const drawer = getDrawer();
+    const heading = drawer?.querySelector('.drawer__heading');
+    const wishlistLabel = heading?.dataset?.wishlistTitle || heading?.dataset?.wishlist;
+
     window.wishlistStrings = {
       add: 'Add to wishlist',
       remove: 'Remove from wishlist',
@@ -506,6 +578,10 @@
       wishlist: 'Wishlist',
       ...window.wishlistStrings,
     };
+
+    if (wishlistLabel) {
+      window.wishlistStrings.wishlist = wishlistLabel;
+    }
 
     attachHeartListeners();
     syncHearts();
