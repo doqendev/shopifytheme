@@ -542,10 +542,8 @@
 
     const quickAddMarkup = createQuickAddMarkup(item);
 
-    const fallbackWrapperClassName = `${cardWrapperClassName} wishlist-card--fallback`.trim();
-
     return `
-      <div class="${fallbackWrapperClassName}" data-wishlist-fallback="true">
+      <div class="${cardWrapperClassName}">
         <div class="${cardClassName}">
           <button
             class="wishlist-toggle is-active"
@@ -650,11 +648,6 @@
   const sanitizeWishlistVariantInputs = (cardElement) => {
     if (!cardElement) return;
 
-    const isFallback = cardElement.matches?.('[data-wishlist-fallback], .wishlist-card--fallback');
-    if (!isFallback) {
-      return;
-    }
-
     const isColorContainer = (element) => {
       if (!element) return false;
       const labelText = element.querySelector('legend, .form__label')?.textContent || '';
@@ -739,11 +732,6 @@
 
   const ensureWishlistQuickAdd = (cardElement, item) => {
     if (!cardElement) return;
-
-    const isFallback = cardElement.matches?.('[data-wishlist-fallback], .wishlist-card--fallback');
-    if (!isFallback) {
-      return;
-    }
 
     const quickAddContainer = cardElement.querySelector('.card__content') || cardElement;
     let quickAdd = cardElement.querySelector('.product-card-plus');
