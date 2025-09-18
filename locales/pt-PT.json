@@ -53,6 +53,8 @@
       "item_added": "Item adicionado ao seu carrinho",
       "view_empty_cart": "Ver carrinho"
     },
+    "wishlist": "Favoritos",
+    "wishlist_empty": "Os seus favoritos estão vazios.",
     "share": {
       "copy_to_clipboard": "Copiar ligação",
       "share_url": "Ligação",
@@ -293,7 +295,7 @@
       }
     },
     "cart": {
-      "title": "O seu carrinho",
+      "title": "CESTO",
       "caption": "Itens do carrinho",
       "remove_title": "Eliminar {{ title }}",
       "note": "Instruções especiais da encomenda",
