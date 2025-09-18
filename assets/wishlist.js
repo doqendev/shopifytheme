@@ -67,6 +67,7 @@
       colorValue,
       colorKey,
       variants: normalizeVariants(item.variants),
+      cardMarkup: typeof item.cardMarkup === 'string' ? item.cardMarkup : '',
     };
   };
 
@@ -278,6 +279,7 @@
       cardInformationClassName: cardInformation?.className || '',
       cardHeadingClassName: cardHeading?.className || '',
       cardPriceWrapperClassName: priceWrapper?.className || '',
+      cardMarkup: card?.outerHTML || '',
     };
   };
 
@@ -450,115 +452,303 @@
 
   const getAvailableVariants = (item) => getMatchingVariants(item).filter((variant) => variant.available);
 
-  const createWishlistCardMarkup = (item) => {
+  const getUniqueSizesForItem = (item) => {
+    if (!item || typeof item.sizeIndex !== 'number' || item.sizeIndex < 0) return [];
+    const sizeIndex = item.sizeIndex;
+    const sizes = [];
+    getMatchingVariants(item).forEach((variant) => {
+      const option = variant.options?.[sizeIndex];
+      if (!option) return;
+      if (!sizes.includes(option)) {
+        sizes.push(option);
+      }
+    });
+    return sizes;
+  };
+
+  const createFallbackWishlistMarkup = (item) => {
     const imageMarkup = item.image
-      ? `<img class="wishlist-card__image" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" loading="lazy">`
+      ? `<img class="product-card__image" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" loading="lazy">`
       : `<div class="wishlist-card__placeholder" aria-hidden="true"></div>`;
 
     const priceMarkup = item.price
       ? `<span class="price price--end">${escapeHtml(item.price)}</span>`
       : '';
 
-    const availableVariants = getAvailableVariants(item);
-    let sizeDrawerMarkup = '';
-    let soldOutMarkup = '';
-    if (item.sizeIndex >= 0) {
-      if (availableVariants.length) {
-        const optionButtons = availableVariants
-          .map((variant) => {
-            const label = variant.options?.[item.sizeIndex] || variant.title;
-            return `
-              <button type="button" class="wishlist-item__size-option" data-size-option data-variant-id="${escapeHtml(
-                String(variant.id),
-              )}">
-                ${escapeHtml(label)}
-              </button>`;
-          })
-          .join('');
-
-        sizeDrawerMarkup = `
-          <div class="wishlist-item__size-drawer" data-size-drawer hidden>
-            <div class="wishlist-item__size-drawer-inner">
-              <div class="wishlist-item__size-header">
-                <p class="wishlist-item__size-label">${escapeHtml(window.wishlistStrings?.sizeLabel || 'Select a size')}</p>
-                <button
-                  type="button"
-                  class="wishlist-item__size-close"
-                  data-size-close
-                  aria-label="${escapeHtml(window.wishlistStrings?.close || 'Close')}"
-                >
-                  &times;
-                </button>
-              </div>
-              <div class="wishlist-item__size-options">
-                ${optionButtons}
-              </div>
-            </div>
-          </div>`;
-      } else {
-        soldOutMarkup = `<p class="wishlist-item__sold-out">${escapeHtml(window.wishlistStrings?.soldOut || 'Sold out')}</p>`;
-      }
-    }
-
-    const hasAvailableVariant = availableVariants.length > 0;
-
-    const cardShellClassName = escapeHtml(item.cardClassName || 'card card--standard card--media');
+    const cardWrapperClassName = escapeHtml(
+      item.cardWrapperClassName || 'card-wrapper product-card-wrapper product-card underline-links-hover',
+    );
+    const cardClassName = escapeHtml(item.cardClassName || 'card card--standard card--media');
     const cardInnerClassName = escapeHtml(item.cardInnerClassName || 'card__inner ratio');
     const cardInnerStyle = item.cardInnerStyle
       ? ` style="${escapeHtml(item.cardInnerStyle)}"`
       : ' style="--ratio-percent: 100%;"';
     const cardMediaClassName = escapeHtml(item.cardMediaClassName || 'card__media');
     const mediaInnerClassName = escapeHtml(item.cardMediaInnerClassName || 'media media--transparent media--hover-effect');
-    const cardContentClassName = escapeHtml(normalizeClassList(item.cardContentClassName || 'card__content', 'wishlist-card__content'));
+    const cardContentClassName = escapeHtml(item.cardContentClassName || 'card__content');
     const cardInformationClassName = escapeHtml(item.cardInformationClassName || 'card__information');
     const cardHeadingClassName = escapeHtml(item.cardHeadingClassName || 'card__heading');
     const priceWrapperClassName = escapeHtml(item.cardPriceWrapperClassName || 'card-information');
 
-    return `
-      <div class="${cardShellClassName}">
-        <button
-          class="wishlist-toggle is-active"
-          type="button"
-          aria-pressed="true"
-          aria-label="${escapeHtml(window.wishlistStrings?.remove || 'Remove from wishlist')}"
-        >
-          <svg class="wishlist-toggle__icon" viewBox="0 0 24 24" role="presentation" focusable="false">
-            <path d="M12 21.35 10.55 20.03C6.2 15.99 3 12.99 3 9.31 3 6.28 5.42 4 8.4 4A5.2 5.2 0 0 1 12 5.86 5.2 5.2 0 0 1 15.6 4C18.58 4 21 6.28 21 9.31c0 3.68-3.2 6.68-7.55 10.72z" />
-          </svg>
+    const sizes = getUniqueSizesForItem(item);
+    const sizeButtonsMarkup = sizes
+      .map(
+        (size) => `
+          <button type="button" class="size-option" data-size="${escapeHtml(size)}">
+            <span class="size-option__label">${escapeHtml(size)}</span>
+            <span class="size-option__low-stock hidden">${escapeHtml(window.wishlistStrings?.lowStock || 'Low stock')}</span>
+          </button>`,
+      )
+      .join('');
+
+    const quickAddMarkup =
+      item.sizeIndex >= 0
+        ? `
+      <div class="product-card-plus">
+        <button type="button" class="plus-icon" aria-label="${escapeHtml(
+          window.wishlistStrings?.addToCart || 'Add to cart',
+        )}">
+          +
         </button>
-        <div class="${cardInnerClassName}"${cardInnerStyle}>
-          <div class="${cardMediaClassName}">
-            <div class="${mediaInnerClassName}">
-              <a href="${escapeHtml(item.url)}" class="wishlist-card__image-link full-unstyled-link">
-                ${imageMarkup}
-              </a>
-            </div>
+        <div class="size-options" tabindex="-1">
+          <div class="size-options-header">
+            <span class="size-options-title">${escapeHtml(window.wishlistStrings?.sizeLabel || 'Select a size')}</span>
+          </div>
+          <div class="overlay-sizes">
+            ${sizeButtonsMarkup}
           </div>
         </div>
-        <div class="${cardContentClassName}">
-          <div class="${cardInformationClassName}">
-            <h3 class="${cardHeadingClassName}">
-              <a href="${escapeHtml(item.url)}" class="full-unstyled-link">${escapeHtml(item.title)}</a>
-            </h3>
-            <div class="${priceWrapperClassName}">
-              ${priceMarkup}
+      </div>`
+        : '';
+
+    return `
+      <div class="${cardWrapperClassName}">
+        <div class="${cardClassName}">
+          <button
+            class="wishlist-toggle is-active"
+            type="button"
+            aria-pressed="true"
+            aria-label="${escapeHtml(window.wishlistStrings?.remove || 'Remove from wishlist')}"
+          >
+            <svg class="wishlist-toggle__icon" viewBox="0 0 24 24" role="presentation" focusable="false">
+              <path d="M12 21.35 10.55 20.03C6.2 15.99 3 12.99 3 9.31 3 6.28 5.42 4 8.4 4A5.2 5.2 0 0 1 12 5.86 5.2 5.2 0 0 1 15.6 4C18.58 4 21 6.28 21 9.31c0 3.68-3.2 6.68-7.55 10.72z" />
+            </svg>
+          </button>
+          <div class="${cardInnerClassName}"${cardInnerStyle}>
+            <div class="${cardMediaClassName}">
+              <div class="${mediaInnerClassName}">
+                <a href="${escapeHtml(item.url)}" class="full-unstyled-link">
+                  ${imageMarkup}
+                </a>
+              </div>
             </div>
           </div>
-          <div class="wishlist-card__actions">
-            <button type="button" class="button button--primary wishlist-item__add" data-wishlist-add ${hasAvailableVariant ? '' : 'disabled'}>
-              ${escapeHtml(window.wishlistStrings?.addToCart || 'Add to cart')}
-            </button>
-            ${soldOutMarkup}
+          <div class="${cardContentClassName}">
+            <div class="${cardInformationClassName}">
+              <h3 class="${cardHeadingClassName}">
+                <a href="${escapeHtml(item.url)}" class="full-unstyled-link">${escapeHtml(item.title)}</a>
+              </h3>
+              <div class="${priceWrapperClassName}">
+                ${priceMarkup}
+              </div>
+            </div>
+            ${quickAddMarkup}
           </div>
         </div>
-        ${sizeDrawerMarkup}
       </div>`;
+  };
+
+  const createWishlistCardElement = (item) => {
+    if (!item) return null;
+    let element = null;
+
+    if (item.cardMarkup) {
+      const template = document.createElement('template');
+      template.innerHTML = item.cardMarkup.trim();
+      element = template.content.firstElementChild;
+    }
+
+    if (!element) {
+      const template = document.createElement('template');
+      template.innerHTML = createFallbackWishlistMarkup(item);
+      element = template.content.firstElementChild;
+    }
+
+    if (!element) return null;
+
+    return element;
+  };
+
+  const ensureWishlistCardSwatch = (cardElement, item) => {
+    if (!cardElement) return;
+    const swatches = cardElement.querySelectorAll('.swatch');
+    if (!swatches.length) return;
+
+    if (!item?.colorKey) {
+      const active = cardElement.querySelector('.swatch.active');
+      if (!active) {
+        swatches[0].classList.add('active');
+      }
+      return;
+    }
+
+    const matching = Array.from(swatches).filter((swatch) => {
+      const swatchKey = normalizeOptionValue(swatch.dataset?.color);
+      return swatchKey === item.colorKey;
+    });
+
+    if (!matching.length) {
+      const active = cardElement.querySelector('.swatch.active');
+      if (!active && swatches[0]) {
+        swatches[0].classList.add('active');
+      }
+      return;
+    }
+
+    swatches.forEach((swatch) => {
+      if (!matching.includes(swatch)) {
+        swatch.remove();
+      }
+    });
+
+    matching.forEach((swatch, index) => {
+      if (index === 0) {
+        swatch.classList.add('active');
+      } else {
+        swatch.classList.remove('active');
+      }
+    });
+  };
+
+  const updateWishlistSizeButtons = (cardElement, item) => {
+    if (!cardElement) return;
+    const quickAdd = cardElement.querySelector('.product-card-plus');
+    if (!quickAdd) return;
+
+    if (typeof item?.sizeIndex !== 'number' || item.sizeIndex < 0) {
+      quickAdd.classList.remove('active');
+      return;
+    }
+
+    const buttons = quickAdd.querySelectorAll('.size-option');
+    const matchingVariants = getMatchingVariants(item);
+    const sizeIndex = item.sizeIndex;
+
+    buttons.forEach((button) => {
+      const sizeValue = button.dataset?.size || button.textContent?.trim();
+      if (!sizeValue) {
+        button.dataset.variantId = '';
+        button.disabled = true;
+        return;
+      }
+
+      const variant = matchingVariants.find((candidate) => {
+        const optionValue = candidate.options?.[sizeIndex];
+        return normalizeOptionValue(optionValue) === normalizeOptionValue(sizeValue);
+      });
+
+      if (!variant) {
+        button.style.display = 'none';
+        button.dataset.variantId = '';
+        button.disabled = true;
+        button.classList.add('sold-out');
+        const lowStock = button.querySelector('.size-option__low-stock');
+        lowStock?.classList?.add?.('hidden');
+        return;
+      }
+
+      button.style.display = '';
+      button.dataset.variantId = String(variant.id);
+      if (variant.available) {
+        button.disabled = false;
+        button.classList.remove('sold-out');
+      } else {
+        button.disabled = true;
+        button.classList.add('sold-out');
+      }
+
+      const lowStock = button.querySelector('.size-option__low-stock');
+      if (lowStock) {
+        lowStock.classList.add('hidden');
+      }
+    });
+
+    const visibleButtons = Array.from(buttons).filter((button) => button.style.display !== 'none');
+    if (!visibleButtons.length) {
+      quickAdd.classList.remove('active');
+    }
+  };
+
+  const prepareWishlistCard = (cardElement, item) => {
+    if (!cardElement || !item) return null;
+
+    cardElement = cardElement.cloneNode(true);
+    cardElement.classList.add('wishlist-card');
+    cardElement.dataset.wishlistItem = 'true';
+    cardElement.dataset.handle = item.handle;
+    cardElement.dataset.productHandle = item.handle;
+    cardElement.dataset.productTitle = item.title || '';
+    cardElement.dataset.productUrl = item.url || '';
+    cardElement.dataset.productImage = item.image || '';
+    cardElement.dataset.productPrice = item.price || '';
+
+    if (typeof item.sizeIndex === 'number' && item.sizeIndex >= 0) {
+      cardElement.dataset.sizeIndex = String(item.sizeIndex);
+    } else {
+      delete cardElement.dataset.sizeIndex;
+    }
+
+    if (typeof item.colorIndex === 'number' && item.colorIndex >= 0) {
+      cardElement.dataset.colorIndex = String(item.colorIndex);
+    } else {
+      delete cardElement.dataset.colorIndex;
+    }
+
+    if (item.colorValue) {
+      cardElement.dataset.selectedColor = item.colorValue;
+    } else {
+      delete cardElement.dataset.selectedColor;
+    }
+
+    try {
+      cardElement.dataset.variants = JSON.stringify(item.variants || []);
+    } catch (error) {
+      console.warn('Unable to serialize wishlist variants', error);
+      cardElement.dataset.variants = '[]';
+    }
+
+    if (item.colorKey) {
+      cardElement.dataset.colorKey = item.colorKey;
+    } else {
+      delete cardElement.dataset.colorKey;
+    }
+
+    cardElement.wishlistItem = item;
+
+    ensureWishlistCardSwatch(cardElement, item);
+    updateWishlistSizeButtons(cardElement, item);
+
+    return cardElement;
+  };
+
+  const createWishlistCard = (item) => {
+    const rawElement = createWishlistCardElement(item);
+    if (!rawElement) return null;
+    return prepareWishlistCard(rawElement, item);
+  };
+
+  const closeAllWishlistQuickAdds = () => {
+    document
+      .querySelectorAll(`${WISHLIST_CONTAINER_SELECTOR} .product-card-plus.active`)
+      .forEach((plus) => plus.classList.remove('active'));
   };
 
   const renderWishlist = () => {
     const containers = document.querySelectorAll(WISHLIST_CONTAINER_SELECTOR);
     if (!containers.length) return;
     const items = loadWishlist();
+
+    closeAllWishlistQuickAdds();
 
     containers.forEach((container) => {
       const grid = container.querySelector(WISHLIST_GRID_SELECTOR);
@@ -579,52 +769,21 @@
       emptyState.hidden = true;
 
       items.forEach((item) => {
-        const cardWrapper = document.createElement('article');
-        const wrapperClassName = normalizeClassList(
-          item.cardWrapperClassName || 'card-wrapper product-card-wrapper product-card underline-links-hover',
-          'wishlist-card',
-        );
-        cardWrapper.className = wrapperClassName;
-        cardWrapper.dataset.wishlistItem = 'true';
-        cardWrapper.dataset.handle = item.handle;
-        cardWrapper.dataset.productHandle = item.handle;
-        cardWrapper.dataset.productTitle = item.title || '';
-        cardWrapper.dataset.productUrl = item.url || '';
-        cardWrapper.dataset.productImage = item.image || '';
-        cardWrapper.dataset.productPrice = item.price || '';
-        if (typeof item.sizeIndex === 'number' && item.sizeIndex >= 0) {
-          cardWrapper.dataset.sizeIndex = String(item.sizeIndex);
-        } else {
-          delete cardWrapper.dataset.sizeIndex;
-        }
-        if (typeof item.colorIndex === 'number' && item.colorIndex >= 0) {
-          cardWrapper.dataset.colorIndex = String(item.colorIndex);
-        } else {
-          delete cardWrapper.dataset.colorIndex;
-        }
-        if (item.colorValue) {
-          cardWrapper.dataset.selectedColor = item.colorValue;
-        } else {
-          delete cardWrapper.dataset.selectedColor;
-        }
-        try {
-          cardWrapper.dataset.variants = JSON.stringify(item.variants || []);
-        } catch (error) {
-          console.warn('Unable to serialize wishlist variants', error);
-          cardWrapper.dataset.variants = '[]';
-        }
-        if (item.colorKey) {
-          cardWrapper.dataset.colorKey = item.colorKey;
-        } else {
-          delete cardWrapper.dataset.colorKey;
-        }
-        cardWrapper.wishlistItem = item;
-        cardWrapper.innerHTML = createWishlistCardMarkup(item);
-        grid.appendChild(cardWrapper);
+        const cardElement = createWishlistCard(item);
+        if (!cardElement) return;
+        grid.appendChild(cardElement);
       });
 
       attachHeartListeners(container);
     });
+
+    if (typeof window.initializeProductCardSwipers === 'function') {
+      try {
+        window.initializeProductCardSwipers();
+      } catch (error) {
+        console.warn('Unable to initialize product card swipers', error);
+      }
+    }
 
     const drawer = getDrawer();
     if (drawer) {
@@ -677,52 +836,16 @@
       .catch((error) => console.error('Failed to refresh cart drawer', error));
   };
 
-  const getSizeDrawer = (row) => row?.querySelector('[data-size-drawer]');
-
-  const closeSizeDrawer = (target) => {
-    if (!target) return;
-    const drawer = target.matches?.('[data-size-drawer]') ? target : getSizeDrawer(target);
-    if (!drawer || drawer.dataset.animating === 'closing') return;
-
-    const hide = () => {
-      drawer.hidden = true;
-      drawer.classList.remove('is-open');
-      drawer.dataset.animating = '';
-    };
-
-    if (!drawer.classList.contains('is-open')) {
-      hide();
-      return;
-    }
-
-    if (!drawer.isConnected) {
-      hide();
-      return;
-    }
-
-    drawer.dataset.animating = 'closing';
-    drawer.addEventListener('transitionend', hide, { once: true });
-    drawer.classList.remove('is-open');
+  const findWishlistCardContext = (element) => {
+    const card = element?.closest('[data-wishlist-item]');
+    if (!card) return { card: null, item: null };
+    const colorKey = card.dataset?.colorKey || '';
+    const item = card.wishlistItem || findWishlistItem(card.dataset.handle, colorKey);
+    return { card, item };
   };
 
-  const openSizeDrawer = (row) => {
-    const drawer = getSizeDrawer(row);
-    if (!drawer || drawer.dataset.animating === 'opening') return;
-
-    drawer.hidden = false;
-    drawer.dataset.animating = 'opening';
-    requestAnimationFrame(() => {
-      drawer.classList.add('is-open');
-      drawer.dataset.animating = '';
-      const firstOption = drawer.querySelector('[data-size-option]');
-      firstOption?.focus();
-    });
-  };
-
-  const addVariantToCart = (variantId, row) => {
-    if (!variantId || !window.routes?.cart_add_url) return;
-    const addButton = row?.querySelector('[data-wishlist-add]');
-    if (addButton) addButton.disabled = true;
+  const addVariantToCart = (variantId, card) => {
+    if (!variantId || !window.routes?.cart_add_url) return Promise.resolve();
 
     const body = JSON.stringify({
       items: [{ id: variantId, quantity: 1 }],
@@ -730,7 +853,7 @@
       sections_url: window.location.pathname,
     });
 
-    fetch(`${window.routes.cart_add_url}`, { ...fetchConfig(), body })
+    return fetch(`${window.routes.cart_add_url}`, { ...fetchConfig(), body })
       .then((response) => response.json())
       .then((data) => {
         if (data.status && data.status !== 200) {
@@ -738,8 +861,8 @@
         }
       })
       .then(() => {
-        if (row?.dataset.handle) {
-          removeFromWishlist(row.dataset.handle, row.dataset.colorKey || '');
+        if (card?.dataset.handle) {
+          removeFromWishlist(card.dataset.handle, card.dataset.colorKey || '');
         }
       })
       .then(() => refreshCartDrawer())
@@ -748,85 +871,119 @@
         console.error(error);
       })
       .finally(() => {
-        if (addButton) addButton.disabled = false;
-        const drawer = getSizeDrawer(row);
-        if (drawer) {
-          closeSizeDrawer(drawer);
-        }
+        closeAllWishlistQuickAdds();
       });
   };
 
-  const handleAddClick = (button) => {
-    const row = button.closest('[data-wishlist-item]');
-    if (!row) return;
-    const colorKey = row.dataset?.colorKey || '';
-    const item = row.wishlistItem || findWishlistItem(row.dataset.handle, colorKey);
-    if (!item) return;
+  const handleWishlistPlusClick = (plusIcon) => {
+    const { card, item } = findWishlistCardContext(plusIcon);
+    if (!card || !item) return;
 
-    const availableVariants = getAvailableVariants(item);
-    if (!availableVariants.length) return;
-
-    if (item.sizeIndex >= 0) {
-      const drawer = getSizeDrawer(row);
-      if (drawer) {
-        if (drawer.hidden || !drawer.classList.contains('is-open')) {
-          openSizeDrawer(row);
-        } else {
-          closeSizeDrawer(drawer);
-        }
+    if (typeof item.sizeIndex !== 'number' || item.sizeIndex < 0) {
+      const variant = getVariantForDirectAdd(item);
+      if (variant?.id) {
+        addVariantToCart(variant.id, card);
       }
       return;
     }
 
-    const variant = getVariantForDirectAdd(item);
-    addVariantToCart(variant?.id, row);
+    const plus = plusIcon.closest('.product-card-plus');
+    if (!plus) return;
+
+    updateWishlistSizeButtons(card, item);
+
+    const visibleOption = Array.from(plus.querySelectorAll('.size-option')).find(
+      (button) => button.style.display !== 'none' && !button.disabled,
+    );
+
+    if (!visibleOption) {
+      closeAllWishlistQuickAdds();
+      return;
+    }
+
+    if (plus.classList.contains('active')) {
+      plus.classList.remove('active');
+      return;
+    }
+
+    closeAllWishlistQuickAdds();
+    plus.classList.add('active');
+    const sizeOptions = plus.querySelector('.size-options');
+    sizeOptions?.focus?.();
   };
 
-  const handleSizeOptionClick = (button) => {
-    const row = button.closest('[data-wishlist-item]');
-    if (!row) return;
-    const colorKey = row.dataset?.colorKey || '';
-    const item = row.wishlistItem || findWishlistItem(row.dataset.handle, colorKey);
-    if (!item) return;
+  const handleWishlistSizeOptionClick = (button) => {
+    const { card, item } = findWishlistCardContext(button);
+    if (!card || !item) return;
 
     const variantId = Number.parseInt(button.dataset.variantId || '', 10);
     if (!variantId) return;
-    addVariantToCart(variantId, row);
-  };
 
-  const handleSizeCloseClick = (button) => {
-    const drawer = button.closest('[data-size-drawer]');
-    if (!drawer) return;
-    const row = drawer.closest('[data-wishlist-item]');
-    closeSizeDrawer(drawer);
-    const addButton = row?.querySelector('[data-wishlist-add]');
-    addButton?.focus();
+    button.disabled = true;
+
+    addVariantToCart(variantId, card).finally(() => {
+      if (!card.isConnected) return;
+      button.disabled = false;
+    });
   };
 
   const handleWishlistClicks = (event) => {
-    const addButton = event.target.closest('[data-wishlist-add]');
-    if (addButton) {
+    const wishlistCard = event.target.closest('[data-wishlist-item]');
+    if (!wishlistCard) return;
+
+    const plusIcon = event.target.closest('.product-card-plus .plus-icon');
+    if (plusIcon) {
       event.preventDefault();
-      handleAddClick(addButton);
+      handleWishlistPlusClick(plusIcon);
       return;
     }
 
-    const sizeOption = event.target.closest('[data-size-option]');
+    const sizeOption = event.target.closest('.product-card-plus .size-option');
     if (sizeOption) {
       event.preventDefault();
-      handleSizeOptionClick(sizeOption);
-      return;
-    }
-
-    const closeButton = event.target.closest('[data-size-close]');
-    if (closeButton) {
-      event.preventDefault();
-      handleSizeCloseClick(closeButton);
+      handleWishlistSizeOptionClick(sizeOption);
     }
   };
 
+  const handleWishlistOutsideClick = (event) => {
+    const openPlus = document.querySelector(`${WISHLIST_CONTAINER_SELECTOR} .product-card-plus.active`);
+    if (!openPlus) return;
+
+    if (event.target.closest('[data-wishlist-item] .product-card-plus')) return;
+
+    const openCard = openPlus.closest('[data-wishlist-item]');
+
+    if (!event.target.closest(WISHLIST_CONTAINER_SELECTOR)) {
+      closeAllWishlistQuickAdds();
+      return;
+    }
+
+    const card = event.target.closest('[data-wishlist-item]');
+    if (card && card === openCard) {
+      if (event.target.closest('.swatch')) return;
+      closeAllWishlistQuickAdds();
+      return;
+    }
+
+    if (!card || !card.contains(openPlus)) {
+      closeAllWishlistQuickAdds();
+    }
+  };
+
+  const handleWishlistKeydown = (event) => {
+    if (event.key !== 'Escape') return;
+    if (!event.target.closest?.(WISHLIST_CONTAINER_SELECTOR)) return;
+    closeAllWishlistQuickAdds();
+  };
+
+  let wishlistListenersBound = false;
+
   const registerWishlistContainerListeners = () => {
+    if (wishlistListenersBound) return;
     document.addEventListener('click', handleWishlistClicks);
+    document.addEventListener('click', handleWishlistOutsideClick);
+    document.addEventListener('keydown', handleWishlistKeydown);
+    wishlistListenersBound = true;
   };
 
   let swatchSyncBound = false;
@@ -921,6 +1078,7 @@
       soldOut: 'Sold out',
       close: 'Close',
       wishlist: 'Wishlist',
+      lowStock: 'Low stock',
       ...window.wishlistStrings,
     };
 
