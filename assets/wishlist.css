@@ -124,6 +124,7 @@
   color: rgba(var(--color-foreground, 18, 18, 18), 0.7);
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
 }
 
 .drawer__tab:focus-visible {
