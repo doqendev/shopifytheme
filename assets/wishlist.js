@@ -3,6 +3,7 @@
   const HEART_SELECTOR = '.wishlist-toggle';
   const DRAWER_SELECTOR = 'cart-drawer';
   const WISHLIST_CONTAINER_SELECTOR = '[data-wishlist-container]';
+  const WISHLIST_GRID_SELECTOR = '[data-wishlist-grid]';
   const TAB_CART = 'cart';
   const TAB_WISHLIST = 'wishlist';
 
@@ -34,6 +35,12 @@
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
   };
+
+  const normalizeClassList = (...classNames) =>
+    classNames
+      .filter((value) => typeof value === 'string' && value.trim().length)
+      .map((value) => value.trim())
+      .join(' ');
 
   const loadWishlist = () => {
     if (cachedWishlist) return cachedWishlist.slice();
@@ -98,6 +105,14 @@
 
     const variants = parseJSONAttribute(card.dataset.variants, []);
     const sizeIndex = Number.parseInt(card.dataset.sizeIndex, 10);
+    const cardShell = card?.querySelector('.card');
+    const cardInner = card?.querySelector('.card__inner');
+    const cardMedia = card?.querySelector('.card__media');
+    const mediaInner = cardMedia?.firstElementChild;
+    const cardContent = card?.querySelector('.card__content');
+    const cardInformation = card?.querySelector('.card__information');
+    const cardHeading = card?.querySelector('.card__heading');
+    const priceWrapper = card?.querySelector('.card-information');
 
     return {
       handle,
@@ -113,6 +128,16 @@
         options: variant.options,
         price: variant.price,
       })),
+      cardWrapperClassName: card?.className || '',
+      cardClassName: cardShell?.className || '',
+      cardInnerClassName: cardInner?.className || '',
+      cardInnerStyle: cardInner?.getAttribute('style') || '',
+      cardMediaClassName: cardMedia?.className || '',
+      cardMediaInnerClassName: mediaInner?.className || '',
+      cardContentClassName: cardContent?.className || '',
+      cardInformationClassName: cardInformation?.className || '',
+      cardHeadingClassName: cardHeading?.className || '',
+      cardPriceWrapperClassName: priceWrapper?.className || '',
     };
   };
 
@@ -252,10 +277,10 @@
 
   const getAvailableVariants = (item) => item.variants.filter((variant) => variant.available);
 
-  const createWishlistRowMarkup = (item) => {
+  const createWishlistCardMarkup = (item) => {
     const imageMarkup = item.image
-      ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" loading="lazy">`
-      : `<div class="wishlist-item__placeholder" aria-hidden="true"></div>`;
+      ? `<img class="wishlist-card__image" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" loading="lazy">`
+      : `<div class="wishlist-card__placeholder" aria-hidden="true"></div>`;
 
     const priceMarkup = item.price
       ? `<span class="price price--end">${escapeHtml(item.price)}</span>`
@@ -292,28 +317,49 @@
 
     const hasAvailableVariant = availableVariants.length > 0;
 
+    const cardShellClassName = escapeHtml(item.cardClassName || 'card card--standard card--media');
+    const cardInnerClassName = escapeHtml(item.cardInnerClassName || 'card__inner ratio');
+    const cardInnerStyle = item.cardInnerStyle
+      ? ` style="${escapeHtml(item.cardInnerStyle)}"`
+      : ' style="--ratio-percent: 100%;"';
+    const cardMediaClassName = escapeHtml(item.cardMediaClassName || 'card__media');
+    const mediaInnerClassName = escapeHtml(item.cardMediaInnerClassName || 'media media--transparent media--hover-effect');
+    const cardContentClassName = escapeHtml(normalizeClassList(item.cardContentClassName || 'card__content', 'wishlist-card__content'));
+    const cardInformationClassName = escapeHtml(item.cardInformationClassName || 'card__information');
+    const cardHeadingClassName = escapeHtml(item.cardHeadingClassName || 'card__heading');
+    const priceWrapperClassName = escapeHtml(item.cardPriceWrapperClassName || 'card-information');
+
     return `
-      <td class="cart-item__media">
-        <a href="${escapeHtml(item.url)}" class="cart-item__link" tabindex="-1" aria-hidden="true"></a>
-        ${imageMarkup}
-      </td>
-      <td class="cart-item__details">
-        <a href="${escapeHtml(item.url)}" class="cart-item__name h4 break">${escapeHtml(item.title)}</a>
-        <button type="button" class="link wishlist-item__remove" data-wishlist-remove>
-          ${escapeHtml(window.wishlistStrings?.remove || 'Remove')}
-        </button>
-      </td>
-      <td class="cart-item__totals right">
-        <div class="cart-item__price-wrapper">
-          ${priceMarkup}
+      <div class="${cardShellClassName}">
+        <div class="${cardInnerClassName}"${cardInnerStyle}>
+          <div class="${cardMediaClassName}">
+            <div class="${mediaInnerClassName}">
+              <a href="${escapeHtml(item.url)}" class="wishlist-card__image-link full-unstyled-link">
+                ${imageMarkup}
+              </a>
+            </div>
+          </div>
         </div>
-      </td>
-      <td class="cart-item__actions">
-        <button type="button" class="button button--tertiary wishlist-item__add" data-wishlist-add ${hasAvailableVariant ? '' : 'disabled'}>
-          ${escapeHtml(window.wishlistStrings?.addToCart || 'Add to cart')}
-        </button>
-        ${sizeSelectorMarkup}
-      </td>`;
+        <div class="${cardContentClassName}">
+          <div class="${cardInformationClassName}">
+            <h3 class="${cardHeadingClassName}">
+              <a href="${escapeHtml(item.url)}" class="full-unstyled-link">${escapeHtml(item.title)}</a>
+            </h3>
+            <div class="${priceWrapperClassName}">
+              ${priceMarkup}
+            </div>
+          </div>
+          <div class="wishlist-card__actions">
+            <button type="button" class="button button--primary wishlist-item__add" data-wishlist-add ${hasAvailableVariant ? '' : 'disabled'}>
+              ${escapeHtml(window.wishlistStrings?.addToCart || 'Add to cart')}
+            </button>
+            ${sizeSelectorMarkup}
+            <button type="button" class="link wishlist-item__remove" data-wishlist-remove>
+              ${escapeHtml(window.wishlistStrings?.remove || 'Remove')}
+            </button>
+          </div>
+        </div>
+      </div>`;
   };
 
   const renderWishlist = () => {
@@ -322,32 +368,35 @@
     const items = loadWishlist();
 
     containers.forEach((container) => {
-      const table = container.querySelector('[data-wishlist-table]');
-      const list = container.querySelector('[data-wishlist-items]');
+      const grid = container.querySelector(WISHLIST_GRID_SELECTOR);
       const emptyState = container.querySelector('[data-wishlist-empty]');
-      if (!list || !table || !emptyState) return;
+      if (!grid || !emptyState) return;
 
-      list.innerHTML = '';
+      grid.innerHTML = '';
 
       if (!items.length) {
         container.classList.add('is-empty');
-        table.hidden = true;
+        grid.hidden = true;
         emptyState.hidden = false;
         return;
       }
 
       container.classList.remove('is-empty');
-      table.hidden = false;
+      grid.hidden = false;
       emptyState.hidden = true;
 
       items.forEach((item) => {
-        const row = document.createElement('tr');
-        row.className = 'cart-item wishlist-item';
-        row.dataset.wishlistItem = 'true';
-        row.dataset.handle = item.handle;
-        row.wishlistItem = item;
-        row.innerHTML = createWishlistRowMarkup(item);
-        list.appendChild(row);
+        const cardWrapper = document.createElement('article');
+        const wrapperClassName = normalizeClassList(
+          item.cardWrapperClassName || 'card-wrapper product-card-wrapper product-card underline-links-hover',
+          'wishlist-card',
+        );
+        cardWrapper.className = wrapperClassName;
+        cardWrapper.dataset.wishlistItem = 'true';
+        cardWrapper.dataset.handle = item.handle;
+        cardWrapper.wishlistItem = item;
+        cardWrapper.innerHTML = createWishlistCardMarkup(item);
+        grid.appendChild(cardWrapper);
       });
     });
 
@@ -414,6 +463,11 @@
       .then((data) => {
         if (data.status && data.status !== 200) {
           throw new Error(data.description || 'Unable to add to cart');
+        }
+      })
+      .then(() => {
+        if (row?.dataset.handle) {
+          removeFromWishlist(row.dataset.handle);
         }
       })
       .then(() => refreshCartDrawer())

@@ -613,17 +613,7 @@
       hidden
     >
       <div id="CartDrawer-Wishlist" class="drawer__wishlist is-empty" data-wishlist-container>
-        <table class="cart-items wishlist-table" role="table" data-wishlist-table hidden>
-          <thead class="visually-hidden">
-            <tr>
-              <th scope="col">{{ 'sections.cart.headings.image' | t }}</th>
-              <th scope="col">{{ 'sections.cart.headings.product' | t }}</th>
-              <th scope="col">{{ 'sections.cart.headings.total' | t }}</th>
-              <th scope="col">{{ 'general.actions' | t | default: 'Actions' }}</th>
-            </tr>
-          </thead>
-          <tbody data-wishlist-items></tbody>
-        </table>
+        <div class="wishlist-grid" data-wishlist-grid hidden></div>
         <div class="wishlist-empty" data-wishlist-empty>
           <p class="cart__empty-text">{{ 'general.wishlist_empty' | t | default: 'Your wishlist is empty.' }}</p>
         </div>
