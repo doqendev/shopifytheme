@@ -45,9 +45,14 @@
 }
 
 cart-drawer.is-empty .drawer__inner {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+  display: grid;
+  grid-template-rows: 1fr;
+  align-items: center;
+  padding: 0;
+}
+
+cart-drawer.is-empty .drawer__header {
+  display: none;
 }
 
 cart-drawer:not(.is-empty) .cart-drawer__warnings,
