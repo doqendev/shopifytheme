@@ -184,15 +184,9 @@
 
 .wishlist-grid {
   display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.5rem;
   width: 100%;
-}
-
-@media (min-width: 750px) {
-  .wishlist-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 .wishlist-card {
@@ -336,15 +330,9 @@
 
 .wishlist-grid {
   display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.5rem;
   width: 100%;
-}
-
-@media (min-width: 750px) {
-  .wishlist-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 .wishlist-card {
