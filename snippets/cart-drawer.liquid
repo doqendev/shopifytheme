@@ -27,21 +27,58 @@
       aria-label="{{ 'sections.cart.title' | t }}"
       tabindex="-1"
     >
+      <div class="drawer__header">
+        <div
+          class="drawer__tabs"
+          role="tablist"
+          aria-label="{{ 'sections.cart.title' | t }}"
+          data-cart-title="{{ 'sections.cart.title' | t }}"
+          data-wishlist="{{ 'general.wishlist' | t | default: 'Wishlist' }}"
+          data-wishlist-title="{{ 'general.wishlist' | t | default: 'Wishlist' }}"
+        >
+          <button
+            type="button"
+            class="drawer__tab is-active"
+            data-tab-target="cart"
+            data-base-label="{{ 'sections.cart.title' | t }}"
+            data-count="{{ cart.item_count }}"
+            id="CartDrawerTab-Cart"
+            role="tab"
+            aria-controls="CartDrawer-CartPanel"
+            aria-selected="true"
+          >
+            {{ 'sections.cart.title' | t }} ({{ cart.item_count }})
+          </button>
+          <button
+            type="button"
+            class="drawer__tab"
+            data-tab-target="wishlist"
+            data-base-label="{{ 'general.wishlist' | t | default: 'Wishlist' }}"
+            data-count="0"
+            id="CartDrawerTab-Wishlist"
+            role="tab"
+            aria-controls="CartDrawer-WishlistPanel"
+            aria-selected="false"
+          >
+            {{ 'general.wishlist' | t | default: 'Wishlist' }} (0)
+          </button>
+        </div>
+        <button
+          class="drawer__close"
+          type="button"
+          onclick="this.closest('cart-drawer').close()"
+          aria-label="{{ 'accessibility.close' | t }}"
+        >
+          <span class="svg-wrapper">
+            {{- 'icon-close.svg' | inline_asset_content -}}
+          </span>
+        </button>
+      </div>
       {%- if cart == empty -%}
         <div class="drawer__inner-empty">
           <div class="cart-drawer__warnings center{% if settings.cart_drawer_collection != blank %} cart-drawer__warnings--has-collection{% endif %}">
             <div class="cart-drawer__empty-content">
               <h2 class="cart__empty-text">{{ 'sections.cart.empty' | t }}</h2>
-              <button
-                class="drawer__close"
-                type="button"
-                onclick="this.closest('cart-drawer').close()"
-                aria-label="{{ 'accessibility.close' | t }}"
-              >
-                <span class="svg-wrapper">
-                  {{- 'icon-close.svg' | inline_asset_content -}}
-                </span>
-              </button>
               <a
                 href="#"
                 class="button"
@@ -65,54 +102,6 @@
           {%- endif -%}
         </div>
       {%- endif -%}
-      <div class="drawer__header">
-        <h2
-          class="drawer__heading"
-          data-cart-title="{{ 'sections.cart.title' | t }}"
-          data-wishlist="{{ 'general.wishlist' | t | default: 'Wishlist' }}"
-          data-wishlist-title="{{ 'general.wishlist' | t | default: 'Wishlist' }}"
-        >
-          {{ 'sections.cart.title' | t }} ({{ cart.item_count }})
-        </h2>
-        <button
-          class="drawer__close"
-          type="button"
-          onclick="this.closest('cart-drawer').close()"
-          aria-label="{{ 'accessibility.close' | t }}"
-        >
-          <span class="svg-wrapper">
-            {{- 'icon-close.svg' | inline_asset_content -}}
-          </span>
-        </button>
-      </div>
-      <div class="drawer__tabs" role="tablist" aria-label="{{ 'sections.cart.title' | t }}">
-        <button
-          type="button"
-          class="drawer__tab is-active"
-          data-tab-target="cart"
-          data-base-label="{{ 'sections.cart.title' | t }}"
-          data-count="{{ cart.item_count }}"
-          id="CartDrawerTab-Cart"
-          role="tab"
-          aria-controls="CartDrawer-CartPanel"
-          aria-selected="true"
-        >
-          {{ 'sections.cart.title' | t }} ({{ cart.item_count }})
-        </button>
-        <button
-          type="button"
-          class="drawer__tab"
-          data-tab-target="wishlist"
-          data-base-label="{{ 'general.wishlist' | t | default: 'Wishlist' }}"
-          data-count="0"
-          id="CartDrawerTab-Wishlist"
-          role="tab"
-          aria-controls="CartDrawer-WishlistPanel"
-          aria-selected="false"
-        >
-          {{ 'general.wishlist' | t | default: 'Wishlist' }} (0)
-        </button>
-      </div>
       <div class="drawer__panels">
         <div
           class="drawer__panel drawer__panel--active"
@@ -614,17 +603,7 @@
       hidden
     >
       <div id="CartDrawer-Wishlist" class="drawer__wishlist is-empty" data-wishlist-container>
-        <table class="cart-items wishlist-table" role="table" data-wishlist-table hidden>
-          <thead class="visually-hidden">
-            <tr>
-              <th scope="col">{{ 'sections.cart.headings.image' | t }}</th>
-              <th scope="col">{{ 'sections.cart.headings.product' | t }}</th>
-              <th scope="col">{{ 'sections.cart.headings.total' | t }}</th>
-              <th scope="col">{{ 'general.actions' | t | default: 'Actions' }}</th>
-            </tr>
-          </thead>
-          <tbody data-wishlist-items></tbody>
-        </table>
+        <div class="wishlist-grid" data-wishlist-grid hidden></div>
         <div class="wishlist-empty" data-wishlist-empty>
           <p class="cart__empty-text">{{ 'general.wishlist_empty' | t | default: 'Your wishlist is empty.' }}</p>
         </div>
