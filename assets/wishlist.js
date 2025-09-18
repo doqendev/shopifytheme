@@ -602,6 +602,10 @@
 
   const ensureWishlistCardSwatch = (cardElement, item) => {
     if (!cardElement) return;
+    const overflowBadge = cardElement.querySelector('.additional-swatch-count');
+    if (overflowBadge) {
+      overflowBadge.remove();
+    }
     const swatches = cardElement.querySelectorAll('.swatch');
     if (!swatches.length) return;
 
