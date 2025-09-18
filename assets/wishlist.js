@@ -16,6 +16,93 @@
     return htmlDecoder.value;
   };
 
+  const normalizeNumber = (value, fallback = -1) => {
+    const parsed = Number.parseInt(value, 10);
+    return Number.isNaN(parsed) ? fallback : parsed;
+  };
+
+  const normalizeOptionValue = (value) => {
+    if (typeof value !== 'string') return '';
+    return value.trim().toLowerCase();
+  };
+
+  const buildWishlistKey = (handle, colorKey = '') => `${handle || ''}::${normalizeOptionValue(colorKey)}`;
+
+  const normalizeVariants = (variants) => {
+    if (!Array.isArray(variants)) return [];
+    return variants.map((variant) => ({
+      id: variant.id,
+      title: variant.title,
+      available: !!variant.available,
+      options: Array.isArray(variant.options) ? variant.options.slice() : [],
+      price: variant.price,
+    }));
+  };
+
+  const normalizeWishlistItem = (item) => {
+    if (!item || typeof item !== 'object') return null;
+
+    const handle = item.handle;
+    if (!handle) return null;
+
+    const sizeIndex = normalizeNumber(item.sizeIndex, -1);
+    const colorIndex = normalizeNumber(item.colorIndex ?? item.colourIndex, -1);
+
+    let colorValue = '';
+    if (typeof item.colorValue === 'string' && item.colorValue.trim().length) {
+      colorValue = item.colorValue;
+    } else if (typeof item.selectedColor === 'string' && item.selectedColor.trim().length) {
+      colorValue = item.selectedColor;
+    } else if (typeof item.color === 'string' && item.color.trim().length) {
+      colorValue = item.color;
+    }
+
+    const colorKey = colorIndex >= 0 ? normalizeOptionValue(item.colorKey ?? colorValue) : '';
+
+    return {
+      ...item,
+      handle,
+      sizeIndex,
+      colorIndex,
+      colorValue,
+      colorKey,
+      variants: normalizeVariants(item.variants),
+    };
+  };
+
+  const normalizeWishlistItems = (items) => {
+    if (!Array.isArray(items)) return [];
+    return items.reduce((accumulator, item) => {
+      const normalized = normalizeWishlistItem(item);
+      if (normalized) {
+        accumulator.push(normalized);
+      }
+      return accumulator;
+    }, []);
+  };
+
+  const getWishlistItemKey = (item) => {
+    if (!item) return buildWishlistKey('', '');
+    return buildWishlistKey(item.handle, item.colorKey);
+  };
+
+  const getCardSelectedColorKey = (card) => {
+    if (!card) return '';
+    const colorIndex = normalizeNumber(card.dataset?.colorIndex, -1);
+    if (colorIndex < 0) return '';
+
+    const activeSwatch = card.querySelector?.('.swatch.active');
+    if (activeSwatch?.dataset?.color) {
+      return normalizeOptionValue(activeSwatch.dataset.color);
+    }
+
+    if (card.dataset?.selectedColor) {
+      return normalizeOptionValue(card.dataset.selectedColor);
+    }
+
+    return '';
+  };
+
   const parseJSONAttribute = (value, fallback) => {
     if (!value) return fallback;
     try {
@@ -53,8 +140,8 @@
       }
       const parsed = JSON.parse(stored);
       if (Array.isArray(parsed)) {
-        cachedWishlist = parsed;
-        return parsed.slice();
+        cachedWishlist = normalizeWishlistItems(parsed);
+        return cachedWishlist.slice();
       }
     } catch (error) {
       console.warn('Unable to read wishlist from storage', error);
@@ -65,7 +152,7 @@
   };
 
   const saveWishlist = (items) => {
-    cachedWishlist = items.slice();
+    cachedWishlist = normalizeWishlistItems(items);
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(cachedWishlist));
     } catch (error) {
@@ -75,24 +162,56 @@
     syncHearts();
   };
 
-  const findWishlistItem = (handle) => loadWishlist().find((item) => item.handle === handle);
+  const findWishlistItem = (handleOrItem, colorKey = '') => {
+    const targetItem =
+      typeof handleOrItem === 'object' ? normalizeWishlistItem(handleOrItem) : null;
+    const handle = targetItem ? targetItem.handle : handleOrItem;
+    if (!handle) return undefined;
+
+    const normalizedColorKey = targetItem ? targetItem.colorKey : normalizeOptionValue(colorKey);
+    const targetKey = targetItem
+      ? getWishlistItemKey(targetItem)
+      : buildWishlistKey(handle, normalizedColorKey);
+
+    const wishlist = loadWishlist();
+    let match = wishlist.find((item) => getWishlistItemKey(item) === targetKey);
+
+    if (!match && normalizedColorKey) {
+      const fallbackKey = buildWishlistKey(handle, '');
+      match = wishlist.find((item) => getWishlistItemKey(item) === fallbackKey);
+    }
+
+    return match;
+  };
 
   const addToWishlist = (product) => {
-    if (!product?.handle) return;
-    const wishlist = loadWishlist();
-    const existingIndex = wishlist.findIndex((item) => item.handle === product.handle);
-    if (existingIndex >= 0) {
-      wishlist[existingIndex] = product;
-      saveWishlist(wishlist);
-      return;
+    const normalized = normalizeWishlistItem(product);
+    if (!normalized) return;
+    let wishlist = loadWishlist();
+    const key = getWishlistItemKey(normalized);
+    const fallbackKey = buildWishlistKey(normalized.handle, '');
+
+    if (normalized.colorKey && key !== fallbackKey) {
+      wishlist = wishlist.filter((item) => getWishlistItemKey(item) !== fallbackKey);
     }
-    wishlist.push(product);
+
+    const existingIndex = wishlist.findIndex((item) => getWishlistItemKey(item) === key);
+    if (existingIndex >= 0) {
+      wishlist[existingIndex] = normalized;
+    } else {
+      wishlist.push(normalized);
+    }
     saveWishlist(wishlist);
   };
 
-  const removeFromWishlist = (handle) => {
+  const removeFromWishlist = (handleOrItem, colorKey = '') => {
+    const normalized =
+      typeof handleOrItem === 'object' ? normalizeWishlistItem(handleOrItem) : null;
+    const handle = normalized ? normalized.handle : handleOrItem;
     if (!handle) return;
-    const wishlist = loadWishlist().filter((item) => item.handle !== handle);
+
+    const key = normalized ? getWishlistItemKey(normalized) : buildWishlistKey(handle, colorKey);
+    const wishlist = loadWishlist().filter((item) => getWishlistItemKey(item) !== key);
     saveWishlist(wishlist);
   };
 
@@ -105,6 +224,21 @@
 
     const variants = parseJSONAttribute(card.dataset.variants, []);
     const sizeIndex = Number.parseInt(card.dataset.sizeIndex, 10);
+    const colorIndex = Number.parseInt(card.dataset.colorIndex, 10);
+    let selectedColor = '';
+    const normalizedColorIndex = Number.isNaN(colorIndex) ? -1 : colorIndex;
+    if (normalizedColorIndex >= 0) {
+      const activeSwatch = card.querySelector('.swatch.active');
+      if (activeSwatch?.dataset?.color) {
+        selectedColor = activeSwatch.dataset.color;
+      } else if (card.dataset.selectedColor) {
+        selectedColor = card.dataset.selectedColor;
+      }
+      if (selectedColor) {
+        card.dataset.selectedColor = selectedColor;
+      }
+    }
+    const colorKey = normalizedColorIndex >= 0 ? normalizeOptionValue(selectedColor) : '';
     const cardShell = card?.querySelector('.card');
     const cardInner = card?.querySelector('.card__inner');
     const cardMedia = card?.querySelector('.card__media');
@@ -113,14 +247,20 @@
     const cardInformation = card?.querySelector('.card__information');
     const cardHeading = card?.querySelector('.card__heading');
     const priceWrapper = card?.querySelector('.card-information');
+    const activeImage = card.querySelector('.swiper-slide-active img, .card__media img');
+    const productImage =
+      activeImage?.currentSrc || activeImage?.src || card.dataset.productImage || '';
 
     return {
       handle,
       title: card.dataset.productTitle || '',
       url: card.dataset.productUrl || '',
-      image: card.dataset.productImage || '',
+      image: productImage,
       price: card.dataset.productPrice || '',
       sizeIndex: Number.isNaN(sizeIndex) ? -1 : sizeIndex,
+      colorIndex: normalizedColorIndex,
+      colorValue: selectedColor,
+      colorKey,
       variants: variants.map((variant) => ({
         id: variant.id,
         title: variant.title,
@@ -148,9 +288,9 @@
     const product = getProductFromCard(card);
     if (!product) return;
 
-    const exists = !!findWishlistItem(product.handle);
-    if (exists) {
-      removeFromWishlist(product.handle);
+    const existingItem = findWishlistItem(product.handle, product.colorKey);
+    if (existingItem) {
+      removeFromWishlist(existingItem);
     } else {
       addToWishlist(product);
     }
@@ -165,14 +305,32 @@
   };
 
   const syncHearts = () => {
-    const handles = new Set(loadWishlist().map((item) => item.handle));
+    const wishlistItems = loadWishlist();
+    const wishlistKeys = new Set(wishlistItems.map((item) => getWishlistItemKey(item)));
+
     document.querySelectorAll(HEART_SELECTOR).forEach((button) => {
       const card = getCardFromHeart(button);
-      const handle = card?.dataset.productHandle;
-      const active = handle ? handles.has(handle) : false;
+      const handle = card?.dataset?.productHandle;
+      let active = false;
+
+      if (card && handle) {
+        const colorKey = getCardSelectedColorKey(card);
+        const exactKey = buildWishlistKey(handle, colorKey);
+        active = wishlistKeys.has(exactKey);
+
+        if (!active && colorKey) {
+          active = wishlistKeys.has(buildWishlistKey(handle, ''));
+        }
+      }
+
       button.classList.toggle('is-active', active);
       button.setAttribute('aria-pressed', active ? 'true' : 'false');
-      button.setAttribute('aria-label', active ? window.wishlistStrings?.remove || 'Remove from wishlist' : window.wishlistStrings?.add || 'Add to wishlist');
+      button.setAttribute(
+        'aria-label',
+        active
+          ? window.wishlistStrings?.remove || 'Remove from wishlist'
+          : window.wishlistStrings?.add || 'Add to wishlist',
+      );
     });
   };
 
@@ -271,7 +429,26 @@
     setActiveDrawerTab(activeTabButton?.dataset.tabTarget || TAB_CART);
   };
 
-  const getAvailableVariants = (item) => item.variants.filter((variant) => variant.available);
+  const getMatchingVariants = (item) => {
+    if (!item || !Array.isArray(item.variants)) return [];
+    const colorIndex = typeof item.colorIndex === 'number' ? item.colorIndex : -1;
+    if (colorIndex == null || Number.isNaN(colorIndex) || colorIndex < 0) {
+      return item.variants.slice();
+    }
+
+    const colorKey = item.colorKey;
+    if (!colorKey) {
+      return item.variants.slice();
+    }
+
+    return item.variants.filter((variant) => {
+      if (!Array.isArray(variant.options)) return false;
+      const value = variant.options[colorIndex];
+      return normalizeOptionValue(value) === colorKey;
+    });
+  };
+
+  const getAvailableVariants = (item) => getMatchingVariants(item).filter((variant) => variant.available);
 
   const createWishlistCardMarkup = (item) => {
     const imageMarkup = item.image
@@ -410,6 +587,37 @@
         cardWrapper.className = wrapperClassName;
         cardWrapper.dataset.wishlistItem = 'true';
         cardWrapper.dataset.handle = item.handle;
+        cardWrapper.dataset.productHandle = item.handle;
+        cardWrapper.dataset.productTitle = item.title || '';
+        cardWrapper.dataset.productUrl = item.url || '';
+        cardWrapper.dataset.productImage = item.image || '';
+        cardWrapper.dataset.productPrice = item.price || '';
+        if (typeof item.sizeIndex === 'number' && item.sizeIndex >= 0) {
+          cardWrapper.dataset.sizeIndex = String(item.sizeIndex);
+        } else {
+          delete cardWrapper.dataset.sizeIndex;
+        }
+        if (typeof item.colorIndex === 'number' && item.colorIndex >= 0) {
+          cardWrapper.dataset.colorIndex = String(item.colorIndex);
+        } else {
+          delete cardWrapper.dataset.colorIndex;
+        }
+        if (item.colorValue) {
+          cardWrapper.dataset.selectedColor = item.colorValue;
+        } else {
+          delete cardWrapper.dataset.selectedColor;
+        }
+        try {
+          cardWrapper.dataset.variants = JSON.stringify(item.variants || []);
+        } catch (error) {
+          console.warn('Unable to serialize wishlist variants', error);
+          cardWrapper.dataset.variants = '[]';
+        }
+        if (item.colorKey) {
+          cardWrapper.dataset.colorKey = item.colorKey;
+        } else {
+          delete cardWrapper.dataset.colorKey;
+        }
         cardWrapper.wishlistItem = item;
         cardWrapper.innerHTML = createWishlistCardMarkup(item);
         grid.appendChild(cardWrapper);
@@ -429,7 +637,9 @@
   const getVariantForDirectAdd = (item) => {
     const available = getAvailableVariants(item);
     if (available.length) return available[0];
-    return item.variants[0];
+    const matching = getMatchingVariants(item);
+    if (matching.length) return matching[0];
+    return Array.isArray(item.variants) ? item.variants[0] : undefined;
   };
 
   const refreshCartDrawer = () => {
@@ -529,7 +739,7 @@
       })
       .then(() => {
         if (row?.dataset.handle) {
-          removeFromWishlist(row.dataset.handle);
+          removeFromWishlist(row.dataset.handle, row.dataset.colorKey || '');
         }
       })
       .then(() => refreshCartDrawer())
@@ -549,7 +759,8 @@
   const handleAddClick = (button) => {
     const row = button.closest('[data-wishlist-item]');
     if (!row) return;
-    const item = row.wishlistItem || findWishlistItem(row.dataset.handle);
+    const colorKey = row.dataset?.colorKey || '';
+    const item = row.wishlistItem || findWishlistItem(row.dataset.handle, colorKey);
     if (!item) return;
 
     const availableVariants = getAvailableVariants(item);
@@ -574,7 +785,8 @@
   const handleSizeOptionClick = (button) => {
     const row = button.closest('[data-wishlist-item]');
     if (!row) return;
-    const item = row.wishlistItem || findWishlistItem(row.dataset.handle);
+    const colorKey = row.dataset?.colorKey || '';
+    const item = row.wishlistItem || findWishlistItem(row.dataset.handle, colorKey);
     if (!item) return;
 
     const variantId = Number.parseInt(button.dataset.variantId || '', 10);
@@ -615,6 +827,18 @@
 
   const registerWishlistContainerListeners = () => {
     document.addEventListener('click', handleWishlistClicks);
+  };
+
+  let swatchSyncBound = false;
+
+  const registerSwatchSyncListener = () => {
+    if (swatchSyncBound) return;
+    document.addEventListener('click', (event) => {
+      if (event.target.closest?.('.swatch')) {
+        requestAnimationFrame(() => syncHearts());
+      }
+    });
+    swatchSyncBound = true;
   };
 
   const onSectionLoad = (event) => {
@@ -712,6 +936,7 @@
     renderWishlist();
     initDrawerTabs();
     registerWishlistContainerListeners();
+    registerSwatchSyncListener();
 
     document.addEventListener('shopify:section:load', onSectionLoad);
     observeDomMutations();
