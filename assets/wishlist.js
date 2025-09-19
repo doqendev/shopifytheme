@@ -1029,6 +1029,14 @@
       delete cardElement.dataset.colorKey;
     }
 
+    cardElement.querySelectorAll(HEART_SELECTOR).forEach((button) => {
+      if (!button) return;
+      if (button.dataset?.wishlistBound) {
+        delete button.dataset.wishlistBound;
+      }
+      button.removeAttribute('data-wishlist-bound');
+    });
+
     cardElement.wishlistItem = item;
 
     sanitizeWishlistVariantInputs(cardElement);
