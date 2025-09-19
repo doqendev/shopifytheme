@@ -65,10 +65,25 @@
 #CartDrawer-ColumnQuantity{ display:none !important }
 #CartDrawer .cart-items{ width:100%; table-layout:auto }
 #CartDrawer td.cart-item__details{ width:auto; padding-right:4px }
-#CartDrawer td.cart-item__media{ width:96px }
+#CartDrawer td.cart-item__media{ width:110px }
 /* Remove header row (Produto) */
 #CartDrawer .cart-items thead{ display:none !important }
 /* Remove built-in content width clamps so details can expand */
 #CartDrawer .cart-item__details{ width:auto !important; max-width:none !important }
 #CartDrawer .cart-item__details > *{ max-width:none !important }
 
+
+
+/* Remove header row (Produto) */
+#CartDrawer .cart-items thead{ display:none !important }
+/* Remove built-in content width clamps so details can expand */
+#CartDrawer .cart-item__details{ width:auto !important; max-width:none !important }
+#CartDrawer .cart-item__details > *{ max-width:none !important }
+
+/* Three-column details layout: price | text | icons */
+#CartDrawer .il-item-details{ padding-right:0; display:grid; grid-template-columns:minmax(60px,auto) 1fr auto; column-gap:12px }
+#CartDrawer .il-top-row{ display:contents }
+#CartDrawer .il-price{ grid-column:1; align-self:flex-start }
+#CartDrawer .il-item-title{ grid-column:2 }
+#CartDrawer .il-variant-small, #CartDrawer .il-move-to-favorites{ grid-column:2 }
+#CartDrawer .il-item-details .il-icons-row{ grid-column:3; align-self:flex-start; justify-self:end; position:static; margin:0 }
