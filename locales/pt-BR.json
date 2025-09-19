@@ -290,6 +290,7 @@
       "note": "Instruções especiais do pedido",
       "checkout": "Finalizar a compra",
       "edit": "Editar",
+      "remove_item": "Remover",
       "update_item": "Atualizar item",
       "empty": "O carrinho está vazio",
       "cart_error": "Ocorreu um erro ao atualizar o carrinho. Tente de novo.",

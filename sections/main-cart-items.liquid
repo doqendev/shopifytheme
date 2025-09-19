@@ -151,19 +151,29 @@
                       <div class="cart-modern-card__actions">
                         <button
                           type="button"
-                          class="cart-modern-card__icon-button"
+                          class="cart-modern-card__action-button cart-modern-card__action-button--edit"
                           aria-label="{{ 'sections.cart.edit' | t: title: item.product.title | default: 'Edit item' }}"
                           data-cart-edit-open="CartEdit-{{ line_index }}"
                         >
-                          {{- 'icon-edit.svg' | inline_asset_content -}}
+                          <span class="cart-modern-card__action-icon" aria-hidden="true">
+                            {{- 'icon-edit.svg' | inline_asset_content -}}
+                          </span>
+                          <span class="cart-modern-card__action-label">
+                            {{ 'sections.cart.edit' | t | default: 'Editar' }}
+                          </span>
                         </button>
                         <cart-remove-button id="Remove-{{ line_index }}" data-index="{{ line_index }}">
                           <button
                             type="button"
-                            class="cart-modern-card__icon-button"
+                            class="cart-modern-card__action-button cart-modern-card__action-button--remove"
                             aria-label="{{ 'sections.cart.remove_title' | t: title: item.title | escape }}"
                           >
-                            {{- 'icon-remove.svg' | inline_asset_content -}}
+                            <span class="cart-modern-card__action-icon" aria-hidden="true">
+                              {{- 'icon-remove.svg' | inline_asset_content -}}
+                            </span>
+                            <span class="cart-modern-card__action-label">
+                              {{ 'sections.cart.remove_item' | t | default: 'Remove' }}
+                            </span>
                           </button>
                         </cart-remove-button>
                       </div>
