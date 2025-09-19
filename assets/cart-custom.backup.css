@@ -52,17 +52,3 @@
 
 .il-cart-edit__actions{margin-top:16px}
 .il-cart-edit__save{background:#0b7a4b;color:#fff;border:none;border-radius:8px;padding:12px 18px;font-weight:600;cursor:pointer}
-
-/* Drawer structure: pin footer and make list scroll */
-#CartDrawer .drawer__inner{ display:flex; flex-direction:column; height:100vh; max-height:100vh }
-#CartDrawer .drawer__panels{ flex:1 1 auto; display:flex; flex-direction:column; min-height:0 }
-#CartDrawer #CartDrawer-CartPanel{ flex:1 1 auto; display:flex; flex-direction:column; min-height:0 }
-#CartDrawer cart-drawer-items{ flex:1 1 auto; min-height:0; overflow:auto }
-#CartDrawer .drawer__footer{ flex:0 0 auto; margin-top:12px }
-
-/* Expand the details width to the right edge; remove extra columns */
-#CartDrawer-ColumnTotal, #CartDrawer td.cart-item__totals{ display:none !important }
-#CartDrawer-ColumnQuantity{ display:none !important }
-#CartDrawer .cart-items{ width:100%; table-layout:auto }
-#CartDrawer td.cart-item__details{ width:auto; padding-right:4px }
-#CartDrawer td.cart-item__media{ width:110px }
