@@ -54,7 +54,6 @@
       "view_empty_cart": "Ver carrinho"
     },
     "wishlist": "Favoritos",
-    "move_to_favorites": "Mover para os favoritos",
     "wishlist_empty": "Os seus favoritos estão vazios.",
     "share": {
       "copy_to_clipboard": "Copiar ligação",
@@ -550,3 +549,5 @@
     }
   }
 }
+
+

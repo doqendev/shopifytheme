@@ -190,15 +190,14 @@
                           {% endif %}
                         </td>
 
-                        <td class="cart-item__details il-item-details" role="cell" headers="CartDrawer-ColumnProduct">
+                        <td class="cart-item__details" role="cell" headers="CartDrawer-ColumnProduct">
                           {%- if settings.show_vendor -%}
                             <p class="caption-with-letter-spacing light">{{ item.product.vendor }}</p>
                           {%- endif -%}
 
-                          <a href="{{ item.url }}" class="cart-item__name h4 break il-item-title">
+                          <a href="{{ item.url }}" class="cart-item__name h4 break">
                             {{- item.product.title | escape -}}
                           </a>
-                          <div class="il-variant-small">{{ item.variant.title }}</div>
                           <div class="il-icons-row">
                             <button class="il-icon-btn il-cart-line__edit" type="button" aria-label="Editar">
                               <span class="svg-wrapper">{{ 'icon-clipboard.svg' | inline_asset_content }}</span>
@@ -645,3 +644,5 @@
 </div>
 </cart-drawer>
 {% render 'cart-edit-modal' %}
+
+

@@ -1,6 +1,20 @@
 .il-icons-row{display:flex;gap:8px;align-items:center;margin-top:6px}
 .il-icon-btn{background:#fff;border:1px solid #dedede;border-radius:50%;width:32px;height:32px;display:grid;place-items:center;cursor:pointer}
-.il-move-to-favorites{background:none;border:none;color:#0b7a4b;padding:0;margin-top:6px;cursor:pointer}
+.il-move-to-favorites{background:none;border:none;color:inherit;padding:0;margin-top:6px;cursor:pointer;font-weight:600}
+
+/* Compact cart line look in drawer */
+#CartDrawer .cart-items tbody tr.cart-item{border-bottom:1px solid #e6e6e6}
+#CartDrawer td.cart-item__totals{vertical-align: top}
+#CartDrawer .il-item-details{position:relative}
+#CartDrawer .il-item-title{display:block;margin-bottom:2px}
+#CartDrawer .il-variant-small{font-size:13px;color:#666;margin-top:4px}
+#CartDrawer .il-item-details .product-option,
+#CartDrawer .il-item-details dl,
+#CartDrawer .il-item-details .unit-price,
+#CartDrawer .il-item-details .cart-item__discounted-prices,
+#CartDrawer .il-item-details .discounts{display:none !important}
+#CartDrawer .cart-item__quantity{display:none !important}
+#CartDrawer .il-item-details .il-icons-row{position:absolute;top:0;right:0}
 
 /* Edit modal */
 .il-cart-edit[hidden]{display:none}
@@ -32,4 +46,3 @@
 
 .il-cart-edit__actions{margin-top:16px}
 .il-cart-edit__save{background:#0b7a4b;color:#fff;border:none;border-radius:8px;padding:12px 18px;font-weight:600;cursor:pointer}
-
