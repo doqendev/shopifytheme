@@ -78,3 +78,10 @@
 #CartDrawer .il-item-details{ position:relative; padding-right:72px; display:block !important }
 #CartDrawer .il-top-row{ display:flex !important; align-items:center; justify-content:space-between; margin-bottom:2px }
 #CartDrawer .il-item-details .il-icons-row{ position:absolute; top:0; right:0; margin:0 }
+
+/* Details grid: price | text (spans) | icons */
+#CartDrawer .il-item-details{ display:grid; grid-template-columns: 1fr auto; column-gap:12px; padding-right:0 }
+#CartDrawer .il-top-row{ display:contents }
+#CartDrawer .il-price{ grid-column:1 }
+#CartDrawer .il-item-details .il-icons-row{ grid-column:2; justify-self:end; align-self:start; position:static; margin:0 }
+#CartDrawer .il-item-title, #CartDrawer .il-variant-small, #CartDrawer .il-move-to-favorites{ grid-column:1 / -1 }
