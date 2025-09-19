@@ -1,13 +1,14 @@
 .il-icons-row{display:flex;gap:8px;align-items:center;margin-top:6px}
 .il-icon-btn{background:#fff;border:1px solid #dedede;border-radius:50%;width:32px;height:32px;display:grid;place-items:center;cursor:pointer}
-.il-move-to-favorites{background:none;border:none;color:inherit;padding:0;margin-top:6px;cursor:pointer;font-weight:600}
+.il-move-to-favorites{background:none;border:none;color:inherit;padding:0;margin-top:6px;cursor:pointer;font-weight:500;text-align:left}
 
 /* Compact cart line look in drawer */
 #CartDrawer .cart-items tbody tr.cart-item{border-bottom:1px solid #e6e6e6}
 #CartDrawer td.cart-item__totals{vertical-align: top}
 #CartDrawer .il-item-details{position:relative}
-#CartDrawer .il-title-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
-#CartDrawer .il-item-title{display:block;margin-bottom:2px;font-weight:700}
+#CartDrawer .il-title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+#CartDrawer .il-item-title{display:block;margin-bottom:2px;font-weight:700;line-height:1.2}
+#CartDrawer .il-icons-row{flex:0 0 auto}
 #CartDrawer .il-variant-small{font-size:13px;color:#666;margin-top:4px}
 #CartDrawer .il-item-details .product-option,
 #CartDrawer .il-item-details dl,

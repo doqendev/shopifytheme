@@ -224,14 +224,6 @@
                           {%- if variant_text != '' -%}
                             <div class="il-variant-small">{{ variant_text }}</div>
                           {%- endif -%}
-                          <div class="il-icons-row">
-                            <button class="il-icon-btn il-cart-line__edit" type="button" aria-label="Editar">
-                              <span class="svg-wrapper">{{ 'icon-clipboard.svg' | inline_asset_content }}</span>
-                            </button>
-                            <button class="il-icon-btn il-cart-line__remove" type="button" aria-label="Remover">
-                              <span class="svg-wrapper">{{ 'icon-remove.svg' | inline_asset_content }}</span>
-                            </button>
-                          </div>
 
                           {%- if item.original_price != item.final_price -%}
                             <div class="cart-item__discounted-prices">
