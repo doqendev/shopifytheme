@@ -6,7 +6,8 @@
 #CartDrawer .cart-items tbody tr.cart-item{border-bottom:1px solid #e6e6e6}
 #CartDrawer td.cart-item__totals{vertical-align: top}
 #CartDrawer .il-item-details{position:relative}
-#CartDrawer .il-title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+#CartDrawer .il-top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
+#CartDrawer .il-price{font-weight:700}
 #CartDrawer .il-item-title{display:block;margin-bottom:2px;font-weight:700;line-height:1.2}
 #CartDrawer .il-icons-row{flex:0 0 auto}
 #CartDrawer .il-variant-small{font-size:13px;color:#666;margin-top:4px}
@@ -17,6 +18,9 @@
 #CartDrawer .il-item-details .discounts{display:none !important}
 #CartDrawer .cart-item__quantity{display:none !important}
 #CartDrawer .il-item-details .il-icons-row{margin-left:auto}
+
+/* Hide total column header + cells */
+#CartDrawer-ColumnTotal, #CartDrawer td.cart-item__totals { display:none !important }
 
 /* Edit modal */
 .il-cart-edit[hidden]{display:none}

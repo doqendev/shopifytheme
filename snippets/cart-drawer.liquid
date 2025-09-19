@@ -195,10 +195,8 @@
                             <p class="caption-with-letter-spacing light">{{ item.product.vendor }}</p>
                           {%- endif -%}
 
-                          <div class="il-title-row">
-                            <a href="{{ item.url }}" class="cart-item__name h4 break il-item-title">
-                              {{- item.product.title | escape -}}
-                            </a>
+                          <div class="il-top-row">
+                            <div class="il-price">{{ item.final_line_price | money }}</div>
                             <div class="il-icons-row">
                               <button class="il-icon-btn il-cart-line__edit" type="button" aria-label="Editar">
                                 <span class="svg-wrapper">{{ 'icon-clipboard.svg' | inline_asset_content }}</span>
@@ -208,6 +206,9 @@
                               </button>
                             </div>
                           </div>
+                          <a href="{{ item.url }}" class="cart-item__name h4 break il-item-title">
+                            {{- item.product.title | escape -}}
+                          </a>
                           {%- liquid
                             assign variant_text = ''
                             if item.product.has_only_default_variant == false
