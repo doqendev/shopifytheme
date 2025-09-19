@@ -199,10 +199,10 @@
                             <div class="il-price">{{ item.final_line_price | money }}</div>
                             <div class="il-icons-row">
                               <button class="il-icon-btn il-cart-line__edit" type="button" aria-label="Editar">
-                                <span class="svg-wrapper">{{ 'icon-clipboard.svg' | inline_asset_content }}</span>
+                                <span class="svg-wrapper">{{ 'icon-pencil.svg' | inline_asset_content }}</span>
                               </button>
                               <button class="il-icon-btn il-cart-line__remove" type="button" aria-label="Remover">
-                                <span class="svg-wrapper">{{ 'icon-remove.svg' | inline_asset_content }}</span>
+                                <span class="svg-wrapper">{{ 'icon-trash.svg' | inline_asset_content }}</span>
                               </button>
                             </div>
                           </div>
@@ -413,7 +413,7 @@
                                   data-variant-id="{{ item.variant.id }}"
                                 >
                                   <span class="svg-wrapper">
-                                    {{- 'icon-remove.svg' | inline_asset_content -}}
+                                    {{- 'icon-trash.svg' | inline_asset_content -}}
                                   </span>
                                 </button>
                               </cart-remove-button>
@@ -652,3 +652,4 @@
 </div>
 </cart-drawer>
 {% render 'cart-edit-modal' %}
+
