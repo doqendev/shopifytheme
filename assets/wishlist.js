@@ -231,14 +231,10 @@
     const colorIndex = Number.parseInt(card.dataset.colorIndex, 10);
     let selectedColor = '';
     const normalizedColorIndex = Number.isNaN(colorIndex) ? -1 : colorIndex;
-    let selectedVariantImage = '';
     if (normalizedColorIndex >= 0) {
       const activeSwatch = card.querySelector('.swatch.active');
       if (activeSwatch?.dataset?.color) {
         selectedColor = activeSwatch.dataset.color;
-        if (activeSwatch.dataset.variantImage) {
-          selectedVariantImage = activeSwatch.dataset.variantImage;
-        }
       } else if (card.dataset.selectedColor) {
         selectedColor = card.dataset.selectedColor;
       }
@@ -257,15 +253,7 @@
     const priceWrapper = card?.querySelector('.card-information');
     const activeImage = card.querySelector('.swiper-slide-active img, .card__media img');
     const productImage =
-      selectedVariantImage ||
-      activeImage?.currentSrc ||
-      activeImage?.src ||
-      card.dataset.productImage ||
-      '';
-
-    if (productImage) {
-      card.dataset.productImage = productImage;
-    }
+      activeImage?.currentSrc || activeImage?.src || card.dataset.productImage || '';
 
     return {
       handle,
@@ -615,54 +603,36 @@
   const ensureWishlistCardMedia = (cardElement, item) => {
     if (!cardElement) return;
 
-    const pagination = cardElement.querySelector('.swiper-pagination');
-    if (pagination) {
-      pagination.remove();
-    }
+    const media = cardElement.querySelector('.card__media');
+    if (!media) return;
 
-    const mediaContainer = cardElement.querySelector('.card__media');
-    if (!mediaContainer) return;
-
-    if (mediaContainer.classList.contains('swiper-container')) {
-      mediaContainer.classList.remove('swiper-container');
-    }
-
-    Array.from(mediaContainer.classList)
-      .filter((className) => className.startsWith('swiper-'))
-      .forEach((className) => mediaContainer.classList.remove(className));
-    mediaContainer.removeAttribute('style');
-
-    const wrapper = mediaContainer.querySelector('.swiper-wrapper');
-    if (wrapper) {
-      Array.from(wrapper.children).forEach((child, index) => {
-        if (index === 0) {
-          child.classList.remove('swiper-slide');
-          Array.from(child.classList)
-            .filter((className) => className.startsWith('swiper-'))
-            .forEach((className) => child.classList.remove(className));
-          child.removeAttribute('style');
-        } else {
-          child.remove();
-        }
-      });
-      wrapper.classList.remove('swiper-wrapper');
-      Array.from(wrapper.classList)
-        .filter((className) => className.startsWith('swiper-'))
-        .forEach((className) => wrapper.classList.remove(className));
-      wrapper.removeAttribute('style');
-    }
-
+    const productUrl = item?.url || cardElement.dataset?.productUrl || '#';
     const imageUrl = item?.image || cardElement.dataset?.productImage || '';
-    if (!imageUrl) return;
+    const productTitle = item?.title || cardElement.dataset?.productTitle || '';
 
-    const link = mediaContainer.querySelector('a.full-unstyled-link') || mediaContainer;
-    const image = link.querySelector('img') || mediaContainer.querySelector('img');
-    if (!image) return;
+    media.classList.remove('swiper-container');
+    media.querySelectorAll('.swiper-pagination').forEach((element) => element.remove());
 
-    image.src = imageUrl;
-    image.removeAttribute('srcset');
-    image.removeAttribute('data-srcset');
-    image.removeAttribute('sizes');
+    const link = document.createElement('a');
+    link.classList.add('wishlist-card__image-link', 'full-unstyled-link');
+    link.href = productUrl;
+
+    if (imageUrl) {
+      const image = document.createElement('img');
+      image.classList.add('wishlist-card__image');
+      image.src = imageUrl;
+      image.alt = productTitle;
+      image.loading = 'lazy';
+      link.appendChild(image);
+    } else {
+      const placeholder = document.createElement('div');
+      placeholder.classList.add('wishlist-card__placeholder');
+      placeholder.setAttribute('aria-hidden', 'true');
+      link.appendChild(placeholder);
+    }
+
+    media.innerHTML = '';
+    media.appendChild(link);
   };
 
   const ensureWishlistCardSwatch = (cardElement, item) => {
@@ -674,34 +644,33 @@
     const swatches = cardElement.querySelectorAll('.swatch');
     if (!swatches.length) return;
 
-    if (!item?.colorKey) {
-      const active = cardElement.querySelector('.swatch.active');
-      if (!active) {
-        swatches[0].classList.add('active');
+    const getSwatchesToKeep = () => {
+      if (!item?.colorKey) {
+        const active = cardElement.querySelector('.swatch.active');
+        return [active || swatches[0]].filter(Boolean);
       }
-      return;
-    }
 
-    const matching = Array.from(swatches).filter((swatch) => {
-      const swatchKey = normalizeOptionValue(swatch.dataset?.color);
-      return swatchKey === item.colorKey;
-    });
+      const matching = Array.from(swatches).filter((swatch) => {
+        const swatchKey = normalizeOptionValue(swatch.dataset?.color);
+        return swatchKey === item.colorKey;
+      });
 
-    if (!matching.length) {
-      const active = cardElement.querySelector('.swatch.active');
-      if (!active && swatches[0]) {
-        swatches[0].classList.add('active');
+      if (matching.length) {
+        return [matching[0]];
       }
-      return;
-    }
+
+      return [cardElement.querySelector('.swatch.active') || swatches[0]].filter(Boolean);
+    };
+
+    const swatchesToKeep = getSwatchesToKeep();
 
     swatches.forEach((swatch) => {
-      if (!matching.includes(swatch)) {
+      if (!swatchesToKeep.includes(swatch)) {
         swatch.remove();
       }
     });
 
-    matching.forEach((swatch, index) => {
+    swatchesToKeep.forEach((swatch, index) => {
       if (index === 0) {
         swatch.classList.add('active');
       } else {
@@ -943,8 +912,8 @@
 
     cardElement.wishlistItem = item;
 
-    ensureWishlistCardMedia(cardElement, item);
     sanitizeWishlistVariantInputs(cardElement);
+    ensureWishlistCardMedia(cardElement, item);
     ensureWishlistQuickAdd(cardElement, item);
     ensureWishlistCardSwatch(cardElement, item);
     updateWishlistSizeButtons(cardElement, item);
