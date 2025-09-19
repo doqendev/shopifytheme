@@ -171,18 +171,33 @@
   function closeEditor(modal){ modal.hidden = true; document.body.style.overflow = ''; }
 
   async function refreshCartDrawer(){
-    const sections = ['cart-drawer','cart-icon-bubble'];
+    // Match theme behavior: use section_id=cart-drawer and swap inner parts
     try{
-      const res = await fetch(`${window.location.pathname}?sections=${sections.join(',')}`);
-      const html = await res.json();
-      const drawerSection = document.getElementById('shopify-section-cart-drawer');
-      if(drawerSection && html['cart-drawer']){
-        drawerSection.innerHTML = html['cart-drawer'];
-        attachHandlers(drawerSection);
-        const bubble = document.getElementById('cart-icon-bubble') || document.querySelector('[data-cart-icon-bubble]');
-        if(bubble && html['cart-icon-bubble']) bubble.innerHTML = html['cart-icon-bubble'];
-        drawerSection.querySelector('cart-drawer')?.classList?.add('is-open');
-      } else { location.reload(); }
+      const res = await fetch(`${routes?.cart_url || '/cart'}?section_id=cart-drawer`);
+      const htmlText = await res.text();
+      const doc = new DOMParser().parseFromString(htmlText, 'text/html');
+      const selectors = ['cart-drawer-items', '.cart-drawer__footer'];
+      for (const selector of selectors){
+        const target = document.querySelector(selector);
+        const source = doc.querySelector(selector);
+        if(target && source){
+          target.replaceWith(source);
+        }
+      }
+      // Update bubble if present
+      try{
+        const bubbleRes = await fetch(`${routes?.cart_url || '/cart'}?section_id=cart-icon-bubble`);
+        const bubbleHtml = await bubbleRes.text();
+        const bubbleDoc = new DOMParser().parseFromString(bubbleHtml, 'text/html');
+        const targetBubble = document.getElementById('cart-icon-bubble') || document.querySelector('[data-cart-icon-bubble]');
+        const sourceBubble = bubbleDoc.querySelector('#cart-icon-bubble') || bubbleDoc.querySelector('[data-cart-icon-bubble]');
+        if(targetBubble && sourceBubble){ targetBubble.replaceWith(sourceBubble); }
+      } catch(e){}
+
+      // Reopen drawer and rebind
+      const drawer = document.querySelector('cart-drawer');
+      attachHandlers(drawer || document);
+      drawer?.open();
     } catch(e){ console.error('Section render failed', e); location.reload(); }
   }
 
@@ -220,12 +235,32 @@
     });
   }
 
+  function getDrawerRoot(){
+    // Support themes that render the drawer as a Section wrapper or as a plain snippet
+    return document.getElementById('shopify-section-cart-drawer') || document.querySelector('cart-drawer') || document.body;
+  }
+
   function observeDrawer(){
-    const drawerSection = document.getElementById('shopify-section-cart-drawer');
-    if(!drawerSection) return;
-    attachHandlers(drawerSection);
-    const mo = new MutationObserver(() => attachHandlers(drawerSection));
-    mo.observe(drawerSection, {subtree:true, childList:true});
+    const root = getDrawerRoot();
+    if(!root) return;
+    attachHandlers(root);
+    const mo = new MutationObserver(() => attachHandlers(root));
+    mo.observe(root, {subtree:true, childList:true});
+
+    // Safety: event delegation so edits still work even if we miss a rebind
+    if(!window.__IL_CART_EDIT_BOUND__){
+      window.__IL_CART_EDIT_BOUND__ = true;
+      document.addEventListener('click', (ev) => {
+        const editBtn = ev.target.closest && ev.target.closest('.il-cart-line__edit');
+        if(editBtn){
+          const host = editBtn.closest('[data-line-key]') || getDrawerRoot();
+          if(host && host !== document.body){
+            ev.preventDefault();
+            openEditor(host);
+          }
+        }
+      });
+    }
   }
 
   if (document.readyState === 'loading') {
@@ -234,4 +269,3 @@
     observeDrawer();
   }
 })();
-
