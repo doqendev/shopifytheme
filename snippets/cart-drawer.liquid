@@ -27,53 +27,40 @@
       aria-label="{{ 'sections.cart.title' | t }}"
       tabindex="-1"
     >
-      {%- liquid
-        assign cart_tab_title = 'sections.cart.title' | t
-        if cart_tab_title == blank or cart_tab_title contains 'translation missing'
-          assign cart_tab_title = 'CESTO'
-        elsif cart_tab_title == 'O MEU CARRINHO'
-          assign cart_tab_title = 'CESTO'
-        endif
-
-        assign wishlist_tab_title = 'general.wishlist' | t
-        if wishlist_tab_title == blank or wishlist_tab_title contains 'translation missing'
-          assign wishlist_tab_title = 'Favoritos'
-        endif
-      -%}
       <div class="drawer__header">
         <div
           class="drawer__tabs"
           role="tablist"
-          aria-label="{{ cart_tab_title }}"
-          data-cart-title="{{ cart_tab_title }}"
-          data-wishlist="{{ wishlist_tab_title }}"
-          data-wishlist-title="{{ wishlist_tab_title }}"
+          aria-label="{{ 'sections.cart.title' | t }}"
+          data-cart-title="{{ 'sections.cart.title' | t }}"
+          data-wishlist="{{ 'general.wishlist' | t | default: 'Wishlist' }}"
+          data-wishlist-title="{{ 'general.wishlist' | t | default: 'Wishlist' }}"
         >
           <button
             type="button"
             class="drawer__tab is-active"
             data-tab-target="cart"
-            data-base-label="{{ cart_tab_title }}"
+            data-base-label="{{ 'sections.cart.title' | t }}"
             data-count="{{ cart.item_count }}"
             id="CartDrawerTab-Cart"
             role="tab"
             aria-controls="CartDrawer-CartPanel"
             aria-selected="true"
           >
-            {{ cart_tab_title }} ({{ cart.item_count }})
+            {{ 'sections.cart.title' | t }} ({{ cart.item_count }})
           </button>
           <button
             type="button"
             class="drawer__tab"
             data-tab-target="wishlist"
-            data-base-label="{{ wishlist_tab_title }}"
+            data-base-label="{{ 'general.wishlist' | t | default: 'Wishlist' }}"
             data-count="0"
             id="CartDrawerTab-Wishlist"
             role="tab"
             aria-controls="CartDrawer-WishlistPanel"
             aria-selected="false"
           >
-            {{ wishlist_tab_title }} (0)
+            {{ 'general.wishlist' | t | default: 'Wishlist' }} (0)
           </button>
         </div>
         <button
