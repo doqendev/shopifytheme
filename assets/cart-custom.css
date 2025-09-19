@@ -78,5 +78,8 @@
 #CartDrawer .il-top-row{ display:contents }
 #CartDrawer .il-price{ grid-column:1 }
 #CartDrawer .il-item-details .il-icons-row{ grid-column:2; justify-self:end; align-self:start; position:static; margin:0 }
-#CartDrawer .il-item-title, #CartDrawer .il-variant-small, #CartDrawer .il-move-to-favorites{ grid-column:1 }
+#CartDrawer .il-item-title, #CartDrawer .il-variant-small, #CartDrawer .il-move-to-favorites{ grid-column:1 / -1 }
 
+
+
+#CartDrawer .il-item-details .il-icons-row{ position:static !important }
