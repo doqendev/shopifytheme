@@ -33,6 +33,22 @@
     });
   }
 
+  function normalizeProperties(val){
+    if (!val) return {};
+    if (Array.isArray(val)) {
+      try {
+        const asObj = val.reduce((acc, cur) => {
+          if (Array.isArray(cur) && cur.length >= 2) acc[cur[0]] = cur[1];
+          else if (cur && typeof cur === 'object' && 'name' in cur && 'value' in cur) acc[cur.name] = cur.value;
+          return acc;
+        }, {});
+        return asObj;
+      } catch(_) { return {}; }
+    }
+    if (typeof val !== 'object') return {};
+    return val;
+  }
+
   function buildOptions(container, product, selected){
     container.innerHTML = '';
     (product.options || []).forEach((name, iIdx) => {
@@ -170,7 +186,7 @@
           const addRes = await fetch('/cart/add.js', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-            body: JSON.stringify({ id: chosen.id, quantity: newQty, properties: parseJSONAttr(hostEl, 'data-properties', {}) })
+            body: JSON.stringify({ id: chosen.id, quantity: newQty, properties: normalizeProperties(parseJSONAttr(hostEl, 'data-properties', {})) })
           });
           if(!addRes.ok){
             let msg = 'Não foi possível adicionar o artigo.';
