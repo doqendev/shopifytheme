@@ -53,6 +53,8 @@
       "view_empty_cart": "View cart",
       "item_added": "Item added to your cart"
     },
+    "wishlist": "Favoritos",
+    "wishlist_empty": "Os seus favoritos estão vazios.",
     "share": {
       "close": "Close share",
       "copy_to_clipboard": "Copy link",
