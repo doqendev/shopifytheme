@@ -1,0 +1,144 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   1. Host “Playfair Display” locally instead of @import from Google
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* 1A. Define the font name and point it at the Shopify-hosted .ttf file */
+@font-face {
+  font-family: 'Playfair Display';
+  /* If it’s a variable‐weight font, you can omit font-weight here or specify a range.
+     For simplicity, we’ll treat it as “400” default weight. */
+  font-weight: 400;  
+  font-style: normal;
+  font-display: swap; 
+  src: url('{{ "PlayfairDisplay-VariableFont_wght.ttf" | asset_url }}') format('truetype');
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   2. The rest of your CSS (unchanged)…
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* 2.1. Root container: full viewport, background-cover */
+.coming-soon-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 2.2. Centered content column */
+.coming-soon-content {
+  position: relative;
+  text-align: center;
+  color: #ffffff;
+  padding: 0 1rem;       
+  max-width: 800px;
+  width: 100%;
+}
+
+/* 2.3. “COMING SOON” heading now uses our locally-hosted font */
+.coming-soon-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 4rem;       /* desktop size */
+  line-height: 1.1;
+  margin: 0 0 1rem;      
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+/* 2.4. Subheading */
+.coming-soon-subtitle {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 1.25rem;
+  margin: 0 0 2rem;      
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* 2.5. Form wrapper (centers the field horizontally) */
+.coming-soon-form-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+/* 2.6. Rounded, shadowed container for input + button */
+.coming-soon-field {
+  display: flex;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* 2.7. Email input styling */
+.coming-soon-field input[type="email"] {
+  flex: 1;
+  padding: 1rem 1rem;                    
+  border: none;
+  background: rgba(255, 255, 255, 0.5);  
+  color: #ffffff;                        
+  font-size: 1rem;
+  outline: none;
+}
+
+/* 2.8. Placeholder text inside the input */
+.coming-soon-field input[type="email"]::placeholder {
+  color: rgba(255, 255, 255, 0.8);        
+}
+
+/* 2.9. Submit button styling */
+.coming-soon-button {
+  padding: 1rem 1.5rem;
+  background: #000000;                    
+  color: #ffffff;                        
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+/* 2.10. Button hover state */
+.coming-soon-button:hover {
+  background: #333333;                    
+}
+
+/* 2.11. Error & success message styles below the form */
+.coming-soon-error,
+.coming-soon-success {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+}
+
+/* 2.12. Error text = red, success text = green */
+.coming-soon-error {
+  color: #ff6b6b;
+}
+
+.coming-soon-success {
+  color: #6bff9e;
+}
+
+/* 2.13. Responsive tweaks (for screens ≤ 768px) */
+@media (max-width: 768px) {
+  .coming-soon-title {
+    font-size: 2.5rem;  
+  }
+  .coming-soon-subtitle {
+    font-size: 1rem;   
+  }
+  .coming-soon-field {
+    flex-direction: column;  
+  }
+  .coming-soon-field input[type="email"],
+  .coming-soon-button {
+    width: 100%;
+    border-radius: 0;        
+  }
+  .coming-soon-button {
+    margin-top: 1rem;       
+  }
+}
