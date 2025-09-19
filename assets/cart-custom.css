@@ -90,3 +90,7 @@
 #CartDrawer .cart-items thead th:nth-child(2){ width:auto !important; padding-left: 0 !important }
 /* Better word-breaking for long product names */
 #CartDrawer .il-item-title{ overflow-wrap: anywhere }
+
+/* Override Dawn mobile grid on tr.cart-item in the drawer so details get full width */
+#CartDrawer .cart-item{ display: table-row !important; grid-template: none !important }
+#CartDrawer .cart-item__media, #CartDrawer .cart-item__details, #CartDrawer .cart-item__quantity{ grid-column: auto !important; grid-row: auto !important; }
