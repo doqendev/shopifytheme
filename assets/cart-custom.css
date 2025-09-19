@@ -5,7 +5,7 @@
 /* Compact cart line look in drawer */
 #CartDrawer .cart-items tbody tr.cart-item{border-bottom:1px solid #e6e6e6}
 #CartDrawer td.cart-item__totals{vertical-align: top}
-#CartDrawer .il-item-details{position:relative}
+#CartDrawer .il-item-details{position:relative; padding-right:72px}
 #CartDrawer .il-top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
 #CartDrawer .il-price{font-weight:700}
 #CartDrawer .il-item-title{display:block;margin-bottom:2px;font-weight:700;line-height:1.2}
@@ -17,7 +17,7 @@
 #CartDrawer .il-item-details .cart-item__discounted-prices,
 #CartDrawer .il-item-details .discounts{display:none !important}
 #CartDrawer .cart-item__quantity{display:none !important}
-#CartDrawer .il-item-details .il-icons-row{margin-left:auto}
+#CartDrawer .il-item-details .il-icons-row{position:absolute; top:0; right:0; margin:0}
 
 /* Hide total column header + cells */
 #CartDrawer-ColumnTotal, #CartDrawer td.cart-item__totals { display:none !important }
@@ -65,9 +65,10 @@
 #CartDrawer-ColumnQuantity{ display:none !important }
 #CartDrawer .cart-items{ width:100%; table-layout:auto }
 #CartDrawer td.cart-item__details{ width:auto; padding-right:4px }
-#CartDrawer td.cart-item__media{ width:110px }
+#CartDrawer td.cart-item__media{ width:96px }
 /* Remove header row (Produto) */
 #CartDrawer .cart-items thead{ display:none !important }
 /* Remove built-in content width clamps so details can expand */
 #CartDrawer .cart-item__details{ width:auto !important; max-width:none !important }
 #CartDrawer .cart-item__details > *{ max-width:none !important }
+
