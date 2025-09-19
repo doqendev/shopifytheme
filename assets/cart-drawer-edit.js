@@ -154,11 +154,36 @@
       const chosen = findVariant(product, selected) || variant;
       const newQty = Number(qtyInput.value) || 1;
       try {
-        if(chosen.id === currentVariantId){
-          await fetch('/cart/change.js', { method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify({ id: lineKey, quantity: newQty }) });
+        if (chosen.id === currentVariantId) {
+          const res = await fetch('/cart/change.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ id: lineKey, quantity: newQty })
+          });
+          if(!res.ok) throw new Error('change_failed');
         } else {
-          await fetch('/cart/change.js', { method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify({ id: lineKey, quantity: 0 }) });
-          await fetch('/cart/add.js', { method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify({ id: chosen.id, quantity: newQty, properties: parseJSONAttr(hostEl, 'data-properties', {}) }) });
+          if (!chosen || chosen.available === false) {
+            alert('Esta combinação está indisponível.');
+            return;
+          }
+          // Add first, then remove old line only if add succeeded
+          const addRes = await fetch('/cart/add.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ id: chosen.id, quantity: newQty, properties: parseJSONAttr(hostEl, 'data-properties', {}) })
+          });
+          if(!addRes.ok){
+            let msg = 'Não foi possível adicionar o artigo.';
+            try { const j = await addRes.json(); if(j?.description) msg = j.description; } catch(_) {}
+            alert(msg);
+            return; // keep old line in cart
+          }
+          const remRes = await fetch('/cart/change.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ id: lineKey, quantity: 0 })
+          });
+          if(!remRes.ok) throw new Error('remove_failed');
         }
         closeEditor(modal);
         await refreshCartDrawer();
