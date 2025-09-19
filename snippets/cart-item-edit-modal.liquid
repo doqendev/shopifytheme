@@ -1,0 +1,133 @@
+{% assign product = item.product %}
+{% assign current_variant = item.variant %}
+{% assign current_media_id = current_variant.featured_media.id | default: product.featured_media.id %}
+<dialog
+  class="cart-edit-modal"
+  id="CartEdit-{{ line_index }}"
+  data-current-variant="{{ current_variant.id }}"
+>
+  <form method="dialog" class="cart-edit-modal__header">
+    <button type="submit" class="cart-edit-modal__back" aria-label="{{ 'accessibility.back' | t }}">
+      {{- 'icon-arrow.svg' | inline_asset_content -}}
+    </button>
+    <h2 class="cart-edit-modal__title">{{ 'sections.cart.edit' | t | default: 'Editar' }}</h2>
+  </form>
+  <div
+    class="cart-edit-modal__content"
+    data-cart-edit-content
+    data-variant-data='{{ product.variants | json | escape }}'
+    data-line="{{ line_index }}"
+    data-money-format="{{ shop.money_format | escape }}"
+  >
+    <div class="cart-edit-modal__gallery" data-cart-edit-gallery>
+      {%- for media in product.media -%}
+        {%- if media.preview_image -%}
+          <div class="cart-edit-modal__media-item{% if media.id == current_media_id %} is-active{% endif %}" data-media-id="{{ media.id }}">
+            <img
+              src="{{ media.preview_image | image_url: width: 600 }}"
+              alt="{{ media.alt | default: product.title | escape }}"
+              loading="lazy"
+              width="300"
+              height="{{ 300 | divided_by: media.preview_image.aspect_ratio | ceil }}"
+            >
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+    <div class="cart-edit-modal__info">
+      <div class="cart-edit-modal__info-header">
+        <p class="cart-edit-modal__price" data-cart-edit-price>
+          {{ current_variant.price | money }}
+        </p>
+        <p class="cart-edit-modal__product">{{ product.title | escape }}</p>
+        <p class="cart-edit-modal__variant" data-cart-edit-variant-title>{{ current_variant.title | escape }}</p>
+      </div>
+      <form
+        method="post"
+        action="{{ routes.cart_change_url }}"
+        class="cart-edit-modal__form"
+        id="CartEditForm-{{ line_index }}"
+        data-cart-edit-form
+      >
+        <input type="hidden" name="line" value="{{ line_index }}">
+        <input type="hidden" name="id" value="{{ current_variant.id }}" data-cart-edit-variant-input>
+        <div class="cart-edit-modal__options"{% if product.has_only_default_variant %} hidden{% endif %}>
+          {%- unless product.has_only_default_variant -%}
+          {%- for option in product.options_with_values -%}
+            {%- assign option_index = forloop.index0 -%}
+            {%- assign selected_value = current_variant.options[option_index] -%}
+            {%- assign swatch_count = option.values | map: 'swatch' | compact | size -%}
+            <fieldset class="cart-edit-modal__option" data-cart-edit-option>
+              <legend>{{ option.name }}</legend>
+              <div class="cart-edit-modal__option-values{% if swatch_count > 0 %} cart-edit-modal__option-values--swatches{% endif %}">
+                {%- for value in option.values -%}
+                  {%- assign option_raw_value = value.value | default: value -%}
+                  {%- assign option_label = option_raw_value | escape -%}
+                  {%- assign is_active = option_raw_value == selected_value -%}
+                  {%- assign option_id = 'CartEdit-' | append: line_index | append: '-' | append: option_index | append: '-' | append: forloop.index0 -%}
+                  {%- if swatch_count > 0 -%}
+                    {% render 'swatch-input',
+                      id: option_id,
+                      name: 'option-' | append: option_index,
+                      value: option_label,
+                      swatch: value.swatch,
+                      product_form_id: 'CartEditForm-' | append: line_index,
+                      checked: is_active,
+                      additional_props: 'data-cart-edit-option-value="' | append: option_label | append: '" data-option-index="' | append: option_index | append: '"'
+                    %}
+                  {%- else -%}
+                    <input
+                      type="radio"
+                      class="cart-edit-modal__radio"
+                      id="{{ option_id }}"
+                      name="option-{{ option_index }}"
+                      value="{{ option_label }}"
+                      {% if is_active %}checked{% endif %}
+                      data-cart-edit-option-value
+                      data-option-index="{{ option_index }}"
+                    >
+                    <label for="{{ option_id }}" class="cart-edit-modal__radio-label">{{ option_raw_value }}</label>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            </fieldset>
+          {%- endfor -%}
+          {%- endunless -%}
+        </div>
+        <div class="cart-edit-modal__quantity">
+          <span>{{ 'products.product.quantity.label' | t }}</span>
+          <div class="cart-edit-modal__quantity-control">
+            <button type="button" class="cart-edit-modal__quantity-btn" data-quantity-change="-1" aria-label="{{ 'products.product.quantity.decrease' | t }}">
+              {{- 'icon-minus.svg' | inline_asset_content -}}
+            </button>
+            <input
+              type="number"
+              name="quantity"
+              min="{{ current_variant.quantity_rule.min }}"
+              {% if current_variant.quantity_rule.max != null %}max="{{ current_variant.quantity_rule.max }}"{% endif %}
+              step="{{ current_variant.quantity_rule.increment }}"
+              value="{{ item.quantity }}"
+              data-cart-edit-quantity
+              data-min="{{ current_variant.quantity_rule.min }}"
+              {% if current_variant.quantity_rule.max != null %}data-max="{{ current_variant.quantity_rule.max }}"{% endif %}
+              data-step="{{ current_variant.quantity_rule.increment }}"
+            >
+            <button type="button" class="cart-edit-modal__quantity-btn" data-quantity-change="1" aria-label="{{ 'products.product.quantity.increase' | t }}">
+              {{- 'icon-plus.svg' | inline_asset_content -}}
+            </button>
+          </div>
+        </div>
+        <button
+          type="submit"
+          class="button button--primary cart-edit-modal__submit"
+          data-cart-edit-submit
+          data-default-label="{{ 'sections.cart.update_item' | t | default: 'Atualizar' }}"
+          data-sold-out-label="{{ 'products.product.sold_out' | t }}"
+        >
+          {{ 'sections.cart.update_item' | t | default: 'Atualizar' }}
+        </button>
+        <p class="cart-edit-modal__error" role="alert" hidden data-cart-edit-error></p>
+      </form>
+    </div>
+  </div>
+</dialog>
