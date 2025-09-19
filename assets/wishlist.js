@@ -231,10 +231,14 @@
     const colorIndex = Number.parseInt(card.dataset.colorIndex, 10);
     let selectedColor = '';
     const normalizedColorIndex = Number.isNaN(colorIndex) ? -1 : colorIndex;
+    let selectedVariantImage = '';
     if (normalizedColorIndex >= 0) {
       const activeSwatch = card.querySelector('.swatch.active');
       if (activeSwatch?.dataset?.color) {
         selectedColor = activeSwatch.dataset.color;
+        if (activeSwatch.dataset.variantImage) {
+          selectedVariantImage = activeSwatch.dataset.variantImage;
+        }
       } else if (card.dataset.selectedColor) {
         selectedColor = card.dataset.selectedColor;
       }
@@ -253,7 +257,15 @@
     const priceWrapper = card?.querySelector('.card-information');
     const activeImage = card.querySelector('.swiper-slide-active img, .card__media img');
     const productImage =
-      activeImage?.currentSrc || activeImage?.src || card.dataset.productImage || '';
+      selectedVariantImage ||
+      activeImage?.currentSrc ||
+      activeImage?.src ||
+      card.dataset.productImage ||
+      '';
+
+    if (productImage) {
+      card.dataset.productImage = productImage;
+    }
 
     return {
       handle,
@@ -600,6 +612,59 @@
     return element;
   };
 
+  const ensureWishlistCardMedia = (cardElement, item) => {
+    if (!cardElement) return;
+
+    const pagination = cardElement.querySelector('.swiper-pagination');
+    if (pagination) {
+      pagination.remove();
+    }
+
+    const mediaContainer = cardElement.querySelector('.card__media');
+    if (!mediaContainer) return;
+
+    if (mediaContainer.classList.contains('swiper-container')) {
+      mediaContainer.classList.remove('swiper-container');
+    }
+
+    Array.from(mediaContainer.classList)
+      .filter((className) => className.startsWith('swiper-'))
+      .forEach((className) => mediaContainer.classList.remove(className));
+    mediaContainer.removeAttribute('style');
+
+    const wrapper = mediaContainer.querySelector('.swiper-wrapper');
+    if (wrapper) {
+      Array.from(wrapper.children).forEach((child, index) => {
+        if (index === 0) {
+          child.classList.remove('swiper-slide');
+          Array.from(child.classList)
+            .filter((className) => className.startsWith('swiper-'))
+            .forEach((className) => child.classList.remove(className));
+          child.removeAttribute('style');
+        } else {
+          child.remove();
+        }
+      });
+      wrapper.classList.remove('swiper-wrapper');
+      Array.from(wrapper.classList)
+        .filter((className) => className.startsWith('swiper-'))
+        .forEach((className) => wrapper.classList.remove(className));
+      wrapper.removeAttribute('style');
+    }
+
+    const imageUrl = item?.image || cardElement.dataset?.productImage || '';
+    if (!imageUrl) return;
+
+    const link = mediaContainer.querySelector('a.full-unstyled-link') || mediaContainer;
+    const image = link.querySelector('img') || mediaContainer.querySelector('img');
+    if (!image) return;
+
+    image.src = imageUrl;
+    image.removeAttribute('srcset');
+    image.removeAttribute('data-srcset');
+    image.removeAttribute('sizes');
+  };
+
   const ensureWishlistCardSwatch = (cardElement, item) => {
     if (!cardElement) return;
     const overflowBadge = cardElement.querySelector('.additional-swatch-count');
@@ -878,6 +943,7 @@
 
     cardElement.wishlistItem = item;
 
+    ensureWishlistCardMedia(cardElement, item);
     sanitizeWishlistVariantInputs(cardElement);
     ensureWishlistQuickAdd(cardElement, item);
     ensureWishlistCardSwatch(cardElement, item);
