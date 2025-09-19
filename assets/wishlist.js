@@ -258,6 +258,7 @@
     const sizeIndex = Number.parseInt(card.dataset.sizeIndex, 10);
     const colorIndex = Number.parseInt(card.dataset.colorIndex, 10);
     let selectedColor = '';
+    let selectedVariantImage = '';
     const normalizedColorIndex = Number.isNaN(colorIndex) ? -1 : colorIndex;
     if (normalizedColorIndex >= 0) {
       ensureDefaultCardSwatch(card);
@@ -266,6 +267,18 @@
         selectedColor = activeSwatch.dataset.color;
       } else if (card.dataset.selectedColor) {
         selectedColor = card.dataset.selectedColor;
+      }
+      if (activeSwatch?.dataset?.variantImage) {
+        selectedVariantImage = activeSwatch.dataset.variantImage;
+      }
+      if (!selectedVariantImage && selectedColor) {
+        const matchingSwatch = Array.from(card.querySelectorAll('.swatch')).find((swatch) => {
+          const swatchColor = normalizeOptionValue(swatch.dataset?.color);
+          return swatchColor && swatchColor === normalizeOptionValue(selectedColor);
+        });
+        if (matchingSwatch?.dataset?.variantImage) {
+          selectedVariantImage = matchingSwatch.dataset.variantImage;
+        }
       }
       if (selectedColor) {
         card.dataset.selectedColor = selectedColor;
@@ -282,7 +295,12 @@
     const priceWrapper = card?.querySelector('.card-information');
     const activeImage = card.querySelector('.swiper-slide-active img, .card__media img');
     const productImage =
-      activeImage?.currentSrc || activeImage?.src || card.dataset.productImage || '';
+      selectedVariantImage ||
+      activeImage?.currentSrc ||
+      activeImage?.src ||
+      activeImage?.dataset?.src ||
+      card.dataset.productImage ||
+      '';
 
     return {
       handle,
@@ -666,7 +684,12 @@
     const imageUrl = item?.image || cardElement.dataset?.productImage || '';
     if (image && imageUrl) {
       image.src = imageUrl;
-      image.removeAttribute('srcset');
+      image.setAttribute('srcset', imageUrl);
+      image.setAttribute('sizes', 'auto');
+      if (image.dataset) {
+        image.dataset.src = imageUrl;
+        image.dataset.srcset = imageUrl;
+      }
     }
   };
 
