@@ -6,7 +6,8 @@
 #CartDrawer .cart-items tbody tr.cart-item{border-bottom:1px solid #e6e6e6}
 #CartDrawer td.cart-item__totals{vertical-align: top}
 #CartDrawer .il-item-details{position:relative}
-#CartDrawer .il-item-title{display:block;margin-bottom:2px}
+#CartDrawer .il-title-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#CartDrawer .il-item-title{display:block;margin-bottom:2px;font-weight:700}
 #CartDrawer .il-variant-small{font-size:13px;color:#666;margin-top:4px}
 #CartDrawer .il-item-details .product-option,
 #CartDrawer .il-item-details dl,
@@ -14,7 +15,7 @@
 #CartDrawer .il-item-details .cart-item__discounted-prices,
 #CartDrawer .il-item-details .discounts{display:none !important}
 #CartDrawer .cart-item__quantity{display:none !important}
-#CartDrawer .il-item-details .il-icons-row{position:absolute;top:0;right:0}
+#CartDrawer .il-item-details .il-icons-row{margin-left:auto}
 
 /* Edit modal */
 .il-cart-edit[hidden]{display:none}
