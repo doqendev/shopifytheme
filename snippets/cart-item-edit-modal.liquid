@@ -1,6 +1,13 @@
 {% assign product = item.product %}
 {% assign current_variant = item.variant %}
 {% assign current_media_id = current_variant.featured_media.id | default: product.featured_media.id %}
+{% assign featured_media = current_variant.featured_media | default: product.featured_media %}
+{% assign featured_media_id = featured_media.id | default: current_media_id %}
+{% assign featured_image = featured_media.preview_image | default: featured_media %}
+{% if featured_image == blank and item.image %}
+  {% assign featured_image = item.image %}
+{% endif %}
+{% assign featured_alt = featured_media.alt | default: featured_image.alt | default: product.title %}
 <dialog
   class="cart-edit-modal"
   id="CartEdit-{{ line_index }}"
@@ -20,19 +27,45 @@
     data-money-format="{{ shop.money_format | escape }}"
   >
     <div class="cart-edit-modal__gallery" data-cart-edit-gallery>
-      {%- for media in product.media -%}
-        {%- if media.preview_image -%}
-          <div class="cart-edit-modal__media-item{% if media.id == current_media_id %} is-active{% endif %}" data-media-id="{{ media.id }}">
-            <img
-              src="{{ media.preview_image | image_url: width: 600 }}"
-              alt="{{ media.alt | default: product.title | escape }}"
-              loading="lazy"
-              width="300"
-              height="{{ 300 | divided_by: media.preview_image.aspect_ratio | ceil }}"
-            >
-          </div>
-        {%- endif -%}
-      {%- endfor -%}
+      <div class="cart-edit-modal__featured">
+        {% if featured_image %}
+          <img
+            src="{{ featured_image | image_url: width: 900 }}"
+            alt="{{ featured_alt | escape }}"
+            loading="lazy"
+            width="450"
+            height="{{ 450 | divided_by: featured_image.aspect_ratio | ceil }}"
+            data-cart-edit-featured
+            data-media-id="{{ featured_media_id }}"
+            data-media-alt="{{ featured_alt | escape }}"
+          >
+        {% endif %}
+      </div>
+      {% if product.media.size > 0 %}
+        <div class="cart-edit-modal__thumbnails">
+          {%- for media in product.media -%}
+            {%- if media.preview_image -%}
+              {% assign preview = media.preview_image %}
+              <button
+                type="button"
+                class="cart-edit-modal__thumbnail{% if media.id == featured_media_id %} is-active{% endif %}"
+                data-cart-edit-thumbnail
+                data-media-id="{{ media.id }}"
+                data-media-src="{{ preview | image_url: width: 900 }}"
+                data-media-alt="{{ media.alt | default: product.title | escape }}"
+              >
+                <img
+                  src="{{ preview | image_url: width: 200 }}"
+                  alt="{{ media.alt | default: product.title | escape }}"
+                  loading="lazy"
+                  width="100"
+                  height="{{ 100 | divided_by: preview.aspect_ratio | ceil }}"
+                >
+              </button>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {% endif %}
     </div>
     <div class="cart-edit-modal__info">
       <div class="cart-edit-modal__info-header">

@@ -15,7 +15,8 @@
       this.priceElement = dialog.querySelector('[data-cart-edit-price]');
       this.variantTitleElement = dialog.querySelector('[data-cart-edit-variant-title]');
       this.errorElement = dialog.querySelector('[data-cart-edit-error]');
-      this.galleryItems = Array.from(dialog.querySelectorAll('[data-media-id]'));
+      this.featuredImage = dialog.querySelector('[data-cart-edit-featured]');
+      this.thumbnailButtons = Array.from(dialog.querySelectorAll('[data-cart-edit-thumbnail]'));
       this.line = parseInt(this.content.dataset.line, 10);
       this.moneyFormat = this.content.dataset.moneyFormat;
       this.defaultSubmitLabel = this.submitButton?.dataset.defaultLabel || this.submitButton?.textContent;
@@ -31,11 +32,15 @@
       this.onFormChange = this.onFormChange.bind(this);
       this.onFormSubmit = this.onFormSubmit.bind(this);
       this.onQuantityClick = this.onQuantityClick.bind(this);
+      this.onThumbnailClick = this.onThumbnailClick.bind(this);
 
       this.form.addEventListener('change', this.onFormChange);
       this.form.addEventListener('submit', this.onFormSubmit);
       this.form.querySelectorAll('[data-quantity-change]').forEach((button) => {
         button.addEventListener('click', this.onQuantityClick);
+      });
+      this.thumbnailButtons.forEach((button) => {
+        button.addEventListener('click', this.onThumbnailClick);
       });
 
       this.dialog.addEventListener('close', () => {
@@ -71,6 +76,12 @@
       }
 
       this.quantityInput.value = newValue;
+    }
+
+    onThumbnailClick(event) {
+      event.preventDefault();
+      const button = event.currentTarget;
+      this.setFeaturedMediaFromButton(button);
     }
 
     onFormChange(event) {
@@ -222,11 +233,81 @@
         delete this.quantityInput.dataset.max;
       }
 
-      if (this.galleryItems.length) {
-        const targetId = variant.featured_media ? String(variant.featured_media.id) : '';
-        this.galleryItems.forEach((item) => {
-          item.classList.toggle('is-active', targetId && item.dataset.mediaId === targetId);
-        });
+      this.updateVariantMedia(variant);
+    }
+
+    setFeaturedMediaFromButton(button) {
+      if (!button || !this.featuredImage) return;
+      const mediaId = button.dataset.mediaId || '';
+      const mediaSrc = button.dataset.mediaSrc || '';
+      const mediaAlt = button.dataset.mediaAlt || '';
+
+      if (mediaSrc) {
+        this.featuredImage.src = mediaSrc;
+      }
+
+      if (mediaAlt) {
+        this.featuredImage.alt = mediaAlt;
+        this.featuredImage.dataset.mediaAlt = mediaAlt;
+      }
+
+      if (mediaId) {
+        this.featuredImage.dataset.mediaId = mediaId;
+      } else {
+        delete this.featuredImage.dataset.mediaId;
+      }
+
+      this.thumbnailButtons.forEach((thumb) => {
+        thumb.classList.toggle('is-active', thumb === button);
+      });
+    }
+
+    updateVariantMedia(variant) {
+      if (!this.featuredImage) return;
+
+      const hasFeaturedMedia = variant && variant.featured_media;
+      const targetId = hasFeaturedMedia ? String(variant.featured_media.id) : '';
+
+      if (targetId && this.thumbnailButtons.length) {
+        const match = this.thumbnailButtons.find((button) => button.dataset.mediaId === targetId);
+        if (match) {
+          this.setFeaturedMediaFromButton(match);
+          return;
+        }
+      }
+
+      if (this.thumbnailButtons.length) {
+        const active = this.thumbnailButtons.find((button) => button.classList.contains('is-active'));
+        if (active) {
+          this.setFeaturedMediaFromButton(active);
+          return;
+        }
+
+        this.setFeaturedMediaFromButton(this.thumbnailButtons[0]);
+        return;
+      }
+
+      if (hasFeaturedMedia && variant.featured_media.preview_image) {
+        const preview = variant.featured_media.preview_image;
+        const src = preview.url || preview.src;
+        if (src) {
+          this.featuredImage.src = src;
+        }
+        const previewAlt = preview.alt || variant.featured_media.alt;
+        if (previewAlt) {
+          const alt = previewAlt;
+          this.featuredImage.alt = alt;
+          this.featuredImage.dataset.mediaAlt = alt;
+        }
+        this.featuredImage.dataset.mediaId = targetId;
+        return;
+      }
+
+      if (variant && variant.title) {
+        const defaultAlt = variant.title;
+        this.featuredImage.alt = defaultAlt;
+        this.featuredImage.dataset.mediaAlt = defaultAlt;
+        delete this.featuredImage.dataset.mediaId;
       }
     }
 

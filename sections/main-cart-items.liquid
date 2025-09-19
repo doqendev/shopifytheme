@@ -84,32 +84,52 @@
                       <a href="{{ item.url }}" class="cart-modern-card__media-link" aria-hidden="true" tabindex="-1"></a>
                       <div class="cart-modern-card__image gradient global-media-settings">
                         <img
-                          src="{{ item.image | image_url: width: 300 }}"
+                          src="{{ item.image | image_url: width: 480 }}"
                           class="cart-modern-card__img"
                           alt="{{ item.image.alt | escape }}"
                           loading="lazy"
-                          width="150"
-                          height="{{ 150 | divided_by: item.image.aspect_ratio | ceil }}"
+                          width="240"
+                          height="{{ 240 | divided_by: item.image.aspect_ratio | ceil }}"
                         >
                       </div>
                     {% endif %}
                   </div>
-                  <div class="cart-modern-card__body">
-                    <div class="cart-modern-card__top">
+                  <div class="cart-modern-card__content">
+                    <div class="cart-modern-card__header">
                       <div class="cart-modern-card__title-group">
                         {%- if settings.show_vendor -%}
-                          <p class="caption-with-letter-spacing cart-modern-card__vendor">{{ item.product.vendor }}</p>
+                          <p class="cart-modern-card__vendor">{{ item.product.vendor }}</p>
                         {%- endif -%}
                         <a href="{{ item.url }}" class="cart-modern-card__name h4 break">{{ item.product.title | escape }}</a>
-                        <div class="cart-modern-card__pricing">
-                          {%- if item.original_price != item.final_price -%}
-                            <span class="cart-modern-card__price-old">{{ item.original_price | money }}</span>
-                            <span class="cart-modern-card__price">{{ item.final_price | money }}</span>
-                          {%- else -%}
-                            <span class="cart-modern-card__price">{{ item.original_price | money }}</span>
-                          {%- endif -%}
-                        </div>
-                        {%- if item.product.has_only_default_variant == false or item.properties.size != 0 or item.selling_plan_allocation != null -%}
+                      </div>
+                      <div class="cart-modern-card__price-block">
+                        {%- if item.original_price != item.final_price -%}
+                          <span class="cart-modern-card__price cart-modern-card__price--compare">{{ item.original_price | money }}</span>
+                          <span class="cart-modern-card__price">{{ item.final_price | money }}</span>
+                        {%- else -%}
+                          <span class="cart-modern-card__price">{{ item.original_price | money }}</span>
+                        {%- endif -%}
+                      </div>
+                    </div>
+
+                    {%- liquid
+                      assign show_options = false
+                      if item.product.has_only_default_variant == false or item.properties.size != 0
+                        assign show_options = true
+                      endif
+                      assign show_subscription = false
+                      if item.selling_plan_allocation != null
+                        assign show_subscription = true
+                      endif
+                      assign show_discounts = false
+                      if item.line_level_discount_allocations.size > 0
+                        assign show_discounts = true
+                      endif
+                    -%}
+
+                    {%- if show_options or show_subscription or show_discounts -%}
+                      <div class="cart-modern-card__details">
+                        {%- if show_options -%}
                           <dl class="cart-modern-card__options">
                             {%- if item.product.has_only_default_variant == false -%}
                               {%- for option in item.options_with_values -%}
@@ -137,49 +157,26 @@
                               {%- endif -%}
                             {%- endfor -%}
                           </dl>
-                          <p class="product-option">{{ item.selling_plan_allocation.selling_plan.name }}</p>
                         {%- endif -%}
-                        <ul class="discounts list-unstyled" role="list" aria-label="{{ 'customer.order.discount' | t }}">
-                          {%- for discount in item.line_level_discount_allocations -%}
-                            <li class="discounts__discount">
-                              {{- 'icon-discount.svg' | inline_asset_content -}}
-                              {{ discount.discount_application.title | escape }}
-                            </li>
-                          {%- endfor -%}
-                        </ul>
-                      </div>
-                      <div class="cart-modern-card__actions">
-                        <button
-                          type="button"
-                          class="cart-modern-card__action-button cart-modern-card__action-button--edit"
-                          aria-label="{{ 'sections.cart.edit' | t: title: item.product.title | default: 'Edit item' }}"
-                          data-cart-edit-open="CartEdit-{{ line_index }}"
-                        >
-                          <span class="cart-modern-card__action-icon" aria-hidden="true">
-                            {{- 'icon-edit.svg' | inline_asset_content -}}
-                          </span>
-                          <span class="cart-modern-card__action-label">
-                            {{ 'sections.cart.edit' | t | default: 'Editar' }}
-                          </span>
-                        </button>
-                        <cart-remove-button id="Remove-{{ line_index }}" data-index="{{ line_index }}">
-                          <button
-                            type="button"
-                            class="cart-modern-card__action-button cart-modern-card__action-button--remove"
-                            aria-label="{{ 'sections.cart.remove_title' | t: title: item.title | escape }}"
-                          >
-                            <span class="cart-modern-card__action-icon" aria-hidden="true">
-                              {{- 'icon-remove.svg' | inline_asset_content -}}
-                            </span>
-                            <span class="cart-modern-card__action-label">
-                              {{ 'sections.cart.remove_item' | t | default: 'Remove' }}
-                            </span>
-                          </button>
-                        </cart-remove-button>
-                      </div>
-                    </div>
 
-                    <div class="cart-modern-card__bottom">
+                        {%- if show_subscription -%}
+                          <p class="cart-modern-card__selling-plan product-option">{{ item.selling_plan_allocation.selling_plan.name }}</p>
+                        {%- endif -%}
+
+                        {%- if show_discounts -%}
+                          <ul class="discounts list-unstyled cart-modern-card__discounts" role="list" aria-label="{{ 'customer.order.discount' | t }}">
+                            {%- for discount in item.line_level_discount_allocations -%}
+                              <li class="discounts__discount">
+                                {{- 'icon-discount.svg' | inline_asset_content -}}
+                                {{ discount.discount_application.title | escape }}
+                              </li>
+                            {%- endfor -%}
+                          </ul>
+                        {%- endif -%}
+                      </div>
+                    {%- endif -%}
+
+                    <div class="cart-modern-card__footer">
                       <div class="cart-modern-card__quantity">
                         <quantity-popover>
                           <div class="cart-item__quantity-wrapper quantity-popover-wrapper">
@@ -308,7 +305,7 @@
                           </div>
                         </quantity-popover>
                       </div>
-                      <div class="cart-modern-card__total">
+                      <div class="cart-modern-card__subtotal">
                         {%- render 'loading-spinner' -%}
                         <div class="cart-item__price-wrapper">
                           {%- if item.original_line_price != item.final_line_price -%}
@@ -337,6 +334,26 @@
                           {%- endif -%}
                         </div>
                       </div>
+                    </div>
+
+                    <div class="cart-modern-card__links">
+                      <button
+                        type="button"
+                        class="cart-modern-card__link"
+                        aria-label="{{ 'sections.cart.edit' | t: title: item.product.title | default: 'Edit item' }}"
+                        data-cart-edit-open="CartEdit-{{ line_index }}"
+                      >
+                        {{ 'sections.cart.edit' | t | default: 'Editar' }}
+                      </button>
+                      <cart-remove-button id="Remove-{{ line_index }}" data-index="{{ line_index }}">
+                        <button
+                          type="button"
+                          class="cart-modern-card__link cart-modern-card__link--remove"
+                          aria-label="{{ 'sections.cart.remove_title' | t: title: item.title | escape }}"
+                        >
+                          {{ 'sections.cart.remove_item' | t | default: 'Remove' }}
+                        </button>
+                      </cart-remove-button>
                     </div>
                   </div>
 
