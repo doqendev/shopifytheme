@@ -289,6 +289,8 @@
       "remove_title": "Remover {{ title }}",
       "note": "Instruções especiais do pedido",
       "checkout": "Finalizar a compra",
+      "edit": "Editar",
+      "update_item": "Atualizar item",
       "empty": "O carrinho está vazio",
       "cart_error": "Ocorreu um erro ao atualizar o carrinho. Tente de novo.",
       "cart_quantity_error_html": "É possível adicionar apenas {{ quantity }} unidade(s) desse item ao carrinho.",
