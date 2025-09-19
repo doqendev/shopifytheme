@@ -29,30 +29,11 @@
   transition: transform var(--duration-default) ease;
 }
 
-.drawer__inner-empty {
-  height: 100%;
-  padding: 0 1.5rem;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
 .cart-drawer__warnings {
   display: flex;
   flex-direction: column;
   flex: 1;
   justify-content: center;
-}
-
-cart-drawer.is-empty .drawer__inner {
-  display: grid;
-  grid-template-rows: 1fr;
-  align-items: center;
-  padding: 0;
-}
-
-cart-drawer.is-empty .drawer__header {
-  display: none;
 }
 
 cart-drawer:not(.is-empty) .cart-drawer__warnings,
@@ -187,6 +168,17 @@ cart-drawer {
 cart-drawer-items {
   overflow: auto;
   flex: 1;
+}
+
+.drawer__empty-state {
+  display: none;
+  flex-direction: column;
+  height: 100%;
+  padding: 0 1.5rem;
+}
+
+.drawer__empty-state:not([hidden]) {
+  display: flex;
 }
 
 @media screen and (max-height: 650px) {
