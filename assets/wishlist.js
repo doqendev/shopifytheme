@@ -652,81 +652,105 @@
     const media = cardElement.querySelector('.card__media');
     if (!media) return;
 
-    const pagination = media.querySelector('.swiper-pagination');
-    pagination?.remove?.();
     media
-      .querySelectorAll('.swiper-button-next, .swiper-button-prev, .swiper-scrollbar')
-      .forEach((control) => control.remove());
+      .querySelectorAll(
+        '.swiper-pagination, .swiper-button-next, .swiper-button-prev, .swiper-scrollbar',
+      )
+      .forEach((element) => element.remove());
 
-    const wrapper = media.querySelector('.swiper-wrapper');
-    if (wrapper) {
-      const targetSlide =
-        wrapper.querySelector('.swiper-slide-active') || wrapper.querySelector('.swiper-slide');
+    media.classList.remove(
+      'swiper-container',
+      'swiper-initialized',
+      'swiper-initialized-autoheight',
+      'swiper-container-initialized',
+    );
 
-      if (targetSlide) {
-        const preserved = targetSlide.cloneNode(true);
-        preserved.classList.remove(
-          'swiper-slide',
-          'swiper-slide-active',
-          'swiper-slide-next',
-          'swiper-slide-prev',
-          'swiper-slide-duplicate',
-        );
-        preserved.classList.add('wishlist-card__image-wrapper');
-        wrapper.replaceWith(preserved);
-      } else {
-        wrapper.remove();
-      }
-    }
+    const productLink =
+      cardElement.querySelector('.card__heading a')?.getAttribute('href') ||
+      cardElement.dataset?.productUrl ||
+      '#';
 
-    media.classList.remove('swiper-container');
+    const existingImage = media.querySelector('img');
+    const wrapperTarget =
+      media.querySelector('.wishlist-card__image-wrapper') ||
+      media.querySelector('.swiper-wrapper') ||
+      media.querySelector('.card__media-inner') ||
+      media.querySelector('.media') ||
+      media.querySelector('figure') ||
+      media.querySelector('picture') ||
+      existingImage?.closest('.swiper-slide, .media, figure, picture, .card__media > :not(script)');
 
-    let image = media.querySelector('img');
-    const imageUrl = item?.image || cardElement.dataset?.productImage || '';
-    if (image && imageUrl) {
-      image.src = imageUrl;
-      image.setAttribute('srcset', imageUrl);
-      image.setAttribute('sizes', 'auto');
+    const imageWrapper = document.createElement('div');
+    imageWrapper.className = 'wishlist-card__image-wrapper';
+
+    const imageLink = document.createElement('a');
+    imageLink.className = 'full-unstyled-link wishlist-card__image-link';
+    imageLink.setAttribute('href', productLink);
+    const storedImage = item?.image || '';
+    const fallbackImage =
+      storedImage ||
+      existingImage?.currentSrc ||
+      existingImage?.getAttribute('src') ||
+      existingImage?.dataset?.src ||
+      cardElement.dataset?.productImage ||
+      '';
+    const image = existingImage ? existingImage.cloneNode(false) : document.createElement('img');
+    image.classList.add('wishlist-card__image');
+
+    if (fallbackImage) {
+      image.src = fallbackImage;
+      image.setAttribute('srcset', fallbackImage);
+      image.setAttribute('sizes', '100vw');
       if (image.dataset) {
-        image.dataset.src = imageUrl;
-        image.dataset.srcset = imageUrl;
+        image.dataset.src = fallbackImage;
+        image.dataset.srcset = fallbackImage;
+      }
+    } else {
+      image.removeAttribute('srcset');
+      image.removeAttribute('sizes');
+    }
+
+    if (!image.hasAttribute('loading')) {
+      image.setAttribute('loading', 'lazy');
+    }
+
+    if (!image.getAttribute('alt')) {
+      const fallbackAlt = item?.title || cardElement.dataset?.productTitle || '';
+      if (fallbackAlt) {
+        image.setAttribute('alt', fallbackAlt);
       }
     }
 
-    if (image) {
-      image.classList.add('wishlist-card__image');
-      if (!image.hasAttribute('loading')) {
-        image.setAttribute('loading', 'lazy');
-      }
-      const altText = image.getAttribute('alt')?.trim();
-      if (!altText) {
-        const fallbackAlt = item?.title || cardElement.dataset?.productTitle || '';
-        if (fallbackAlt) {
-          image.setAttribute('alt', fallbackAlt);
-        }
-      }
+    Array.from(image.attributes)
+      .filter((attr) => attr.name.startsWith('data-swiper'))
+      .forEach((attr) => image.removeAttribute(attr.name));
+
+    image.removeAttribute('style');
+
+    imageLink.appendChild(image);
+    imageWrapper.appendChild(imageLink);
+
+    if (wrapperTarget) {
+      wrapperTarget.replaceWith(imageWrapper);
+    } else {
+      media.insertBefore(imageWrapper, media.firstChild);
     }
 
-    let imageLink = image?.closest('a');
-    if (!imageLink && image) {
-      const productLink =
-        cardElement.querySelector('.card__heading a')?.getAttribute('href') ||
-        cardElement.dataset?.productUrl ||
-        '#';
-      const anchor = document.createElement('a');
-      anchor.className = 'full-unstyled-link wishlist-card__image-link';
-      anchor.setAttribute('href', productLink);
-      image.parentElement?.insertBefore(anchor, image);
-      anchor.appendChild(image);
-      imageLink = anchor;
-    }
+    media
+      .querySelectorAll('.swiper-slide, .swiper-wrapper, .swiper-container, [class*="swiper-"]')
+      .forEach((element) => {
+        if (element === media) return;
+        if (element.closest('.wishlist-card__image-wrapper')) return;
+        if (element.matches('img')) return;
+        element.remove();
+      });
 
-    if (imageLink) {
-      imageLink.classList.add('wishlist-card__image-link');
-      if (!imageLink.classList.contains('full-unstyled-link')) {
-        imageLink.classList.add('full-unstyled-link');
+    media.querySelectorAll('img').forEach((imgElement) => {
+      if (imgElement.closest('.card__badge')) return;
+      if (!imageWrapper.contains(imgElement)) {
+        imgElement.remove();
       }
-    }
+    });
   };
 
   const ensureWishlistCardSwatch = (cardElement, item) => {
