@@ -66,3 +66,8 @@
 #CartDrawer .cart-items{ width:100%; table-layout:auto }
 #CartDrawer td.cart-item__details{ width:auto; padding-right:4px }
 #CartDrawer td.cart-item__media{ width:110px }
+/* Remove header row (Produto) */
+#CartDrawer .cart-items thead{ display:none !important }
+/* Remove built-in content width clamps so details can expand */
+#CartDrawer .cart-item__details{ width:auto !important; max-width:none !important }
+#CartDrawer .cart-item__details > *{ max-width:none !important }
