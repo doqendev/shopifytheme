@@ -600,6 +600,41 @@
     return element;
   };
 
+  const ensureWishlistCardMedia = (cardElement, item) => {
+    if (!cardElement) return;
+
+    const media = cardElement.querySelector('.card__media');
+    if (!media) return;
+
+    const productUrl = item?.url || cardElement.dataset?.productUrl || '#';
+    const imageUrl = item?.image || cardElement.dataset?.productImage || '';
+    const productTitle = item?.title || cardElement.dataset?.productTitle || '';
+
+    media.classList.remove('swiper-container');
+    media.querySelectorAll('.swiper-pagination').forEach((element) => element.remove());
+
+    const link = document.createElement('a');
+    link.classList.add('wishlist-card__image-link', 'full-unstyled-link');
+    link.href = productUrl;
+
+    if (imageUrl) {
+      const image = document.createElement('img');
+      image.classList.add('wishlist-card__image');
+      image.src = imageUrl;
+      image.alt = productTitle;
+      image.loading = 'lazy';
+      link.appendChild(image);
+    } else {
+      const placeholder = document.createElement('div');
+      placeholder.classList.add('wishlist-card__placeholder');
+      placeholder.setAttribute('aria-hidden', 'true');
+      link.appendChild(placeholder);
+    }
+
+    media.innerHTML = '';
+    media.appendChild(link);
+  };
+
   const ensureWishlistCardSwatch = (cardElement, item) => {
     if (!cardElement) return;
     const overflowBadge = cardElement.querySelector('.additional-swatch-count');
@@ -609,34 +644,33 @@
     const swatches = cardElement.querySelectorAll('.swatch');
     if (!swatches.length) return;
 
-    if (!item?.colorKey) {
-      const active = cardElement.querySelector('.swatch.active');
-      if (!active) {
-        swatches[0].classList.add('active');
+    const getSwatchesToKeep = () => {
+      if (!item?.colorKey) {
+        const active = cardElement.querySelector('.swatch.active');
+        return [active || swatches[0]].filter(Boolean);
       }
-      return;
-    }
 
-    const matching = Array.from(swatches).filter((swatch) => {
-      const swatchKey = normalizeOptionValue(swatch.dataset?.color);
-      return swatchKey === item.colorKey;
-    });
+      const matching = Array.from(swatches).filter((swatch) => {
+        const swatchKey = normalizeOptionValue(swatch.dataset?.color);
+        return swatchKey === item.colorKey;
+      });
 
-    if (!matching.length) {
-      const active = cardElement.querySelector('.swatch.active');
-      if (!active && swatches[0]) {
-        swatches[0].classList.add('active');
+      if (matching.length) {
+        return [matching[0]];
       }
-      return;
-    }
+
+      return [cardElement.querySelector('.swatch.active') || swatches[0]].filter(Boolean);
+    };
+
+    const swatchesToKeep = getSwatchesToKeep();
 
     swatches.forEach((swatch) => {
-      if (!matching.includes(swatch)) {
+      if (!swatchesToKeep.includes(swatch)) {
         swatch.remove();
       }
     });
 
-    matching.forEach((swatch, index) => {
+    swatchesToKeep.forEach((swatch, index) => {
       if (index === 0) {
         swatch.classList.add('active');
       } else {
@@ -879,6 +913,7 @@
     cardElement.wishlistItem = item;
 
     sanitizeWishlistVariantInputs(cardElement);
+    ensureWishlistCardMedia(cardElement, item);
     ensureWishlistQuickAdd(cardElement, item);
     ensureWishlistCardSwatch(cardElement, item);
     updateWishlistSizeButtons(cardElement, item);
