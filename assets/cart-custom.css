@@ -1,5 +1,5 @@
 .il-icons-row{display:flex;gap:12px;align-items:center;margin-top:6px}
-.il-icon-btn{background:transparent;border:none;border-radius:0;width:auto;height:auto;padding:0;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.il-icon-btn{background:transparent;border:none;border-radius:0;width:auto;height:auto;padding:0;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:rgb(var(--color-foreground))}
 .il-move-to-favorites{background:none;border:none;color:inherit;padding:0;margin-top:6px;cursor:pointer;font-weight:500;text-align:left}
 
 /* Compact cart line look in drawer */
@@ -96,3 +96,5 @@
 #CartDrawer .cart-item__media, #CartDrawer .cart-item__details, #CartDrawer .cart-item__quantity{ grid-column: auto !important; grid-row: auto !important; }
 
 .il-icon-btn .svg-wrapper{display:inline-block;width:18px;height:18px}
+
+.il-icon-btn .svg-wrapper svg{width:18px;height:18px;display:block}
