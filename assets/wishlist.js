@@ -90,8 +90,29 @@
     return buildWishlistKey(item.handle, item.colorKey);
   };
 
+  const ensureDefaultCardSwatch = (card) => {
+    if (!card) return;
+    const colorIndex = normalizeNumber(card.dataset?.colorIndex, -1);
+    if (colorIndex < 0) return;
+
+    const swatches = card.querySelectorAll?.('.swatch');
+    if (!swatches?.length) return;
+
+    const active = card.querySelector('.swatch.active');
+    if (active) return;
+
+    const firstSwatch = swatches[0];
+    if (!firstSwatch) return;
+
+    firstSwatch.classList.add('active');
+    if (firstSwatch.dataset?.color) {
+      card.dataset.selectedColor = firstSwatch.dataset.color;
+    }
+  };
+
   const getCardSelectedColorKey = (card) => {
     if (!card) return '';
+    ensureDefaultCardSwatch(card);
     const colorIndex = normalizeNumber(card.dataset?.colorIndex, -1);
     if (colorIndex < 0) return '';
 
@@ -219,7 +240,14 @@
     saveWishlist(wishlist);
   };
 
-  const getCardFromHeart = (button) => button?.closest('.product-card-wrapper');
+  const getCardFromHeart = (button) => {
+    if (!button) return null;
+
+    const wishlistCard = button.closest('[data-wishlist-item]');
+    if (wishlistCard) return wishlistCard;
+
+    return button.closest('.product-card-wrapper');
+  };
 
   const getProductFromCard = (card) => {
     if (!card) return null;
@@ -232,6 +260,7 @@
     let selectedColor = '';
     const normalizedColorIndex = Number.isNaN(colorIndex) ? -1 : colorIndex;
     if (normalizedColorIndex >= 0) {
+      ensureDefaultCardSwatch(card);
       const activeSwatch = card.querySelector('.swatch.active');
       if (activeSwatch?.dataset?.color) {
         selectedColor = activeSwatch.dataset.color;
@@ -600,6 +629,47 @@
     return element;
   };
 
+  const ensureWishlistCardMedia = (cardElement, item) => {
+    if (!cardElement) return;
+    const media = cardElement.querySelector('.card__media');
+    if (!media) return;
+
+    const pagination = media.querySelector('.swiper-pagination');
+    pagination?.remove?.();
+    media
+      .querySelectorAll('.swiper-button-next, .swiper-button-prev, .swiper-scrollbar')
+      .forEach((control) => control.remove());
+
+    const wrapper = media.querySelector('.swiper-wrapper');
+    if (wrapper) {
+      const targetSlide =
+        wrapper.querySelector('.swiper-slide-active') || wrapper.querySelector('.swiper-slide');
+
+      if (targetSlide) {
+        const preserved = targetSlide.cloneNode(true);
+        preserved.classList.remove(
+          'swiper-slide',
+          'swiper-slide-active',
+          'swiper-slide-next',
+          'swiper-slide-prev',
+          'swiper-slide-duplicate',
+        );
+        wrapper.replaceWith(preserved);
+      } else {
+        wrapper.remove();
+      }
+    }
+
+    media.classList.remove('swiper-container');
+
+    const image = media.querySelector('img');
+    const imageUrl = item?.image || cardElement.dataset?.productImage || '';
+    if (image && imageUrl) {
+      image.src = imageUrl;
+      image.removeAttribute('srcset');
+    }
+  };
+
   const ensureWishlistCardSwatch = (cardElement, item) => {
     if (!cardElement) return;
     const overflowBadge = cardElement.querySelector('.additional-swatch-count');
@@ -879,6 +949,7 @@
     cardElement.wishlistItem = item;
 
     sanitizeWishlistVariantInputs(cardElement);
+    ensureWishlistCardMedia(cardElement, item);
     ensureWishlistQuickAdd(cardElement, item);
     ensureWishlistCardSwatch(cardElement, item);
     updateWishlistSizeButtons(cardElement, item);
