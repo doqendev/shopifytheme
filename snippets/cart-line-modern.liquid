@@ -1,0 +1,46 @@
+{%- liquid
+  assign item = item | default: line_item
+  assign index = index | default: forloop.index
+-%}
+<div class="il-cart-line"
+     data-line-key="{{ item.key }}"
+     data-line-index="{{ index }}"
+     data-variant-id="{{ item.variant.id }}"
+     data-qty="{{ item.quantity }}"
+     data-product='{{ item.product | json | escape }}'
+     data-properties='{{ item.properties | json | escape }}'>
+
+  <a href="{{ item.url }}" class="il-cart-line__image" aria-label="{{ item.product.title }}">
+    {%- if item.image -%}
+      <img src="{{ item.image | image_url: width: 360 }}"
+           width="180" height="180"
+           alt="{{ item.image.alt | escape }}" loading="lazy">
+    {%- endif -%}
+  </a>
+
+  <div class="il-cart-line__body">
+    <div class="il-cart-line__top">
+      <a href="{{ item.url }}" class="il-cart-line__title">{{ item.product.title }}</a>
+      <div class="il-cart-line__icons">
+        <button class="il-cart-line__edit" type="button" aria-label="Editar">
+          <span class="svg-wrapper">{{ 'icon-clipboard.svg' | inline_asset_content }}</span>
+        </button>
+        <button class="il-cart-line__remove" type="button" aria-label="Remover">
+          <span class="svg-wrapper">{{ 'icon-remove.svg' | inline_asset_content }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="il-cart-line__meta">
+      <div class="il-cart-line__variant">{{ item.variant.title }}</div>
+      <div class="il-cart-line__price">
+        {{ item.final_line_price | money }}
+      </div>
+    </div>
+
+    <button class="il-cart-line__wishlist" type="button" data-move-to-wishlist>
+      {{ 'general.move_to_favorites' | t | default: 'Mover para os favoritos' }}
+    </button>
+  </div>
+</div>
+

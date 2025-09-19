@@ -7,9 +7,11 @@
 
 {{ 'quantity-popover.css' | asset_url | stylesheet_tag }}
 {{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'cart-custom.css' | asset_url | stylesheet_tag }}
 
 <script src="{{ 'cart.js' | asset_url }}" defer="defer"></script>
 <script src="{{ 'quantity-popover.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'cart-drawer-edit.js' | asset_url }}" defer="defer"></script>
 
 <style>
   .drawer {
@@ -167,7 +169,12 @@
 
                   <tbody role="rowgroup">
                     {%- for item in cart.items -%}
-                      <tr id="CartDrawer-Item-{{ item.index | plus: 1 }}" class="cart-item" role="row">
+                      <tr id="CartDrawer-Item-{{ item.index | plus: 1 }}" class="cart-item" role="row"
+                          data-line-key="{{ item.key }}"
+                          data-variant-id="{{ item.variant.id }}"
+                          data-qty="{{ item.quantity }}"
+                          data-product='{{ item.product | json | escape }}'
+                          data-properties='{{ item.properties | json | escape }}'>
                         <td class="cart-item__media" role="cell" headers="CartDrawer-ColumnProductImage">
                           {% if item.image %}
                             {% comment %} Leave empty space due to a:empty CSS display: none rule {% endcomment %}
@@ -191,6 +198,14 @@
                           <a href="{{ item.url }}" class="cart-item__name h4 break">
                             {{- item.product.title | escape -}}
                           </a>
+                          <div class="il-icons-row">
+                            <button class="il-icon-btn il-cart-line__edit" type="button" aria-label="Editar">
+                              <span class="svg-wrapper">{{ 'icon-clipboard.svg' | inline_asset_content }}</span>
+                            </button>
+                            <button class="il-icon-btn il-cart-line__remove" type="button" aria-label="Remover">
+                              <span class="svg-wrapper">{{ 'icon-remove.svg' | inline_asset_content }}</span>
+                            </button>
+                          </div>
 
                           {%- if item.original_price != item.final_price -%}
                             <div class="cart-item__discounted-prices">
@@ -269,6 +284,9 @@
                               </li>
                             {%- endfor -%}
                           </ul>
+                          <button class="il-move-to-favorites" type="button" data-move-to-wishlist>
+                            {{ 'general.move_to_favorites' | t | default: 'Mover para os favoritos' }}
+                          </button>
                         </td>
 
                         <td class="cart-item__totals right" role="cell" headers="CartDrawer-ColumnTotal">
@@ -625,3 +643,4 @@
 </div>
 </div>
 </cart-drawer>
+{% render 'cart-edit-modal' %}

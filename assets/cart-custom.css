@@ -1,0 +1,35 @@
+.il-icons-row{display:flex;gap:8px;align-items:center;margin-top:6px}
+.il-icon-btn{background:#fff;border:1px solid #dedede;border-radius:50%;width:32px;height:32px;display:grid;place-items:center;cursor:pointer}
+.il-move-to-favorites{background:none;border:none;color:#0b7a4b;padding:0;margin-top:6px;cursor:pointer}
+
+/* Edit modal */
+.il-cart-edit[hidden]{display:none}
+.il-cart-edit{position:fixed;inset:0;z-index:9999}
+.il-cart-edit__backdrop{position:absolute;inset:0;background:rgba(0,0,0,.5)}
+.il-cart-edit__card{position:relative;display:grid;grid-template-columns:1.2fr 1fr;gap:24px;background:#fff;border-radius:12px;max-width:980px;margin:40px auto;padding:24px}
+@media (max-width: 900px){.il-cart-edit__card{grid-template-columns:1fr;margin:0;border-radius:0;min-height:100vh}}
+.il-cart-edit__close{position:absolute;top:8px;right:8px;background:#fff;border:1px solid #e6e6e6;border-radius:50%;width:36px;height:36px;cursor:pointer}
+
+.il-cart-edit__gallery{display:flex;gap:12px;overflow:auto;padding-bottom:8px}
+.il-cart-edit__gallery img{height:260px;width:auto;border-radius:8px;object-fit:cover}
+
+.il-cart-edit__title{margin:0 0 6px}
+.il-cart-edit__price{font-weight:700;margin-bottom:12px}
+
+.il-cart-edit__options{display:grid;gap:16px}
+.il-opt{display:grid;gap:8px}
+.il-opt__name{font-size:14px;color:#444}
+.il-swatches,.il-pills{display:flex;flex-wrap:wrap;gap:8px}
+.il-pill,.il-swatch{border:1px solid #ddd;border-radius:999px;padding:8px 14px;cursor:pointer;background:#fff}
+.il-swatch{width:36px;height:36px;border-radius:999px;padding:0;display:inline-block}
+.il-swatch.is-image{background-size:cover;background-position:center}
+.il-swatch.is-selected,.il-pill.is-selected{border-color:#111;box-shadow:0 0 0 2px #111 inset;color:#fff;background:#111}
+
+.il-cart-edit__qty{margin-top:6px}
+.il-stepper{display:flex;align-items:center;gap:8px}
+.il-stepper__btn{width:36px;height:36px;border:1px solid #ddd;background:#fff;border-radius:6px;cursor:pointer}
+.il-stepper__input{width:56px;text-align:center;border:1px solid #ddd;border-radius:6px;height:36px}
+
+.il-cart-edit__actions{margin-top:16px}
+.il-cart-edit__save{background:#0b7a4b;color:#fff;border:none;border-radius:8px;padding:12px 18px;font-weight:600;cursor:pointer}
+

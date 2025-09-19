@@ -1,0 +1,29 @@
+<div id="il-cart-edit" class="il-cart-edit" hidden>
+  <div class="il-cart-edit__backdrop" data-close></div>
+  <div class="il-cart-edit__card" role="dialog" aria-modal="true" aria-labelledby="ilCartEditTitle">
+    <button class="il-cart-edit__close" data-close aria-label="Fechar">×</button>
+
+    <div class="il-cart-edit__gallery" data-gallery></div>
+
+    <div class="il-cart-edit__info">
+      <h3 id="ilCartEditTitle" class="il-cart-edit__title" data-title></h3>
+      <div class="il-cart-edit__price" data-price></div>
+
+      <div class="il-cart-edit__options" data-options></div>
+
+      <div class="il-cart-edit__qty">
+        <span>Quantidade</span>
+        <div class="il-stepper">
+          <button type="button" class="il-stepper__btn" data-qty-minus>-</button>
+          <input type="number" class="il-stepper__input" min="1" value="1" data-qty>
+          <button type="button" class="il-stepper__btn" data-qty-plus>+</button>
+        </div>
+      </div>
+
+      <div class="il-cart-edit__actions">
+        <button class="il-cart-edit__save" data-save>Atualizar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
