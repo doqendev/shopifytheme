@@ -83,3 +83,10 @@
 
 
 #CartDrawer .il-item-details .il-icons-row{ position:static !important }
+
+/* Reduce left padding between image and details to gain width */
+#CartDrawer .cart-item > td + td { padding-left: 1.2rem !important }
+/* Ensure details column isn’t capped at 50% by upstream CSS */
+#CartDrawer .cart-items thead th:nth-child(2){ width:auto !important; padding-left: 0 !important }
+/* Better word-breaking for long product names */
+#CartDrawer .il-item-title{ overflow-wrap: anywhere }
