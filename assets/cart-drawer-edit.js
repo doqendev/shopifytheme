@@ -8,6 +8,120 @@
 
   function uniq(arr){ return [...new Set(arr)]; }
   function money(cents){ try { return new Intl.NumberFormat(undefined, {style:'currency', currency: Shopify?.currency?.active}).format(cents/100); } catch(e){ return (cents/100).toFixed(2); } }
+  const COLOR_LABEL_PATTERN = /(\bcolor\b|\bcolour\b|\bcor\b|\bfarbe\b)/i;
+  const SIZE_LABEL_PATTERN = /(\bsize\b|\btamanho\b|\btalla\b|\btaille\b)/i;
+
+  function findOptionIndexByPattern(product, pattern){
+    if (!product || !Array.isArray(product.options)) return -1;
+    const idx = product.options.findIndex(name => typeof name === 'string' && pattern.test(name));
+    return idx >= 0 ? idx : -1;
+  }
+
+  function buildWishlistVariantOptions(product, variant){
+    if (!variant || !product || !Array.isArray(product.options)) return [];
+    return product.options.map((_, index) => variant['option' + (index + 1)]);
+  }
+
+  function getProductUrlForWishlist(product, host){
+    const link = qs('.il-cart-line__title', host);
+    if (link && link.getAttribute('href')) return link.getAttribute('href');
+    if (product && typeof product.url === 'string' && product.url.trim()) return product.url;
+    if (product && typeof product.online_store_url === 'string' && product.online_store_url.trim()) return product.online_store_url;
+    if (product && product.handle) return `/products/${product.handle}`;
+    return '#';
+  }
+
+  function getProductImageForWishlist(product, host){
+    if (host){
+      const img = qs('.il-cart-line__image img', host);
+      if (img) return img.currentSrc || img.src || '';
+    }
+    const featured = product && product.featured_image;
+    if (featured){
+      if (typeof featured === 'string') return featured;
+      if (typeof featured === 'object') return featured.src || featured.url || '';
+    }
+    const images = product && product.images;
+    if (Array.isArray(images) && images.length){
+      const first = images[0];
+      if (typeof first === 'string') return first;
+      if (first && typeof first === 'object') return first.src || first.url || '';
+    }
+    return '';
+  }
+
+  function buildWishlistItemFromCart(host, product, variantId){
+    if (!host || !product) return null;
+    const variants = Array.isArray(product.variants) ? product.variants : [];
+    const numericVariantId = Number(variantId) || 0;
+    const variant = variants.find(entry => Number(entry.id) === numericVariantId) || variants[0] || null;
+    const titleNode = qs('.il-cart-line__title', host);
+    const priceNode = qs('.il-cart-line__price', host);
+    const colorIndex = findOptionIndexByPattern(product, COLOR_LABEL_PATTERN);
+    const sizeIndex = findOptionIndexByPattern(product, SIZE_LABEL_PATTERN);
+    const wishlistItem = {
+      handle: product.handle,
+      title: (product.title || (titleNode ? titleNode.textContent || '' : '')).trim(),
+      url: getProductUrlForWishlist(product, host),
+      image: getProductImageForWishlist(product, host),
+      price: (priceNode ? priceNode.textContent || '' : '').trim(),
+      variants: variants.map(entry => ({
+        id: entry.id,
+        title: entry.title,
+        available: entry.available,
+        options: buildWishlistVariantOptions(product, entry),
+        price: entry.price,
+      })),
+      productId: product.id,
+    };
+    if (sizeIndex >= 0) wishlistItem.sizeIndex = sizeIndex;
+    if (colorIndex >= 0){
+      wishlistItem.colorIndex = colorIndex;
+      if (variant){
+        const colorValue = variant['option' + (colorIndex + 1)];
+        if (colorValue){
+          wishlistItem.colorValue = colorValue;
+          wishlistItem.colorKey = colorValue;
+        }
+      }
+    }
+    if (variant) wishlistItem.variantId = variant.id;
+    return wishlistItem;
+  }
+
+  function pushWishlistItem(item){
+    if (!item) return false;
+    if (window.themeWishlist && typeof window.themeWishlist.addItem === 'function'){
+      window.themeWishlist.addItem(item);
+      return true;
+    }
+    document.dispatchEvent(new CustomEvent('theme:wishlist:add', { detail: { item } }));
+    return true;
+  }
+
+  function removeWishlistItem(item){
+    if (!item) return;
+    if (window.themeWishlist && typeof window.themeWishlist.removeItem === 'function'){
+      window.themeWishlist.removeItem(item);
+    }
+  }
+
+  async function syncWishlistApp(product, variantId, wishlistItem){
+    if (!product || !product.id) return;
+    const imageSource = (wishlistItem && wishlistItem.image) || getProductImageForWishlist(product);
+    await fetch('/apps/wishlist', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body: JSON.stringify({
+        product_id: product.id,
+        variant_id: variantId || (wishlistItem && wishlistItem.variantId) || '',
+        handle: product.handle,
+        title: product.title,
+        image: imageSource || undefined,
+      }),
+    });
+  }
+
 
   function optionValues(product, idx){
     return uniq((product.variants || []).map(v => v['option'+idx]).filter(Boolean));
@@ -111,7 +225,7 @@
       host.innerHTML = `
         <div class="il-cart-edit__backdrop" data-close></div>
         <div class="il-cart-edit__card">
-          <button class="il-cart-edit__close" data-close>×</button>
+          <button class="il-cart-edit__close" data-close>&times;</button>
           <div class="il-cart-edit__gallery" data-gallery></div>
           <div class="il-cart-edit__info">
             <h3 class="il-cart-edit__title" data-title></h3>
@@ -179,7 +293,7 @@
           if(!res.ok) throw new Error('change_failed');
         } else {
           if (!chosen || chosen.available === false) {
-            alert('Esta combinação está indisponível.');
+            alert('Esta combinacao esta indisponivel.');
             return;
           }
           // Add first, then remove old line only if add succeeded
@@ -189,7 +303,7 @@
             body: JSON.stringify({ id: chosen.id, quantity: newQty, properties: normalizeProperties(parseJSONAttr(hostEl, 'data-properties', {})) })
           });
           if(!addRes.ok){
-            let msg = 'Não foi possível adicionar o artigo.';
+            let msg = 'Nao foi possivel adicionar o artigo.';
             try { const j = await addRes.json(); if(j?.description) msg = j.description; } catch(_) {}
             alert(msg);
             return; // keep old line in cart
@@ -203,7 +317,7 @@
         }
         closeEditor(modal);
         await refreshCartDrawer();
-      } catch(err){ console.error('Cart update failed', err); alert('Não foi possível atualizar o artigo.'); }
+      } catch(err){ console.error('Cart update failed', err); alert('Nao foi possivel atualizar o artigo.'); }
     };
 
     qsa('[data-close]', modal).forEach(b => b.onclick = () => closeEditor(modal));
@@ -264,14 +378,35 @@
     qsa('[data-move-to-wishlist]', root).forEach(btn => {
       btn.addEventListener('click', async () => {
         const host = btn.closest('[data-line-key]');
+        if (!host) return;
         const prod = parseJSONAttr(host, 'data-product', {});
-        const variantId = Number(host.getAttribute('data-variant-id'));
+        const variantIdAttr = host.getAttribute('data-variant-id') || '';
         const key = host.getAttribute('data-line-key');
+        const wishlistItem = buildWishlistItemFromCart(host, prod, variantIdAttr);
+        let addedToWishlist = false;
+        btn.disabled = true;
         try{
-          await fetch('/apps/wishlist', { method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify({ product_id: prod.id, variant_id: variantId || '', handle: prod.handle, title: prod.title, image: (prod.images && prod.images[0]) || prod.featured_image }) });
-          await fetch('/cart/change.js', { method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify({ id: key, quantity: 0 }) });
+          if (wishlistItem) {
+            addedToWishlist = pushWishlistItem(wishlistItem);
+          }
+          if (prod && prod.id) {
+            await syncWishlistApp(prod, variantIdAttr, wishlistItem);
+          }
+          if (key) {
+            const removeRes = await fetch('/cart/change.js', { method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify({ id: key, quantity: 0 }) });
+            if (!removeRes.ok) throw new Error('cart_remove_failed');
+          }
           await refreshCartDrawer();
-        } catch(e){ console.error('Move to wishlist failed', e); alert('Não foi possível mover para favoritos.'); }
+        } catch(e){
+          if (addedToWishlist) {
+            removeWishlistItem(wishlistItem);
+          }
+          console.error('Move to wishlist failed', e);
+          alert('Nao foi possivel mover para favoritos.');
+        }
+        finally {
+          btn.disabled = false;
+        }
       });
     });
   }

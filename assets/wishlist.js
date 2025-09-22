@@ -240,6 +240,32 @@
     saveWishlist(wishlist);
   };
 
+  const normalizeExternalWishlistItems = (payload) => {
+    if (!payload) return [];
+    if (Array.isArray(payload)) return payload.filter(Boolean);
+    if (payload && Array.isArray(payload.items)) return payload.items.filter(Boolean);
+    if (payload && payload.item) return [payload.item].filter(Boolean);
+    return [payload].filter(Boolean);
+  };
+
+  const handleExternalWishlistAdd = (event) => {
+    normalizeExternalWishlistItems(event && event.detail).forEach((item) => addToWishlist(item));
+  };
+
+  document.addEventListener('theme:wishlist:add', handleExternalWishlistAdd);
+
+  window.themeWishlist = window.themeWishlist || {};
+  window.themeWishlist.addItem = (item) => {
+    if (item) addToWishlist(item);
+  };
+  window.themeWishlist.addItems = (items) => {
+    if (!Array.isArray(items)) return;
+    items.forEach((item) => addToWishlist(item));
+  };
+  window.themeWishlist.removeItem = (item, colorKey = '') => {
+    removeFromWishlist(item, colorKey);
+  };
+
   const getCardFromHeart = (button) => {
     if (!button) return null;
 
