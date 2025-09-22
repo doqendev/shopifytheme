@@ -11,6 +11,11 @@
   const COLOR_LABEL_PATTERN = /(\bcolor\b|\bcolour\b|\bcor\b|\bfarbe\b)/i;
   const SIZE_LABEL_PATTERN = /(\bsize\b|\btamanho\b|\btalla\b|\btaille\b)/i;
 
+  function normalizeOptionValue(value){
+    return typeof value === 'string' ? value.trim().toLowerCase() : '';
+  }
+
+
   function findOptionIndexByPattern(product, pattern){
     if (!product || !Array.isArray(product.options)) return -1;
     const idx = product.options.findIndex(name => typeof name === 'string' && pattern.test(name));
@@ -50,45 +55,126 @@
     return '';
   }
 
+  function getCardStructureFromPage(handle){
+    if (!handle) return null;
+    const nodes = Array.from(document.querySelectorAll(`[data-product-handle='${handle}']`));
+    const candidate = nodes.find((node) => !node.closest('[data-wishlist-item]')) || nodes[0];
+    if (!candidate) return null;
+    const wrapper =
+      candidate.closest('.product-card-wrapper') ||
+      candidate.closest('.card-wrapper') ||
+      candidate.closest('.card');
+    if (!wrapper) return null;
+    const card = wrapper.querySelector('.card');
+    const cardInner = wrapper.querySelector('.card__inner');
+    const cardMedia = wrapper.querySelector('.card__media');
+    const mediaInner =
+      cardMedia?.querySelector(
+        '.card__media-inner, .media, .media--transparent, .media--hover-effect, .media--hover-effect-mobile',
+      ) || null;
+    const cardContent = wrapper.querySelector('.card__content');
+    const cardInformation = wrapper.querySelector('.card__information');
+    const cardHeading = wrapper.querySelector('.card__heading');
+    const priceWrapper = wrapper.querySelector('.card-information') || wrapper.querySelector('.price');
+    const clone = wrapper.cloneNode(true);
+    const temp = document.createElement('div');
+    temp.appendChild(clone);
+    return {
+      cardMarkup: temp.innerHTML,
+      cardWrapperClassName: wrapper.className || '',
+      cardClassName: card?.className || '',
+      cardInnerClassName: cardInner?.className || '',
+      cardInnerStyle: cardInner?.getAttribute('style') || '',
+      cardMediaClassName: cardMedia?.className || '',
+      cardMediaInnerClassName: mediaInner?.className || '',
+      cardContentClassName: cardContent?.className || '',
+      cardInformationClassName: cardInformation?.className || '',
+      cardHeadingClassName: cardHeading?.className || '',
+      cardPriceWrapperClassName: priceWrapper?.className || '',
+    };
+  }
+
   function buildWishlistItemFromCart(host, product, variantId){
     if (!host || !product) return null;
     const variants = Array.isArray(product.variants) ? product.variants : [];
     const numericVariantId = Number(variantId) || 0;
-    const variant = variants.find(entry => Number(entry.id) === numericVariantId) || variants[0] || null;
+    const variant = variants.find((entry) => Number(entry.id) === numericVariantId) || variants[0] || null;
     const titleNode = qs('.il-cart-line__title', host);
     const priceNode = qs('.il-cart-line__price', host);
     const colorIndex = findOptionIndexByPattern(product, COLOR_LABEL_PATTERN);
     const sizeIndex = findOptionIndexByPattern(product, SIZE_LABEL_PATTERN);
+
+    const mappedVariants = variants.map((entry) => {
+      const variantOptions = buildWishlistVariantOptions(product, entry).map((value) => {
+        if (value == null) return '';
+        return typeof value === 'string' ? value : String(value);
+      });
+      const available = entry.available;
+      return {
+        id: entry.id,
+        title: entry.title,
+        available: available === undefined ? true : Boolean(available),
+        options: variantOptions,
+        price: entry.price,
+      };
+    });
+
+    const primaryVariant = mappedVariants.find((entry) => Number(entry.id) === numericVariantId) || mappedVariants[0] || null;
     const wishlistItem = {
       handle: product.handle,
       title: (product.title || (titleNode ? titleNode.textContent || '' : '')).trim(),
       url: getProductUrlForWishlist(product, host),
       image: getProductImageForWishlist(product, host),
       price: (priceNode ? priceNode.textContent || '' : '').trim(),
-      variants: variants.map(entry => ({
-        id: entry.id,
-        title: entry.title,
-        available: entry.available,
-        options: buildWishlistVariantOptions(product, entry),
-        price: entry.price,
-      })),
+      variants: mappedVariants,
       productId: product.id,
     };
-    if (sizeIndex >= 0) wishlistItem.sizeIndex = sizeIndex;
-    if (colorIndex >= 0){
+
+    if (sizeIndex >= 0) {
+      wishlistItem.sizeIndex = sizeIndex;
+    }
+
+    if (colorIndex >= 0) {
       wishlistItem.colorIndex = colorIndex;
-      if (variant){
-        const colorValue = variant['option' + (colorIndex + 1)];
-        if (colorValue){
-          wishlistItem.colorValue = colorValue;
-          wishlistItem.colorKey = colorValue;
-        }
+      const colorValueFromPrimary =
+        primaryVariant && Array.isArray(primaryVariant.options)
+          ? primaryVariant.options[colorIndex]
+          : null;
+      const fallbackColorValue =
+        variant && typeof variant === 'object' ? variant['option' + (colorIndex + 1)] : null;
+      const colorValue = colorValueFromPrimary || fallbackColorValue || '';
+      if (colorValue) {
+        const normalizedColor = normalizeOptionValue(colorValue);
+        wishlistItem.colorValue = colorValue;
+        wishlistItem.colorKey = normalizedColor;
+        wishlistItem.selectedColor = colorValue;
+        wishlistItem.color = colorValue;
       }
     }
-    if (variant) wishlistItem.variantId = variant.id;
+
+    if (primaryVariant) {
+      wishlistItem.variantId = primaryVariant.id;
+    } else if (variant) {
+      wishlistItem.variantId = variant.id;
+    }
+
+    const cardInfo = getCardStructureFromPage(product.handle);
+    if (cardInfo) {
+      if (cardInfo.cardMarkup) wishlistItem.cardMarkup = cardInfo.cardMarkup;
+      if (cardInfo.cardWrapperClassName) wishlistItem.cardWrapperClassName = cardInfo.cardWrapperClassName;
+      if (cardInfo.cardClassName) wishlistItem.cardClassName = cardInfo.cardClassName;
+      if (cardInfo.cardInnerClassName) wishlistItem.cardInnerClassName = cardInfo.cardInnerClassName;
+      if (cardInfo.cardInnerStyle) wishlistItem.cardInnerStyle = cardInfo.cardInnerStyle;
+      if (cardInfo.cardMediaClassName) wishlistItem.cardMediaClassName = cardInfo.cardMediaClassName;
+      if (cardInfo.cardMediaInnerClassName) wishlistItem.cardMediaInnerClassName = cardInfo.cardMediaInnerClassName;
+      if (cardInfo.cardContentClassName) wishlistItem.cardContentClassName = cardInfo.cardContentClassName;
+      if (cardInfo.cardInformationClassName) wishlistItem.cardInformationClassName = cardInfo.cardInformationClassName;
+      if (cardInfo.cardHeadingClassName) wishlistItem.cardHeadingClassName = cardInfo.cardHeadingClassName;
+      if (cardInfo.cardPriceWrapperClassName) wishlistItem.cardPriceWrapperClassName = cardInfo.cardPriceWrapperClassName;
+    }
+
     return wishlistItem;
   }
-
   function pushWishlistItem(item){
     if (!item) return false;
     if (window.themeWishlist && typeof window.themeWishlist.addItem === 'function'){
