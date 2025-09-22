@@ -446,6 +446,11 @@
 
       // Reopen drawer and rebind
       const drawer = document.querySelector('cart-drawer');
+      const docDrawer = doc.querySelector('cart-drawer');
+      const docIsEmpty = docDrawer ? docDrawer.classList.contains('is-empty') : false;
+      if (drawer) {
+        drawer.classList.toggle('is-empty', docIsEmpty);
+      }
       attachHandlers(drawer || document);
       drawer?.open();
     } catch(e){ console.error('Section render failed', e); location.reload(); }
