@@ -99,6 +99,14 @@
     const variants = Array.isArray(product.variants) ? product.variants : [];
     const numericVariantId = Number(variantId) || 0;
     const variant = variants.find((entry) => Number(entry.id) === numericVariantId) || variants[0] || null;
+    const variantImageData =
+      variant && typeof variant === 'object' && variant.featured_image
+        ? (typeof variant.featured_image === 'string'
+            ? variant.featured_image
+            : variant.featured_image.src || variant.featured_image.url || variant.featured_image.small_url || '')
+        : variant && typeof variant === 'object' && variant.image
+        ? (typeof variant.image === 'string' ? variant.image : variant.image.src || variant.image.url || '')
+        : '';
     const titleNode = qs('.il-cart-line__title', host);
     const priceNode = qs('.il-cart-line__price', host);
     const colorIndex = findOptionIndexByPattern(product, COLOR_LABEL_PATTERN);
@@ -120,11 +128,12 @@
     });
 
     const primaryVariant = mappedVariants.find((entry) => Number(entry.id) === numericVariantId) || mappedVariants[0] || null;
+    const imageSource = variantImageData || getProductImageForWishlist(product, host);
     const wishlistItem = {
       handle: product.handle,
       title: (product.title || (titleNode ? titleNode.textContent || '' : '')).trim(),
       url: getProductUrlForWishlist(product, host),
-      image: getProductImageForWishlist(product, host),
+      image: imageSource,
       price: (priceNode ? priceNode.textContent || '' : '').trim(),
       variants: mappedVariants,
       productId: product.id,
