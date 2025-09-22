@@ -448,6 +448,9 @@
     const drawer = getDrawer();
     if (!drawer) return;
 
+    drawer.dataset.activeTab = tab;
+    drawer.classList.toggle('drawer--wishlist-active', tab === TAB_WISHLIST);
+
     const tabs = drawer.querySelectorAll('[data-tab-target]');
     const panels = drawer.querySelectorAll('[data-tab-panel]');
 
@@ -462,6 +465,10 @@
       panel.classList.toggle('drawer__panel--active', isActive);
       panel.toggleAttribute('hidden', !isActive);
     });
+
+    if (tab === TAB_WISHLIST) {
+      renderWishlist();
+    }
 
     updateDrawerLabels(drawer, tab);
   };
@@ -1423,3 +1430,4 @@
     init();
   }
 })();
+
