@@ -225,16 +225,16 @@
 
   /* UNIFIED SWATCH STYLING - All swatches 21x21 for consistency */
 
-  /* All swatch labels/containers */
+  /* All swatch labels/containers - larger to fit 15px color area */
   .product-form__input--swatch label,
   .product-form__input--swatch .swatch-input__label,
   .swatch,
   [id*="variant-selects"] fieldset.product-form__input--swatch label,
   #product-grid .swatch {
-    width: 21px !important;
-    height: 21px !important;
-    border: 3px solid transparent !important;
-    box-shadow: 0 0 0 0.5px transparent !important;
+    width: 15px !important;
+    height: 15px !important;
+    border: none !important;
+    box-shadow: none !important;
     padding: 0 !important;
     border-radius: 0 !important;
     box-sizing: border-box !important;
@@ -256,7 +256,7 @@
     margin-right: 0 !important;
   }
 
-  /* ACTIVE SWATCH STYLING - White border + black outline */
+  /* ACTIVE SWATCH STYLING - White border + black outline around 15px color */
   .product-form__input--swatch label.active,
   .product-form__input--swatch input:checked + label,
   .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label,
@@ -266,9 +266,12 @@
   [id*="variant-selects"] fieldset.product-form__input--swatch label.active,
   #product-grid .swatch.active,
   #product-grid .swatch:hover {
+    width: 15px !important;
+    height: 15px !important;
     border: 3px solid #fff !important;
     box-shadow: 0 0 0 0.5px #000 !important;
     outline: none !important;
+    box-sizing: content-box !important;
   }
 
   /* INNER SWATCH SPANS - For product pages with span structure */
