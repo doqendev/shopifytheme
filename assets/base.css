@@ -4251,12 +4251,12 @@ font-style: normal;
   display: none;
 }
 
-@media screen and (max-width: 749;) {
+@media screen and (max-width: 749px) {
 #facets-toggle-button {
   padding: 0;
 }
 
-@media screen (min-width: 750px) {
+@media screen and (min-width: 750px) {
   #shopify-section-template--25444170137924__product-grid > div > div.grid-controls.page-width > div.facets-toggle-container {
   margin-right: 3.2rem;
 }
