@@ -16,6 +16,12 @@
   >
     {%- for option in product.options_with_values -%}
       {%- liquid
+        assign option_name_lower = option.name | downcase
+        assign is_size_option = false
+        if option_name_lower contains 'size' or option_name_lower contains 'tamanho' or option_name_lower contains 'talla'
+          assign is_size_option = true
+        endif
+
         assign swatch_count = option.values | map: 'swatch' | compact | size
         assign picker_type = block.settings.picker_type
 
@@ -26,25 +32,29 @@
             assign picker_type = 'swatch'
           endif
         endif
-      -%}
-      
-      {%- comment %}
-        For Size options, force dropdown so we can add a placeholder.
-      {%- endcomment -%}
-      {%- if option.name contains "Size" -%}
-        {% assign picker_type = "button" %}
-      {%- endif -%}
-      
-      {%- comment %}
-        For Color options, force swatch dropdown so the swatch is shown.
-      {%- endcomment -%}
-      {%- if option.name contains "Color" or option.name contains "Cor" -%}
-        {% assign picker_type = "swatch" %}
-      {%- endif -%}
-      
-      {%- if picker_type == 'swatch' -%}
-        <fieldset class="js product-form__input product-form__input--swatch">
 
+        if option_name_lower contains 'color' or option_name_lower contains 'cor' or option_name_lower contains 'couleur'
+          assign picker_type = 'swatch'
+        endif
+      -%}
+
+      {%- capture wrapper_attributes -%}
+data-option-position="{{ option.position }}" data-option-name="{{ option.name | escape }}"{% if is_size_option %} data-size-option="true"{% endif %}
+      {%- endcapture -%}
+      {%- assign wrapper_attributes = wrapper_attributes | strip -%}
+
+      {%- if picker_type == 'swatch' -%}
+        <fieldset
+          class="js product-form__input product-form__input--swatch{% if is_size_option %} product-form__input--size-hidden{% endif %}"
+          {{ wrapper_attributes }}
+          {% if is_size_option %}hidden aria-hidden="true"{% endif %}
+        >
+          <legend class="form__label">
+            {{ option.name }}:
+            <span data-selected-value>
+              {{- option.selected_value -}}
+            </span>
+          </legend>
           {% render 'product-variant-options',
             product: product,
             option: option,
@@ -53,7 +63,11 @@
           %}
         </fieldset>
       {%- elsif picker_type == 'button' -%}
-        <fieldset class="js product-form__input product-form__input--pill">
+        <fieldset
+          class="js product-form__input product-form__input--pill{% if is_size_option %} product-form__input--size-hidden{% endif %}"
+          {{ wrapper_attributes }}
+          {% if is_size_option %}hidden aria-hidden="true"{% endif %}
+        >
           <legend class="form__label">{{ option.name }}</legend>
           {% render 'product-variant-options',
             product: product,
@@ -63,7 +77,11 @@
           %}
         </fieldset>
       {%- else -%}
-        <div class="product-form__input product-form__input--dropdown">
+        <div
+          class="product-form__input product-form__input--dropdown{% if is_size_option %} product-form__input--size-hidden{% endif %}"
+          {{ wrapper_attributes }}
+          {% if is_size_option %}hidden aria-hidden="true"{% endif %}
+        >
           <label class="form__label" for="Option-{{ section.id }}-{{ forloop.index0 }}">
             {{ option.name }}
           </label>
@@ -82,21 +100,13 @@
               name="options[{{ option.name | escape }}]"
               form="{{ product_form_id }}"
             >
-              {%- comment %}
-                If this is a size option, insert a placeholder.
-              {%- endcomment -%}
-              {%- if option.name contains "Size" -%}
-                <option value="" disabled selected>Size</option>
-              {%- endif -%}
               {% render 'product-variant-options',
                 product: product,
                 option: option,
                 block: block,
                 picker_type: picker_type
               %}
-              
             </select>
-            {% render 'size-chart-new', section_id: section.id %}
             <span class="svg-wrapper">
               {{- 'icon-caret.svg' | inline_asset_content -}}
             </span>

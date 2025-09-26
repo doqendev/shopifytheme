@@ -73,6 +73,73 @@
 
   const getVariantSelectRoot = (sectionId) => document.getElementById(`variant-selects-${sectionId}`);
 
+  const setVariantOptionOnRoot = (root, option, value) => {
+    if (!root || !option) return;
+    const resolvedValue = getOptionValueString(value);
+    if (!resolvedValue) return;
+
+    const optionName = `${option.name}-${option.position}`;
+    const radioSelector = `input[name="${cssEscape(optionName)}"]`;
+    const radios = root.querySelectorAll(radioSelector);
+    if (radios.length) {
+      let target = Array.from(radios).find((input) => input.value === resolvedValue);
+      if (!target) {
+        target = Array.from(radios).find((input) => normalize(input.value) === normalize(resolvedValue));
+      }
+      if (target && !target.checked) {
+        target.checked = true;
+        target.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      return;
+    }
+
+    const selectName = `options[${option.name}]`;
+    const select = root.querySelector(`select[name="${cssEscape(selectName)}"]`);
+    if (select) {
+      let selectedValue = select.value;
+      if (selectedValue === resolvedValue || normalize(selectedValue) === normalize(resolvedValue)) {
+        return;
+      }
+
+      const matchingOption = Array.from(select.options).find(
+        (optionElement) =>
+          optionElement.value === resolvedValue || normalize(optionElement.value) === normalize(resolvedValue)
+      );
+
+      if (matchingOption) {
+        select.value = matchingOption.value;
+      } else {
+        select.value = resolvedValue;
+      }
+
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  };
+
+  const syncVariantOptionSelections = (sectionId, variant) => {
+    if (!sectionId || !variant || !Array.isArray(variant.options)) return;
+    const data = getSectionData(sectionId);
+    if (!data || !Array.isArray(data.options) || !data.options.length) return;
+
+    const escapedSectionId = cssEscape(sectionId);
+    let roots = Array.from(document.querySelectorAll(`variant-selects[data-section="${escapedSectionId}"]`));
+    const fallbackRoot = getVariantSelectRoot(sectionId);
+    if (fallbackRoot && !roots.includes(fallbackRoot)) {
+      roots.push(fallbackRoot);
+    }
+
+    if (!roots.length) return;
+
+    roots.forEach((root) => {
+      data.options.forEach((option, index) => {
+        if (!option) return;
+        const optionValue = variant.options[index];
+        if (optionValue == null) return;
+        setVariantOptionOnRoot(root, option, optionValue);
+      });
+    });
+  };
+
   function getSelectedOptionValue(sectionId, option) {
     const root = getVariantSelectRoot(sectionId);
     if (!root) {
@@ -95,22 +162,48 @@
   }
 
   function ensureState(sectionId) {
-    const trigger = document.querySelector(`[data-size-drawer-trigger="${sectionId}"]`);
     let state = stateBySection.get(sectionId);
     if (!state) {
       state = {
         lastFocused: null,
-        trigger,
-        originalLabel: trigger?.querySelector('span')?.textContent?.trim() || '',
-        resetTimer: null,
+        activeTrigger: null,
+        triggers: [],
+        triggerData: new Map(),
       };
       stateBySection.set(sectionId, state);
-    } else {
-      if (trigger) state.trigger = trigger;
-      if (!state.originalLabel && trigger) {
-        state.originalLabel = trigger.querySelector('span')?.textContent?.trim() || '';
-      }
     }
+
+    const triggers = Array.from(document.querySelectorAll(`[data-size-drawer-trigger="${sectionId}"]`));
+    state.triggers = triggers;
+
+    triggers.forEach((trigger) => {
+      if (!state.triggerData.has(trigger)) {
+        const labelText = trigger.querySelector('span')?.textContent?.trim() || '';
+        state.triggerData.set(trigger, {
+          originalLabel: labelText,
+          resetTimer: null,
+        });
+      } else {
+        const data = state.triggerData.get(trigger);
+        if (data && !data.originalLabel) {
+          data.originalLabel = trigger.querySelector('span')?.textContent?.trim() || '';
+        }
+      }
+    });
+
+    state.triggerData.forEach((data, trigger) => {
+      if (!triggers.includes(trigger)) {
+        if (data.resetTimer) {
+          clearTimeout(data.resetTimer);
+        }
+        state.triggerData.delete(trigger);
+      }
+    });
+
+    if (state.activeTrigger && !triggers.includes(state.activeTrigger)) {
+      state.activeTrigger = null;
+    }
+
     return state;
   }
 
@@ -126,7 +219,9 @@
     if (!form) return;
     const input = form.querySelector('input[name="id"]');
     if (!input) return;
-    input.value = variantId;
+    const stringValue = String(variantId);
+    if (input.value === stringValue) return;
+    input.value = stringValue;
     input.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
@@ -251,18 +346,32 @@
     }
   }
 
-  function resetTriggerLabel(sectionId) {
+  function resetTriggerLabel(sectionId, targetTrigger) {
     const state = ensureState(sectionId);
-    if (state.resetTimer) {
-      clearTimeout(state.resetTimer);
-      state.resetTimer = null;
-    }
-    if (!state.trigger || !state.originalLabel) return;
-    const label = state.trigger.querySelector('span');
-    if (label) {
-      label.textContent = state.originalLabel;
-    }
-    state.trigger.classList.remove('choose-size-btn--added');
+    const triggers = targetTrigger ? [targetTrigger] : state.triggers;
+
+    triggers.forEach((trigger) => {
+      if (!trigger) return;
+      const data = state.triggerData.get(trigger);
+      if (!data) return;
+
+      if (data.resetTimer) {
+        clearTimeout(data.resetTimer);
+        data.resetTimer = null;
+      }
+
+      const label = trigger.querySelector('span');
+      if (label && data.originalLabel) {
+        label.textContent = data.originalLabel;
+      }
+
+      trigger.classList.remove('choose-size-btn--added', 'choose-size-btn--loading');
+      trigger.removeAttribute('aria-busy');
+
+      if (state.activeTrigger === trigger && !targetTrigger) {
+        state.activeTrigger = null;
+      }
+    });
   }
 
   function handleSizeSelection(sectionId, variant, button) {
@@ -274,10 +383,12 @@
     }
     button.classList.add('size-option--active');
 
+    syncVariantOptionSelections(sectionId, variant);
     updateProductFormVariant(sectionId, variant.id);
 
-    const chooseButton = document.querySelector(`[data-size-drawer-trigger="${sectionId}"]`);
     const state = ensureState(sectionId);
+    const chooseButton = state.activeTrigger || state.triggers[0] || null;
+    const triggerData = chooseButton ? state.triggerData.get(chooseButton) : null;
 
     setStatus(sectionId, 'Adicionando ao carrinho...');
     button.classList.add('size-option--loading');
@@ -299,7 +410,15 @@
             label.textContent = 'Adicionado!';
           }
           chooseButton.classList.add('choose-size-btn--added');
-          state.resetTimer = setTimeout(() => resetTriggerLabel(sectionId), 2000);
+          if (triggerData) {
+            if (triggerData.resetTimer) {
+              clearTimeout(triggerData.resetTimer);
+            }
+            triggerData.resetTimer = setTimeout(() => {
+              triggerData.resetTimer = null;
+              resetTriggerLabel(sectionId, chooseButton);
+            }, 2000);
+          }
         }
       })
       .catch((error) => {
@@ -404,11 +523,11 @@
     const drawer = document.getElementById(`size-drawer-${sectionId}`);
     if (!drawer) return;
 
-    ensureState(sectionId);
+    const state = ensureState(sectionId);
     renderSizeOptions(sectionId);
 
-    const state = ensureState(sectionId);
     state.lastFocused = triggerElement || document.activeElement;
+    state.activeTrigger = triggerElement || state.triggers[0] || null;
 
     drawer.classList.add('is-open');
     drawer.setAttribute('aria-hidden', 'false');
@@ -428,8 +547,11 @@
     drawer.classList.remove('is-open');
     drawer.setAttribute('aria-hidden', 'true');
     const state = stateBySection.get(sectionId);
-    if (state?.lastFocused) {
-      state.lastFocused.focus();
+    if (state) {
+      if (state.lastFocused) {
+        state.lastFocused.focus();
+      }
+      state.activeTrigger = null;
     }
   }
 
