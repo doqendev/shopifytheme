@@ -36,8 +36,8 @@
 
 /* Swatch Styles */
 .swatch {
-  width: 23px;
-  height: 23px;
+  width: 30px;
+  height: 30px;
   box-shadow: 0 0 0 1px #ddd;
   border: 2px solid white;
   display: inline-block;
