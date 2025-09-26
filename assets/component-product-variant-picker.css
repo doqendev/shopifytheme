@@ -266,8 +266,6 @@
   [id*="variant-selects"] fieldset.product-form__input--swatch label.active,
   #product-grid .swatch.active,
   #product-grid .swatch:hover {
-    width: 15px !important;
-    height: 15px !important;
     border: 3px solid #fff !important;
     box-shadow: 0 0 0 0.5px #000 !important;
     outline: none !important;
