@@ -36,36 +36,38 @@
 
 /* Swatch Styles - Updated to match desktop product swatches exactly */
 @media screen and (min-width: 750px) {
-  /* Inactive swatches - 15px color area, no visible borders */
+  /* All swatches - same overall size to prevent position shifting */
   .swatch {
-    width: 15px !important;
-    height: 15px !important;
-    border: none !important;
-    box-shadow: none !important;
+    width: 21px !important;
+    height: 21px !important;
+    border: 3px solid transparent !important;
+    box-shadow: 0 0 0 0.5px transparent !important;
     display: inline-block !important;
     background: var(--swatch--background) !important;
     border-radius: 0 !important;
-    margin-right: 0 !important;
+    margin-right: 4px !important;
     cursor: pointer !important;
     transition: none !important;
     box-sizing: border-box !important;
   }
 
-  /* Active swatches - 15px color area + 3px white border + 0.5px black outline */
+  /* Active swatches - white border and black outline become visible */
   .swatch.active,
   .swatch:hover,
   .swatch.selected {
-    width: 15px !important;
-    height: 15px !important;
     border: 3px solid #fff !important;
     box-shadow: 0 0 0 0.5px #000 !important;
     outline: none !important;
-    box-sizing: content-box !important;
   }
 
-  /* Remove gaps between swatches */
+  /* Add gaps between swatches for collection pages */
   .product-card__swatch-indicator {
-    gap: 0 !important;
+    gap: 4px !important;
+  }
+
+  /* Remove the last swatch's margin */
+  .swatch:last-child {
+    margin-right: 0 !important;
   }
 }
 
@@ -123,26 +125,28 @@
 
 /* Override old specific sizing rules with new desktop styling */
 @media screen and (min-width: 750px) {
-  /* Inactive swatches - pure 15px color squares */
+  /* All swatches - consistent sizing to prevent position shifting */
   #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span,
   #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch {
-    width: 15px !important;
-    height: 15px !important;
-    margin-right: 0 !important;
+    width: 21px !important;
+    height: 21px !important;
+    margin-right: 4px !important;
     border-radius: 0 !important;
-    border: none !important;
-    box-shadow: none !important;
+    border: 3px solid transparent !important;
+    box-shadow: 0 0 0 0.5px transparent !important;
     box-sizing: border-box !important;
   }
 
-  /* Active swatches - 15px color + white border + black outline */
+  /* Active swatches - borders become visible */
   #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch.active,
   #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch:hover {
-    width: 15px !important;
-    height: 15px !important;
     border: 3px solid #fff !important;
     box-shadow: 0 0 0 0.5px #000 !important;
-    box-sizing: content-box !important;
+  }
+
+  /* Remove margin from last swatch */
+  #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch:last-child {
+    margin-right: 0 !important;
   }
 }
 
