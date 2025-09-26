@@ -1,4 +1,4 @@
-/* Size Drawer Styles - High Specificity to Override Theme */
+/* Size Drawer Styles - Fixed to start hidden */
 body .size-drawer,
 html .size-drawer {
   position: fixed !important;
@@ -7,15 +7,15 @@ html .size-drawer {
   width: 100vw !important;
   height: 100vh !important;
   z-index: 9999999 !important;
-  opacity: 0;
-  visibility: hidden;
+  opacity: 0 !important;
+  visibility: hidden !important;
   transition: opacity 0.3s ease, visibility 0.3s ease;
-  pointer-events: none;
+  pointer-events: none !important;
   background: transparent;
   margin: 0 !important;
   padding: 0 !important;
   transform: none !important;
-  display: none;
+  display: none !important;
 }
 
 body .size-drawer.active,
@@ -238,17 +238,6 @@ html .size-drawer.active {
   z-index: 2;
 }
 
-/* Test visibility - temporary bright background */
-.size-drawer.active {
-  background: rgba(255, 0, 0, 0.1) !important; /* Temporary red tint to see if drawer is there */
-}
-
-/* Force all drawer elements to be visible */
-.size-drawer.active,
-.size-drawer.active * {
-  visibility: visible !important;
-}
-
 /* HIDE SIZE VARIANT SWATCHES - Multiple targeting methods */
 
 /* Method 1: Hide by content */
@@ -290,24 +279,9 @@ label[for*="Tamanho"] {
 }
 
 /* Method 5: Hide by common size values */
-input[value="XS"],
-input[value="S"],
-input[value="M"], 
-input[value="L"],
-input[value="XL"],
-input[value="XXL"],
-label[for*="XS"],
-label[for*="-S-"],
-label[for*="-M-"],
-label[for*="-L-"],
-label[for*="XL"] {
-  display: none !important;
-}
-
-/* Method 6: Hide parent containers of size inputs */
 input[value="XS"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]),
 input[value="S"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]),
-input[value="M"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]),
+input[value="M"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]), 
 input[value="L"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]),
 input[value="XL"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]),
 input[value="XXL"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]) {

@@ -1,8 +1,66 @@
-// Size Drawer Functionality - Enhanced with Size Swatch Hiding
+// Size Drawer Functionality - Fixed Version
 
-// Hide size swatches on page load
+// Don't auto-open drawer on page load
 document.addEventListener('DOMContentLoaded', function() {
+  console.log('📱 Size drawer JavaScript DOM loaded');
+  
+  // Hide size swatches
   hideSizeSwatches();
+  
+  // Re-run size swatch hiding after a delay to catch dynamically loaded elements
+  setTimeout(hideSizeSwatches, 1000);
+  
+  // Make sure all drawers are closed on page load
+  const allDrawers = document.querySelectorAll('.size-drawer');
+  allDrawers.forEach(drawer => {
+    drawer.style.display = 'none';
+    drawer.classList.remove('active');
+  });
+  
+  // Debug: List all elements that might be size drawers
+  const drawerElements = document.querySelectorAll('[id*="size-drawer"]');
+  console.log('🔍 Found drawer elements:', Array.from(drawerElements).map(el => ({
+    id: el.id,
+    display: window.getComputedStyle(el).display,
+    visibility: window.getComputedStyle(el).visibility
+  })));
+  
+  // Listen for color variant changes
+  const colorInputs = document.querySelectorAll('input[name*="Color"], input[name*="Cor"], input[name*="color"], input[name*="cor"]');
+  console.log('🎨 Found color inputs:', colorInputs.length);
+  
+  colorInputs.forEach(input => {
+    input.addEventListener('change', function() {
+      console.log('🎨 Color changed to:', this.value);
+      // If size drawer is open, update the available sizes
+      const openDrawer = document.querySelector('.size-drawer.active');
+      if (openDrawer) {
+        const sectionId = openDrawer.id.replace('size-drawer-', '');
+        populateAvailableSizes(sectionId);
+      }
+    });
+  });
+  
+  // Close drawer when clicking outside
+  document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('size-drawer-overlay')) {
+      const drawer = event.target.parentElement;
+      const sectionId = drawer.id.replace('size-drawer-', '');
+      closeSizeDrawer(sectionId);
+    }
+  });
+  
+  // Close drawer with Escape key
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+      console.log('⌨️ Escape key pressed');
+      const activeDrawer = document.querySelector('.size-drawer.active');
+      if (activeDrawer) {
+        const sectionId = activeDrawer.id.replace('size-drawer-', '');
+        closeSizeDrawer(sectionId);
+      }
+    }
+  });
 });
 
 function hideSizeSwatches() {
@@ -66,7 +124,7 @@ function openSizeDrawer(sectionId) {
     // Populate sizes based on current color selection
     populateAvailableSizes(sectionId);
     
-    // Force show drawer with multiple methods - ENHANCED
+    // Show drawer
     drawer.style.display = 'block';
     drawer.style.visibility = 'visible';
     drawer.style.opacity = '1';
@@ -76,33 +134,19 @@ function openSizeDrawer(sectionId) {
     drawer.style.left = '0';
     drawer.style.width = '100vw';
     drawer.style.height = '100vh';
-    drawer.style.background = 'rgba(255, 0, 0, 0.1)'; // Temporary red tint
     
     // Add active class with delay for animation
     setTimeout(() => {
       drawer.classList.add('active');
       console.log('✅ Drawer should now be active and visible');
-      console.log('🔍 Drawer computed style:', window.getComputedStyle(drawer));
     }, 10);
     
     // Prevent body scrolling
     document.body.style.overflow = 'hidden';
     
     console.log('📱 Size drawer opened for section:', sectionId);
-    console.log('🎨 Drawer classes:', drawer.className);
-    console.log('🔍 Drawer styles:', {
-      display: drawer.style.display,
-      visibility: drawer.style.visibility,
-      opacity: drawer.style.opacity,
-      zIndex: drawer.style.zIndex,
-      position: drawer.style.position,
-      background: drawer.style.background
-    });
   } else {
     console.error('❌ Size drawer not found for section:', sectionId);
-    console.log('🔍 Available elements with size-drawer in id:', 
-      Array.from(document.querySelectorAll('[id*="size-drawer"]')).map(el => el.id)
-    );
   }
 }
 
@@ -130,11 +174,12 @@ function populateAvailableSizes(sectionId) {
   const productData = window['productData_' + sectionId];
   const sizeContainer = document.getElementById('size-options-' + sectionId);
   
-  console.log('📊 Product data:', productData);
+  console.log('📊 Product data for section:', sectionId, productData);
   console.log('📦 Size container:', sizeContainer);
   
   if (!productData || !sizeContainer) {
     console.error('❌ Missing product data or size container for section:', sectionId);
+    console.log('Available product data keys:', Object.keys(window).filter(key => key.startsWith('productData_')));
     return;
   }
   
@@ -209,7 +254,7 @@ function getAvailableSizesForColor(productData, selectedColor) {
   const sizesMap = new Map();
   const sizeOrder = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
   
-  console.log('🔍 Processing variants:', productData.variants.length);
+  console.log('🔍 Processing variants for correct product:', productData.variants.length);
   
   productData.variants.forEach((variant, index) => {
     console.log(`📦 Variant ${index + 1}:`, {
@@ -436,62 +481,5 @@ function updateCartUI() {
       console.error('❌ Error updating cart UI:', error);
     });
 }
-
-// Listen for color changes to update available sizes
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('📱 Size drawer JavaScript DOM loaded');
-  
-  // Hide size swatches
-  hideSizeSwatches();
-  
-  // Re-run size swatch hiding after a delay to catch dynamically loaded elements
-  setTimeout(hideSizeSwatches, 1000);
-  setTimeout(hideSizeSwatches, 2000);
-  
-  // Debug: List all elements that might be size drawers
-  const drawerElements = document.querySelectorAll('[id*="size-drawer"]');
-  console.log('🔍 Found drawer elements:', Array.from(drawerElements).map(el => ({
-    id: el.id,
-    display: window.getComputedStyle(el).display,
-    visibility: window.getComputedStyle(el).visibility
-  })));
-  
-  // Listen for color variant changes
-  const colorInputs = document.querySelectorAll('input[name*="Color"], input[name*="Cor"], input[name*="color"], input[name*="cor"]');
-  console.log('🎨 Found color inputs:', colorInputs.length);
-  
-  colorInputs.forEach(input => {
-    input.addEventListener('change', function() {
-      console.log('🎨 Color changed to:', this.value);
-      // If size drawer is open, update the available sizes
-      const openDrawer = document.querySelector('.size-drawer.active');
-      if (openDrawer) {
-        const sectionId = openDrawer.id.replace('size-drawer-', '');
-        populateAvailableSizes(sectionId);
-      }
-    });
-  });
-  
-  // Close drawer when clicking outside
-  document.addEventListener('click', function(event) {
-    if (event.target.classList.contains('size-drawer-overlay')) {
-      const drawer = event.target.parentElement;
-      const sectionId = drawer.id.replace('size-drawer-', '');
-      closeSizeDrawer(sectionId);
-    }
-  });
-  
-  // Close drawer with Escape key
-  document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape') {
-      console.log('⌨️ Escape key pressed');
-      const activeDrawer = document.querySelector('.size-drawer.active');
-      if (activeDrawer) {
-        const sectionId = activeDrawer.id.replace('size-drawer-', '');
-        closeSizeDrawer(sectionId);
-      }
-    }
-  });
-});
 
 console.log('✅ Size drawer JavaScript loaded successfully');
