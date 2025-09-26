@@ -34,16 +34,57 @@
   }
 }
 
-/* Swatch Styles */
-.swatch {
-  width: 30px;
-  height: 30px;
-  box-shadow: 0 0 0 1px #ddd;
-  border: 2px solid white;
-  display: inline-block;
-  background: var(--swatch--background);
-  border-radius: 100%;
-  margin-right: 5px;
+/* Swatch Styles - Updated to match desktop product swatches */
+@media screen and (min-width: 750px) {
+  .swatch {
+    width: 21px !important;
+    height: 21px !important;
+    border: 3px solid transparent !important;
+    box-shadow: 0 0 0 0.5px transparent !important;
+    display: inline-block !important;
+    background: var(--swatch--background) !important;
+    border-radius: 0 !important;
+    margin-right: 0 !important;
+    cursor: pointer !important;
+    transition: none !important;
+    box-sizing: border-box !important;
+  }
+
+  .swatch.active,
+  .swatch:hover,
+  .swatch.selected {
+    border: 3px solid #fff !important;
+    box-shadow: 0 0 0 0.5px #000 !important;
+    outline: none !important;
+  }
+
+  /* Remove gaps between swatches */
+  .product-card__swatch-indicator {
+    gap: 0 !important;
+  }
+}
+
+/* Mobile styles (keep original for mobile) */
+@media screen and (max-width: 749px) {
+  .swatch {
+    width: 30px;
+    height: 30px;
+    box-shadow: 0 0 0 1px #ddd;
+    border: 2px solid white;
+    display: inline-block;
+    background: var(--swatch--background);
+    border-radius: 100%;
+    margin-right: 5px;
+    cursor: pointer;
+    transition: box-shadow 0.2s ease-in-out;
+  }
+
+  .swatch:hover,
+  .swatch.selected,
+  .swatch.active {
+    box-shadow: 0 0 0 2px var(--color-highlight);
+    outline: none;
+  }
 }
 
 .swatch--square {
@@ -54,17 +95,6 @@
   font-size: 0.7em;
   margin-left: 1px;
   margin-top: 3px;
-}
-
-.swatch {
-  cursor: pointer;
-  transition: box-shadow 0.2s ease-in-out;
-}
-
-.swatch:hover,
-.swatch.selected {
-  box-shadow: 0 0 0 2px var(--color-highlight);
-  outline: none;
 }
 
 /* SLIDER */
@@ -86,31 +116,26 @@
   display: block;
 }
 
-#product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span {
-  width: 23px !important;
-  height: 23px !important;
-  margin-right: 5px !important;
-  border-radius: 20px;
-}
+/* Override old specific sizing rules with new desktop styling */
+@media screen and (min-width: 750px) {
+  #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span,
+  #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch {
+    width: 21px !important;
+    height: 21px !important;
+    margin-right: 0 !important;
+    border-radius: 0 !important;
+    border: 3px solid transparent !important;
+    box-shadow: 0 0 0 0.5px transparent !important;
+  }
 
-@media screen and (min-width: 750px) and (max-width: 850px) {
-  #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span {
-    width: 19px !important;
-    height: 19px !important;
-    margin-right: 5px !important;
-    border-radius: 20px;
+  #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch.active,
+  #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch:hover {
+    border: 3px solid #fff !important;
+    box-shadow: 0 0 0 0.5px #000 !important;
   }
 }
 
-@media screen and (min-width: 851px) and (max-width: 1000px) {
-  #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span {
-    width: 19px !important;
-    height: 19px !important;
-    margin-right: 5px !important;
-    border-radius: 20px;
-  }
-}
-
+/* Keep mobile styling */
 @media screen and (max-width: 749px) {
   #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span {
     width: 19px !important;
@@ -118,14 +143,14 @@
     margin-right: 5px !important;
     border-radius: 20px;
   }
+
+  #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch.active {
+    border: 2px solid white;
+    box-shadow: 0 0 0 1px #000;
+  }
 }
 
 #FacetsWrapperMobile > div.mobile-facet.mobile-facet-filter\.v\.t\.shopify\.color-pattern > ul > li > div > label.swatch-input__label > span {
   width: 25px !important;
   height: 25px !important;
-}
-
-#product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch.active {
-  border: 2px solid white;
-  box-shadow: 0 0 0 1px #000;
 }
