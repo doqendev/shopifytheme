@@ -17,6 +17,11 @@
     {%- for option in product.options_with_values -%}
       {%- liquid
         assign option_name_lower = option.name | downcase
+        assign is_size_option = false
+        if option_name_lower contains 'size' or option_name_lower contains 'tamanho' or option_name_lower contains 'talla'
+          assign is_size_option = true
+        endif
+
         assign swatch_count = option.values | map: 'swatch' | compact | size
         assign picker_type = block.settings.picker_type
 
@@ -26,11 +31,6 @@
           else
             assign picker_type = 'swatch'
           endif
-        endif
-
-        assign is_size_option = false
-        if option_name_lower contains 'size' or option_name_lower contains 'tamanho' or option_name_lower contains 'talla'
-          assign is_size_option = true
         endif
 
         if option_name_lower contains 'color' or option_name_lower contains 'cor' or option_name_lower contains 'couleur'

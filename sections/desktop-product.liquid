@@ -645,41 +645,42 @@ document.addEventListener('DOMContentLoaded', function() {
     return;
   }
   
-  var fieldsets = Array.from(
-    variantPickerEl.querySelectorAll('.product-form__input[data-option-position]')
-  );
-  if (!fieldsets.length) {
-    fieldsets = Array.from(variantPickerEl.querySelectorAll('.product-form__input'));
-  }
-  if (!fieldsets.length) {
+  var optionWrappers = variantPickerEl.querySelectorAll('.product-form__input');
+  if (!optionWrappers.length) {
     console.warn("No product-form__input fieldsets found in variant-picker");
     return;
   }
 
-  var totalOptions = Array.isArray(productData.options) ? productData.options.length : fieldsets.length;
+  var optionCount = Array.isArray(productData.options) ? productData.options.length : 0;
 
   function getSelectedOptions() {
-    var selected = new Array(totalOptions).fill(null);
-    fieldsets.forEach(function(fieldset, index) {
-      var positionAttr = fieldset.getAttribute('data-option-position');
-      var optionIndex = parseInt(positionAttr || '', 10) - 1;
-      if (isNaN(optionIndex) || optionIndex < 0 || optionIndex >= selected.length) {
-        optionIndex = index;
+    var selected = new Array(optionCount).fill(null);
+
+    optionWrappers.forEach(function(wrapper) {
+      var positionAttr = wrapper.getAttribute('data-option-position');
+      if (!positionAttr) {
+        return;
       }
 
-      var value = null;
-      var select = fieldset.querySelector('select');
+      var index = parseInt(positionAttr, 10) - 1;
+      if (isNaN(index) || index < 0 || index >= selected.length) {
+        return;
+      }
+
+      var select = wrapper.querySelector('select');
       if (select) {
-        value = select.value ? select.value.trim() : null;
-      } else {
-        var checkedInput = fieldset.querySelector('input[type="radio"]:checked, input[type="checkbox"]:checked');
-        if (checkedInput) {
-          value = checkedInput.value ? checkedInput.value.trim() : null;
+        if (select.value !== "") {
+          selected[index] = select.value.trim();
         }
-      }
-
-      if (optionIndex >= 0 && optionIndex < selected.length) {
-        selected[optionIndex] = value;
+      } else {
+        var radios = wrapper.querySelectorAll('input[type="radio"]');
+        var found = false;
+        radios.forEach(function(radio) {
+          if (radio.checked) {
+            selected[index] = radio.value.trim();
+            found = true;
+          }
+        });
       }
     });
     return selected;
@@ -688,11 +689,10 @@ document.addEventListener('DOMContentLoaded', function() {
   function findVariant(selectedOptions) {
     return productData.variants.find(function(variant) {
       return variant.options.every(function(opt, idx) {
-        var selectedValue = selectedOptions[idx];
-        if (selectedValue === null || selectedValue === undefined || selectedValue === '') {
+        if (selectedOptions[idx] === null || selectedOptions[idx] === undefined || selectedOptions[idx] === '') {
           return true;
         }
-        return String(selectedValue).toLowerCase() === String(opt).toLowerCase();
+        return String(selectedOptions[idx]).toLowerCase() === String(opt).toLowerCase();
       });
     });
   }
@@ -723,19 +723,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   
-  fieldsets.forEach(function(fieldset) {
-    var elements = fieldset.querySelectorAll('input, select');
+  optionWrappers.forEach(function(wrapper) {
+    var elements = wrapper.querySelectorAll('input, select');
     elements.forEach(function(el) {
       el.addEventListener('change', updateVariant);
     });
-  });
-
-  fieldsets.forEach(function(fieldset) {
-    var radios = fieldset.querySelectorAll('input[type="radio"]');
-    if (radios.length && !fieldset.querySelector('input[type="radio"]:checked')) {
-      radios[0].checked = true;
-      radios[0].dispatchEvent(new Event('change', { bubbles: true }));
-    }
   });
 
   updateVariant();
