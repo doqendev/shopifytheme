@@ -1,5 +1,7 @@
 (() => {
   const stateBySection = new Map();
+  const COLOR_KEYWORDS = ['color', 'cor', 'colour'];
+  const SIZE_KEYWORDS = ['size', 'tamanho', 'talla'];
 
   const cssEscape = (value) => {
     if (window.CSS && typeof window.CSS.escape === 'function') {
@@ -21,8 +23,53 @@
 
   const getSectionData = (sectionId) => {
     const store = window.themeSizeDrawerData || {};
-    return store[sectionId];
+    const data = store[sectionId];
+    if (data) {
+      ensureOptionIndexes(data);
+    }
+    return data;
   };
+  const findOptionIndex = (options, keywords) => {
+    if (!Array.isArray(options) || !options.length) return -1;
+    const normalizedKeywords = keywords
+      .map((keyword) => (typeof keyword === 'string' ? keyword.toLowerCase() : ''))
+      .filter(Boolean);
+    for (let index = 0; index < options.length; index += 1) {
+      const option = options[index];
+      const name = typeof option?.name === 'string' ? option.name.toLowerCase() : '';
+      if (!name) continue;
+      if (normalizedKeywords.some((keyword) => name.includes(keyword))) {
+        return index;
+      }
+    }
+    return -1;
+  };
+
+  const ensureOptionIndexes = (data) => {
+    if (!data || !Array.isArray(data.options)) return;
+    if (typeof data.colorOptionIndex !== 'number' || data.colorOptionIndex < 0) {
+      data.colorOptionIndex = findOptionIndex(data.options, COLOR_KEYWORDS);
+    }
+    if (typeof data.sizeOptionIndex !== 'number' || data.sizeOptionIndex < 0) {
+      data.sizeOptionIndex = findOptionIndex(data.options, SIZE_KEYWORDS);
+    }
+  };
+  const hideProductSizeInputs = (root = document) => {
+    if (!root || typeof root.querySelectorAll !== 'function') return;
+    const wrappers = root.querySelectorAll('variant-selects .product-form__input, .product-form__input');
+    wrappers.forEach((wrapper) => {
+      if (!wrapper) return;
+      const dataOption = (wrapper.getAttribute?.('data-option-name') || wrapper.dataset?.optionName || '').toLowerCase();
+      const label = wrapper.querySelector?.('.form__label')?.textContent?.toLowerCase() || '';
+      const matchSource = dataOption || label;
+      if (!matchSource) return;
+      if (SIZE_KEYWORDS.some((keyword) => matchSource.includes(keyword))) {
+        wrapper.style.display = 'none';
+        wrapper.setAttribute('data-size-hidden', 'true');
+      }
+    });
+  };
+
 
   const getVariantSelectRoot = (sectionId) => document.getElementById(`variant-selects-${sectionId}`);
 
@@ -428,6 +475,7 @@
     const productInfo = event.target.closest('product-info');
     const sectionId = productInfo?.dataset.section;
     if (!sectionId) return;
+    hideProductSizeInputs(productInfo);
     resetTriggerLabel(sectionId);
   }
 
@@ -436,10 +484,12 @@
       event.detail?.sectionId ||
       event.target?.id?.replace(/^shopify-section-/, '');
     if (!sectionId) return;
+    hideProductSizeInputs(event.target);
     resetTriggerLabel(sectionId);
   }
 
   function initialize() {
+    hideProductSizeInputs();
     document.addEventListener('click', handleDocumentClick);
     document.addEventListener('keydown', handleDocumentKeydown);
     document.addEventListener('change', handleVariantChange, true);
