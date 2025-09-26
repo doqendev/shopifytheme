@@ -1,53 +1,61 @@
-/* Size Drawer Styles */
-.size-drawer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  z-index: 999999 !important;
+/* Size Drawer Styles - High Specificity to Override Theme */
+body .size-drawer,
+html .size-drawer {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 9999999 !important;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
   pointer-events: none;
   background: transparent;
+  margin: 0 !important;
+  padding: 0 !important;
+  transform: none !important;
+  display: none;
 }
 
-.size-drawer.active {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
+body .size-drawer.active,
+html .size-drawer.active {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  display: block !important;
 }
 
 .size-drawer-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: rgba(0, 0, 0, 0.6) !important;
   cursor: pointer;
   z-index: 1;
 }
 
 .size-drawer-content {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: white;
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  background: white !important;
   border-radius: 16px 16px 0 0;
   padding: 24px;
   transform: translateY(100%);
-  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   max-height: 70vh;
   overflow-y: auto;
-  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.2) !important;
   z-index: 2;
+  margin: 0 !important;
 }
 
 .size-drawer.active .size-drawer-content {
-  transform: translateY(0);
+  transform: translateY(0) !important;
 }
 
 .size-drawer-header {
@@ -67,9 +75,9 @@
 }
 
 .close-drawer {
-  background: none;
-  border: none;
-  font-size: 28px;
+  background: none !important;
+  border: none !important;
+  font-size: 28px !important;
   cursor: pointer;
   padding: 8px;
   line-height: 1;
@@ -84,8 +92,8 @@
 }
 
 .close-drawer:hover {
-  color: #333;
-  background: #f5f5f5;
+  color: #333 !important;
+  background: #f5f5f5 !important;
 }
 
 .size-guide-link {
@@ -105,15 +113,15 @@
 }
 
 .size-options {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)) !important;
   gap: 12px;
   margin-bottom: 16px;
 }
 
 .size-option {
-  background: white;
-  border: 2px solid #ddd;
+  background: white !important;
+  border: 2px solid #ddd !important;
   border-radius: 8px;
   padding: 12px 8px;
   text-align: center;
@@ -122,16 +130,18 @@
   transition: all 0.2s ease;
   font-size: 14px;
   min-height: 44px;
-  display: flex;
+  display: flex !important;
   align-items: center;
   justify-content: center;
   position: relative;
   z-index: 1;
+  margin: 0 !important;
+  width: auto !important;
 }
 
 .size-option:hover:not(:disabled) {
-  border-color: #333;
-  background: #f9f9f9;
+  border-color: #333 !important;
+  background: #f9f9f9 !important;
   transform: translateY(-1px);
 }
 
@@ -140,22 +150,22 @@
 }
 
 .size-option:disabled {
-  background: #f5f5f5;
-  color: #999;
+  background: #f5f5f5 !important;
+  color: #999 !important;
   cursor: not-allowed;
-  border-color: #eee;
+  border-color: #eee !important;
 }
 
 .size-option.selected {
-  background: #333;
-  color: white;
-  border-color: #333;
+  background: #333 !important;
+  color: white !important;
+  border-color: #333 !important;
 }
 
 .size-option.out-of-stock {
-  background: #f5f5f5;
-  color: #999;
-  border-color: #eee;
+  background: #f5f5f5 !important;
+  color: #999 !important;
+  border-color: #eee !important;
   cursor: not-allowed;
   text-decoration: line-through;
 }
@@ -182,7 +192,7 @@
   }
   
   .size-options {
-    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)) !important;
     gap: 10px;
   }
   
@@ -193,7 +203,7 @@
   }
   
   .close-drawer {
-    font-size: 24px;
+    font-size: 24px !important;
     width: 36px;
     height: 36px;
   }
@@ -202,17 +212,17 @@
 /* Desktop */
 @media screen and (min-width: 750px) {
   .size-drawer-content {
-    left: 50%;
-    transform: translateX(-50%) translateY(100%);
-    width: 90%;
-    max-width: 480px;
+    left: 50% !important;
+    transform: translateX(-50%) translateY(100%) !important;
+    width: 90% !important;
+    max-width: 480px !important;
     border-radius: 16px;
-    bottom: 20px;
-    position: fixed;
+    bottom: 20px !important;
+    position: fixed !important;
   }
   
   .size-drawer.active .size-drawer-content {
-    transform: translateX(-50%) translateY(0);
+    transform: translateX(-50%) translateY(0) !important;
   }
 }
 
@@ -228,15 +238,88 @@
   z-index: 2;
 }
 
-/* Ensure drawer appears above all Shopify elements */
-.size-drawer,
-.size-drawer * {
-  box-sizing: border-box;
+/* Test visibility - temporary bright background */
+.size-drawer.active {
+  background: rgba(255, 0, 0, 0.1) !important; /* Temporary red tint to see if drawer is there */
 }
 
-/* Force visibility when active */
-.size-drawer.active {
-  display: block !important;
-  opacity: 1 !important;
+/* Force all drawer elements to be visible */
+.size-drawer.active,
+.size-drawer.active * {
   visibility: visible !important;
+}
+
+/* HIDE SIZE VARIANT SWATCHES - Multiple targeting methods */
+
+/* Method 1: Hide by content */
+fieldset:has(legend:contains("Size")),
+fieldset:has(legend:contains("Tamanho")),
+.product-form__input--swatch:has(legend:contains("Size")),
+.product-form__input--swatch:has(legend:contains("Tamanho")) {
+  display: none !important;
+}
+
+/* Method 2: Hide common size swatch patterns */
+fieldset legend:contains("Size"),
+fieldset legend:contains("Tamanho"),
+.variant-input--size,
+.size-selector,
+.size-swatches,
+input[name*="Size"],
+input[name*="Tamanho"],
+label[for*="Size"],
+label[for*="Tamanho"] {
+  display: none !important;
+}
+
+/* Method 3: Hide by data attributes and IDs */
+[data-option-name*="Size"],
+[data-option-name*="Tamanho"],
+[id*="Option"][id*="Size"],
+[id*="Option"][id*="Tamanho"] {
+  display: none !important;
+}
+
+/* Method 4: Target specific swatch containers */
+.swatch-container:has(input[value="XS"]),
+.swatch-container:has(input[value="S"]),
+.swatch-container:has(input[value="M"]),
+.swatch-container:has(input[value="L"]),
+.swatch-container:has(input[value="XL"]) {
+  display: none !important;
+}
+
+/* Method 5: Hide by common size values */
+input[value="XS"],
+input[value="S"],
+input[value="M"], 
+input[value="L"],
+input[value="XL"],
+input[value="XXL"],
+label[for*="XS"],
+label[for*="-S-"],
+label[for*="-M-"],
+label[for*="-L-"],
+label[for*="XL"] {
+  display: none !important;
+}
+
+/* Method 6: Hide parent containers of size inputs */
+input[value="XS"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]),
+input[value="S"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]),
+input[value="M"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]),
+input[value="L"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]),
+input[value="XL"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]),
+input[value="XXL"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]) {
+  display: none !important;
+}
+
+/* Hide their parent labels and containers */
+input[value="XS"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]) ~ label,
+input[value="S"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]) ~ label,
+input[value="M"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]) ~ label,
+input[value="L"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]) ~ label,
+input[value="XL"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]) ~ label,
+input[value="XXL"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]) ~ label {
+  display: none !important;
 }

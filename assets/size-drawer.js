@@ -1,4 +1,59 @@
-// Size Drawer Functionality - Enhanced Debug Version
+// Size Drawer Functionality - Enhanced with Size Swatch Hiding
+
+// Hide size swatches on page load
+document.addEventListener('DOMContentLoaded', function() {
+  hideSizeSwatches();
+});
+
+function hideSizeSwatches() {
+  console.log('🚫 Hiding size swatches...');
+  
+  // Find all size-related elements and hide them
+  const sizeSelectors = [
+    'input[value="XS"]:not([name*="Color"]):not([name*="Cor"])',
+    'input[value="S"]:not([name*="Color"]):not([name*="Cor"])',
+    'input[value="M"]:not([name*="Color"]):not([name*="Cor"])',
+    'input[value="L"]:not([name*="Color"]):not([name*="Cor"])',
+    'input[value="XL"]:not([name*="Color"]):not([name*="Cor"])',
+    'input[value="XXL"]:not([name*="Color"]):not([name*="Cor"])',
+    'label[for*="XS"]',
+    'label[for*="-S-"]',
+    'label[for*="-M-"]',
+    'label[for*="-L-"]',
+    'label[for*="XL"]',
+    '[data-option-name*="Size"]',
+    '[data-option-name*="Tamanho"]'
+  ];
+  
+  sizeSelectors.forEach(selector => {
+    const elements = document.querySelectorAll(selector);
+    elements.forEach(el => {
+      console.log('🚫 Hiding element:', el);
+      el.style.display = 'none';
+      // Also hide parent containers
+      if (el.parentElement) {
+        const parent = el.parentElement;
+        // Check if parent only contains size-related elements
+        const siblings = parent.querySelectorAll('input, label');
+        const sizeSiblings = parent.querySelectorAll('input[value="XS"], input[value="S"], input[value="M"], input[value="L"], input[value="XL"], input[value="XXL"]');
+        if (siblings.length === sizeSiblings.length) {
+          console.log('🚫 Hiding parent container:', parent);
+          parent.style.display = 'none';
+        }
+      }
+    });
+  });
+  
+  // Also hide fieldsets with size-related legends
+  const fieldsets = document.querySelectorAll('fieldset');
+  fieldsets.forEach(fieldset => {
+    const legend = fieldset.querySelector('legend');
+    if (legend && (legend.textContent.toLowerCase().includes('size') || legend.textContent.toLowerCase().includes('tamanho'))) {
+      console.log('🚫 Hiding size fieldset:', fieldset);
+      fieldset.style.display = 'none';
+    }
+  });
+}
 
 // Global functions for opening and closing drawer
 function openSizeDrawer(sectionId) {
@@ -11,17 +66,23 @@ function openSizeDrawer(sectionId) {
     // Populate sizes based on current color selection
     populateAvailableSizes(sectionId);
     
-    // Force show drawer with multiple methods
+    // Force show drawer with multiple methods - ENHANCED
     drawer.style.display = 'block';
     drawer.style.visibility = 'visible';
     drawer.style.opacity = '1';
-    drawer.style.zIndex = '999999';
+    drawer.style.zIndex = '9999999';
     drawer.style.position = 'fixed';
+    drawer.style.top = '0';
+    drawer.style.left = '0';
+    drawer.style.width = '100vw';
+    drawer.style.height = '100vh';
+    drawer.style.background = 'rgba(255, 0, 0, 0.1)'; // Temporary red tint
     
     // Add active class with delay for animation
     setTimeout(() => {
       drawer.classList.add('active');
       console.log('✅ Drawer should now be active and visible');
+      console.log('🔍 Drawer computed style:', window.getComputedStyle(drawer));
     }, 10);
     
     // Prevent body scrolling
@@ -33,7 +94,9 @@ function openSizeDrawer(sectionId) {
       display: drawer.style.display,
       visibility: drawer.style.visibility,
       opacity: drawer.style.opacity,
-      zIndex: drawer.style.zIndex
+      zIndex: drawer.style.zIndex,
+      position: drawer.style.position,
+      background: drawer.style.background
     });
   } else {
     console.error('❌ Size drawer not found for section:', sectionId);
@@ -377,6 +440,13 @@ function updateCartUI() {
 // Listen for color changes to update available sizes
 document.addEventListener('DOMContentLoaded', function() {
   console.log('📱 Size drawer JavaScript DOM loaded');
+  
+  // Hide size swatches
+  hideSizeSwatches();
+  
+  // Re-run size swatch hiding after a delay to catch dynamically loaded elements
+  setTimeout(hideSizeSwatches, 1000);
+  setTimeout(hideSizeSwatches, 2000);
   
   // Debug: List all elements that might be size drawers
   const drawerElements = document.querySelectorAll('[id*="size-drawer"]');

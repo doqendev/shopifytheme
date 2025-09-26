@@ -1,5 +1,5 @@
 {% comment %}
-  Renders product variant-picker with size options hidden (handled by size drawer)
+  Renders product variant-picker with size options completely hidden (handled by size drawer)
 
   Accepts:
   - product: {Object} product object.
@@ -29,14 +29,22 @@
       -%}
       
       {%- comment %}
-        HIDE SIZE OPTIONS - These are now handled by the size drawer
+        COMPLETELY HIDE SIZE OPTIONS - These are now handled by the size drawer
+        Skip rendering any option that contains size-related terms
       {%- endcomment -%}
-      {%- unless option.name contains "Size" or option.name contains "Tamanho" or option.name contains "size" or option.name contains "tamanho" -%}
+      {%- assign is_size_option = false -%}
+      {%- assign option_name_lower = option.name | downcase -%}
+      {%- if option_name_lower contains 'size' or option_name_lower contains 'tamanho' or option_name_lower contains 'talla' -%}
+        {%- assign is_size_option = true -%}
+      {%- endif -%}
+      
+      {%- unless is_size_option -%}
         
         {%- comment %}
-          For Color options, force swatch dropdown so the swatch is shown.
+          For Color options, force swatch so the swatch is shown.
         {%- endcomment -%}
-        {%- if option.name contains "Color" or option.name contains "Cor" -%}
+        {%- assign option_name_lower = option.name | downcase -%}
+        {%- if option_name_lower contains 'color' or option_name_lower contains 'cor' or option_name_lower contains 'couleur' -%}
           {% assign picker_type = "swatch" %}
         {%- endif -%}
         
