@@ -46,15 +46,28 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
+  width: 21px !important;
+  height: 21px !important;
+  padding: 0 !important;
   margin: 0 !important;
-  background: none;
-  border: none;
-  cursor: pointer;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
 }
 
 .product-form__input--swatch .swatch-input__label > .swatch {
   display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.product-form__input--swatch .swatch-input__label:hover,
+.product-form__input--swatch .swatch-input__label.active,
+.product-form__input--swatch .swatch-input__input:checked + .swatch-input__label,
+.product-form__input--swatch .swatch-input__input:focus-visible + .swatch-input__label {
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .swatch--square {
