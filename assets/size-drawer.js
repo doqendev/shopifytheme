@@ -1,139 +1,132 @@
-// Size Drawer Functionality - Fixed Version
+// Size Drawer Functionality - COMPLETELY PREVENT AUTO OPENING
 
-// Don't auto-open drawer on page load
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('📱 Size drawer JavaScript DOM loaded');
-  
-  // Hide size swatches
-  hideSizeSwatches();
-  
-  // Re-run size swatch hiding after a delay to catch dynamically loaded elements
-  setTimeout(hideSizeSwatches, 1000);
-  
-  // Make sure all drawers are closed on page load
-  const allDrawers = document.querySelectorAll('.size-drawer');
-  allDrawers.forEach(drawer => {
-    drawer.style.display = 'none';
-    drawer.classList.remove('active');
-  });
-  
-  // Debug: List all elements that might be size drawers
-  const drawerElements = document.querySelectorAll('[id*="size-drawer"]');
-  console.log('🔍 Found drawer elements:', Array.from(drawerElements).map(el => ({
-    id: el.id,
-    display: window.getComputedStyle(el).display,
-    visibility: window.getComputedStyle(el).visibility
-  })));
-  
-  // Listen for color variant changes
-  const colorInputs = document.querySelectorAll('input[name*="Color"], input[name*="Cor"], input[name*="color"], input[name*="cor"]');
-  console.log('🎨 Found color inputs:', colorInputs.length);
-  
-  colorInputs.forEach(input => {
-    input.addEventListener('change', function() {
-      console.log('🎨 Color changed to:', this.value);
-      // If size drawer is open, update the available sizes
-      const openDrawer = document.querySelector('.size-drawer.active');
-      if (openDrawer) {
-        const sectionId = openDrawer.id.replace('size-drawer-', '');
-        populateAvailableSizes(sectionId);
+// IMMEDIATELY hide all size drawers on script load
+(function() {
+  const hideAllDrawers = () => {
+    const allDrawers = document.querySelectorAll('.size-drawer, [id*="size-drawer"]');
+    allDrawers.forEach(drawer => {
+      drawer.style.display = 'none';
+      drawer.style.visibility = 'hidden';
+      drawer.style.opacity = '0';
+      drawer.style.position = 'absolute';
+      drawer.style.top = '-9999px';
+      drawer.style.left = '-9999px';
+      drawer.classList.remove('active');
+      console.log('🚫 Force hiding drawer:', drawer.id);
+    });
+    
+    // Also hide any element containing "Seleciona o tamanho"
+    const sizeSelectors = document.querySelectorAll('*');
+    sizeSelectors.forEach(el => {
+      if (el.textContent && el.textContent.includes('Seleciona o tamanho')) {
+        el.style.display = 'none';
+        console.log('🚫 Hiding "Seleciona o tamanho" element:', el);
       }
     });
-  });
+  };
   
-  // Close drawer when clicking outside
-  document.addEventListener('click', function(event) {
-    if (event.target.classList.contains('size-drawer-overlay')) {
-      const drawer = event.target.parentElement;
-      const sectionId = drawer.id.replace('size-drawer-', '');
-      closeSizeDrawer(sectionId);
-    }
-  });
+  // Run immediately
+  hideAllDrawers();
   
-  // Close drawer with Escape key
-  document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape') {
-      console.log('⌨️ Escape key pressed');
-      const activeDrawer = document.querySelector('.size-drawer.active');
-      if (activeDrawer) {
-        const sectionId = activeDrawer.id.replace('size-drawer-', '');
-        closeSizeDrawer(sectionId);
-      }
-    }
-  });
-});
+  // Run after DOM loads
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', hideAllDrawers);
+  }
+  
+  // Run periodically to catch dynamically loaded content
+  setTimeout(hideAllDrawers, 100);
+  setTimeout(hideAllDrawers, 500);
+  setTimeout(hideAllDrawers, 1000);
+  setTimeout(hideAllDrawers, 2000);
+})();
 
 function hideSizeSwatches() {
-  console.log('🚫 Hiding size swatches...');
+  console.log('🚫 Aggressively hiding size swatches...');
   
-  // Find all size-related elements and hide them
-  const sizeSelectors = [
-    'input[value="XS"]:not([name*="Color"]):not([name*="Cor"])',
-    'input[value="S"]:not([name*="Color"]):not([name*="Cor"])',
-    'input[value="M"]:not([name*="Color"]):not([name*="Cor"])',
-    'input[value="L"]:not([name*="Color"]):not([name*="Cor"])',
-    'input[value="XL"]:not([name*="Color"]):not([name*="Cor"])',
-    'input[value="XXL"]:not([name*="Color"]):not([name*="Cor"])',
-    'label[for*="XS"]',
-    'label[for*="-S-"]',
-    'label[for*="-M-"]',
-    'label[for*="-L-"]',
-    'label[for*="XL"]',
-    '[data-option-name*="Size"]',
-    '[data-option-name*="Tamanho"]'
-  ];
+  // Hide all size-related inputs and their containers
+  const sizeValues = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
   
-  sizeSelectors.forEach(selector => {
-    const elements = document.querySelectorAll(selector);
-    elements.forEach(el => {
-      console.log('🚫 Hiding element:', el);
-      el.style.display = 'none';
-      // Also hide parent containers
-      if (el.parentElement) {
-        const parent = el.parentElement;
-        // Check if parent only contains size-related elements
-        const siblings = parent.querySelectorAll('input, label');
-        const sizeSiblings = parent.querySelectorAll('input[value="XS"], input[value="S"], input[value="M"], input[value="L"], input[value="XL"], input[value="XXL"]');
-        if (siblings.length === sizeSiblings.length) {
-          console.log('🚫 Hiding parent container:', parent);
+  sizeValues.forEach(size => {
+    // Hide inputs with these values (but not color inputs)
+    const inputs = document.querySelectorAll(`input[value="${size}"]:not([name*="Color"]):not([name*="Cor"])`);
+    inputs.forEach(input => {
+      input.style.display = 'none';
+      input.style.visibility = 'hidden';
+      input.style.position = 'absolute';
+      input.style.top = '-9999px';
+      
+      // Hide parent elements too
+      let parent = input.parentElement;
+      while (parent && parent !== document.body) {
+        if (parent.tagName === 'FIELDSET' || parent.classList.contains('product-form__input')) {
           parent.style.display = 'none';
+          console.log('🚫 Hiding parent container:', parent);
+          break;
         }
+        parent = parent.parentElement;
       }
+      
+      console.log('🚫 Hiding size input:', size, input);
+    });
+    
+    // Hide labels
+    const labels = document.querySelectorAll(`label[for*="${size}"]`);
+    labels.forEach(label => {
+      label.style.display = 'none';
+      console.log('🚫 Hiding size label:', label);
     });
   });
   
-  // Also hide fieldsets with size-related legends
-  const fieldsets = document.querySelectorAll('fieldset');
-  fieldsets.forEach(fieldset => {
-    const legend = fieldset.querySelector('legend');
-    if (legend && (legend.textContent.toLowerCase().includes('size') || legend.textContent.toLowerCase().includes('tamanho'))) {
-      console.log('🚫 Hiding size fieldset:', fieldset);
-      fieldset.style.display = 'none';
+  // Hide any remaining elements with size text
+  const elementsWithSizeText = document.querySelectorAll('*');
+  elementsWithSizeText.forEach(el => {
+    if (el.textContent) {
+      const text = el.textContent.toLowerCase();
+      if ((text.includes('seleciona') && text.includes('tamanho')) || 
+          (text.includes('choose') && text.includes('size'))) {
+        el.style.display = 'none';
+        console.log('🚫 Hiding size text element:', el.textContent.substring(0, 50));
+      }
     }
   });
 }
 
 // Global functions for opening and closing drawer
 function openSizeDrawer(sectionId) {
-  console.log('🚀 Opening size drawer for section:', sectionId);
+  console.log('🚀 MANUALLY opening size drawer for section:', sectionId);
   
   const drawer = document.getElementById('size-drawer-' + sectionId);
   console.log('📦 Drawer element found:', drawer);
   
   if (drawer) {
+    // Make sure we're using the correct product data for THIS page
+    const currentProduct = getCurrentProductInfo();
+    console.log('🛍️ Current product info:', currentProduct);
+    
+    // Override the product data with current page product
+    if (currentProduct) {
+      window['productData_' + sectionId] = {
+        variants: currentProduct.variants,
+        options: currentProduct.options,
+        sectionId: sectionId
+      };
+      console.log('✅ Updated product data for section:', sectionId);
+    }
+    
     // Populate sizes based on current color selection
     populateAvailableSizes(sectionId);
     
-    // Show drawer
+    // Show drawer manually
+    drawer.classList.add('manually-activated');
     drawer.style.display = 'block';
-    drawer.style.visibility = 'visible';
-    drawer.style.opacity = '1';
-    drawer.style.zIndex = '9999999';
     drawer.style.position = 'fixed';
     drawer.style.top = '0';
     drawer.style.left = '0';
     drawer.style.width = '100vw';
     drawer.style.height = '100vh';
+    drawer.style.visibility = 'visible';
+    drawer.style.opacity = '1';
+    drawer.style.zIndex = '9999999';
     
     // Add active class with delay for animation
     setTimeout(() => {
@@ -144,10 +137,44 @@ function openSizeDrawer(sectionId) {
     // Prevent body scrolling
     document.body.style.overflow = 'hidden';
     
-    console.log('📱 Size drawer opened for section:', sectionId);
+    console.log('📱 Size drawer manually opened for section:', sectionId);
   } else {
     console.error('❌ Size drawer not found for section:', sectionId);
   }
+}
+
+function getCurrentProductInfo() {
+  // Try to get product info from the current page
+  const productScripts = document.querySelectorAll('script[type="application/ld+json"]');
+  
+  for (const script of productScripts) {
+    try {
+      const data = JSON.parse(script.textContent);
+      if (data['@type'] === 'Product' || data.variants) {
+        console.log('📦 Found product data in page:', data);
+        return data;
+      }
+    } catch (e) {
+      // Continue searching
+    }
+  }
+  
+  // Try to get from meta tags or other sources
+  const productId = document.querySelector('[data-product-id]');
+  if (productId) {
+    console.log('📦 Found product ID:', productId.dataset.productId);
+    // We have product ID but need to fetch variants - for now return null
+  }
+  
+  // Last resort: try to get from global variables
+  if (window.product || window.meta?.product) {
+    const product = window.product || window.meta.product;
+    console.log('📦 Found product in global variables:', product);
+    return product;
+  }
+  
+  console.log('❌ Could not find current product info');
+  return null;
 }
 
 function closeSizeDrawer(sectionId) {
@@ -156,9 +183,13 @@ function closeSizeDrawer(sectionId) {
   const drawer = document.getElementById('size-drawer-' + sectionId);
   if (drawer) {
     drawer.classList.remove('active');
+    drawer.classList.remove('manually-activated');
     
     setTimeout(() => {
       drawer.style.display = 'none';
+      drawer.style.position = 'absolute';
+      drawer.style.top = '-9999px';
+      drawer.style.left = '-9999px';
     }, 300);
     
     // Restore body scrolling
@@ -254,7 +285,7 @@ function getAvailableSizesForColor(productData, selectedColor) {
   const sizesMap = new Map();
   const sizeOrder = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
   
-  console.log('🔍 Processing variants for correct product:', productData.variants.length);
+  console.log('🔍 Processing variants for CORRECT product:', productData.variants.length);
   
   productData.variants.forEach((variant, index) => {
     console.log(`📦 Variant ${index + 1}:`, {
@@ -318,7 +349,7 @@ function getAvailableSizesForColor(productData, selectedColor) {
     return aIndex - bIndex;
   });
   
-  console.log('📏 Final sorted sizes:', sortedSizes);
+  console.log('📏 Final sorted sizes for CORRECT product:', sortedSizes);
   return sortedSizes;
 }
 
@@ -363,7 +394,7 @@ function selectSize(sectionId, sizeData) {
 }
 
 async function addToCartAndClose(sectionId) {
-  console.log('🛒 Adding to cart and closing drawer for section:', sectionId);
+  console.log('🛒 Adding CORRECT product to cart for section:', sectionId);
   
   const variantInput = document.getElementById('variant-id-' + sectionId);
   const chooseSizeBtn = document.getElementById('ChooseSizeButton-' + sectionId);
@@ -400,7 +431,7 @@ async function addToCartAndClose(sectionId) {
     const result = await response.json();
     
     if (response.ok) {
-      console.log('✅ Product added to cart:', result);
+      console.log('✅ CORRECT product added to cart:', result);
       
       // Close drawer
       closeSizeDrawer(sectionId);
@@ -482,4 +513,70 @@ function updateCartUI() {
     });
 }
 
-console.log('✅ Size drawer JavaScript loaded successfully');
+// Listen for color changes to update available sizes
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('📱 Size drawer JavaScript DOM loaded - PREVENTING AUTO OPEN');
+  
+  // FORCE hide everything on DOM load
+  setTimeout(() => {
+    hideSizeSwatches();
+    
+    // Force hide all drawers again
+    const allDrawers = document.querySelectorAll('.size-drawer, [id*="size-drawer"]');
+    allDrawers.forEach(drawer => {
+      drawer.style.display = 'none';
+      drawer.style.visibility = 'hidden';
+      drawer.style.opacity = '0';
+      drawer.style.position = 'absolute';
+      drawer.style.top = '-9999px';
+      drawer.classList.remove('active');
+    });
+  }, 100);
+  
+  // Debug: List all elements that might be size drawers
+  const drawerElements = document.querySelectorAll('[id*="size-drawer"]');
+  console.log('🔍 Found drawer elements:', Array.from(drawerElements).map(el => ({
+    id: el.id,
+    display: window.getComputedStyle(el).display,
+    visibility: window.getComputedStyle(el).visibility
+  })));
+  
+  // Listen for color variant changes
+  const colorInputs = document.querySelectorAll('input[name*="Color"], input[name*="Cor"], input[name*="color"], input[name*="cor"]');
+  console.log('🎨 Found color inputs:', colorInputs.length);
+  
+  colorInputs.forEach(input => {
+    input.addEventListener('change', function() {
+      console.log('🎨 Color changed to:', this.value);
+      // If size drawer is open, update the available sizes
+      const openDrawer = document.querySelector('.size-drawer.active');
+      if (openDrawer) {
+        const sectionId = openDrawer.id.replace('size-drawer-', '');
+        populateAvailableSizes(sectionId);
+      }
+    });
+  });
+  
+  // Close drawer when clicking outside
+  document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('size-drawer-overlay')) {
+      const drawer = event.target.parentElement;
+      const sectionId = drawer.id.replace('size-drawer-', '');
+      closeSizeDrawer(sectionId);
+    }
+  });
+  
+  // Close drawer with Escape key
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+      console.log('⌨️ Escape key pressed');
+      const activeDrawer = document.querySelector('.size-drawer.active');
+      if (activeDrawer) {
+        const sectionId = activeDrawer.id.replace('size-drawer-', '');
+        closeSizeDrawer(sectionId);
+      }
+    }
+  });
+});
+
+console.log('✅ Size drawer JavaScript loaded successfully - AUTO OPENING PREVENTED');

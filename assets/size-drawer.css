@@ -1,29 +1,42 @@
-/* Size Drawer Styles - Fixed to start hidden */
-body .size-drawer,
-html .size-drawer {
+/* Size Drawer Styles - AGGRESSIVE HIDE VERSION */
+
+/* FORCE HIDE ALL SIZE DRAWERS ON PAGE LOAD */
+.size-drawer {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  position: fixed !important;
+  top: -9999px !important;
+  left: -9999px !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Only show when explicitly activated */
+.size-drawer.manually-activated {
+  display: block !important;
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;
   width: 100vw !important;
   height: 100vh !important;
   z-index: 9999999 !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
+  opacity: 0;
+  visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
-  pointer-events: none !important;
+  pointer-events: none;
   background: transparent;
   margin: 0 !important;
   padding: 0 !important;
   transform: none !important;
-  display: none !important;
 }
 
-body .size-drawer.active,
-html .size-drawer.active {
+.size-drawer.manually-activated.active {
   opacity: 1 !important;
   visibility: visible !important;
   pointer-events: auto !important;
-  display: block !important;
 }
 
 .size-drawer-overlay {
@@ -54,7 +67,7 @@ html .size-drawer.active {
   margin: 0 !important;
 }
 
-.size-drawer.active .size-drawer-content {
+.size-drawer.manually-activated.active .size-drawer-content {
   transform: translateY(0) !important;
 }
 
@@ -170,45 +183,6 @@ html .size-drawer.active {
   text-decoration: line-through;
 }
 
-/* Loading States */
-.loading-state {
-  opacity: 0.7;
-  pointer-events: none;
-}
-
-.choose-size-btn.loading {
-  opacity: 0.7;
-}
-
-.choose-size-btn.loading span {
-  opacity: 0.7;
-}
-
-/* Mobile Responsiveness */
-@media screen and (max-width: 749px) {
-  .size-drawer-content {
-    padding: 20px;
-    max-height: 80vh;
-  }
-  
-  .size-options {
-    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)) !important;
-    gap: 10px;
-  }
-  
-  .size-option {
-    padding: 10px 6px;
-    font-size: 13px;
-    min-height: 40px;
-  }
-  
-  .close-drawer {
-    font-size: 24px !important;
-    width: 36px;
-    height: 36px;
-  }
-}
-
 /* Desktop */
 @media screen and (min-width: 750px) {
   .size-drawer-content {
@@ -221,79 +195,113 @@ html .size-drawer.active {
     position: fixed !important;
   }
   
-  .size-drawer.active .size-drawer-content {
+  .size-drawer.manually-activated.active .size-drawer-content {
     transform: translateX(-50%) translateY(0) !important;
   }
 }
 
-/* Animation for size selection */
-@keyframes sizeSelected {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
+/* AGGRESSIVELY HIDE ALL SIZE-RELATED ELEMENTS */
+
+/* Hide any element containing size text */
+*[class*="size" i],
+*[id*="size" i],
+*[data-*="size" i] {
+  display: none !important;
 }
 
-.size-option.selecting {
-  animation: sizeSelected 0.3s ease;
-  z-index: 2;
+/* Hide size option buttons */
+button[value="XS"],
+button[value="S"], 
+button[value="M"],
+button[value="L"],
+button[value="XL"],
+button[value="XXL"],
+input[value="XS"]:not([name*="color" i]):not([name*="cor" i]),
+input[value="S"]:not([name*="color" i]):not([name*="cor" i]),
+input[value="M"]:not([name*="color" i]):not([name*="cor" i]),
+input[value="L"]:not([name*="color" i]):not([name*="cor" i]),
+input[value="XL"]:not([name*="color" i]):not([name*="cor" i]),
+input[value="XXL"]:not([name*="color" i]):not([name*="cor" i]) {
+  display: none !important;
+  visibility: hidden !important;
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
 }
 
-/* HIDE SIZE VARIANT SWATCHES - Multiple targeting methods */
+/* Hide their labels */
+label[for*="XS"],
+label[for*="-S-"],
+label[for*="-M-"],
+label[for*="-L-"],
+label[for*="XL"] {
+  display: none !important;
+  visibility: hidden !important;
+}
 
-/* Method 1: Hide by content */
+/* Hide fieldsets with size legends */
 fieldset:has(legend:contains("Size")),
 fieldset:has(legend:contains("Tamanho")),
-.product-form__input--swatch:has(legend:contains("Size")),
-.product-form__input--swatch:has(legend:contains("Tamanho")) {
-  display: none !important;
-}
-
-/* Method 2: Hide common size swatch patterns */
 fieldset legend:contains("Size"),
-fieldset legend:contains("Tamanho"),
-.variant-input--size,
-.size-selector,
-.size-swatches,
-input[name*="Size"],
-input[name*="Tamanho"],
-label[for*="Size"],
-label[for*="Tamanho"] {
+fieldset legend:contains("Tamanho") {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Hide anything that says "Seleciona o tamanho" */
+*:contains("Seleciona o tamanho"),
+*:contains("Selecionar tamanho"),
+*:contains("Choose size"),
+h2:contains("Seleciona o tamanho"),
+h3:contains("Seleciona o tamanho"),
+div:contains("Seleciona o tamanho") {
+  display: none !important;
+  visibility: hidden !important;
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
+}
+
+/* Target the exact element we see in the screenshot */
+div:contains("Seleciona o tamanho") + div {
   display: none !important;
 }
 
-/* Method 3: Hide by data attributes and IDs */
-[data-option-name*="Size"],
-[data-option-name*="Tamanho"],
-[id*="Option"][id*="Size"],
-[id*="Option"][id*="Tamanho"] {
+/* Hide size guide links that might trigger the drawer */
+a[href*="tamanho"],
+a[href*="size"],
+.size-guide,
+*[class*="size-guide"] {
   display: none !important;
 }
 
-/* Method 4: Target specific swatch containers */
-.swatch-container:has(input[value="XS"]),
-.swatch-container:has(input[value="S"]),
-.swatch-container:has(input[value="M"]),
-.swatch-container:has(input[value="L"]),
-.swatch-container:has(input[value="XL"]) {
+/* Force hide the entire size selection area */
+.product-form__input--swatch:has(input[value="XS"]),
+.product-form__input--swatch:has(input[value="S"]),
+.product-form__input--swatch:has(input[value="M"]),
+.product-form__input--swatch:has(input[value="L"]) {
   display: none !important;
 }
 
-/* Method 5: Hide by common size values */
-input[value="XS"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]),
-input[value="S"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]),
-input[value="M"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]), 
-input[value="L"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]),
-input[value="XL"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]),
-input[value="XXL"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]) {
+/* Hide variant picker size sections */
+fieldset:has(input[value="XS"]),
+fieldset:has(input[value="S"]),
+fieldset:has(input[value="M"]),  
+fieldset:has(input[value="L"]),
+fieldset:has(input[value="XL"]) {
   display: none !important;
 }
 
-/* Hide their parent labels and containers */
-input[value="XS"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]) ~ label,
-input[value="S"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]) ~ label,
-input[value="M"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]) ~ label,
-input[value="L"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]) ~ label,
-input[value="XL"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]) ~ label,
-input[value="XXL"]:not([name*="Color"]):not([name*="Cor"]):not([name*="colour"]) ~ label {
-  display: none !important;
+/* Loading States */
+.loading-state {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.choose-size-btn.loading {
+  opacity: 0.7;
+}
+
+.choose-size-btn.loading span {
+  opacity: 0.7;
 }
