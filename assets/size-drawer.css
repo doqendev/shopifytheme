@@ -5,11 +5,12 @@
   left: 0;
   width: 100%;
   height: 100vh;
-  z-index: 99999 !important; /* Ensure it's above everything */
+  z-index: 999999 !important;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
   pointer-events: none;
+  background: transparent;
 }
 
 .size-drawer.active {
@@ -227,20 +228,15 @@
   z-index: 2;
 }
 
-/* Debug styles - Remove after testing */
-.size-drawer {
-  border: 2px solid red; /* Temporary - to see if drawer appears */
-}
-
-.size-drawer.active {
-  border: 2px solid green; /* Temporary - to see active state */
-}
-
 /* Ensure drawer appears above all Shopify elements */
-.size-drawer {
-  z-index: 999999 !important;
+.size-drawer,
+.size-drawer * {
+  box-sizing: border-box;
 }
 
-.size-drawer * {
-  z-index: inherit;
+/* Force visibility when active */
+.size-drawer.active {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
