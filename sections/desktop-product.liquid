@@ -170,17 +170,6 @@
 
   /* Additional swatch / variant styling from previous code */
   @media screen and (min-width: 750px) {
-    fieldset.product-form__input--swatch legend.form__label:contains("Size") ~ input + label .visually-hidden,
-    fieldset.product-form__input--swatch legend.form__label:contains("Tamanho") ~ input + label .visually-hidden {
-      position: static !important;
-      width: auto !important;
-      height: auto !important;
-      clip: auto !important;
-      clip-path: none !important;
-      overflow: visible !important;
-      display: inline-block !important;
-      color: #000 !important;
-    }
     /* Hide the main product section's media gallery on desktop when desktop-product section is used */
     [id*="MediaGallery"][id*="main"] {
       display: none !important;
@@ -224,7 +213,7 @@
     margin-bottom: 20px !important;
   }
 
-  /* Color swatch styling is now handled by global CSS in component-product-variant-picker.css */
+  /* Color swatch styling is now handled by global CSS in swatches-cheyenne.css */
 
   /* Size swatch labels - smaller sizing */
   .desktop-product-section fieldset.product-form__input--pill label,
@@ -264,25 +253,20 @@
     border: none;
   }
 
-  /* Fieldset borders top/bottom for swatches */
-  .product-form__input--swatch,
+  /* Fieldset borders top/bottom for size options */
   .product-form__input--pill {
     border: none;
   }
-  fieldset.product-form__input--swatch,
   fieldset.product-form__input--pill {
     border: none !important;
     border-bottom: 1px solid #ccc !important;
     padding: 20px 0px 40px 0;
   }
   /* Hide fieldset legends including Size label */
-  .desktop-product-section fieldset.product-form__input--swatch legend,
   .desktop-product-section fieldset.product-form__input--pill legend,
   .desktop-product-section legend.form__label,
-  [id*="variant-selects"] fieldset.product-form__input--swatch legend,
   [id*="variant-selects"] fieldset.product-form__input--pill legend,
   [id*="variant-selects"] legend.form__label,
-  #variant-selects-template--24455438926148__desktop_product_kf6zNg > fieldset.js.product-form__input.product-form__input--swatch > legend,
   #variant-selects-template--24455438926148__desktop_product_kf6zNg > fieldset.js.product-form__input.product-form__input--pill > legend {
     display: none !important;
   }
