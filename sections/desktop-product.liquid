@@ -212,16 +212,24 @@
     border-color: #333;
   }
 
-  /* Swatch containers - force proper layout with centered alignment */
+  /* Size swatch containers */
   .desktop-product-section fieldset.product-form__input--pill,
   .desktop-product-section fieldset[class*="product-form__input--pill"],
-  .desktop-product-section fieldset.product-form__input--swatch,
   [id*="variant-selects"] fieldset.product-form__input--pill,
-  [id*="variant-selects"] fieldset.product-form__input--swatch,
   #variant-selects-template--24455438926148__desktop_product_kf6zNg > fieldset.js.product-form__input.product-form__input--pill {
     display: flex !important;
     flex-wrap: wrap !important;
     gap: 4px !important;
+    align-items: center !important;
+    margin-bottom: 20px !important;
+  }
+
+  /* Color swatch containers - smaller gap */
+  .desktop-product-section fieldset.product-form__input--swatch,
+  [id*="variant-selects"] fieldset.product-form__input--swatch {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 2px !important;
     align-items: center !important;
     margin-bottom: 20px !important;
   }
