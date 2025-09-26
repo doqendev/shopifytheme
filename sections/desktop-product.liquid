@@ -224,13 +224,25 @@
     margin-bottom: 20px !important;
   }
 
-  /* Color swatches - sharp corners */
+  /* Color swatches - smaller with bigger white border */
+  .desktop-product-section fieldset.product-form__input--swatch label,
+  [id*="variant-selects"] fieldset.product-form__input--swatch label,
+  #variant-selects-template--24455438926148__desktop_product_kf6zNg > fieldset.js.product-form__input.product-form__input--swatch > label {
+    width: 30px !important;
+    height: 30px !important;
+    border: 3px solid #fff !important;
+    box-shadow: 0 0 0 1px #000 !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+  }
+
   .desktop-product-section fieldset.product-form__input--swatch label span.swatch,
   [id*="variant-selects"] fieldset.product-form__input--swatch label span.swatch,
   #variant-selects-template--24455438926148__desktop_product_kf6zNg > fieldset.js.product-form__input.product-form__input--swatch > label > span.swatch {
     border-radius: 0 !important;
-    width: 36px;
-    height: 36px;
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
   }
 
   /* Size swatch labels - force consistent sizing */
@@ -245,12 +257,12 @@
     border: 1px solid #000 !important;
     cursor: pointer !important;
     margin: 0 !important;
-    height: 40px !important;
-    width: 40px !important;
-    min-height: 40px !important;
-    min-width: 40px !important;
-    max-height: 40px !important;
-    max-width: 40px !important;
+    height: 30px !important;
+    width: 30px !important;
+    min-height: 30px !important;
+    min-width: 30px !important;
+    max-height: 30px !important;
+    max-width: 30px !important;
     font-size: 14px !important;
     box-sizing: border-box !important;
     border-radius: 0 !important;
