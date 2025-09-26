@@ -1,3 +1,10 @@
+{%- liquid
+  assign drawer_product_form_id = product_form_id
+  if drawer_product_form_id == blank
+    assign drawer_product_form_id = 'product-form-' | append: section_id
+  endif
+-%}
+
 <div
   id="size-drawer-{{ section_id }}"
   class="size-drawer"
@@ -44,6 +51,7 @@
   window.themeSizeDrawerData['{{ section_id }}'] = {
     productId: {{ product.id }},
     sectionId: '{{ section_id }}',
+    productFormId: {{ drawer_product_form_id | json }},
     variants: {{ product.variants | json }},
     options: {{ product.options_with_values | json }},
     colorOptionIndex: -1,

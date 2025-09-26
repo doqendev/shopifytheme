@@ -121,12 +121,43 @@
     }
   }
 
+  function findProductForm(sectionId) {
+    const data = getSectionData(sectionId);
+    let form = null;
+
+    if (data?.productFormId) {
+      form = document.getElementById(data.productFormId);
+    }
+
+    if (!form) {
+      form = document.getElementById(`product-form-${sectionId}`);
+    }
+
+    if (!form) {
+      const productFormElement = document.querySelector(
+        `product-form[data-section-id="${cssEscape(sectionId)}"]`
+      );
+      if (productFormElement) {
+        form = productFormElement.querySelector('form') || productFormElement;
+      }
+    }
+
+    if (!form && data?.productFormId) {
+      const fallback = document.querySelector(
+        `form[id="${cssEscape(data.productFormId)}"]`
+      );
+      if (fallback) {
+        form = fallback;
+      }
+    }
+
+    return form || null;
+  }
+
   function updateProductFormVariant(sectionId, variantId) {
-    const form =
-      document.getElementById(`product-form-${sectionId}`) ||
-      document.getElementById(`desktop-product-form-${sectionId}`);
+    const form = findProductForm(sectionId);
     if (!form) return;
-    const input = form.querySelector('input[name="id"]');
+    const input = form.querySelector?.('input[name="id"]');
     if (!input) return;
     input.value = variantId;
     input.dispatchEvent(new Event('change', { bubbles: true }));
