@@ -256,14 +256,21 @@
     margin-right: 0 !important;
   }
 
-  /* ACTIVE SWATCH STYLING - White border + black outline around 15px color */
+  /* ACTIVE SWATCH STYLING - Thinner white border to match collection pages */
   .product-form__input--swatch label.active,
   .product-form__input--swatch input:checked + label,
   .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label,
   .swatch.active,
   .swatch:hover,
   .swatch.selected,
-  [id*="variant-selects"] fieldset.product-form__input--swatch label.active,
+  [id*="variant-selects"] fieldset.product-form__input--swatch label.active {
+    border: 2px solid #fff !important;
+    box-shadow: 0 0 0 0.5px #000 !important;
+    outline: none !important;
+    box-sizing: content-box !important;
+  }
+
+  /* Collection pages keep their existing styling */
   #product-grid .swatch.active,
   #product-grid .swatch:hover {
     border: 3px solid #fff !important;
