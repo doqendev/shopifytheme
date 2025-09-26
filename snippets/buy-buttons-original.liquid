@@ -1,5 +1,5 @@
 {% comment %}
-  Renders product buy-buttons with size drawer functionality.
+  ORIGINAL BACKUP - Renders product buy-buttons.
   Accepts:
   - product: {Object} product object.
   - block: {Object} passing the block information.
@@ -54,7 +54,6 @@
             disabled
           {% endif %}
           class="product-variant-id"
-          id="variant-id-{{ section_id }}"
         >
 
         {%- if gift_card_recipient_feature_active -%}
@@ -71,33 +70,11 @@
               assign quantity_rule_soldout = true
             endif
           -%}
-          
-          <!-- Choose Size Button (New) -->
-          <button
-            id="ChooseSizeButton-{{ section_id }}"
-            type="button"
-            class="product-form__submit button button--full-width {% if show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %} choose-size-btn"
-            {% if product.selected_or_first_available_variant == null %}
-              disabled
-            {% endif %}
-            onclick="openSizeDrawer('{{ section_id }}')"
-          >
-            <span>
-              {%- if product.selected_or_first_available_variant == null -%}
-                {{ 'products.product.unavailable' | t }}
-              {%- else -%}
-                Escolher tamanho
-              {%- endif -%}
-            </span>
-          </button>
-
-          <!-- Hidden Original Submit Button -->
           <button
             id="ProductSubmitButton-{{ section_id }}"
             type="submit"
             name="add"
             class="product-form__submit button button--full-width {% if show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}"
-            style="display: none;"
             {% if product.selected_or_first_available_variant.available == false
               or quantity_rule_soldout
               or product.selected_or_first_available_variant == null
@@ -116,7 +93,6 @@
             </span>
             {%- render 'loading-spinner' -%}
           </button>
-          
           {%- if show_dynamic_checkout -%}
             {{ form | payment_button }}
           {%- endif -%}
@@ -172,11 +148,4 @@
 
     <script src="{{ 'pickup-availability.js' | asset_url }}" defer="defer"></script>
   {%- endif -%}
-
-  <!-- Size Drawer (render at the end of buy-buttons) -->
-  {%- render 'size-drawer', product: product, section_id: section_id -%}
-  
-  <!-- Load size drawer assets -->
-  {{ 'size-drawer.css' | asset_url | stylesheet_tag }}
-  <script src="{{ 'size-drawer.js' | asset_url }}" defer="defer"></script>
 </div>
