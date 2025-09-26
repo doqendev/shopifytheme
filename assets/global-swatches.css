@@ -1,0 +1,112 @@
+/* Global Swatch Styling - Unified across all pages */
+
+@media screen and (min-width: 750px) {
+
+  /* UNIFIED SWATCH CONTAINER STYLING */
+  .product-form__input--swatch,
+  .product-card__swatch-indicator,
+  fieldset.product-form__input--swatch,
+  [id*="variant-selects"] fieldset.product-form__input--swatch {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    margin-bottom: 20px !important;
+  }
+
+  /* Product pages: no gaps between swatches */
+  .desktop-product-section fieldset.product-form__input--swatch,
+  .product__info-container fieldset.product-form__input--swatch,
+  .product-info fieldset.product-form__input--swatch {
+    gap: 0 !important;
+  }
+
+  /* Collection pages: 4px gaps between swatches */
+  .product-card__swatch-indicator {
+    gap: 4px !important;
+  }
+
+  /* UNIFIED SWATCH STYLING - All swatches 21x21 for consistency */
+
+  /* All swatch labels/containers */
+  .product-form__input--swatch label,
+  .product-form__input--swatch .swatch-input__label,
+  .swatch,
+  [id*="variant-selects"] fieldset.product-form__input--swatch label,
+  #product-grid .swatch {
+    width: 21px !important;
+    height: 21px !important;
+    border: 3px solid transparent !important;
+    box-shadow: 0 0 0 0.5px transparent !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    box-sizing: border-box !important;
+    display: inline-block !important;
+    vertical-align: top !important;
+    margin: 0 !important;
+    cursor: pointer !important;
+    transition: none !important;
+  }
+
+  /* Collection page specific: add margin for gaps */
+  .product-card__swatch-indicator .swatch {
+    margin-right: 4px !important;
+  }
+
+  .product-card__swatch-indicator .swatch:last-child {
+    margin-right: 0 !important;
+  }
+
+  /* ACTIVE SWATCH STYLING - White border + black outline */
+  .product-form__input--swatch label.active,
+  .product-form__input--swatch input:checked + label,
+  .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label,
+  .swatch.active,
+  .swatch:hover,
+  .swatch.selected,
+  [id*="variant-selects"] fieldset.product-form__input--swatch label.active,
+  #product-grid .swatch.active,
+  #product-grid .swatch:hover {
+    border: 3px solid #fff !important;
+    box-shadow: 0 0 0 0.5px #000 !important;
+    outline: none !important;
+  }
+
+  /* INNER SWATCH SPANS - For product pages with span structure */
+  .product-form__input--swatch label span.swatch,
+  .product-form__input--swatch .swatch-input__label span,
+  [id*="variant-selects"] fieldset.product-form__input--swatch label span.swatch {
+    border-radius: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+    display: block !important;
+    box-sizing: border-box !important;
+  }
+
+  .product-form__input--swatch label.active > span.swatch,
+  .product-form__input--swatch input:checked + label > span.swatch,
+  .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label > span,
+  [id*="variant-selects"] fieldset.product-form__input--swatch label.active > span.swatch {
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+    box-sizing: border-box !important;
+  }
+
+  /* COLLECTION PAGES - Handle background-based swatches */
+  /* For swatches that use background property (collection pages) */
+  .product-card__swatch-indicator .swatch {
+    background: var(--swatch--background) !important;
+    background-clip: padding-box !important;
+  }
+
+}
+
+/* Hide swatch legends globally on desktop */
+@media screen and (min-width: 750px) {
+  .product-form__input--swatch legend,
+  .product-form__input--swatch .form__label,
+  fieldset.product-form__input--swatch legend {
+    display: none !important;
+  }
+}
