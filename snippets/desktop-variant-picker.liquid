@@ -38,78 +38,81 @@
         endif
       -%}
 
-      {%- unless is_size_option -%}
-        {%- if picker_type == 'swatch' -%}
-          <fieldset
-            class="js product-form__input product-form__input--swatch"
-            data-option-position="{{ option.position }}"
-            data-option-name="{{ option.name | escape }}"
-          >
-            <legend class="form__label">
-              {{ option.name }}:
-              <span data-selected-value>
-                {{- option.selected_value -}}
-              </span>
-            </legend>
-            {% render 'product-variant-options',
-              product: product,
-              option: option,
-              block: block,
-              picker_type: picker_type
-            %}
-          </fieldset>
-        {%- elsif picker_type == 'button' -%}
-          <fieldset
-            class="js product-form__input product-form__input--pill"
-            data-option-position="{{ option.position }}"
-            data-option-name="{{ option.name | escape }}"
-          >
-            <legend class="form__label">{{ option.name }}</legend>
-            {% render 'product-variant-options',
-              product: product,
-              option: option,
-              block: block,
-              picker_type: picker_type
-            %}
-          </fieldset>
-        {%- else -%}
-          <div
-            class="product-form__input product-form__input--dropdown"
-            data-option-position="{{ option.position }}"
-            data-option-name="{{ option.name | escape }}"
-          >
-            <label class="form__label" for="Option-{{ section.id }}-{{ forloop.index0 }}">
-              {{ option.name }}
-            </label>
-            <div class="select">
-              {%- if picker_type == 'swatch_dropdown' -%}
-                <span
-                  data-selected-value
-                  class="dropdown-swatch"
-                >
-                  {% render 'swatch', swatch: option.selected_value.swatch, shape: block.settings.swatch_shape %}
-                </span>
-              {%- endif -%}
-              <select
-                id="Option-{{ section.id }}-{{ forloop.index0 }}"
-                class="select__select"
-                name="options[{{ option.name | escape }}]"
-                form="{{ product_form_id }}"
+      {%- capture wrapper_attributes -%}
+data-option-position="{{ option.position }}" data-option-name="{{ option.name | escape }}"{% if is_size_option %} data-size-option="true"{% endif %}
+      {%- endcapture -%}
+      {%- assign wrapper_attributes = wrapper_attributes | strip -%}
+
+      {%- if picker_type == 'swatch' -%}
+        <fieldset
+          class="js product-form__input product-form__input--swatch{% if is_size_option %} product-form__input--size-hidden{% endif %}"
+          {{ wrapper_attributes }}
+          {% if is_size_option %}hidden aria-hidden="true"{% endif %}
+        >
+          <legend class="form__label">
+            {{ option.name }}:
+            <span data-selected-value>
+              {{- option.selected_value -}}
+            </span>
+          </legend>
+          {% render 'product-variant-options',
+            product: product,
+            option: option,
+            block: block,
+            picker_type: picker_type
+          %}
+        </fieldset>
+      {%- elsif picker_type == 'button' -%}
+        <fieldset
+          class="js product-form__input product-form__input--pill{% if is_size_option %} product-form__input--size-hidden{% endif %}"
+          {{ wrapper_attributes }}
+          {% if is_size_option %}hidden aria-hidden="true"{% endif %}
+        >
+          <legend class="form__label">{{ option.name }}</legend>
+          {% render 'product-variant-options',
+            product: product,
+            option: option,
+            block: block,
+            picker_type: picker_type
+          %}
+        </fieldset>
+      {%- else -%}
+        <div
+          class="product-form__input product-form__input--dropdown{% if is_size_option %} product-form__input--size-hidden{% endif %}"
+          {{ wrapper_attributes }}
+          {% if is_size_option %}hidden aria-hidden="true"{% endif %}
+        >
+          <label class="form__label" for="Option-{{ section.id }}-{{ forloop.index0 }}">
+            {{ option.name }}
+          </label>
+          <div class="select">
+            {%- if picker_type == 'swatch_dropdown' -%}
+              <span
+                data-selected-value
+                class="dropdown-swatch"
               >
-                {% render 'product-variant-options',
-                  product: product,
-                  option: option,
-                  block: block,
-                  picker_type: picker_type
-                %}
-              </select>
-              <span class="svg-wrapper">
-                {{- 'icon-caret.svg' | inline_asset_content -}}
+                {% render 'swatch', swatch: option.selected_value.swatch, shape: block.settings.swatch_shape %}
               </span>
-            </div>
+            {%- endif -%}
+            <select
+              id="Option-{{ section.id }}-{{ forloop.index0 }}"
+              class="select__select"
+              name="options[{{ option.name | escape }}]"
+              form="{{ product_form_id }}"
+            >
+              {% render 'product-variant-options',
+                product: product,
+                option: option,
+                block: block,
+                picker_type: picker_type
+              %}
+            </select>
+            <span class="svg-wrapper">
+              {{- 'icon-caret.svg' | inline_asset_content -}}
+            </span>
           </div>
-        {%- endif -%}
-      {%- endunless -%}
+        </div>
+      {%- endif -%}
     {%- endfor -%}
 
     <script type="application/json" data-selected-variant>
