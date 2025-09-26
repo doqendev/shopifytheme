@@ -645,43 +645,54 @@ document.addEventListener('DOMContentLoaded', function() {
     return;
   }
   
-  var fieldsets = variantPickerEl.querySelectorAll('.product-form__input');
+  var fieldsets = Array.from(
+    variantPickerEl.querySelectorAll('.product-form__input[data-option-position]')
+  );
+  if (!fieldsets.length) {
+    fieldsets = Array.from(variantPickerEl.querySelectorAll('.product-form__input'));
+  }
   if (!fieldsets.length) {
     console.warn("No product-form__input fieldsets found in variant-picker");
     return;
   }
-  
+
+  var totalOptions = Array.isArray(productData.options) ? productData.options.length : fieldsets.length;
+
   function getSelectedOptions() {
-    var selected = [];
-    fieldsets.forEach(function(fieldset) {
+    var selected = new Array(totalOptions).fill(null);
+    fieldsets.forEach(function(fieldset, index) {
+      var positionAttr = fieldset.getAttribute('data-option-position');
+      var optionIndex = parseInt(positionAttr || '', 10) - 1;
+      if (isNaN(optionIndex) || optionIndex < 0 || optionIndex >= selected.length) {
+        optionIndex = index;
+      }
+
+      var value = null;
       var select = fieldset.querySelector('select');
       if (select) {
-        if (select.value === "") {
-          selected.push(null);
-        } else {
-          selected.push(select.value.trim());
-        }
+        value = select.value ? select.value.trim() : null;
       } else {
-        var radios = fieldset.querySelectorAll('input[type="radio"]');
-        var found = false;
-        radios.forEach(function(radio) {
-          if (radio.checked) {
-            selected.push(radio.value.trim());
-            found = true;
-          }
-        });
-        if (!found) {
-          selected.push(null);
+        var checkedInput = fieldset.querySelector('input[type="radio"]:checked, input[type="checkbox"]:checked');
+        if (checkedInput) {
+          value = checkedInput.value ? checkedInput.value.trim() : null;
         }
+      }
+
+      if (optionIndex >= 0 && optionIndex < selected.length) {
+        selected[optionIndex] = value;
       }
     });
     return selected;
   }
-  
+
   function findVariant(selectedOptions) {
     return productData.variants.find(function(variant) {
       return variant.options.every(function(opt, idx) {
-        return String(selectedOptions[idx]).toLowerCase() === String(opt).toLowerCase();
+        var selectedValue = selectedOptions[idx];
+        if (selectedValue === null || selectedValue === undefined || selectedValue === '') {
+          return true;
+        }
+        return String(selectedValue).toLowerCase() === String(opt).toLowerCase();
       });
     });
   }
@@ -718,6 +729,16 @@ document.addEventListener('DOMContentLoaded', function() {
       el.addEventListener('change', updateVariant);
     });
   });
+
+  fieldsets.forEach(function(fieldset) {
+    var radios = fieldset.querySelectorAll('input[type="radio"]');
+    if (radios.length && !fieldset.querySelector('input[type="radio"]:checked')) {
+      radios[0].checked = true;
+      radios[0].dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  });
+
+  updateVariant();
 });
 </script>
 

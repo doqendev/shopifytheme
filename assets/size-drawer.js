@@ -122,7 +122,9 @@
   }
 
   function updateProductFormVariant(sectionId, variantId) {
-    const form = document.getElementById(`product-form-${sectionId}`);
+    const form =
+      document.getElementById(`product-form-${sectionId}`) ||
+      document.getElementById(`desktop-product-form-${sectionId}`);
     if (!form) return;
     const input = form.querySelector('input[name="id"]');
     if (!input) return;
