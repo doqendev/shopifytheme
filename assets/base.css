@@ -4255,8 +4255,12 @@ font-style: normal;
 #facets-toggle-button {
   padding: 0;
 }
-#shopify-section-template--25444170137924__product-grid > div > div.grid-controls.page-width > div.facets-toggle-container {
-  margin-right: 5%;
+
+@media (min-width: 750px) {
+  #shopify-section-template--25444170137924__product-grid > div > div.grid-controls.page-width > div.facets-toggle-container {
+  margin-right: 3.2rem;
+}
+
 }
 
 }
