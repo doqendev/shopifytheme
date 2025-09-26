@@ -343,10 +343,22 @@
     line-height: 1.3;
   }
 
-  /* Changed to apply outline to the label itself when .active */
+  /* Active swatch - bigger black border */
+  .desktop-product-section fieldset.product-form__input--swatch label.active,
+  [id*="variant-selects"] fieldset.product-form__input--swatch label.active,
+  .product-form__input--swatch label.active {
+    border: 3px solid #fff !important;
+    box-shadow: 0 0 0 3px #000 !important;
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .desktop-product-section fieldset.product-form__input--swatch label.active > span.swatch,
+  [id*="variant-selects"] fieldset.product-form__input--swatch label.active > span.swatch,
   .product-form__input--swatch label.active > span.swatch {
-    border: 2px solid #fff;
-    outline: 1px solid #000;
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
   }
 
   /* Accordion CSS */
