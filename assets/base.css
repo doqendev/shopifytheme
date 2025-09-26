@@ -4255,6 +4255,7 @@ font-style: normal;
 #facets-toggle-button {
   padding: 0;
 }
+}
 
 @media screen and (min-width: 750px) {
   #shopify-section-template--25444170137924__product-grid > div > div.grid-controls.page-width > div.facets-toggle-container {
