@@ -1,270 +1,163 @@
-/* Size Drawer Styles - TARGETED HIDE VERSION */
-
-/* FORCE HIDE ONLY SIZE DRAWERS ON PAGE LOAD */
-.size-drawer,
-[id*="size-drawer"] {
-  display: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-  position: fixed !important;
-  top: -9999px !important;
-  left: -9999px !important;
-  width: 0 !important;
-  height: 0 !important;
-  overflow: hidden !important;
+.size-drawer {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 60;
 }
 
-/* Only show when explicitly activated */
-.size-drawer.manually-activated {
-  display: block !important;
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  z-index: 9999999 !important;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-  pointer-events: none;
-  background: transparent;
-  margin: 0 !important;
-  padding: 0 !important;
-  transform: none !important;
+.size-drawer.is-open {
+  display: flex;
 }
 
-.size-drawer.manually-activated.active {
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
+.size-drawer__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
 }
 
-.size-drawer-overlay {
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  background: rgba(0, 0, 0, 0.6) !important;
-  cursor: pointer;
-  z-index: 1;
-}
-
-.size-drawer-content {
-  position: absolute !important;
-  bottom: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  background: white !important;
+.size-drawer__content {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
   border-radius: 16px 16px 0 0;
   padding: 24px;
-  transform: translateY(100%);
-  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  max-height: 70vh;
-  overflow-y: auto;
-  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.2) !important;
-  z-index: 2;
-  margin: 0 !important;
+  margin: 0 16px 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+  transform: translateY(20px);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-.size-drawer.manually-activated.active .size-drawer-content {
-  transform: translateY(0) !important;
+.size-drawer.is-open .size-drawer__content {
+  transform: translateY(0);
+  opacity: 1;
 }
 
-.size-drawer-header {
+@media (min-width: 750px) {
+  .size-drawer {
+    align-items: center;
+  }
+
+  .size-drawer__content {
+    margin: 0;
+    border-radius: 16px;
+    transform: translateY(10px) scale(0.98);
+  }
+
+  .size-drawer.is-open .size-drawer__content {
+    transform: translateY(0) scale(1);
+  }
+}
+
+.size-drawer__header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #e5e5e5;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
-.size-drawer-header h3 {
+.size-drawer__header h3 {
   margin: 0;
   font-size: 18px;
   font-weight: 600;
-  color: #333;
 }
 
-.close-drawer {
-  background: none !important;
-  border: none !important;
-  font-size: 28px !important;
+.size-drawer__close {
+  background: none;
+  border: none;
+  font-size: 28px;
   cursor: pointer;
-  padding: 8px;
+  padding: 4px 8px;
   line-height: 1;
-  color: #666;
-  transition: color 0.2s ease;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.size-drawer__close:hover,
+.size-drawer__close:focus {
+  background: rgba(0, 0, 0, 0.05);
+  color: #000;
+}
+
+.size-drawer__body {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.close-drawer:hover {
-  color: #333 !important;
-  background: #f5f5f5 !important;
-}
-
-.size-guide-link {
-  margin-bottom: 20px;
+.size-drawer__guide {
   text-align: center;
-}
-
-.size-guide-link a {
-  color: #666;
-  text-decoration: underline;
   font-size: 14px;
-  transition: color 0.2s ease;
 }
 
-.size-guide-link a:hover {
-  color: #333;
+.size-drawer__guide a {
+  color: inherit;
+  text-decoration: underline;
 }
 
-.size-options {
-  display: grid !important;
-  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)) !important;
+.size-drawer__options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
   gap: 12px;
-  margin-bottom: 16px;
 }
 
 .size-option {
-  background: white !important;
-  border: 2px solid #ddd !important;
-  border-radius: 8px;
-  padding: 12px 8px;
-  text-align: center;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 14px;
-  min-height: 44px;
-  display: flex !important;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  z-index: 1;
-  margin: 0 !important;
-  width: auto !important;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
-.size-option:hover:not(:disabled) {
-  border-color: #333 !important;
-  background: #f9f9f9 !important;
-  transform: translateY(-1px);
+.size-option:hover,
+.size-option:focus {
+  border-color: #111;
+  outline: none;
 }
 
-.size-option:active {
-  transform: translateY(0);
+.size-option--active {
+  border-color: #111;
+  background: #111;
+  color: #fff;
 }
 
-.size-option:disabled {
-  background: #f5f5f5 !important;
-  color: #999 !important;
+.size-option--unavailable {
+  background: #f5f5f5;
+  border-color: #e0e0e0;
+  color: #999;
   cursor: not-allowed;
-  border-color: #eee !important;
 }
 
-.size-option.selected {
-  background: #333 !important;
-  color: white !important;
-  border-color: #333 !important;
-}
-
-.size-option.out-of-stock {
-  background: #f5f5f5 !important;
-  color: #999 !important;
-  border-color: #eee !important;
-  cursor: not-allowed;
-  text-decoration: line-through;
-}
-
-/* Desktop */
-@media screen and (min-width: 750px) {
-  .size-drawer-content {
-    left: 50% !important;
-    transform: translateX(-50%) translateY(100%) !important;
-    width: 90% !important;
-    max-width: 480px !important;
-    border-radius: 16px;
-    bottom: 20px !important;
-    position: fixed !important;
-  }
-  
-  .size-drawer.manually-activated.active .size-drawer-content {
-    transform: translateX(-50%) translateY(0) !important;
-  }
-}
-
-/* TARGETED HIDE - ONLY SIZE-RELATED ELEMENTS, NOT ALL ELEMENTS */
-
-/* Hide specific size option buttons (not all buttons) */
-input[value="XS"]:not([name*="color" i]):not([name*="cor" i]):not([type="submit"]):not([type="button"]),
-input[value="S"]:not([name*="color" i]):not([name*="cor" i]):not([type="submit"]):not([type="button"]),
-input[value="M"]:not([name*="color" i]):not([name*="cor" i]):not([type="submit"]):not([type="button"]),
-input[value="L"]:not([name*="color" i]):not([name*="cor" i]):not([type="submit"]):not([type="button"]),
-input[value="XL"]:not([name*="color" i]):not([name*="cor" i]):not([type="submit"]):not([type="button"]),
-input[value="XXL"]:not([name*="color" i]):not([name*="cor" i]):not([type="submit"]):not([type="button"]) {
-  display: none !important;
-  visibility: hidden !important;
-  position: absolute !important;
-  top: -9999px !important;
-  left: -9999px !important;
-}
-
-/* Hide their labels only if they're for size inputs */
-label[for*="XS"]:not([for*="color"]):not([for*="cor"]),
-label[for*="-S-"]:not([for*="color"]):not([for*="cor"]),
-label[for*="-M-"]:not([for*="color"]):not([for*="cor"]),
-label[for*="-L-"]:not([for*="color"]):not([for*="cor"]),
-label[for*="XL"]:not([for*="color"]):not([for*="cor"]) {
-  display: none !important;
-  visibility: hidden !important;
-}
-
-/* Hide fieldsets ONLY if they contain size inputs and have size-related legends */
-fieldset:has(input[value="XS"]):not(:has(input[name*="color"])):not(:has(input[name*="cor"])),
-fieldset:has(input[value="S"]):not(:has(input[name*="color"])):not(:has(input[name*="cor"])),
-fieldset:has(input[value="M"]):not(:has(input[name*="color"])):not(:has(input[name*="cor"])),
-fieldset:has(input[value="L"]):not(:has(input[name*="color"])):not(:has(input[name*="cor"])),
-fieldset:has(input[value="XL"]):not(:has(input[name*="color"])):not(:has(input[name*="cor"])) {
-  display: none !important;
-  visibility: hidden !important;
-}
-
-/* Hide ONLY sections that explicitly say "Seleciona o tamanho" */
-h2:contains("Seleciona o tamanho"),
-h3:contains("Seleciona o tamanho"),
-.product-section:has(h2:contains("Seleciona o tamanho")),
-.product-section:has(h3:contains("Seleciona o tamanho")) {
-  display: none !important;
-  visibility: hidden !important;
-}
-
-/* More specific targeting for size-related divs */
-div[class*="size-select"],
-div[id*="size-select"],
-.size-selector,
-.size-picker,
-.variant-size {
-  display: none !important;
-}
-
-/* Loading States */
-.loading-state {
-  opacity: 0.7;
+.size-option--loading {
+  opacity: 0.6;
   pointer-events: none;
 }
 
-.choose-size-btn.loading {
+.size-option[disabled] {
+  pointer-events: none;
+}
+
+.size-drawer__status {
+  font-size: 13px;
+  color: #555;
+  min-height: 18px;
+}
+
+.choose-size-btn--loading {
+  pointer-events: none;
   opacity: 0.7;
 }
 
-.choose-size-btn.loading span {
-  opacity: 0.7;
+.choose-size-btn--added {
+  background: #198754;
+  border-color: #198754;
 }

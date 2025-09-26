@@ -1,36 +1,66 @@
-{% comment %}
-  Size Drawer Component
-  Usage: {% render 'size-drawer', product: product, section_id: section.id %}
-{% endcomment %}
+{% liquid
+  assign color_option_index = -1
+  assign size_option_index = -1
+  for option in product.options_with_values
+    assign option_name_downcase = option.name | downcase
+    if color_option_index == -1 and (option_name_downcase contains 'color' or option_name_downcase contains 'cor' or option_name_downcase contains 'colour')
+      assign color_option_index = forloop.index0
+    endif
+    if size_option_index == -1 and (option_name_downcase contains 'size' or option_name_downcase contains 'tamanho' or option_name_downcase contains 'talla')
+      assign size_option_index = forloop.index0
+    endif
+  endfor
+%}
 
-<!-- Size Drawer HTML -->
-<div id="size-drawer-{{ section_id }}" class="size-drawer" style="display: none;">
-  <div class="size-drawer-overlay" onclick="closeSizeDrawer('{{ section_id }}')"></div>
-  <div class="size-drawer-content">
-    <div class="size-drawer-header">
-      <h3>Escolha o tamanho</h3>
-      <button type="button" class="close-drawer" onclick="closeSizeDrawer('{{ section_id }}')">
-        <span>&times;</span>
+<div
+  id="size-drawer-{{ section_id }}"
+  class="size-drawer"
+  data-section-id="{{ section_id }}"
+  aria-hidden="true"
+>
+  <div class="size-drawer__overlay" data-size-drawer-close></div>
+  <div
+    class="size-drawer__content"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="size-drawer-title-{{ section_id }}"
+  >
+    <header class="size-drawer__header">
+      <h3 id="size-drawer-title-{{ section_id }}">Escolha o tamanho</h3>
+      <button type="button" class="size-drawer__close" data-size-drawer-close aria-label="Fechar">
+        <span aria-hidden="true">&times;</span>
       </button>
-    </div>
-    
-    <div class="size-drawer-body">
-      <div class="size-guide-link">
-        <a href="/pages/guia-de-tamanhos" target="_blank">Guia de tamanhos</a>
+    </header>
+    <div class="size-drawer__body">
+      <div class="size-drawer__guide">
+        <a href="/pages/guia-de-tamanhos" target="_blank" rel="noopener">
+          Guia de tamanhos
+        </a>
       </div>
-      
-      <div class="size-options" id="size-options-{{ section_id }}">
-        <!-- Sizes will be populated by JavaScript based on selected color -->
-      </div>
+      <div
+        id="size-options-{{ section_id }}"
+        class="size-drawer__options"
+        role="listbox"
+        aria-label="Selecionar tamanho"
+      ></div>
+      <p
+        id="size-drawer-status-{{ section_id }}"
+        class="size-drawer__status"
+        role="status"
+        aria-live="polite"
+      ></p>
     </div>
   </div>
 </div>
 
-<!-- Product Variants Data for JavaScript -->
 <script>
-  window.productData_{{ section_id }} = {
+  window.themeSizeDrawerData = window.themeSizeDrawerData || {};
+  window.themeSizeDrawerData['{{ section_id }}'] = {
+    productId: {{ product.id }},
+    sectionId: '{{ section_id }}',
     variants: {{ product.variants | json }},
     options: {{ product.options_with_values | json }},
-    sectionId: '{{ section_id }}'
+    colorOptionIndex: {{ color_option_index }},
+    sizeOptionIndex: {{ size_option_index }}
   };
 </script>

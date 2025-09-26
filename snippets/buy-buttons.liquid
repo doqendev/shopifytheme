@@ -77,10 +77,13 @@
             id="ChooseSizeButton-{{ section_id }}"
             type="button"
             class="product-form__submit button button--full-width {% if show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %} choose-size-btn"
+            data-size-drawer-trigger="{{ section_id }}"
+            aria-controls="size-drawer-{{ section_id }}"
+            aria-haspopup="dialog"
             {% if product.selected_or_first_available_variant == null %}
               disabled
             {% endif %}
-            onclick="openSizeDrawer('{{ section_id }}')"
+
           >
             <span>
               {%- if product.selected_or_first_available_variant == null -%}
@@ -180,3 +183,5 @@
   {{ 'size-drawer.css' | asset_url | stylesheet_tag }}
   <script src="{{ 'size-drawer.js' | asset_url }}" defer="defer"></script>
 </div>
+
+

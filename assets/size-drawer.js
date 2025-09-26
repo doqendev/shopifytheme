@@ -1,468 +1,455 @@
-// Size Drawer Functionality - TARGETED HIDE VERSION
+(() => {
+  const stateBySection = new Map();
 
-// IMMEDIATELY hide only size drawers on script load
-(function() {
-  const hideOnlySizeDrawers = () => {
-    // Only target size drawer elements specifically
-    const sizeDrawers = document.querySelectorAll('.size-drawer, [id*="size-drawer"]');
-    sizeDrawers.forEach(drawer => {
-      drawer.style.display = 'none';
-      drawer.style.visibility = 'hidden';
-      drawer.style.opacity = '0';
-      drawer.style.position = 'absolute';
-      drawer.style.top = '-9999px';
-      drawer.style.left = '-9999px';
-      drawer.classList.remove('active');
-      console.log('🚫 Force hiding size drawer:', drawer.id);
-    });
-    
-    // Hide only specific elements with "Seleciona o tamanho" text
-    const elements = document.querySelectorAll('h2, h3, .product-section, div[class*="size"]');
-    elements.forEach(el => {
-      if (el.textContent && el.textContent.trim() === 'Seleciona o tamanho') {
-        el.style.display = 'none';
-        console.log('🚫 Hiding "Seleciona o tamanho" element:', el);
-      }
-    });
+  const cssEscape = (value) => {
+    if (window.CSS && typeof window.CSS.escape === 'function') {
+      return window.CSS.escape(value);
+    }
+    return String(value).replace(/[^a-zA-Z0-9_-]/g, '\\$&');
   };
-  
-  // Run immediately
-  hideOnlySizeDrawers();
-  
-  // Run after DOM loads
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', hideOnlySizeDrawers);
+
+  const normalize = (value) => (typeof value === 'string' ? value.trim().toLowerCase() : '');
+
+  const getOptionValueString = (optionValue) => {
+    if (optionValue == null) return '';
+    if (typeof optionValue === 'string') return optionValue;
+    if (typeof optionValue === 'object') {
+      return optionValue.value || optionValue.name || optionValue.label || '';
+    }
+    return String(optionValue);
+  };
+
+  const getSectionData = (sectionId) => {
+    const store = window.themeSizeDrawerData || {};
+    return store[sectionId];
+  };
+
+  const getVariantSelectRoot = (sectionId) => document.getElementById(`variant-selects-${sectionId}`);
+
+  function getSelectedOptionValue(sectionId, option) {
+    const root = getVariantSelectRoot(sectionId);
+    if (!root) {
+      return getOptionValueString(option.selected_value);
+    }
+
+    const name = `${option.name}-${option.position}`;
+    const radio = root.querySelector(`input[name="${cssEscape(name)}"]:checked`);
+    if (radio) {
+      return radio.value;
+    }
+
+    const selectName = `options[${option.name}]`;
+    const select = root.querySelector(`select[name="${cssEscape(selectName)}"]`);
+    if (select) {
+      return select.value;
+    }
+
+    return getOptionValueString(option.selected_value);
   }
-  
-  // Run periodically but only for first 2 seconds
-  setTimeout(hideOnlySizeDrawers, 100);
-  setTimeout(hideOnlySizeDrawers, 500);
-  setTimeout(hideOnlySizeDrawers, 1000);
-})();
 
-function hideSizeSwatches() {
-  console.log('🚫 Targeting only size swatches...');
-  
-  // Only hide size-related inputs, not all elements
-  const sizeValues = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
-  
-  sizeValues.forEach(size => {
-    // Only hide size inputs that are NOT color-related
-    const inputs = document.querySelectorAll(`input[value="${size}"]:not([name*="Color"]):not([name*="Cor"]):not([name*="color"]):not([name*="cor"])`);
-    inputs.forEach(input => {
-      // Double-check this is actually a size input
-      if (!input.name.toLowerCase().includes('color') && !input.name.toLowerCase().includes('cor')) {
-        input.style.display = 'none';
-        input.style.visibility = 'hidden';
-        input.style.position = 'absolute';
-        input.style.top = '-9999px';
-        
-        // Only hide parent if it's specifically a size fieldset
-        let parent = input.parentElement;
-        if (parent && parent.tagName === 'FIELDSET') {
-          const legend = parent.querySelector('legend');
-          if (legend && (legend.textContent.toLowerCase().includes('size') || legend.textContent.toLowerCase().includes('tamanho'))) {
-            parent.style.display = 'none';
-            console.log('🚫 Hiding size fieldset:', parent);
-          }
-        }
-        
-        console.log('🚫 Hiding size input:', size, input);
-      }
-    });
-    
-    // Only hide labels that are specifically for size inputs
-    const labels = document.querySelectorAll(`label[for*="${size}"]:not([for*="color"]):not([for*="Color"]):not([for*="cor"])`);
-    labels.forEach(label => {
-      const forInput = document.getElementById(label.getAttribute('for'));
-      if (forInput && !forInput.name.toLowerCase().includes('color') && !forInput.name.toLowerCase().includes('cor')) {
-        label.style.display = 'none';
-        console.log('🚫 Hiding size label:', label);
-      }
-    });
-  });
-}
-
-// Global functions for opening and closing drawer
-function openSizeDrawer(sectionId) {
-  console.log('🚀 MANUALLY opening size drawer for section:', sectionId);
-  
-  const drawer = document.getElementById('size-drawer-' + sectionId);
-  console.log('📦 Drawer element found:', drawer);
-  
-  if (drawer) {
-    // Make sure we're using the correct product data for THIS page
-    const currentProduct = getCurrentProductInfo();
-    console.log('🛍️ Current product info:', currentProduct);
-    
-    // Override the product data with current page product
-    if (currentProduct) {
-      window['productData_' + sectionId] = {
-        variants: currentProduct.variants,
-        options: currentProduct.options,
-        sectionId: sectionId
+  function ensureState(sectionId) {
+    const trigger = document.querySelector(`[data-size-drawer-trigger="${sectionId}"]`);
+    let state = stateBySection.get(sectionId);
+    if (!state) {
+      state = {
+        lastFocused: null,
+        trigger,
+        originalLabel: trigger?.querySelector('span')?.textContent?.trim() || '',
+        resetTimer: null,
       };
-      console.log('✅ Updated product data for section:', sectionId);
-    }
-    
-    // Populate sizes based on current color selection
-    populateAvailableSizes(sectionId);
-    
-    // Show drawer manually
-    drawer.classList.add('manually-activated');
-    drawer.style.display = 'block';
-    drawer.style.position = 'fixed';
-    drawer.style.top = '0';
-    drawer.style.left = '0';
-    drawer.style.width = '100vw';
-    drawer.style.height = '100vh';
-    drawer.style.visibility = 'visible';
-    drawer.style.opacity = '1';
-    drawer.style.zIndex = '9999999';
-    
-    // Add active class with delay for animation
-    setTimeout(() => {
-      drawer.classList.add('active');
-      console.log('✅ Drawer should now be active and visible');
-    }, 10);
-    
-    // Prevent body scrolling
-    document.body.style.overflow = 'hidden';
-    
-    console.log('📱 Size drawer manually opened for section:', sectionId);
-  } else {
-    console.error('❌ Size drawer not found for section:', sectionId);
-  }
-}
-
-function getCurrentProductInfo() {
-  // Try to get product info from the current page
-  const productScripts = document.querySelectorAll('script[type="application/ld+json"]');
-  
-  for (const script of productScripts) {
-    try {
-      const data = JSON.parse(script.textContent);
-      if (data['@type'] === 'Product' || data.variants) {
-        console.log('📦 Found product data in page:', data);
-        return data;
-      }
-    } catch (e) {
-      // Continue searching
-    }
-  }
-  
-  // Try to get from meta tags or other sources
-  const productId = document.querySelector('[data-product-id]');
-  if (productId) {
-    console.log('📦 Found product ID:', productId.dataset.productId);
-  }
-  
-  // Last resort: try to get from global variables
-  if (window.product || window.meta?.product) {
-    const product = window.product || window.meta.product;
-    console.log('📦 Found product in global variables:', product);
-    return product;
-  }
-  
-  console.log('❌ Could not find current product info');
-  return null;
-}
-
-function closeSizeDrawer(sectionId) {
-  console.log('🔒 Closing size drawer for section:', sectionId);
-  
-  const drawer = document.getElementById('size-drawer-' + sectionId);
-  if (drawer) {
-    drawer.classList.remove('active');
-    drawer.classList.remove('manually-activated');
-    
-    setTimeout(() => {
-      drawer.style.display = 'none';
-      drawer.style.position = 'absolute';
-      drawer.style.top = '-9999px';
-      drawer.style.left = '-9999px';
-    }, 300);
-    
-    // Restore body scrolling
-    document.body.style.overflow = '';
-    
-    console.log('✅ Size drawer closed for section:', sectionId);
-  }
-}
-
-function populateAvailableSizes(sectionId) {
-  console.log('📐 Populating sizes for section:', sectionId);
-  
-  const productData = window['productData_' + sectionId];
-  const sizeContainer = document.getElementById('size-options-' + sectionId);
-  
-  console.log('📊 Product data for section:', sectionId, productData);
-  console.log('📦 Size container:', sizeContainer);
-  
-  if (!productData || !sizeContainer) {
-    console.error('❌ Missing product data or size container for section:', sectionId);
-    return;
-  }
-  
-  // Get currently selected color
-  const selectedColor = getCurrentlySelectedColor();
-  console.log('🎨 Selected color:', selectedColor);
-  
-  // Clear existing size options
-  sizeContainer.innerHTML = '';
-  
-  // Get unique sizes available for the selected color (or all sizes if no color selected)
-  const availableSizes = getAvailableSizesForColor(productData, selectedColor);
-  console.log('📏 Available sizes:', availableSizes);
-  
-  if (availableSizes.length === 0) {
-    sizeContainer.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Não há tamanhos disponíveis para esta cor.</p>';
-    return;
-  }
-  
-  // Create size option buttons
-  availableSizes.forEach((sizeData, index) => {
-    console.log(`📋 Creating size button ${index + 1}:`, sizeData);
-    
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'size-option';
-    button.textContent = sizeData.size;
-    button.dataset.size = sizeData.size;
-    button.dataset.variantId = sizeData.variantId;
-    
-    if (!sizeData.available) {
-      button.disabled = true;
-      button.classList.add('out-of-stock');
-      button.textContent += ' - Esgotado';
+      stateBySection.set(sectionId, state);
     } else {
-      button.addEventListener('click', () => {
-        console.log('🖱️ Size button clicked:', sizeData);
-        selectSize(sectionId, sizeData);
+      if (trigger) state.trigger = trigger;
+      if (!state.originalLabel && trigger) {
+        state.originalLabel = trigger.querySelector('span')?.textContent?.trim() || '';
+      }
+    }
+    return state;
+  }
+
+  function setStatus(sectionId, message) {
+    const status = document.getElementById(`size-drawer-status-${sectionId}`);
+    if (status) {
+      status.textContent = message || '';
+    }
+  }
+
+  function updateProductFormVariant(sectionId, variantId) {
+    const form = document.getElementById(`product-form-${sectionId}`);
+    if (!form) return;
+    const input = form.querySelector('input[name="id"]');
+    if (!input) return;
+    input.value = variantId;
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  function renderSizeOptions(sectionId) {
+    const data = getSectionData(sectionId);
+    const container = document.getElementById(`size-options-${sectionId}`);
+    if (!container) return;
+
+    container.innerHTML = '';
+    setStatus(sectionId, '');
+
+    if (!data || data.sizeOptionIndex < 0) {
+      setStatus(sectionId, 'Tamanhos indisponiveis para este produto.');
+      return;
+    }
+
+    const selections = data.options.map((option) => getSelectedOptionValue(sectionId, option) || '');
+
+    let activeColor = '';
+    if (data.colorOptionIndex > -1) {
+      activeColor = selections[data.colorOptionIndex];
+      if (!activeColor) {
+        const firstVariant = data.variants.find((variant) => Array.isArray(variant.options));
+        if (firstVariant) {
+          activeColor = firstVariant.options[data.colorOptionIndex] || '';
+        }
+      }
+    }
+
+    const orderedSizes = [];
+    const sizeOption = data.options[data.sizeOptionIndex];
+    if (sizeOption && Array.isArray(sizeOption.values)) {
+      sizeOption.values.forEach((value) => {
+        const label = getOptionValueString(value);
+        if (label && !orderedSizes.includes(label)) {
+          orderedSizes.push(label);
+        }
       });
     }
-    
-    sizeContainer.appendChild(button);
-  });
-  
-  console.log('✅ Size options populated.');
-}
-
-function getCurrentlySelectedColor() {
-  // Look for selected color in various possible selectors
-  const colorSelectors = [
-    'input[name*="Color"]:checked',
-    'input[name*="Cor"]:checked', 
-    'input[name*="color"]:checked',
-    'input[name*="cor"]:checked',
-    '.swatch input:checked',
-    'fieldset input:checked'
-  ];
-  
-  for (const selector of colorSelectors) {
-    const colorInput = document.querySelector(selector);
-    if (colorInput) {
-      console.log('🎨 Found color input:', selector, colorInput.value);
-      return colorInput.value;
+    if (!orderedSizes.length) {
+      data.variants.forEach((variant) => {
+        const sizeValue = variant.options?.[data.sizeOptionIndex];
+        if (sizeValue && !orderedSizes.includes(sizeValue)) {
+          orderedSizes.push(sizeValue);
+        }
+      });
     }
-  }
-  
-  console.log('🎨 No color selected, showing all sizes');
-  return null;
-}
 
-function getAvailableSizesForColor(productData, selectedColor) {
-  const sizesMap = new Map();
-  const sizeOrder = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
-  
-  console.log('🔍 Processing variants for CORRECT product:', productData.variants.length);
-  
-  productData.variants.forEach((variant, index) => {
-    // Determine which option is size and which is color
-    let size = null;
-    let color = null;
-    
-    // Check each option to determine if it's size or color
-    if (variant.option1) {
-      if (isSizeValue(variant.option1)) {
-        size = variant.option1;
-        color = variant.option2 || variant.option3;
-      } else {
-        color = variant.option1;
-        size = variant.option2 || variant.option3;
+    const sizeMap = new Map();
+    data.variants.forEach((variant) => {
+      if (!Array.isArray(variant.options)) return;
+
+      if (data.colorOptionIndex > -1 && activeColor) {
+        const variantColor = variant.options[data.colorOptionIndex];
+        if (normalize(variantColor) !== normalize(activeColor)) return;
       }
+
+      for (let index = 0; index < data.options.length; index += 1) {
+        if (index === data.sizeOptionIndex) continue;
+        if (index === data.colorOptionIndex) continue;
+        const selectedValue = selections[index];
+        if (!selectedValue) continue;
+        const variantValue = variant.options[index];
+        if (normalize(variantValue) !== normalize(selectedValue)) {
+          return;
+        }
+      }
+
+      const sizeValue = variant.options[data.sizeOptionIndex];
+      if (!sizeValue) return;
+
+      const existing = sizeMap.get(sizeValue);
+      if (!existing) {
+        sizeMap.set(sizeValue, { variant, available: variant.available });
+      } else if (!existing.available && variant.available) {
+        existing.available = true;
+        existing.variant = variant;
+      }
+    });
+
+    if (!orderedSizes.length) {
+      setStatus(sectionId, 'Tamanhos indisponiveis para este produto.');
+      return;
     }
-    
-    // If we have a selected color, filter by that color
-    if (selectedColor && color && color.toLowerCase() !== selectedColor.toLowerCase()) {
-      return; // Skip variants that don't match selected color
-    }
-    
-    if (size) {
-      const key = size;
-      if (!sizesMap.has(key) || (variant.available && !sizesMap.get(key).available)) {
-        sizesMap.set(key, {
-          size: size,
-          variantId: variant.id,
-          available: variant.available,
-          color: color
+
+    let hasAvailableOption = false;
+    orderedSizes.forEach((sizeValue) => {
+      if (!sizeValue) return;
+      const entry = sizeMap.get(sizeValue);
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'size-option';
+      button.dataset.size = sizeValue;
+      button.setAttribute('role', 'option');
+      button.textContent = sizeValue;
+
+      if (!entry) {
+        button.disabled = true;
+        button.classList.add('size-option--unavailable');
+        button.setAttribute('aria-disabled', 'true');
+      } else if (!entry.available) {
+        button.disabled = true;
+        button.classList.add('size-option--unavailable');
+        button.setAttribute('aria-disabled', 'true');
+      } else {
+        hasAvailableOption = true;
+        button.dataset.variantId = String(entry.variant.id);
+        button.addEventListener('click', () => handleSizeSelection(sectionId, entry.variant, button));
+        button.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            handleSizeSelection(sectionId, entry.variant, button);
+          }
         });
       }
-    }
-  });
-  
-  // Convert to array and sort by size order
-  const sizesArray = Array.from(sizesMap.values());
-  
-  const sortedSizes = sizesArray.sort((a, b) => {
-    const aIndex = sizeOrder.indexOf(a.size);
-    const bIndex = sizeOrder.indexOf(b.size);
-    
-    if (aIndex === -1 && bIndex === -1) {
-      return a.size.localeCompare(b.size);
-    }
-    if (aIndex === -1) return 1;
-    if (bIndex === -1) return -1;
-    
-    return aIndex - bIndex;
-  });
-  
-  return sortedSizes;
-}
 
-function isSizeValue(value) {
-  const sizePattern = /^(XXS|XS|S|M|L|XL|XXL|XXXL|\d+|\d+\/\d+)$/i;
-  return sizePattern.test(value);
-}
-
-function selectSize(sectionId, sizeData) {
-  console.log('📋 Size selected:', sizeData);
-  
-  if (sizeData.available) {
-    // Update the hidden variant ID input
-    const variantInput = document.getElementById('variant-id-' + sectionId);
-    if (variantInput) {
-      variantInput.value = sizeData.variantId;
-      console.log('✅ Updated variant ID to:', sizeData.variantId);
-    }
-    
-    // Add to cart
-    setTimeout(() => {
-      addToCartAndClose(sectionId);
-    }, 100);
-  } else {
-    alert('Este tamanho não está disponível.');
-  }
-}
-
-async function addToCartAndClose(sectionId) {
-  console.log('🛒 Adding CORRECT product to cart for section:', sectionId);
-  
-  const variantInput = document.getElementById('variant-id-' + sectionId);
-  const chooseSizeBtn = document.getElementById('ChooseSizeButton-' + sectionId);
-  
-  if (!variantInput || !variantInput.value) {
-    alert('Por favor, selecione um tamanho válido.');
-    return;
-  }
-  
-  // Show loading state
-  if (chooseSizeBtn) {
-    chooseSizeBtn.querySelector('span').textContent = 'Adicionando...';
-    chooseSizeBtn.disabled = true;
-  }
-  
-  try {
-    const response = await fetch('/cart/add.js', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({
-        id: parseInt(variantInput.value),
-        quantity: 1
-      })
+      container.appendChild(button);
     });
-    
-    const result = await response.json();
-    
-    if (response.ok) {
-      console.log('✅ CORRECT product added to cart:', result);
-      
-      // Close drawer
-      closeSizeDrawer(sectionId);
-      
-      // Update button text
-      if (chooseSizeBtn) {
-        chooseSizeBtn.querySelector('span').textContent = 'Adicionado!';
-        chooseSizeBtn.style.background = '#28a745';
-      }
-      
-      // Reset button after delay
-      setTimeout(() => {
-        if (chooseSizeBtn) {
-          chooseSizeBtn.querySelector('span').textContent = 'Escolher tamanho';
-          chooseSizeBtn.disabled = false;
-          chooseSizeBtn.style.background = '';
+
+    if (!hasAvailableOption) {
+      setStatus(sectionId, 'Esgotado para a combinacao selecionada.');
+    }
+  }
+
+  function resetTriggerLabel(sectionId) {
+    const state = ensureState(sectionId);
+    if (state.resetTimer) {
+      clearTimeout(state.resetTimer);
+      state.resetTimer = null;
+    }
+    if (!state.trigger || !state.originalLabel) return;
+    const label = state.trigger.querySelector('span');
+    if (label) {
+      label.textContent = state.originalLabel;
+    }
+    state.trigger.classList.remove('choose-size-btn--added');
+  }
+
+  function handleSizeSelection(sectionId, variant, button) {
+    if (!variant || !variant.id) return;
+
+    const container = document.getElementById(`size-options-${sectionId}`);
+    if (container) {
+      container.querySelectorAll('.size-option').forEach((element) => element.classList.remove('size-option--active'));
+    }
+    button.classList.add('size-option--active');
+
+    updateProductFormVariant(sectionId, variant.id);
+
+    const chooseButton = document.querySelector(`[data-size-drawer-trigger="${sectionId}"]`);
+    const state = ensureState(sectionId);
+
+    setStatus(sectionId, 'Adicionando ao carrinho...');
+    button.classList.add('size-option--loading');
+    button.disabled = true;
+
+    if (chooseButton) {
+      chooseButton.classList.add('choose-size-btn--loading');
+      chooseButton.setAttribute('aria-busy', 'true');
+      chooseButton.disabled = true;
+    }
+
+    addVariantToCart(sectionId, variant.id)
+      .then(() => {
+        closeDrawer(sectionId);
+        setStatus(sectionId, 'Adicionado ao carrinho.');
+        if (chooseButton) {
+          const label = chooseButton.querySelector('span');
+          if (label) {
+            label.textContent = 'Adicionado!';
+          }
+          chooseButton.classList.add('choose-size-btn--added');
+          state.resetTimer = setTimeout(() => resetTriggerLabel(sectionId), 2000);
         }
-      }, 2000);
-      
-    } else {
-      throw new Error(result.message || 'Erro ao adicionar ao carrinho');
-    }
-    
-  } catch (error) {
-    console.error('❌ Error adding to cart:', error);
-    alert('Erro ao adicionar produto ao carrinho');
-    
-    // Reset button
-    if (chooseSizeBtn) {
-      chooseSizeBtn.querySelector('span').textContent = 'Escolher tamanho';
-      chooseSizeBtn.disabled = false;
-    }
+      })
+      .catch((error) => {
+        console.error('Size drawer add to cart failed', error);
+        const message = error?.message || 'Erro ao adicionar ao carrinho.';
+        setStatus(sectionId, message);
+      })
+      .finally(() => {
+        button.classList.remove('size-option--loading');
+        if (variant.available) {
+          button.disabled = false;
+        }
+        if (chooseButton) {
+          chooseButton.classList.remove('choose-size-btn--loading');
+          chooseButton.removeAttribute('aria-busy');
+          chooseButton.disabled = false;
+        }
+      });
   }
-}
 
-// Listen for DOM ready
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('📱 Size drawer JavaScript DOM loaded - TARGETED VERSION');
-  
-  // Only hide size-specific elements
-  setTimeout(hideSizeSwatches, 100);
-  
-  // Listen for color variant changes
-  const colorInputs = document.querySelectorAll('input[name*="Color"], input[name*="Cor"]');
-  colorInputs.forEach(input => {
-    input.addEventListener('change', function() {
-      console.log('🎨 Color changed to:', this.value);
-      const openDrawer = document.querySelector('.size-drawer.active');
-      if (openDrawer) {
-        const sectionId = openDrawer.id.replace('size-drawer-', '');
-        populateAvailableSizes(sectionId);
+  function addVariantToCart(sectionId, variantId) {
+    return new Promise((resolve, reject) => {
+      try {
+        const cartElement =
+          document.querySelector('cart-drawer') || document.querySelector('cart-notification');
+
+        let config;
+        if (typeof fetchConfig === 'function') {
+          config = fetchConfig('javascript');
+          config.headers['X-Requested-With'] = 'XMLHttpRequest';
+          delete config.headers['Content-Type'];
+        } else {
+          config = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+            },
+          };
+        }
+
+        if (config.headers && !config.headers['Content-Type']) {
+          const body = new FormData();
+          body.append('id', variantId);
+          body.append('quantity', 1);
+          if (cartElement && typeof cartElement.getSectionsToRender === 'function') {
+            body.append(
+              'sections',
+              cartElement
+                .getSectionsToRender()
+                .map((section) => section.id)
+            );
+            body.append('sections_url', window.location.pathname);
+            cartElement.setActiveElement?.(document.activeElement);
+          }
+          config.body = body;
+        } else {
+          config.body = JSON.stringify({ id: variantId, quantity: 1 });
+        }
+
+        fetch(`${routes.cart_add_url}`, config)
+          .then((response) =>
+            response.json().then((json) => ({
+              ok: response.ok && !json.status,
+              json,
+            }))
+          )
+          .then(({ ok, json }) => {
+            if (!ok) {
+              const message =
+                (json && (json.message || json.description)) ||
+                'Erro ao adicionar ao carrinho.';
+              throw new Error(message);
+            }
+
+            if (cartElement && typeof cartElement.renderContents === 'function') {
+              cartElement.renderContents(json);
+            } else if (window.routes?.cart_url) {
+              window.location = window.routes.cart_url;
+            } else {
+              window.location = '/cart';
+            }
+
+            if (typeof publish === 'function' && window.PUB_SUB_EVENTS?.cartUpdate) {
+              publish(window.PUB_SUB_EVENTS.cartUpdate, {
+                source: 'size-drawer',
+                productVariantId: variantId,
+                cartData: json,
+              });
+            }
+
+            resolve(json);
+          })
+          .catch((error) => reject(error));
+      } catch (error) {
+        reject(error);
       }
     });
-  });
-  
-  // Close drawer when clicking outside
-  document.addEventListener('click', function(event) {
-    if (event.target.classList.contains('size-drawer-overlay')) {
-      const drawer = event.target.parentElement;
-      const sectionId = drawer.id.replace('size-drawer-', '');
-      closeSizeDrawer(sectionId);
+  }
+
+  function openDrawer(sectionId, triggerElement) {
+    const drawer = document.getElementById(`size-drawer-${sectionId}`);
+    if (!drawer) return;
+
+    ensureState(sectionId);
+    renderSizeOptions(sectionId);
+
+    const state = ensureState(sectionId);
+    state.lastFocused = triggerElement || document.activeElement;
+
+    drawer.classList.add('is-open');
+    drawer.setAttribute('aria-hidden', 'false');
+
+    const firstAvailable = drawer.querySelector('.size-option:not([disabled])');
+    if (firstAvailable) {
+      firstAvailable.focus();
+    } else {
+      const closeButton = drawer.querySelector('.size-drawer__close');
+      closeButton?.focus();
     }
-  });
-  
-  // Close drawer with Escape key
-  document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape') {
-      const activeDrawer = document.querySelector('.size-drawer.active');
-      if (activeDrawer) {
-        const sectionId = activeDrawer.id.replace('size-drawer-', '');
-        closeSizeDrawer(sectionId);
+  }
+
+  function closeDrawer(sectionId) {
+    const drawer = document.getElementById(`size-drawer-${sectionId}`);
+    if (!drawer) return;
+    drawer.classList.remove('is-open');
+    drawer.setAttribute('aria-hidden', 'true');
+    const state = stateBySection.get(sectionId);
+    if (state?.lastFocused) {
+      state.lastFocused.focus();
+    }
+  }
+
+  function handleDocumentClick(event) {
+    const trigger = event.target.closest('[data-size-drawer-trigger]');
+    if (trigger) {
+      const sectionId = trigger.getAttribute('data-size-drawer-trigger');
+      if (sectionId) {
+        event.preventDefault();
+        openDrawer(sectionId, trigger);
+      }
+      return;
+    }
+
+    const closeTrigger = event.target.closest('[data-size-drawer-close]');
+    if (closeTrigger) {
+      const drawer = closeTrigger.closest('.size-drawer');
+      if (drawer?.dataset.sectionId) {
+        closeDrawer(drawer.dataset.sectionId);
       }
     }
-  });
-});
+  }
 
-console.log('✅ Size drawer JavaScript loaded - TARGETED HIDE VERSION');
+  function handleDocumentKeydown(event) {
+    if (event.key !== 'Escape') return;
+    const openDrawerElement = document.querySelector('.size-drawer.is-open');
+    if (!openDrawerElement) return;
+    event.preventDefault();
+    closeDrawer(openDrawerElement.dataset.sectionId);
+  }
+
+  function handleVariantChange(event) {
+    const variantSelects = event.target.closest('variant-selects');
+    if (!variantSelects) return;
+    const sectionId = variantSelects.dataset.section;
+    if (!sectionId) return;
+    const drawer = document.getElementById(`size-drawer-${sectionId}`);
+    if (!drawer || !drawer.classList.contains('is-open')) return;
+    renderSizeOptions(sectionId);
+  }
+
+  function handleProductInfoLoaded(event) {
+    const productInfo = event.target.closest('product-info');
+    const sectionId = productInfo?.dataset.section;
+    if (!sectionId) return;
+    resetTriggerLabel(sectionId);
+  }
+
+  function handleSectionLoad(event) {
+    const sectionId =
+      event.detail?.sectionId ||
+      event.target?.id?.replace(/^shopify-section-/, '');
+    if (!sectionId) return;
+    resetTriggerLabel(sectionId);
+  }
+
+  function initialize() {
+    document.addEventListener('click', handleDocumentClick);
+    document.addEventListener('keydown', handleDocumentKeydown);
+    document.addEventListener('change', handleVariantChange, true);
+    document.addEventListener('product-info:loaded', handleProductInfoLoaded);
+    document.addEventListener('shopify:section:load', handleSectionLoad);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initialize);
+  } else {
+    initialize();
+  }
+})();
