@@ -34,9 +34,44 @@
   }
 }
 
-/* Swatch Styles - Updated to match desktop product swatches exactly */
+.product-form__input--swatch {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin: 0 0 8px 0;
+}
+
+.product-form__input--swatch .swatch-input__label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0 !important;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.product-form__input--swatch .swatch-input__label > .swatch {
+  display: block;
+}
+
+.swatch--square {
+  border-radius: 0;
+}
+
+.additional-swatch-count {
+  font-size: 0.7em;
+  margin-left: 1px;
+  margin-top: 3px;
+}
+
 @media screen and (min-width: 750px) {
-  /* Inactive swatches - create visual 15px color area using inset shadow */
+  .product-card__swatch-indicator {
+    gap: 4px !important;
+  }
+
   .swatch {
     width: 21px !important;
     height: 21px !important;
@@ -52,7 +87,19 @@
     box-sizing: border-box !important;
   }
 
-  /* Active swatches - remove inset shadow, add outer white border + black outline */
+  .swatch:last-child {
+    margin-right: 0 !important;
+  }
+
+  .product-form__input--swatch legend,
+  .product-form__input--swatch .form__label {
+    display: none !important;
+  }
+
+  .product-form__input--swatch .swatch-input__label:hover > .swatch,
+  .product-form__input--swatch .swatch-input__label.active > .swatch,
+  .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label > .swatch,
+  .product-form__input--swatch .swatch-input__input:focus-visible + .swatch-input__label > .swatch,
   .swatch.active,
   .swatch:hover,
   .swatch.selected {
@@ -61,19 +108,34 @@
     outline: none !important;
   }
 
-  /* Add gaps between swatches for collection pages */
-  .product-card__swatch-indicator {
-    gap: 4px !important;
+  #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span,
+  #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch {
+    width: 21px !important;
+    height: 21px !important;
+    margin-right: 4px !important;
+    border-radius: 0 !important;
+    border: none !important;
+    box-shadow: inset 0 0 0 3px #fff !important;
+    background-clip: padding-box !important;
+    box-sizing: border-box !important;
   }
 
-  /* Remove the last swatch's margin */
-  .swatch:last-child {
+  #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch.active,
+  #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch:hover {
+    border: 3px solid #fff !important;
+    box-shadow: 0 0 0 0.5px #000 !important;
+  }
+
+  #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch:last-child {
     margin-right: 0 !important;
   }
 }
 
-/* Mobile styles (keep original for mobile) */
 @media screen and (max-width: 749px) {
+  .product-form__input--swatch {
+    gap: 6px;
+  }
+
   .swatch {
     width: 30px;
     height: 30px;
@@ -87,73 +149,16 @@
     transition: box-shadow 0.2s ease-in-out;
   }
 
+  .product-form__input--swatch .swatch-input__label:hover > .swatch,
+  .product-form__input--swatch .swatch-input__label.active > .swatch,
+  .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label > .swatch,
   .swatch:hover,
   .swatch.selected,
   .swatch.active {
     box-shadow: 0 0 0 2px var(--color-highlight);
     outline: none;
   }
-}
 
-.swatch--square {
-  border-radius: 0;
-}
-
-.additional-swatch-count {
-  font-size: 0.7em;
-  margin-left: 1px;
-  margin-top: 3px;
-}
-
-/* SLIDER */
-.swiper-container {
-  width: 100%;
-  height: 100%;
-}
-
-/* Style the swiper slides */
-.swiper-slide {
-  justify-content: center;
-  align-items: center;
-}
-
-/* Make images responsive */
-.swiper-slide img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-/* Override old specific sizing rules with new desktop styling */
-@media screen and (min-width: 750px) {
-  /* Inactive swatches - use inset shadow to create 15px visual color area */
-  #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span,
-  #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch {
-    width: 21px !important;
-    height: 21px !important;
-    margin-right: 4px !important;
-    border-radius: 0 !important;
-    border: none !important;
-    box-shadow: inset 0 0 0 3px #fff !important;
-    background-clip: padding-box !important;
-    box-sizing: border-box !important;
-  }
-
-  /* Active swatches - remove inset shadow, add outer borders */
-  #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch.active,
-  #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch:hover {
-    border: 3px solid #fff !important;
-    box-shadow: 0 0 0 0.5px #000 !important;
-  }
-
-  /* Remove margin from last swatch */
-  #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch:last-child {
-    margin-right: 0 !important;
-  }
-}
-
-/* Keep mobile styling */
-@media screen and (max-width: 749px) {
   #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span {
     width: 19px !important;
     height: 19px !important;
@@ -165,6 +170,22 @@
     border: 2px solid white;
     box-shadow: 0 0 0 1px #000;
   }
+}
+
+.swiper-container {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-slide {
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-slide img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 #FacetsWrapperMobile > div.mobile-facet.mobile-facet-filter\.v\.t\.shopify\.color-pattern > ul > li > div > label.swatch-input__label > span {
