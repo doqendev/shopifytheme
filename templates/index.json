@@ -299,8 +299,8 @@
           "settings": {
             "image_desktop": "shopify://shop_images/1000052581.jpg",
             "image_mobile": "shopify://shop_images/1000052581.jpg",
-            "caption": "Image Caption",
-            "button_text": "",
+            "caption": "Denim",
+            "button_text": "Comprar",
             "button_link": "",
             "border_color": "#eaeada",
             "caption_color": "#ffffff",
