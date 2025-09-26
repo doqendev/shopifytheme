@@ -226,14 +226,14 @@
     margin-bottom: 20px !important;
   }
 
-  /* Color swatches - inactive (no borders at all) */
+  /* Color swatches - inactive (same size as active but transparent borders) */
   .desktop-product-section fieldset.product-form__input--swatch label,
   [id*="variant-selects"] fieldset.product-form__input--swatch label,
   #variant-selects-template--24455438926148__desktop_product_kf6zNg > fieldset.js.product-form__input.product-form__input--swatch > label {
-    width: 15px !important;
-    height: 15px !important;
-    border: none !important;
-    box-shadow: none !important;
+    width: 21px !important;
+    height: 21px !important;
+    border: 3px solid transparent !important;
+    box-shadow: 0 0 0 0.5px transparent !important;
     padding: 0 !important;
     border-radius: 0 !important;
     box-sizing: border-box !important;
@@ -241,6 +241,7 @@
     vertical-align: top !important;
   }
 
+  /* Inactive swatch inner span - no borders */
   .desktop-product-section fieldset.product-form__input--swatch label span.swatch,
   [id*="variant-selects"] fieldset.product-form__input--swatch label span.swatch,
   #variant-selects-template--24455438926148__desktop_product_kf6zNg > fieldset.js.product-form__input.product-form__input--swatch > label > span.swatch {
