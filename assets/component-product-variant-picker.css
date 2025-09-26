@@ -272,40 +272,26 @@
   }
 
   /* INNER SWATCH SPANS - For product pages with span structure */
-  /* Inactive spans - fill the inner 15px area (21px container - 6px transparent borders = 15px) */
+  /* Make spans fill the available area properly (15px inside the 3px borders) */
   .product-form__input--swatch label span.swatch,
   .product-form__input--swatch .swatch-input__label span,
   [id*="variant-selects"] fieldset.product-form__input--swatch label span.swatch {
     border-radius: 0 !important;
-    width: 15px !important;
-    height: 15px !important;
+    width: 100% !important;
+    height: 100% !important;
     border: none !important;
     display: block !important;
     box-sizing: border-box !important;
-    position: absolute !important;
-    top: 3px !important;
-    left: 3px !important;
   }
 
-  /* Active spans - fill the inner 15px area (21px container - 6px white borders = 15px) */
   .product-form__input--swatch label.active > span.swatch,
   .product-form__input--swatch input:checked + label > span.swatch,
   .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label > span,
   [id*="variant-selects"] fieldset.product-form__input--swatch label.active > span.swatch {
-    width: 15px !important;
-    height: 15px !important;
+    width: 100% !important;
+    height: 100% !important;
     border: none !important;
     box-sizing: border-box !important;
-    position: absolute !important;
-    top: 3px !important;
-    left: 3px !important;
-  }
-
-  /* Make sure the label containers are positioned relative for absolute positioning */
-  .product-form__input--swatch label,
-  .product-form__input--swatch .swatch-input__label,
-  [id*="variant-selects"] fieldset.product-form__input--swatch label {
-    position: relative !important;
   }
 
 }
