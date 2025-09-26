@@ -4257,6 +4257,10 @@ font-style: normal;
 }
 }
 
+#shopify-section-template--25444170137924__product-grid > div > div.grid-controls.page-width > div.facets-toggle-container {
+  margin-right: 2.1rem;
+}
+
 @media screen and (min-width: 750px) {
   #shopify-section-template--25444170137924__product-grid > div > div.grid-controls.page-width > div.facets-toggle-container {
   margin-right: 3.2rem;
@@ -4267,6 +4271,3 @@ font-style: normal;
   padding: 0;
 }
 
-#shopify-section-template--25444170137924__product-grid > div > div.grid-controls.page-width > div.facets-toggle-container {
-  margin-right: 2.1rem;
-}
