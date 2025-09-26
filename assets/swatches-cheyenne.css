@@ -34,13 +34,14 @@
   }
 }
 
-/* Swatch Styles - Updated to match desktop product swatches */
+/* Swatch Styles - Updated to match desktop product swatches exactly */
 @media screen and (min-width: 750px) {
+  /* Inactive swatches - 15px color area, no visible borders */
   .swatch {
-    width: 21px !important;
-    height: 21px !important;
-    border: 3px solid transparent !important;
-    box-shadow: 0 0 0 0.5px transparent !important;
+    width: 15px !important;
+    height: 15px !important;
+    border: none !important;
+    box-shadow: none !important;
     display: inline-block !important;
     background: var(--swatch--background) !important;
     border-radius: 0 !important;
@@ -50,12 +51,16 @@
     box-sizing: border-box !important;
   }
 
+  /* Active swatches - 15px color area + 3px white border + 0.5px black outline */
   .swatch.active,
   .swatch:hover,
   .swatch.selected {
+    width: 15px !important;
+    height: 15px !important;
     border: 3px solid #fff !important;
     box-shadow: 0 0 0 0.5px #000 !important;
     outline: none !important;
+    box-sizing: content-box !important;
   }
 
   /* Remove gaps between swatches */
@@ -118,20 +123,26 @@
 
 /* Override old specific sizing rules with new desktop styling */
 @media screen and (min-width: 750px) {
+  /* Inactive swatches - pure 15px color squares */
   #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span,
   #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch {
-    width: 21px !important;
-    height: 21px !important;
+    width: 15px !important;
+    height: 15px !important;
     margin-right: 0 !important;
     border-radius: 0 !important;
-    border: 3px solid transparent !important;
-    box-shadow: 0 0 0 0.5px transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
   }
 
+  /* Active swatches - 15px color + white border + black outline */
   #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch.active,
   #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch:hover {
+    width: 15px !important;
+    height: 15px !important;
     border: 3px solid #fff !important;
     box-shadow: 0 0 0 0.5px #000 !important;
+    box-sizing: content-box !important;
   }
 }
 
