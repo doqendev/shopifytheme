@@ -35,11 +35,16 @@
 }
 
 .product-form__input--swatch {
+  --swatch-gap: 4px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 4px;
+  gap: var(--swatch-gap, 4px);
   margin: 0 0 8px 0;
+  border: none !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 .product-form__input--swatch .swatch-input__label {
@@ -146,7 +151,8 @@
 
 @media screen and (max-width: 749px) {
   .product-form__input--swatch {
-    gap: 6px;
+    --swatch-gap: 6px;
+    gap: var(--swatch-gap, 6px);
   }
 
   .swatch {
