@@ -1,17 +1,20 @@
-{% liquid
+{% liquid}
   assign color_option_index = -1
   assign size_option_index = -1
   for option in product.options_with_values
     assign option_name_downcase = option.name | downcase
-    if color_option_index == -1 and (option_name_downcase contains 'color' or option_name_downcase contains 'cor' or option_name_downcase contains 'colour')
-      assign color_option_index = forloop.index0
+    if color_option_index == -1
+      if option_name_downcase contains 'color' or option_name_downcase contains 'cor' or option_name_downcase contains 'colour'
+        assign color_option_index = forloop.index0
+      endif
     endif
-    if size_option_index == -1 and (option_name_downcase contains 'size' or option_name_downcase contains 'tamanho' or option_name_downcase contains 'talla')
-      assign size_option_index = forloop.index0
+    if size_option_index == -1
+      if option_name_downcase contains 'size' or option_name_downcase contains 'tamanho' or option_name_downcase contains 'talla'
+        assign size_option_index = forloop.index0
+      endif
     endif
   endfor
 %}
-
 <div
   id="size-drawer-{{ section_id }}"
   class="size-drawer"
@@ -64,3 +67,4 @@
     sizeOptionIndex: {{ size_option_index }}
   };
 </script>
+
