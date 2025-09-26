@@ -4249,3 +4249,8 @@ font-style: normal;
 #main-collection-filters > div > facet-filters-form:nth-child(3) {
   display: none;
 }
+
+#facets-toggle-button {
+  padding: 0;
+  margin-right: 5%;
+}
