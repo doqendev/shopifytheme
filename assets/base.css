@@ -4250,6 +4250,16 @@ font-style: normal;
   display: none;
 }
 
+@media screen and (max-width: 749;) {
+#facets-toggle-button {
+  padding: 0;
+}
+#shopify-section-template--25444170137924__product-grid > div > div.grid-controls.page-width > div.facets-toggle-container {
+  margin-right: 5%;
+}
+
+}
+
 #facets-toggle-button {
   padding: 0;
 }
