@@ -114,6 +114,12 @@
     gap: 4px !important;
   }
 
+  /* Desktop product page swatch gap */
+  .product-form__input--swatch {
+    --swatch-gap: 8px;
+    gap: var(--swatch-gap, 8px) !important;
+  }
+
   /* Base desktop swatch styling - inactive state */
   .swatch {
     width: 15px !important;
