@@ -47,6 +47,7 @@
 </div>
 
 <script>
+  console.log('Size drawer snippet rendering for section:', '{{ section_id }}');
   window.themeSizeDrawerData = window.themeSizeDrawerData || {};
   window.themeSizeDrawerData['{{ section_id }}'] = {
     productId: {{ product.id }},
@@ -57,4 +58,5 @@
     colorOptionIndex: -1,
     sizeOptionIndex: -1
   };
+  console.log('Size drawer data set for section {{ section_id }}:', window.themeSizeDrawerData['{{ section_id }}']);
 </script>

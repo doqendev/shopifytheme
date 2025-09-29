@@ -553,10 +553,16 @@
   }
 
   function openDrawer(sectionId, triggerElement) {
+    console.log('openDrawer called for section:', sectionId);
     const drawer = document.getElementById(`size-drawer-${sectionId}`);
-    if (!drawer) return;
+    console.log('Drawer element found:', drawer);
+    if (!drawer) {
+      console.error('No drawer found for section:', sectionId);
+      return;
+    }
 
     const state = ensureState(sectionId);
+    console.log('State ensured for section:', sectionId, state);
     renderSizeOptions(sectionId);
 
     state.lastFocused = triggerElement || document.activeElement;
@@ -589,11 +595,15 @@
   }
 
   function handleDocumentClick(event) {
+    console.log('Click event detected:', event.target);
     const trigger = event.target.closest('[data-size-drawer-trigger]');
+    console.log('Size drawer trigger found:', trigger);
     if (trigger) {
       const sectionId = trigger.getAttribute('data-size-drawer-trigger');
+      console.log('Section ID from trigger:', sectionId);
       if (sectionId) {
         event.preventDefault();
+        console.log('Opening drawer for section:', sectionId);
         openDrawer(sectionId, trigger);
       }
       return;
@@ -644,17 +654,33 @@
   }
 
   function initialize() {
+    console.log('Size drawer initializing...');
     hideProductSizeInputs();
     document.addEventListener('click', handleDocumentClick);
     document.addEventListener('keydown', handleDocumentKeydown);
     document.addEventListener('change', handleVariantChange, true);
     document.addEventListener('product-info:loaded', handleProductInfoLoaded);
     document.addEventListener('shopify:section:load', handleSectionLoad);
+    console.log('Size drawer initialized. Event listeners attached.');
+
+    // Debug: Check for size drawer data
+    console.log('Size drawer data:', window.themeSizeDrawerData);
+
+    // Debug: Check for size drawer triggers
+    const triggers = document.querySelectorAll('[data-size-drawer-trigger]');
+    console.log('Found size drawer triggers:', triggers.length, triggers);
   }
 
+  // Initialize with multiple fallbacks to ensure it runs
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initialize);
   } else {
     initialize();
   }
+
+  // Also try initializing after a short delay as fallback
+  setTimeout(() => {
+    console.log('Size drawer delayed initialization attempt...');
+    initialize();
+  }, 500);
 })();
