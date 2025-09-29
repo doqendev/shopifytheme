@@ -157,8 +157,8 @@
   }
 
   .product-form__input--swatch .swatch-input__label {
-    width: 30px !important;
-    height: 30px !important;
+    width: 21px !important;
+    height: 21px !important;
     padding: 0 !important;
     margin: 0 !important;
     display: inline-flex !important;
@@ -167,8 +167,8 @@
   }
 
   .swatch {
-    width: 30px !important;
-    height: 30px !important;
+    width: 21px !important;
+    height: 21px !important;
     border: none !important;
     box-shadow: inset 0 0 0 3px #fff !important;
     display: inline-block !important;
@@ -208,8 +208,8 @@
 
   /* Ensure mobile styles apply to all product sections */
   variant-selects .product-form__input--swatch .swatch {
-    width: 30px !important;
-    height: 30px !important;
+    width: 21px !important;
+    height: 21px !important;
     border-radius: 0 !important;
     border: none !important;
     box-shadow: inset 0 0 0 3px #fff !important;
@@ -224,8 +224,8 @@
   /* Mobile sticky bar and desktop product sections */
   #variant-selects-template--25444169908548__sticky_product_bar_HRGKtD .swatch,
   #variant-selects-template--25444169908548__desktop_product_kf6zNg .swatch {
-    width: 30px !important;
-    height: 30px !important;
+    width: 21px !important;
+    height: 21px !important;
     border-radius: 0 !important;
     border: none !important;
     box-shadow: inset 0 0 0 3px #fff !important;
@@ -270,11 +270,12 @@
 
   /* Better touch targets for mobile */
   .product-form__input--swatch .swatch-input__label {
-    min-width: 44px;
-    min-height: 44px;
+    min-width: 32px;
+    min-height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 5px;
   }
 
   /* Improve visual hierarchy on mobile */
