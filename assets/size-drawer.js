@@ -171,13 +171,26 @@
         console.log(`  Input ${index + 1}: name="${input.name}", value="${input.value}", checked=${input.checked}, type=${input.type}`);
       });
 
-      const name = `${option.name}-${option.position}`;
-      const radio = root.querySelector(`input[name="${cssEscape(name)}"]:checked`);
-      console.log(`Looking for radio with name "${name}":`, radio);
-      if (radio) {
-        selectedValue = radio.value;
-        console.log(`Radio value found in section ${sectionId}: ${selectedValue}`);
-      } else {
+      // Try multiple naming patterns for the inputs
+      const patterns = [
+        `${option.name}-${option.position}`, // Original pattern: Color-1
+        `${sectionId}-${option.position}-1`, // Section-based pattern: template--...-1-1
+        `${sectionId}-${option.position}-${option.position}`, // Section-based pattern alt
+        `${option.name}` // Simple name: Color
+      ];
+
+      for (const pattern of patterns) {
+        const radio = root.querySelector(`input[name="${cssEscape(pattern)}"]:checked`);
+        console.log(`Looking for radio with pattern "${pattern}":`, radio);
+        if (radio) {
+          selectedValue = radio.value;
+          console.log(`Radio value found with pattern ${pattern}: ${selectedValue}`);
+          break;
+        }
+      }
+
+      // If no radio found, try select
+      if (!selectedValue) {
         const selectName = `options[${option.name}]`;
         const select = root.querySelector(`select[name="${cssEscape(selectName)}"]`);
         console.log(`Looking for select with name "${selectName}":`, select);
@@ -194,19 +207,32 @@
       const allVariantSelects = document.querySelectorAll('variant-selects');
 
       for (const variantSelect of allVariantSelects) {
-        const name = `${option.name}-${option.position}`;
-        const radio = variantSelect.querySelector(`input[name="${cssEscape(name)}"]:checked`);
-        if (radio) {
-          selectedValue = radio.value;
-          console.log(`Found radio value in section ${variantSelect.dataset.section}: ${selectedValue}`);
-          break;
+        const targetSectionId = variantSelect.dataset.section;
+
+        // Try multiple naming patterns for each section
+        const patterns = [
+          `${option.name}-${option.position}`, // Original pattern: Color-1
+          `${targetSectionId}-${option.position}-1`, // Section-based pattern: template--...-1-1
+          `${targetSectionId}-${option.position}-${option.position}`, // Section-based pattern alt
+          `${option.name}` // Simple name: Color
+        ];
+
+        for (const pattern of patterns) {
+          const radio = variantSelect.querySelector(`input[name="${cssEscape(pattern)}"]:checked`);
+          if (radio) {
+            selectedValue = radio.value;
+            console.log(`Found radio value in section ${targetSectionId} with pattern ${pattern}: ${selectedValue}`);
+            break;
+          }
         }
+
+        if (selectedValue) break;
 
         const selectName = `options[${option.name}]`;
         const select = variantSelect.querySelector(`select[name="${cssEscape(selectName)}"]`);
         if (select && select.value) {
           selectedValue = select.value;
-          console.log(`Found select value in section ${variantSelect.dataset.section}: ${selectedValue}`);
+          console.log(`Found select value in section ${targetSectionId}: ${selectedValue}`);
           break;
         }
       }
