@@ -181,7 +181,7 @@ variant-selects .product-form__input--swatch .swatch-input__input:first-of-type 
 
   #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch.active,
   #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch:hover {
-    border: 3px solid #fff !important;
+    border: 2px solid #fff !important;
     box-shadow: 0 0 0 0.5px #000 !important;
   }
 
