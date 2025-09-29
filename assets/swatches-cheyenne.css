@@ -66,7 +66,7 @@
   width: 100% !important;
   height: 100% !important;
   border: 2px solid #fff !important;
-  box-shadow: 0 0 0 1px #000 !important;
+  box-shadow: 0 0 0 1px #ddd !important;
   background: var(--swatch--background) !important;
   background-clip: content-box !important;
   border-radius: 0 !important;
@@ -94,7 +94,7 @@
 /* Override component-swatch.css base styles */
 .swatch {
   border: 2px solid #fff !important;
-  box-shadow: 0 0 0 1px #000 !important;
+  box-shadow: 0 0 0 1px #ddd !important;
   background-clip: content-box !important;
   border-radius: 0 !important;
 }
@@ -116,7 +116,7 @@
     width: 21px !important;
     height: 21px !important;
     border: 2px solid #fff !important;
-    box-shadow: 0 0 0 1px #000 !important;
+    box-shadow: 0 0 0 1px #ddd !important;
     display: inline-block !important;
     background: var(--swatch--background) !important;
     background-clip: content-box !important;
@@ -155,7 +155,7 @@
     margin-right: 4px !important;
     border-radius: 0 !important;
     border: 2px solid #fff !important;
-    box-shadow: 0 0 0 1px #000 !important;
+    box-shadow: 0 0 0 1px #ddd !important;
     background-clip: content-box !important;
     box-sizing: border-box !important;
   }
@@ -192,7 +192,7 @@
     width: 21px !important;
     height: 21px !important;
     border: 2px solid #fff !important;
-    box-shadow: 0 0 0 1px #000 !important;
+    box-shadow: 0 0 0 1px #ddd !important;
     display: inline-block !important;
     background: var(--swatch--background) !important;
     background-size: cover !important;
@@ -234,7 +234,7 @@
     height: 21px !important;
     border-radius: 0 !important;
     border: 2px solid #fff !important;
-    box-shadow: 0 0 0 1px #000 !important;
+    box-shadow: 0 0 0 1px #ddd !important;
     background-clip: content-box !important;
   }
 
@@ -250,7 +250,7 @@
     height: 21px !important;
     border-radius: 0 !important;
     border: 2px solid #fff !important;
-    box-shadow: 0 0 0 1px #000 !important;
+    box-shadow: 0 0 0 1px #ddd !important;
     background-clip: content-box !important;
   }
 }
