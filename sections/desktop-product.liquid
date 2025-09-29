@@ -191,6 +191,50 @@
 
   /* Color swatch styling is now handled by global CSS in swatches-cheyenne.css */
 
+  /* Swatch row with ruler styling */
+  .swatch-row-with-ruler {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 12px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .swatch-row-with-ruler .product-form__input--swatch,
+  .swatch-row-with-ruler > div:first-child {
+    flex: 0 0 auto;
+  }
+
+  /* Size guide ruler button styling */
+  .size-guide-ruler-btn {
+    background: none !important;
+    border: none !important;
+    padding: 4px !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 24px !important;
+    height: 24px !important;
+    border-radius: 2px !important;
+    transition: background-color 0.2s ease !important;
+  }
+
+  .size-guide-ruler-btn:hover {
+    background-color: rgba(0, 0, 0, 0.1) !important;
+  }
+
+  .size-guide-ruler-btn .ruler-icon {
+    width: 18px !important;
+    height: 18px !important;
+    opacity: 0.7 !important;
+    transition: opacity 0.2s ease !important;
+  }
+
+  .size-guide-ruler-btn:hover .ruler-icon {
+    opacity: 1 !important;
+  }
+
   /* Size swatch labels - smaller sizing */
   .desktop-product-section fieldset.product-form__input--pill label,
   .desktop-product-section fieldset[class*="product-form__input--pill"] label,
@@ -456,9 +500,10 @@
 
     <!-- Description container (will be filled by JS) -->
     <div class="product-description" id="DesktopDescContainer">{{ product.description }}</div>
-        <div>
-    {% render 'size-chart-new', section_id: section.id %}
 
+    <!-- Size chart is now accessible via ruler icon next to color swatches -->
+    <div style="display: none;">
+      {% render 'size-chart-desktop', section_id: section.id %}
     </div>
     {% unless product.has_only_default_variant %}
       <!-- Variant Picker -->

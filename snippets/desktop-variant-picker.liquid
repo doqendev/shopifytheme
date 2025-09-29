@@ -44,8 +44,13 @@ data-option-position="{{ option.position }}" data-option-name="{{ option.name | 
       {%- assign wrapper_attributes = wrapper_attributes | strip -%}
 
       {%- if picker_type == 'swatch' -%}
+        {%- assign is_color_option = false -%}
+        {%- if option_name_lower contains 'color' or option_name_lower contains 'cor' or option_name_lower contains 'couleur' -%}
+          {%- assign is_color_option = true -%}
+        {%- endif -%}
+
         <fieldset
-          class="js product-form__input product-form__input--swatch{% if is_size_option %} product-form__input--size-hidden{% endif %}"
+          class="js product-form__input product-form__input--swatch{% if is_size_option %} product-form__input--size-hidden{% endif %}{% if is_color_option %} swatch-with-ruler{% endif %}"
           {{ wrapper_attributes }}
           {% if is_size_option %}hidden aria-hidden="true"{% endif %}
         >
@@ -55,12 +60,21 @@ data-option-position="{{ option.position }}" data-option-name="{{ option.name | 
               {{- option.selected_value -}}
             </span>
           </legend>
-          {% render 'product-variant-options',
-            product: product,
-            option: option,
-            block: block,
-            picker_type: picker_type
-          %}
+
+          <div class="swatch-container{% if is_color_option %} swatch-row-with-ruler{% endif %}">
+            {% render 'product-variant-options',
+              product: product,
+              option: option,
+              block: block,
+              picker_type: picker_type
+            %}
+
+            {% if is_color_option %}
+              <button type="button" class="size-guide-ruler-btn" onclick="document.getElementById('open-desktop-sizechart').click()">
+                {{ 'icon-ruler.svg' | asset_url | img_tag: '', class: 'ruler-icon' }}
+              </button>
+            {% endif %}
+          </div>
         </fieldset>
       {%- elsif picker_type == 'button' -%}
         <fieldset
