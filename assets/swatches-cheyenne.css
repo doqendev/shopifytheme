@@ -99,6 +99,14 @@
   border-radius: 0 !important;
 }
 
+/* Override selection states globally */
+.swatch:hover,
+.swatch.active,
+.swatch.selected {
+  border: 3px solid #fff !important;
+  box-shadow: 0 0 0 1.5px #000 !important;
+}
+
 @media screen and (min-width: 750px) {
   .product-card__swatch-indicator {
     gap: 4px !important;
@@ -216,8 +224,8 @@
   }
 
   #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch.active {
-    border: 2px solid white;
-    box-shadow: 0 0 0 1px #000;
+    border: 3px solid #fff !important;
+    box-shadow: 0 0 0 1.5px #000 !important;
   }
 
   /* Ensure mobile styles apply to all product sections */
