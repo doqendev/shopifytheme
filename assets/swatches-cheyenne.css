@@ -108,10 +108,12 @@
 }
 
 /* Make first swatch active by default */
-.product-form__input--swatch .swatch-input__input:first-of-type + .swatch-input__label > .swatch,
-variant-selects .product-form__input--swatch .swatch-input__input:first-of-type + .swatch-input__label > .swatch {
+.product-form__input--swatch .swatch-input__input:first-of-type + .swatch-input__label,
+variant-selects .product-form__input--swatch .swatch-input__input:first-of-type + .swatch-input__label {
   border: 3px solid #fff !important;
   box-shadow: 0 0 0 1.5px #000 !important;
+  width: 21px !important;
+  height: 21px !important;
 }
 
 @media screen and (min-width: 750px) {
@@ -143,6 +145,16 @@ variant-selects .product-form__input--swatch .swatch-input__input:first-of-type 
     display: none !important;
   }
 
+  /* Desktop active swatch styling - overrides component-product-variant-picker.css */
+  .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label,
+  .product-form__input--swatch .swatch-input__label:hover,
+  .product-form__input--swatch .swatch-input__label.active {
+    border: 3px solid #fff !important;
+    box-shadow: 0 0 0 1.5px #000 !important;
+    width: 21px !important;
+    height: 21px !important;
+  }
+
   .product-form__input--swatch .swatch-input__label:hover > .swatch,
   .product-form__input--swatch .swatch-input__label.active > .swatch,
   .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label > .swatch,
@@ -150,8 +162,8 @@ variant-selects .product-form__input--swatch .swatch-input__input:first-of-type 
   .swatch.active,
   .swatch:hover,
   .swatch.selected {
-    border: 3px solid #fff !important;
-    box-shadow: 0 0 0 1.5px #000 !important;
+    border: none !important;
+    box-shadow: none !important;
     outline: none !important;
   }
 
@@ -212,14 +224,24 @@ variant-selects .product-form__input--swatch .swatch-input__input:first-of-type 
     box-sizing: border-box !important;
   }
 
+  /* Mobile active swatch styling - target the labels */
+  .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label,
+  .product-form__input--swatch .swatch-input__label:hover,
+  .product-form__input--swatch .swatch-input__label.active {
+    border: 3px solid #fff !important;
+    box-shadow: 0 0 0 1.5px #000 !important;
+    width: 21px !important;
+    height: 21px !important;
+  }
+
   .product-form__input--swatch .swatch-input__label:hover > .swatch,
   .product-form__input--swatch .swatch-input__label.active > .swatch,
   .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label > .swatch,
   .swatch:hover,
   .swatch.selected,
   .swatch.active {
-    border: 3px solid #fff !important;
-    box-shadow: 0 0 0 1.5px #000 !important;
+    border: none !important;
+    box-shadow: none !important;
     outline: none !important;
   }
 
