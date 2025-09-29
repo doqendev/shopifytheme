@@ -128,41 +128,70 @@
 .product-form__input--swatch {
   display: flex !important;
   flex-wrap: wrap !important;
-  gap: var(--swatch-gap, 4px) !important;
+  gap: var(--swatch-gap, 0) !important;
   align-items: center !important;
-  margin-bottom: 12px !important;
+  margin-bottom: 20px !important;
 }
 
 .product-form__input--swatch .swatch-input__input + .swatch-input__label {
-  /* normalized by component-swatch-input.css overrides */
-  margin: 0 4px 0 0 !important;
+  --swatch-input--size: 3.6rem;
+
+  margin: 0.7rem 1.2rem 0.2rem 0;
 }
 
 /* Global color swatch styling - apply desktop look everywhere */
 @media screen and (min-width: 750px) {
-  /* Normalize label dimensions and remove borders at desktop */
+  .product-form__input--swatch .swatch-input__input + .swatch-input__label {
+    --swatch-input--size: 2.1rem;
+  }
+
+  /* All color swatches - inactive state */
   .product-form__input--swatch label,
   .product-form__input--swatch .swatch-input__label {
-    width: 15px !important;
-    height: 15px !important;
-    border: none !important;
-    box-shadow: none !important;
+    width: 21px !important;
+    height: 21px !important;
+    border: 3px solid transparent !important;
+    box-shadow: 0 0 0 0.5px transparent !important;
     padding: 0 !important;
     border-radius: 0 !important;
     box-sizing: border-box !important;
     display: inline-block !important;
     vertical-align: top !important;
-    margin: 0 4px 0 0 !important;
+    margin: 0 !important;
   }
 
-  /* Inner swatch stays 15px; active ring handled by global rules */
+  /* All color swatch inner spans */
   .product-form__input--swatch label span.swatch,
   .product-form__input--swatch .swatch-input__label span {
-    width: 15px !important;
-    height: 15px !important;
-    border: none !important;
     border-radius: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
     display: block !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Active color swatch styling */
+  .product-form__input--swatch label.active,
+  .product-form__input--swatch input:checked + label,
+  .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label {
+    border: 3px solid #fff !important;
+    box-shadow: 0 0 0 0.5px #000 !important;
+    width: 21px !important;
+    height: 21px !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    display: inline-block !important;
+    vertical-align: top !important;
+    margin: 0 !important;
+  }
+
+  .product-form__input--swatch label.active > span.swatch,
+  .product-form__input--swatch input:checked + label > span.swatch,
+  .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label > span {
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
     box-sizing: border-box !important;
   }
 }

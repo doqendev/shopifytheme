@@ -83,22 +83,3 @@
   transform-origin: left;
 }
 
-
-/* Global overrides to normalize size and remove label borders/outlines */
-.swatch-input__input + .swatch-input__label {
-  width: 15px !important;
-  height: 15px !important;
-  padding: 0 !important;
-  margin: 0 4px 0 0 !important;
-  border: none !important;
-  box-shadow: none !important;
-  outline: none !important;
-  border-radius: 0 !important;
-}
-
-.swatch-input__input:focus-visible + .swatch-input__label,
-.swatch-input__input:active:focus-visible + .swatch-input__label,
-.swatch-input__input:checked:focus-visible + .swatch-input__label {
-  outline: none !important;
-  box-shadow: none !important;
-}
