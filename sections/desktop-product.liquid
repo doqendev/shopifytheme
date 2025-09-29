@@ -195,7 +195,7 @@
   .swatch-row-with-ruler {
     display: flex !important;
     align-items: center !important;
-    justify-content: space-between !important;
+    justify-content: flex-start !important;
     flex-wrap: nowrap !important;
     width: 100% !important;
   }
@@ -203,7 +203,8 @@
   .swatch-row-with-ruler > div:first-child {
     display: flex !important;
     align-items: center !important;
-    flex: 1 !important;
+    flex: 0 0 auto !important;
+    gap: 8px !important;
   }
 
   /* Size guide ruler button styling */
@@ -219,7 +220,8 @@
     height: 32px !important;
     border-radius: 4px !important;
     transition: all 0.2s ease !important;
-    margin-left: 16px !important;
+    margin-left: auto !important;
+    margin-right: 0 !important;
     flex-shrink: 0 !important;
   }
 
