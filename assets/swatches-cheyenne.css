@@ -93,11 +93,11 @@
   .swatch {
     width: 21px !important;
     height: 21px !important;
-    border: none !important;
-    box-shadow: inset 0 0 0 3px #fff !important;
+    border: 2px solid #fff !important;
+    box-shadow: 0 0 0 1px #ddd !important;
     display: inline-block !important;
     background: var(--swatch--background) !important;
-    background-clip: padding-box !important;
+    background-clip: content-box !important;
     border-radius: 0 !important;
     margin-right: 4px !important;
     cursor: pointer !important;
@@ -132,9 +132,9 @@
     height: 21px !important;
     margin-right: 4px !important;
     border-radius: 0 !important;
-    border: none !important;
-    box-shadow: inset 0 0 0 3px #fff !important;
-    background-clip: padding-box !important;
+    border: 2px solid #fff !important;
+    box-shadow: 0 0 0 1px #ddd !important;
+    background-clip: content-box !important;
     box-sizing: border-box !important;
   }
 
@@ -169,17 +169,17 @@
   .swatch {
     width: 21px !important;
     height: 21px !important;
-    border: none !important;
-    box-shadow: inset 0 0 0 3px #fff !important;
+    border: 2px solid #fff !important;
+    box-shadow: 0 0 0 1px #ddd !important;
     display: inline-block !important;
     background: var(--swatch--background) !important;
     background-size: cover !important;
     background-position: center !important;
-    background-clip: padding-box !important;
+    background-clip: content-box !important;
     border-radius: 0 !important;
     margin-right: 0 !important;
     cursor: pointer !important;
-    transition: none !important;
+    transition: box-shadow 0.2s ease !important;
     box-sizing: border-box !important;
   }
 
@@ -211,9 +211,9 @@
     width: 21px !important;
     height: 21px !important;
     border-radius: 0 !important;
-    border: none !important;
-    box-shadow: inset 0 0 0 3px #fff !important;
-    background-clip: padding-box !important;
+    border: 2px solid #fff !important;
+    box-shadow: 0 0 0 1px #ddd !important;
+    background-clip: content-box !important;
   }
 
   variant-selects .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label > .swatch {
@@ -227,9 +227,9 @@
     width: 21px !important;
     height: 21px !important;
     border-radius: 0 !important;
-    border: none !important;
-    box-shadow: inset 0 0 0 3px #fff !important;
-    background-clip: padding-box !important;
+    border: 2px solid #fff !important;
+    box-shadow: 0 0 0 1px #ddd !important;
+    background-clip: content-box !important;
   }
 }
 
