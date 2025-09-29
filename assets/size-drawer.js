@@ -71,7 +71,19 @@
   };
 
 
-  const getVariantSelectRoot = (sectionId) => document.getElementById(`variant-selects-${sectionId}`);
+  const getVariantSelectRoot = (sectionId) => {
+    const root = document.getElementById(`variant-selects-${sectionId}`);
+    console.log(`Looking for variant-selects-${sectionId}:`, root);
+
+    // Also try to find by data-section attribute as fallback
+    if (!root) {
+      const fallback = document.querySelector(`variant-selects[data-section="${sectionId}"]`);
+      console.log(`Fallback search for variant-selects with data-section="${sectionId}":`, fallback);
+      return fallback;
+    }
+
+    return root;
+  };
 
   const setVariantOptionOnRoot = (root, option, value) => {
     if (!root || !option) return;
@@ -142,23 +154,34 @@
 
   function getSelectedOptionValue(sectionId, option) {
     const root = getVariantSelectRoot(sectionId);
+    console.log(`Getting selected value for option "${option.name}" in section "${sectionId}"`);
+    console.log('Variant select root:', root);
+
     if (!root) {
-      return getOptionValueString(option.selected_value);
+      const fallbackValue = getOptionValueString(option.selected_value);
+      console.log(`No root found, using fallback value: ${fallbackValue}`);
+      return fallbackValue;
     }
 
     const name = `${option.name}-${option.position}`;
     const radio = root.querySelector(`input[name="${cssEscape(name)}"]:checked`);
+    console.log(`Looking for radio with name "${name}":`, radio);
     if (radio) {
+      console.log(`Radio value found: ${radio.value}`);
       return radio.value;
     }
 
     const selectName = `options[${option.name}]`;
     const select = root.querySelector(`select[name="${cssEscape(selectName)}"]`);
+    console.log(`Looking for select with name "${selectName}":`, select);
     if (select) {
+      console.log(`Select value found: ${select.value}`);
       return select.value;
     }
 
-    return getOptionValueString(option.selected_value);
+    const defaultValue = getOptionValueString(option.selected_value);
+    console.log(`No input found, using default value: ${defaultValue}`);
+    return defaultValue;
   }
 
   function ensureState(sectionId) {
@@ -272,17 +295,23 @@
     }
 
     const selections = data.options.map((option) => getSelectedOptionValue(sectionId, option) || '');
+    console.log('Current option selections:', selections);
+    console.log('Color option index:', data.colorOptionIndex);
+    console.log('Size option index:', data.sizeOptionIndex);
 
     let activeColor = '';
     if (data.colorOptionIndex > -1) {
       activeColor = selections[data.colorOptionIndex];
+      console.log('Active color from selections:', activeColor);
       if (!activeColor) {
         const firstVariant = data.variants.find((variant) => Array.isArray(variant.options));
         if (firstVariant) {
           activeColor = firstVariant.options[data.colorOptionIndex] || '';
+          console.log('Fallback to first variant color:', activeColor);
         }
       }
     }
+    console.log('Final active color:', activeColor);
 
     const orderedSizes = [];
     const sizeOption = data.options[data.sizeOptionIndex];
@@ -560,6 +589,13 @@
       console.error('No drawer found for section:', sectionId);
       return;
     }
+
+    // Debug: Check all variant-selects elements on page
+    const allVariantSelects = document.querySelectorAll('variant-selects');
+    console.log('All variant-selects elements on page:', allVariantSelects);
+    allVariantSelects.forEach((el, index) => {
+      console.log(`  ${index + 1}. ID: ${el.id}, data-section: ${el.dataset.section}`);
+    });
 
     const state = ensureState(sectionId);
     console.log('State ensured for section:', sectionId, state);
