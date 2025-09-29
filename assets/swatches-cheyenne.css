@@ -278,9 +278,12 @@ variant-selects .product-form__input--swatch .swatch-input__input:first-of-type 
     width: 15px !important;
     height: 15px !important;
     border-radius: 0 !important;
-    border: none !important;
+    border-style: solid;
+    border-width: 5px;
+    border-color: white;
     box-shadow: none !important;
     background-clip: border-box !important;
+
   }
 }
 
