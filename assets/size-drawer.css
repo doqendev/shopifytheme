@@ -161,3 +161,9 @@
   background: #198754;
   border-color: #198754;
 }
+
+/* Hide size option inputs when using size drawer */
+.product-form__input--size-hidden,
+.product-form__input[data-size-hidden="true"] {
+  display: none !important;
+}
