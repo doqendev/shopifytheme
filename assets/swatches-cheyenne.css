@@ -91,6 +91,14 @@
   margin-top: 3px;
 }
 
+/* Override component-swatch.css base styles */
+.swatch {
+  border: 2px solid #fff !important;
+  box-shadow: 0 0 0 1px #000 !important;
+  background-clip: content-box !important;
+  border-radius: 0 !important;
+}
+
 @media screen and (min-width: 750px) {
   .product-card__swatch-indicator {
     gap: 4px !important;
