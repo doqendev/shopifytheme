@@ -21,13 +21,22 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
 
-    // Set first swatch as active by default
-    const firstSwatchInputs = document.querySelectorAll('.product-form__input--swatch .swatch-input__input:first-of-type');
-    firstSwatchInputs.forEach(input => {
-      input.checked = true;
-      const label = input.nextElementSibling;
-      if (label) {
-        label.classList.add('active');
+    // Set first swatch as active by default (only if no swatch is already selected)
+    const swatchGroups = document.querySelectorAll('.product-form__input--swatch');
+    swatchGroups.forEach(group => {
+      const checkedInput = group.querySelector('.swatch-input__input:checked');
+      const activeLabel = group.querySelector('.swatch-input__label.active');
+
+      // Only set first as default if nothing is already selected/active
+      if (!checkedInput && !activeLabel) {
+        const firstInput = group.querySelector('.swatch-input__input:first-of-type');
+        if (firstInput) {
+          firstInput.checked = true;
+          const label = firstInput.nextElementSibling;
+          if (label) {
+            label.classList.add('active');
+          }
+        }
       }
     });
   }
