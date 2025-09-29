@@ -70,7 +70,9 @@ data-option-position="{{ option.position }}" data-option-name="{{ option.name | 
             %}
 
             {% if is_color_option %}
-              <button type="button" class="size-guide-ruler-btn" onclick="document.getElementById('open-desktop-sizechart').click()">
+              {%- assign _scope_id = section.id | default: block.id | default: product.id -%}
+              {%- assign sg_id = 'sg-' | append: product.id | append: '-' | append: _scope_id -%}
+              <button type="button" class="size-guide-ruler-btn" data-sg-open="{{ sg_id }}" aria-controls="{{ sg_id }}" aria-expanded="false">
                 {{ 'icon-ruler.svg' | asset_url | img_tag: '', class: 'ruler-icon' }}
               </button>
             {% endif %}
