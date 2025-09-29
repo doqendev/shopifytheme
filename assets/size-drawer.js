@@ -3,6 +3,9 @@
   const COLOR_KEYWORDS = ['color', 'cor', 'colour'];
   const SIZE_KEYWORDS = ['size', 'tamanho', 'talla'];
 
+  // Flag to prevent infinite sync loops
+  let isSyncing = false;
+
   const cssEscape = (value) => {
     if (window.CSS && typeof window.CSS.escape === 'function') {
       return window.CSS.escape(value);
@@ -697,8 +700,8 @@
 
     console.log('Variant change detected in section:', sourceSectionId);
 
-    // Sync the variant selection to all other sections
-    syncVariantSelectionAcrossSections(event.target, sourceSectionId);
+    // Only sync if we're not already syncing, and disable aggressive sync for now
+    // syncVariantSelectionAcrossSections(event.target, sourceSectionId);
 
     // Update any open size drawers
     const openDrawers = document.querySelectorAll('.size-drawer.is-open');
@@ -712,28 +715,39 @@
   }
 
   function syncVariantSelectionAcrossSections(changedInput, sourceSectionId) {
-    // Get the option name and value from the changed input
-    const optionName = changedInput.name.split('-')[0];
-    const optionValue = changedInput.value;
+    // Set sync flag to prevent infinite loops
+    isSyncing = true;
 
-    console.log(`Syncing ${optionName} = ${optionValue} from section ${sourceSectionId} to all sections`);
+    try {
+      // Get the option name and value from the changed input
+      const optionName = changedInput.name.split('-')[0];
+      const optionValue = changedInput.value;
 
-    // Find all variant-selects elements except the source
-    const allVariantSelects = document.querySelectorAll('variant-selects');
+      console.log(`Syncing ${optionName} = ${optionValue} from section ${sourceSectionId} to all sections`);
 
-    allVariantSelects.forEach(variantSelect => {
-      if (variantSelect.dataset.section === sourceSectionId) return; // Skip source section
+      // Find all variant-selects elements except the source
+      const allVariantSelects = document.querySelectorAll('variant-selects');
 
-      // Find corresponding input in this section
-      const targetSectionId = variantSelect.dataset.section;
-      const matchingInput = variantSelect.querySelector(`input[name*="${optionName}"][value="${optionValue}"]`);
+      allVariantSelects.forEach(variantSelect => {
+        if (variantSelect.dataset.section === sourceSectionId) return; // Skip source section
 
-      if (matchingInput && !matchingInput.checked) {
-        console.log(`Syncing to section ${targetSectionId}: setting ${optionName} to ${optionValue}`);
-        matchingInput.checked = true;
-        matchingInput.dispatchEvent(new Event('change', { bubbles: true }));
-      }
-    });
+        // Find corresponding input in this section
+        const targetSectionId = variantSelect.dataset.section;
+        const matchingInput = variantSelect.querySelector(`input[name*="${optionName}"][value="${optionValue}"]`);
+
+        if (matchingInput && !matchingInput.checked) {
+          console.log(`Syncing to section ${targetSectionId}: setting ${optionName} to ${optionValue}`);
+          matchingInput.checked = true;
+          // Dispatch change event but without bubbling to prevent loops
+          matchingInput.dispatchEvent(new Event('change', { bubbles: false }));
+        }
+      });
+    } finally {
+      // Always reset the sync flag
+      setTimeout(() => {
+        isSyncing = false;
+      }, 100);
+    }
   }
 
   function handleProductInfoLoaded(event) {
