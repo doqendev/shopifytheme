@@ -157,25 +157,29 @@
   }
 
   .product-form__input--swatch .swatch-input__label {
-    width: 32px !important;
-    height: 32px !important;
+    width: 30px !important;
+    height: 30px !important;
     padding: 0 !important;
     margin: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
   .swatch {
     width: 30px !important;
     height: 30px !important;
-    box-shadow: 0 0 0 1px #ddd !important;
-    border: 2px solid white !important;
+    border: none !important;
+    box-shadow: inset 0 0 0 3px #fff !important;
     display: inline-block !important;
     background: var(--swatch--background) !important;
     background-size: cover !important;
     background-position: center !important;
-    border-radius: 100% !important;
+    background-clip: padding-box !important;
+    border-radius: 0 !important;
     margin-right: 0 !important;
     cursor: pointer !important;
-    transition: box-shadow 0.2s ease-in-out !important;
+    transition: none !important;
     box-sizing: border-box !important;
   }
 
@@ -185,9 +189,9 @@
   .swatch:hover,
   .swatch.selected,
   .swatch.active {
-    box-shadow: 0 0 0 2px #000 !important;
+    border: 3px solid #fff !important;
+    box-shadow: 0 0 0 0.5px #000 !important;
     outline: none !important;
-    border: 2px solid white !important;
   }
 
   #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span {
@@ -206,14 +210,15 @@
   variant-selects .product-form__input--swatch .swatch {
     width: 30px !important;
     height: 30px !important;
-    border-radius: 100% !important;
-    box-shadow: 0 0 0 1px #ddd !important;
-    border: 2px solid white !important;
+    border-radius: 0 !important;
+    border: none !important;
+    box-shadow: inset 0 0 0 3px #fff !important;
+    background-clip: padding-box !important;
   }
 
   variant-selects .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label > .swatch {
-    box-shadow: 0 0 0 2px #000 !important;
-    border: 2px solid white !important;
+    border: 3px solid #fff !important;
+    box-shadow: 0 0 0 0.5px #000 !important;
   }
 
   /* Mobile sticky bar and desktop product sections */
@@ -221,9 +226,10 @@
   #variant-selects-template--25444169908548__desktop_product_kf6zNg .swatch {
     width: 30px !important;
     height: 30px !important;
-    border-radius: 100% !important;
-    box-shadow: 0 0 0 1px #ddd !important;
-    border: 2px solid white !important;
+    border-radius: 0 !important;
+    border: none !important;
+    box-shadow: inset 0 0 0 3px #fff !important;
+    background-clip: padding-box !important;
   }
 }
 
