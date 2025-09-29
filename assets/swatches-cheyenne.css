@@ -51,8 +51,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 21px !important;
-  height: 21px !important;
+  width: 15px !important;
+  height: 15px !important;
   padding: 0 !important;
   margin: 0 !important;
   background: none !important;
@@ -104,14 +104,14 @@
 .swatch.active,
 .swatch.selected {
   border: 3px solid #fff !important;
-  box-shadow: 0 0 0 1.5px #000 !important;
+  box-shadow: 0 0 0 0.5px #000 !important;
 }
 
 /* Make first swatch active by default */
 .product-form__input--swatch .swatch-input__input:first-of-type + .swatch-input__label,
 variant-selects .product-form__input--swatch .swatch-input__input:first-of-type + .swatch-input__label {
   border: 3px solid #fff !important;
-  box-shadow: 0 0 0 1.5px #000 !important;
+  box-shadow: 0 0 0 0.5px #000 !important;
   width: 21px !important;
   height: 21px !important;
 }
@@ -122,8 +122,8 @@ variant-selects .product-form__input--swatch .swatch-input__input:first-of-type 
   }
 
   .swatch {
-    width: 21px !important;
-    height: 21px !important;
+    width: 15px !important;
+    height: 15px !important;
     border: none !important;
     box-shadow: none !important;
     display: inline-block !important;
@@ -150,7 +150,7 @@ variant-selects .product-form__input--swatch .swatch-input__input:first-of-type 
   .product-form__input--swatch .swatch-input__label:hover,
   .product-form__input--swatch .swatch-input__label.active {
     border: 3px solid #fff !important;
-    box-shadow: 0 0 0 1.5px #000 !important;
+    box-shadow: 0 0 0 0.5px #000 !important;
     width: 21px !important;
     height: 21px !important;
   }
@@ -169,8 +169,8 @@ variant-selects .product-form__input--swatch .swatch-input__input:first-of-type 
 
   #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span,
   #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch {
-    width: 21px !important;
-    height: 21px !important;
+    width: 15px !important;
+    height: 15px !important;
     margin-right: 4px !important;
     border-radius: 0 !important;
     border: none !important;
@@ -182,7 +182,7 @@ variant-selects .product-form__input--swatch .swatch-input__input:first-of-type 
   #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch.active,
   #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch:hover {
     border: 3px solid #fff !important;
-    box-shadow: 0 0 0 1.5px #000 !important;
+    box-shadow: 0 0 0 0.5px #000 !important;
   }
 
   #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch:last-child {
@@ -198,8 +198,8 @@ variant-selects .product-form__input--swatch .swatch-input__input:first-of-type 
   }
 
   .product-form__input--swatch .swatch-input__label {
-    width: 21px !important;
-    height: 21px !important;
+    width: 15px !important;
+    height: 15px !important;
     padding: 0 !important;
     margin: 0 !important;
     display: inline-flex !important;
@@ -208,8 +208,8 @@ variant-selects .product-form__input--swatch .swatch-input__input:first-of-type 
   }
 
   .swatch {
-    width: 21px !important;
-    height: 21px !important;
+    width: 15px !important;
+    height: 15px !important;
     border: none !important;
     box-shadow: none !important;
     display: inline-block !important;
@@ -229,7 +229,7 @@ variant-selects .product-form__input--swatch .swatch-input__input:first-of-type 
   .product-form__input--swatch .swatch-input__label:hover,
   .product-form__input--swatch .swatch-input__label.active {
     border: 3px solid #fff !important;
-    box-shadow: 0 0 0 1.5px #000 !important;
+    box-shadow: 0 0 0 0.5px #000 !important;
     width: 21px !important;
     height: 21px !important;
   }
@@ -246,21 +246,21 @@ variant-selects .product-form__input--swatch .swatch-input__input:first-of-type 
   }
 
   #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span {
-    width: 19px !important;
-    height: 19px !important;
+    width: 15px !important;
+    height: 15px !important;
     margin-right: 5px !important;
     border-radius: 20px;
   }
 
   #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch.active {
     border: 3px solid #fff !important;
-    box-shadow: 0 0 0 1.5px #000 !important;
+    box-shadow: 0 0 0 0.5px #000 !important;
   }
 
   /* Ensure mobile styles apply to all product sections */
   variant-selects .product-form__input--swatch .swatch {
-    width: 21px !important;
-    height: 21px !important;
+    width: 15px !important;
+    height: 15px !important;
     border-radius: 0 !important;
     border: none !important;
     box-shadow: none !important;
@@ -269,14 +269,14 @@ variant-selects .product-form__input--swatch .swatch-input__input:first-of-type 
 
   variant-selects .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label > .swatch {
     border: 3px solid #fff !important;
-    box-shadow: 0 0 0 1.5px #000 !important;
+    box-shadow: 0 0 0 0.5px #000 !important;
   }
 
   /* Mobile sticky bar and desktop product sections */
   #variant-selects-template--25444169908548__sticky_product_bar_HRGKtD .swatch,
   #variant-selects-template--25444169908548__desktop_product_kf6zNg .swatch {
-    width: 21px !important;
-    height: 21px !important;
+    width: 15px !important;
+    height: 15px !important;
     border-radius: 0 !important;
     border: none !important;
     box-shadow: none !important;
@@ -301,8 +301,8 @@ variant-selects .product-form__input--swatch .swatch-input__input:first-of-type 
 }
 
 #FacetsWrapperMobile > div.mobile-facet.mobile-facet-filter\.v\.t\.shopify\.color-pattern > ul > li > div > label.swatch-input__label > span {
-  width: 25px !important;
-  height: 25px !important;
+  width: 15px !important;
+  height: 15px !important;
 }
 
 /* Additional mobile responsive improvements */
