@@ -107,6 +107,13 @@
   box-shadow: 0 0 0 1.5px #000 !important;
 }
 
+/* Make first swatch active by default */
+.product-form__input--swatch .swatch-input__input:first-of-type + .swatch-input__label > .swatch,
+variant-selects .product-form__input--swatch .swatch-input__input:first-of-type + .swatch-input__label > .swatch {
+  border: 3px solid #fff !important;
+  box-shadow: 0 0 0 1.5px #000 !important;
+}
+
 @media screen and (min-width: 750px) {
   .product-card__swatch-indicator {
     gap: 4px !important;
