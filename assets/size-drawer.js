@@ -153,35 +153,62 @@
   };
 
   function getSelectedOptionValue(sectionId, option) {
+    // First try the specific section
     const root = getVariantSelectRoot(sectionId);
     console.log(`Getting selected value for option "${option.name}" in section "${sectionId}"`);
     console.log('Variant select root:', root);
 
-    if (!root) {
-      const fallbackValue = getOptionValueString(option.selected_value);
-      console.log(`No root found, using fallback value: ${fallbackValue}`);
-      return fallbackValue;
+    let selectedValue = null;
+
+    if (root) {
+      const name = `${option.name}-${option.position}`;
+      const radio = root.querySelector(`input[name="${cssEscape(name)}"]:checked`);
+      console.log(`Looking for radio with name "${name}":`, radio);
+      if (radio) {
+        selectedValue = radio.value;
+        console.log(`Radio value found in section ${sectionId}: ${selectedValue}`);
+      } else {
+        const selectName = `options[${option.name}]`;
+        const select = root.querySelector(`select[name="${cssEscape(selectName)}"]`);
+        console.log(`Looking for select with name "${selectName}":`, select);
+        if (select) {
+          selectedValue = select.value;
+          console.log(`Select value found in section ${sectionId}: ${selectedValue}`);
+        }
+      }
     }
 
-    const name = `${option.name}-${option.position}`;
-    const radio = root.querySelector(`input[name="${cssEscape(name)}"]:checked`);
-    console.log(`Looking for radio with name "${name}":`, radio);
-    if (radio) {
-      console.log(`Radio value found: ${radio.value}`);
-      return radio.value;
+    // If no value found in specific section, search across ALL variant-selects elements
+    if (!selectedValue) {
+      console.log('No value found in specific section, searching all variant-selects...');
+      const allVariantSelects = document.querySelectorAll('variant-selects');
+
+      for (const variantSelect of allVariantSelects) {
+        const name = `${option.name}-${option.position}`;
+        const radio = variantSelect.querySelector(`input[name="${cssEscape(name)}"]:checked`);
+        if (radio) {
+          selectedValue = radio.value;
+          console.log(`Found radio value in section ${variantSelect.dataset.section}: ${selectedValue}`);
+          break;
+        }
+
+        const selectName = `options[${option.name}]`;
+        const select = variantSelect.querySelector(`select[name="${cssEscape(selectName)}"]`);
+        if (select && select.value) {
+          selectedValue = select.value;
+          console.log(`Found select value in section ${variantSelect.dataset.section}: ${selectedValue}`);
+          break;
+        }
+      }
     }
 
-    const selectName = `options[${option.name}]`;
-    const select = root.querySelector(`select[name="${cssEscape(selectName)}"]`);
-    console.log(`Looking for select with name "${selectName}":`, select);
-    if (select) {
-      console.log(`Select value found: ${select.value}`);
-      return select.value;
+    // Final fallback to default value
+    if (!selectedValue) {
+      selectedValue = getOptionValueString(option.selected_value);
+      console.log(`Using fallback default value: ${selectedValue}`);
     }
 
-    const defaultValue = getOptionValueString(option.selected_value);
-    console.log(`No input found, using default value: ${defaultValue}`);
-    return defaultValue;
+    return selectedValue;
   }
 
   function ensureState(sectionId) {
@@ -665,11 +692,48 @@
   function handleVariantChange(event) {
     const variantSelects = event.target.closest('variant-selects');
     if (!variantSelects) return;
-    const sectionId = variantSelects.dataset.section;
-    if (!sectionId) return;
-    const drawer = document.getElementById(`size-drawer-${sectionId}`);
-    if (!drawer || !drawer.classList.contains('is-open')) return;
-    renderSizeOptions(sectionId);
+    const sourceSectionId = variantSelects.dataset.section;
+    if (!sourceSectionId) return;
+
+    console.log('Variant change detected in section:', sourceSectionId);
+
+    // Sync the variant selection to all other sections
+    syncVariantSelectionAcrossSections(event.target, sourceSectionId);
+
+    // Update any open size drawers
+    const openDrawers = document.querySelectorAll('.size-drawer.is-open');
+    openDrawers.forEach(drawer => {
+      const drawerSectionId = drawer.dataset.sectionId;
+      if (drawerSectionId) {
+        console.log('Refreshing size options for open drawer:', drawerSectionId);
+        renderSizeOptions(drawerSectionId);
+      }
+    });
+  }
+
+  function syncVariantSelectionAcrossSections(changedInput, sourceSectionId) {
+    // Get the option name and value from the changed input
+    const optionName = changedInput.name.split('-')[0];
+    const optionValue = changedInput.value;
+
+    console.log(`Syncing ${optionName} = ${optionValue} from section ${sourceSectionId} to all sections`);
+
+    // Find all variant-selects elements except the source
+    const allVariantSelects = document.querySelectorAll('variant-selects');
+
+    allVariantSelects.forEach(variantSelect => {
+      if (variantSelect.dataset.section === sourceSectionId) return; // Skip source section
+
+      // Find corresponding input in this section
+      const targetSectionId = variantSelect.dataset.section;
+      const matchingInput = variantSelect.querySelector(`input[name*="${optionName}"][value="${optionValue}"]`);
+
+      if (matchingInput && !matchingInput.checked) {
+        console.log(`Syncing to section ${targetSectionId}: setting ${optionName} to ${optionValue}`);
+        matchingInput.checked = true;
+        matchingInput.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    });
   }
 
   function handleProductInfoLoaded(event) {
