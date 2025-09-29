@@ -65,6 +65,12 @@
   display: block;
   width: 100% !important;
   height: 100% !important;
+  border: 2px solid #fff !important;
+  box-shadow: 0 0 0 1px #000 !important;
+  background: var(--swatch--background) !important;
+  background-clip: content-box !important;
+  border-radius: 0 !important;
+  box-sizing: border-box !important;
 }
 
 .product-form__input--swatch .swatch-input__label:hover,
