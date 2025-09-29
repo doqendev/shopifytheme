@@ -94,7 +94,7 @@
     width: 21px !important;
     height: 21px !important;
     border: 2px solid #fff !important;
-    box-shadow: 0 0 0 1px #ddd !important;
+    box-shadow: 0 0 0 1px #000 !important;
     display: inline-block !important;
     background: var(--swatch--background) !important;
     background-clip: content-box !important;
@@ -122,7 +122,7 @@
   .swatch:hover,
   .swatch.selected {
     border: 3px solid #fff !important;
-    box-shadow: 0 0 0 0.5px #000 !important;
+    box-shadow: 0 0 0 1.5px #000 !important;
     outline: none !important;
   }
 
@@ -133,7 +133,7 @@
     margin-right: 4px !important;
     border-radius: 0 !important;
     border: 2px solid #fff !important;
-    box-shadow: 0 0 0 1px #ddd !important;
+    box-shadow: 0 0 0 1px #000 !important;
     background-clip: content-box !important;
     box-sizing: border-box !important;
   }
@@ -141,7 +141,7 @@
   #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch.active,
   #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch:hover {
     border: 3px solid #fff !important;
-    box-shadow: 0 0 0 0.5px #000 !important;
+    box-shadow: 0 0 0 1.5px #000 !important;
   }
 
   #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch:last-child {
@@ -170,7 +170,7 @@
     width: 21px !important;
     height: 21px !important;
     border: 2px solid #fff !important;
-    box-shadow: 0 0 0 1px #ddd !important;
+    box-shadow: 0 0 0 1px #000 !important;
     display: inline-block !important;
     background: var(--swatch--background) !important;
     background-size: cover !important;
@@ -190,7 +190,7 @@
   .swatch.selected,
   .swatch.active {
     border: 3px solid #fff !important;
-    box-shadow: 0 0 0 0.5px #000 !important;
+    box-shadow: 0 0 0 1.5px #000 !important;
     outline: none !important;
   }
 
@@ -212,13 +212,13 @@
     height: 21px !important;
     border-radius: 0 !important;
     border: 2px solid #fff !important;
-    box-shadow: 0 0 0 1px #ddd !important;
+    box-shadow: 0 0 0 1px #000 !important;
     background-clip: content-box !important;
   }
 
   variant-selects .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label > .swatch {
     border: 3px solid #fff !important;
-    box-shadow: 0 0 0 0.5px #000 !important;
+    box-shadow: 0 0 0 1.5px #000 !important;
   }
 
   /* Mobile sticky bar and desktop product sections */
@@ -228,7 +228,7 @@
     height: 21px !important;
     border-radius: 0 !important;
     border: 2px solid #fff !important;
-    box-shadow: 0 0 0 1px #ddd !important;
+    box-shadow: 0 0 0 1px #000 !important;
     background-clip: content-box !important;
   }
 }
