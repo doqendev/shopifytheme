@@ -595,16 +595,16 @@
   }
 
   function handleDocumentClick(event) {
-    console.log('Click event detected:', event.target);
     const trigger = event.target.closest('[data-size-drawer-trigger]');
-    console.log('Size drawer trigger found:', trigger);
     if (trigger) {
       const sectionId = trigger.getAttribute('data-size-drawer-trigger');
-      console.log('Section ID from trigger:', sectionId);
+      console.log('Size drawer clicked! Section ID:', sectionId);
       if (sectionId) {
         event.preventDefault();
         console.log('Opening drawer for section:', sectionId);
         openDrawer(sectionId, trigger);
+      } else {
+        console.error('No section ID found on trigger:', trigger);
       }
       return;
     }
