@@ -203,7 +203,8 @@
 
   /* Override the existing swatch container gap to keep swatches tightly grouped */
   .swatch-row-with-ruler .product-form__input--swatch {
-    gap: 8px !important;
+    --swatch-gap: 6px;
+    gap: var(--swatch-gap, 6px) !important;
     margin-right: 0 !important;
     flex: 0 0 auto !important;
   }
