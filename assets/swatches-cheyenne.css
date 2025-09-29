@@ -65,10 +65,10 @@
   display: block;
   width: 100% !important;
   height: 100% !important;
-  border: 2px solid #fff !important;
-  box-shadow: 0 0 0 1px #ddd !important;
+  border: none !important;
+  box-shadow: none !important;
   background: var(--swatch--background) !important;
-  background-clip: content-box !important;
+  background-clip: border-box !important;
   border-radius: 0 !important;
   box-sizing: border-box !important;
 }
@@ -91,11 +91,11 @@
   margin-top: 3px;
 }
 
-/* Override component-swatch.css base styles */
+/* Override component-swatch.css base styles - no borders for regular swatches */
 .swatch {
-  border: 2px solid #fff !important;
-  box-shadow: 0 0 0 1px #ddd !important;
-  background-clip: content-box !important;
+  border: none !important;
+  box-shadow: none !important;
+  background-clip: border-box !important;
   border-radius: 0 !important;
 }
 
@@ -122,11 +122,11 @@ variant-selects .product-form__input--swatch .swatch-input__input:first-of-type 
   .swatch {
     width: 21px !important;
     height: 21px !important;
-    border: 2px solid #fff !important;
-    box-shadow: 0 0 0 1px #ddd !important;
+    border: none !important;
+    box-shadow: none !important;
     display: inline-block !important;
     background: var(--swatch--background) !important;
-    background-clip: content-box !important;
+    background-clip: border-box !important;
     border-radius: 0 !important;
     margin-right: 4px !important;
     cursor: pointer !important;
@@ -161,9 +161,9 @@ variant-selects .product-form__input--swatch .swatch-input__input:first-of-type 
     height: 21px !important;
     margin-right: 4px !important;
     border-radius: 0 !important;
-    border: 2px solid #fff !important;
-    box-shadow: 0 0 0 1px #ddd !important;
-    background-clip: content-box !important;
+    border: none !important;
+    box-shadow: none !important;
+    background-clip: border-box !important;
     box-sizing: border-box !important;
   }
 
@@ -198,13 +198,13 @@ variant-selects .product-form__input--swatch .swatch-input__input:first-of-type 
   .swatch {
     width: 21px !important;
     height: 21px !important;
-    border: 2px solid #fff !important;
-    box-shadow: 0 0 0 1px #ddd !important;
+    border: none !important;
+    box-shadow: none !important;
     display: inline-block !important;
     background: var(--swatch--background) !important;
     background-size: cover !important;
     background-position: center !important;
-    background-clip: content-box !important;
+    background-clip: border-box !important;
     border-radius: 0 !important;
     margin-right: 0 !important;
     cursor: pointer !important;
@@ -240,9 +240,9 @@ variant-selects .product-form__input--swatch .swatch-input__input:first-of-type 
     width: 21px !important;
     height: 21px !important;
     border-radius: 0 !important;
-    border: 2px solid #fff !important;
-    box-shadow: 0 0 0 1px #ddd !important;
-    background-clip: content-box !important;
+    border: none !important;
+    box-shadow: none !important;
+    background-clip: border-box !important;
   }
 
   variant-selects .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label > .swatch {
@@ -256,9 +256,9 @@ variant-selects .product-form__input--swatch .swatch-input__input:first-of-type 
     width: 21px !important;
     height: 21px !important;
     border-radius: 0 !important;
-    border: 2px solid #fff !important;
-    box-shadow: 0 0 0 1px #ddd !important;
-    background-clip: content-box !important;
+    border: none !important;
+    box-shadow: none !important;
+    background-clip: border-box !important;
   }
 }
 
