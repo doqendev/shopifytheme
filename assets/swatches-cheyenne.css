@@ -178,9 +178,8 @@
     box-sizing: border-box !important;
   }
 
-  /* Product grid swatches - active state */
-  #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch.active,
-  #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch:hover {
+  /* Product grid swatches - active state only (no hover) */
+  #product-grid > li > div > div > div.card__content > div > div > div > div.product-card__swatch-indicator > span.swatch.active {
     border: 2px solid #fff !important;
     box-shadow: 0 0 0 0.5px #000 !important;
   }
