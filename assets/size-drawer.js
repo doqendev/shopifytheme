@@ -179,13 +179,29 @@
         `${option.name}` // Simple name: Color
       ];
 
-      for (const pattern of patterns) {
-        const radio = root.querySelector(`input[name="${cssEscape(pattern)}"]:checked`);
-        console.log(`Looking for radio with pattern "${pattern}":`, radio);
-        if (radio) {
+      // Also try finding by checking all radios and matching name (handling newlines)
+      const allRadios = root.querySelectorAll('input[type="radio"]:checked');
+      console.log('All checked radios in section:', allRadios);
+      for (const radio of allRadios) {
+        const trimmedName = radio.name.trim();
+        console.log(`Checking radio: name="${radio.name}" (trimmed: "${trimmedName}"), value="${radio.value}"`);
+        if (trimmedName === `${option.name}-${option.position}`) {
           selectedValue = radio.value;
-          console.log(`Radio value found with pattern ${pattern}: ${selectedValue}`);
+          console.log(`Found checked radio with trimmed name match: ${selectedValue}`);
           break;
+        }
+      }
+
+      // If still no match, try the original pattern matching
+      if (!selectedValue) {
+        for (const pattern of patterns) {
+          const radio = root.querySelector(`input[name="${cssEscape(pattern)}"]:checked`);
+          console.log(`Looking for radio with pattern "${pattern}":`, radio);
+          if (radio) {
+            selectedValue = radio.value;
+            console.log(`Radio value found with pattern ${pattern}: ${selectedValue}`);
+            break;
+          }
         }
       }
 
@@ -209,7 +225,20 @@
       for (const variantSelect of allVariantSelects) {
         const targetSectionId = variantSelect.dataset.section;
 
-        // Try multiple naming patterns for each section
+        // First try checking all radios for trimmed name match
+        const allRadios = variantSelect.querySelectorAll('input[type="radio"]:checked');
+        for (const radio of allRadios) {
+          const trimmedName = radio.name.trim();
+          if (trimmedName === `${option.name}-${option.position}`) {
+            selectedValue = radio.value;
+            console.log(`Found checked radio in section ${targetSectionId} with trimmed name match: ${selectedValue}`);
+            break;
+          }
+        }
+
+        if (selectedValue) break;
+
+        // If no match, try multiple naming patterns for each section
         const patterns = [
           `${option.name}-${option.position}`, // Original pattern: Color-1
           `${targetSectionId}-${option.position}-1`, // Section-based pattern: template--...-1-1
