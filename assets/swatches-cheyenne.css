@@ -321,8 +321,8 @@ variant-selects .product-form__input--swatch .swatch-input__input:first-of-type 
 
   /* Better touch targets for mobile */
   .product-form__input--swatch .swatch-input__label {
-    min-width: 32px;
-    min-height: 32px;
+    min-width: 15px;
+    min-height: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
