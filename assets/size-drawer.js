@@ -164,6 +164,13 @@
     let selectedValue = null;
 
     if (root) {
+      // Debug: Show all inputs in this section
+      const allInputs = root.querySelectorAll('input');
+      console.log('All inputs in this section:', allInputs);
+      allInputs.forEach((input, index) => {
+        console.log(`  Input ${index + 1}: name="${input.name}", value="${input.value}", checked=${input.checked}, type=${input.type}`);
+      });
+
       const name = `${option.name}-${option.position}`;
       const radio = root.querySelector(`input[name="${cssEscape(name)}"]:checked`);
       console.log(`Looking for radio with name "${name}":`, radio);
@@ -323,6 +330,12 @@
       setStatus(sectionId, 'Tamanhos indisponiveis para este produto.');
       return;
     }
+
+    // Debug: Show option structure
+    console.log('Product options data:', data.options);
+    data.options.forEach((option, index) => {
+      console.log(`  Option ${index}: name="${option.name}", position=${option.position}, values:`, option.values);
+    });
 
     const selections = data.options.map((option) => getSelectedOptionValue(sectionId, option) || '');
     console.log('Current option selections:', selections);
