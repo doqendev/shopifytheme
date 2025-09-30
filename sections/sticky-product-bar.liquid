@@ -954,6 +954,12 @@ document.addEventListener('DOMContentLoaded', function() {
   const buyButtonsForm = document.querySelector('#sticky-product-bar .add-to-cart form');
   const hiddenInput = buyButtonsForm ? buyButtonsForm.querySelector('input[name="id"]') : null;
 
+  console.log('Swatch drawer initialization:');
+  console.log('- swatchCondensed:', swatchCondensed);
+  console.log('- swatchDrawer:', swatchDrawer);
+  console.log('- swatchDrawerItems:', swatchDrawerItems.length);
+  console.log('- currentSwatchEl:', currentSwatchEl);
+
   // Function to position the drawer right above the sticky bar
   function positionDrawer() {
     const stickyBar = document.getElementById('sticky-product-bar');
@@ -969,19 +975,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Toggle drawer when condensed swatch is clicked
   if (swatchCondensed) {
-    swatchCondensed.addEventListener('click', function() {
+    console.log('Swatch condensed element found, adding click listener');
+    swatchCondensed.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('Swatch condensed clicked!');
+
       if (swatchDrawer.classList.contains('active')) {
         // Close drawer if it's open
+        console.log('Closing swatch drawer');
         closeDrawer();
       } else {
         // Open drawer if it's closed
+        console.log('Opening swatch drawer');
         swatchDrawer.style.display = 'block';
         positionDrawer(); // Set correct position
         setTimeout(() => {
           swatchDrawer.classList.add('active');
+          console.log('Swatch drawer activated');
         }, 10);
       }
     });
+  } else {
+    console.log('Swatch condensed element NOT found');
   }
 
   // Close drawer
