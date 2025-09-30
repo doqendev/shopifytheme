@@ -345,17 +345,17 @@
 
 .swatch-drawer-horizontal-external {
   display: flex;
-  gap: 15px;
+  gap: 12px;
   align-items: center;
   justify-content: flex-start;
-  min-height: 50px;
+  min-height: 45px;
 }
 
 .swatch-drawer-item {
   flex-shrink: 0;
   cursor: pointer;
-  padding: 8px;
-  border-radius: 6px;
+  padding: 6px;
+  border-radius: 4px;
   transition: background-color 0.2s ease;
   display: flex;
   align-items: center;
@@ -367,17 +367,31 @@
 }
 
 .swatch-drawer-item.selected {
-  background-color: #e8f4f8;
-  border: 2px solid #007acc;
+  background-color: transparent;
 }
 
-/* Style swatches in the external drawer */
+/* Style swatches in the external drawer - match condensed swatch styling */
 .swatch-drawer-item .swatch {
-  width: 30px !important;
-  height: 30px !important;
+  width: 18px !important;
+  height: 18px !important;
   border: 2px solid #fff !important;
-  box-shadow: 0 0 0 1px #ddd !important;
-  border-radius: 4px !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  background-size: cover !important;
+  background-position: center !important;
+  display: inline-block !important;
+}
+
+/* Active state for drawer swatches - match condensed swatch active state */
+.swatch-drawer-item.selected .swatch {
+  border: 3px solid #fff !important;
+  box-shadow: 0 0 0 1px #000 !important;
+}
+
+/* Hover state for drawer swatches */
+.swatch-drawer-item:hover:not(.selected) .swatch {
+  transform: scale(1.05);
+  opacity: 0.9;
 }
 </style>
 
