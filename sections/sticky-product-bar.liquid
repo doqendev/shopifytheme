@@ -625,15 +625,22 @@
       {% if color_options and color_options.values.size > 0 %}
         <div class="swatch-drawer-horizontal-external">
           {% for value in color_options.values %}
-            {% assign variant_for_color = product.variants | where: 'option1', value | first %}
-            {% unless variant_for_color %}
-              {% assign variant_for_color = product.variants | where: 'option2', value | first %}
-            {% endunless %}
-            {% unless variant_for_color %}
-              {% assign variant_for_color = product.variants | where: 'option3', value | first %}
-            {% endunless %}
+            {% assign variant_for_color = null %}
+            {% assign color_option_position = color_options.position | minus: 1 %}
 
-            <div class="swatch-drawer-item" data-color-value="{{ value | escape }}" data-variant-id="{{ variant_for_color.id | default: '' }}">
+            {% comment %} Find variant based on the color option position {% endcomment %}
+            {% for variant in product.variants %}
+              {% assign variant_color = variant.options[color_option_position] | default: variant.options[0] %}
+              {% if variant_color == value %}
+                {% assign variant_for_color = variant %}
+                {% break %}
+              {% endif %}
+            {% endfor %}
+
+            <div class="swatch-drawer-item"
+                 data-color-value="{{ value | escape }}"
+                 data-variant-id="{{ variant_for_color.id | default: '' }}"
+                 data-color-name="{{ value | escape }}">
               {% render 'swatch', swatch: value.swatch, shape: 'square' %}
             </div>
           {% endfor %}
@@ -931,14 +938,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Open drawer when condensed swatch is clicked
+  // Toggle drawer when condensed swatch is clicked
   if (swatchCondensed) {
     swatchCondensed.addEventListener('click', function() {
-      swatchDrawer.style.display = 'block';
-      positionDrawer(); // Set correct position
-      setTimeout(() => {
-        swatchDrawer.classList.add('active');
-      }, 10);
+      if (swatchDrawer.classList.contains('active')) {
+        // Close drawer if it's open
+        closeDrawer();
+      } else {
+        // Open drawer if it's closed
+        swatchDrawer.style.display = 'block';
+        positionDrawer(); // Set correct position
+        setTimeout(() => {
+          swatchDrawer.classList.add('active');
+        }, 10);
+      }
     });
   }
 
@@ -988,10 +1001,38 @@ document.addEventListener('DOMContentLoaded', function() {
         swatchCondensed.querySelector('.current-swatch').dataset.currentColor = colorValue;
       }
 
-      // Update variant ID in form
-      if (hiddenInput && variantId) {
-        hiddenInput.value = variantId;
-        hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+      // Update variant ID in form - find correct variant for selected color
+      if (hiddenInput) {
+        let correctVariantId = variantId;
+
+        // If no variant ID found, try to find it by matching color option
+        if (!correctVariantId && typeof productData !== 'undefined') {
+          const matchingVariant = productData.variants.find(variant => {
+            return variant.options.some(option =>
+              String(option).toLowerCase() === String(colorValue).toLowerCase()
+            );
+          });
+          if (matchingVariant) {
+            correctVariantId = matchingVariant.id;
+          }
+        }
+
+        if (correctVariantId) {
+          hiddenInput.value = correctVariantId;
+          hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+
+          // Also update any existing variant selectors on the page
+          const variantSelectors = document.querySelectorAll('variant-selects');
+          variantSelectors.forEach(selector => {
+            const colorInputs = selector.querySelectorAll('input[name*="Color"], input[name*="Cor"]');
+            colorInputs.forEach(input => {
+              if (input.value === colorValue) {
+                input.checked = true;
+                input.dispatchEvent(new Event('change', { bubbles: true }));
+              }
+            });
+          });
+        }
       }
 
       // Close drawer after selection
