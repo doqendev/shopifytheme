@@ -250,7 +250,48 @@
   margin-top: 10px;
   margin-left: 4%;
   margin-bottom: 6px;
+}
 
+/* Title and swatches inline layout */
+.title-and-swatches {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.product-title {
+  flex: 1;
+  margin-right: 10px;
+}
+
+.product-swatches-inline {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* Hide size options and labels in inline swatches */
+.product-swatches-inline .product-form__input--size-hidden,
+.product-swatches-inline fieldset[data-size-option="true"] {
+  display: none !important;
+}
+
+.product-swatches-inline .product-form__input--swatch legend,
+.product-swatches-inline .product-form__input--swatch .form__label {
+  display: none !important;
+}
+
+/* Compact swatch styling for inline display */
+.product-swatches-inline .product-form__input--swatch {
+  margin: 0 !important;
+  gap: 4px !important;
+}
+
+.product-swatches-inline .swatch {
+  width: 16px !important;
+  height: 16px !important;
 }
 </style>
 
@@ -302,18 +343,20 @@
             <path d="M12 21.35 10.55 20.03C6.2 15.99 3 12.99 3 9.31 3 6.28 5.42 4 8.4 4A5.2 5.2 0 0 1 12 5.86 5.2 5.2 0 0 1 15.6 4C18.58 4 21 6.28 21 9.31c0 3.68-3.2 6.68-7.55 10.72z" />
           </svg>
         </button>
-        <div class="product-title">
-          {{ product.title }}
+        <div class="title-and-swatches">
+          <div class="product-title">
+            {{ product.title }}
+          </div>
+          {% unless product.has_only_default_variant %}
+          <div class="product-swatches-inline">
+            {% render 'product-variant-picker', product: product, block: dummy_block, product_form_id: 'product-form-' | append: section.id %}
+          </div>
+          {% endunless %}
         </div>
         <div class="price_variants">
           <div class="product-price">
             {% render 'price', product: product, use_variant: true, show_badges: true %}
           </div>
-          {% unless product.has_only_default_variant %}
-          <div class="product-variants">
-            {% render 'product-variant-picker', product: product, block: dummy_block, product_form_id: 'product-form-' | append: section.id %}
-          </div>
-          {% endunless %}
         </div>
       </div>
       <!-- Right side: Add to Cart button(s) -->
