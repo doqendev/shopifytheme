@@ -371,16 +371,17 @@
 
 .swatch-drawer-horizontal {
   display: flex;
-  gap: 15px;
+  gap: 12px;
   align-items: center;
   min-height: 60px;
+  padding: 5px 0;
 }
 
 .swatch-drawer-item {
   flex-shrink: 0;
   cursor: pointer;
-  padding: 8px;
-  border-radius: 8px;
+  padding: 6px;
+  border-radius: 6px;
   transition: background-color 0.2s ease;
   display: flex;
   align-items: center;
@@ -396,14 +397,13 @@
   border: 2px solid #007acc;
 }
 
-.swatch-horizontal {
-  width: 40px;
-  height: 40px;
-  border: 2px solid #fff;
-  box-shadow: 0 0 0 1px #ddd;
-  border-radius: 4px;
-  background-size: cover;
-  background-position: center;
+/* Style swatches in the drawer */
+.swatch-drawer-item .swatch {
+  width: 35px !important;
+  height: 35px !important;
+  border: 2px solid #fff !important;
+  box-shadow: 0 0 0 1px #ddd !important;
+  border-radius: 4px !important;
 }
 </style>
 
@@ -475,13 +475,8 @@
                 <!-- Show condensed swatch + counter when more than 2 -->
                 <div class="swatch-condensed" data-swatch-count="{{ swatch_count }}">
                   <div class="current-swatch" data-current-color="{{ color_options.selected_value | default: color_options.values.first }}">
-                    {% assign current_value = color_options.selected_value | default: color_options.values.first %}
-                    {% assign current_swatch = current_value.swatch %}
-                    <span class="swatch"
-                          style="background: {{ current_swatch.color | default: '#cccccc' }};
-                                 {% if current_swatch.image %}background-image: url('{{ current_swatch.image | image_url: width: 50 }}');{% endif %}
-                                 background-size: cover;
-                                 background-position: center;"></span>
+                    {% assign first_value = color_options.values.first %}
+                    {% render 'swatch', swatch: first_value.swatch, shape: 'square' %}
                   </div>
                   <span class="swatch-counter">+{{ swatch_count | minus: 1 }}</span>
                 </div>
@@ -537,12 +532,7 @@
               {% endunless %}
 
               <div class="swatch-drawer-item" data-color-value="{{ value | escape }}" data-variant-id="{{ variant_for_color.id | default: '' }}">
-                <div class="swatch-horizontal"
-                     style="background: {{ value.swatch.color | default: '#cccccc' }};
-                            {% if value.swatch.image %}background-image: url('{{ value.swatch.image | image_url: width: 100 }}');{% endif %}
-                            background-size: cover;
-                            background-position: center;">
-                </div>
+                {% render 'swatch', swatch: value.swatch, shape: 'square' %}
               </div>
             {% endfor %}
           </div>
@@ -988,10 +978,13 @@ document.addEventListener('DOMContentLoaded', function() {
       this.classList.add('selected');
 
       // Update the condensed swatch display
-      const swatchHorizontal = this.querySelector('.swatch-horizontal');
-      if (currentSwatchEl && swatchHorizontal) {
-        currentSwatchEl.style.background = swatchHorizontal.style.background;
-        currentSwatchEl.style.backgroundImage = swatchHorizontal.style.backgroundImage;
+      const selectedSwatch = this.querySelector('.swatch');
+      if (currentSwatchEl && selectedSwatch) {
+        // Copy all the background styles from the selected swatch
+        const computedStyle = window.getComputedStyle(selectedSwatch);
+        currentSwatchEl.style.background = computedStyle.background;
+        currentSwatchEl.style.backgroundImage = computedStyle.backgroundImage;
+        currentSwatchEl.style.backgroundColor = computedStyle.backgroundColor;
         currentSwatchEl.style.backgroundSize = 'cover';
         currentSwatchEl.style.backgroundPosition = 'center';
       }
