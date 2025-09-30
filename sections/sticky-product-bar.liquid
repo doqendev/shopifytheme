@@ -257,7 +257,7 @@
 /* Title and swatches inline layout */
 .title-and-swatches {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   width: 100%;
   margin-bottom: 12px;
@@ -268,17 +268,19 @@
   flex: 1;
   margin-right: 15px;
   margin-left: 15px;
-  padding-top: 3px;
+  padding-top: 0;
   white-space: normal;
   overflow: visible;
   text-overflow: initial;
+  line-height: 1.4;
 }
 
 .product-swatches-inline {
   flex-shrink: 0;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   margin-right: 15px;
+  padding-top: 2px;
 }
 
 /* Add spacing to price section */
