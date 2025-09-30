@@ -387,26 +387,6 @@
 }
 
 @media screen and (min-width: 990px) {
-  .card .media.media--hover-effect > img:only-child,
-  .card-wrapper .media.media--hover-effect > img:only-child {
-    transition: transform var(--duration-long) ease;
-  }
-
-  .card:hover .media.media--hover-effect > img:first-child:only-child,
-  .card-wrapper:hover .media.media--hover-effect > img:first-child:only-child {
-    transform: scale(1.03);
-  }
-
-  .card-wrapper:hover .media.media--hover-effect > img:first-child:not(:only-child) {
-    opacity: 0;
-  }
-
-  .card-wrapper:hover .media.media--hover-effect > img + img {
-    opacity: 1;
-    transition: transform var(--duration-long) ease;
-    transform: scale(1.03);
-  }
-
   .underline-links-hover:hover a {
     text-decoration: underline;
     text-underline-offset: 0.3rem;
@@ -558,46 +538,4 @@
   clip-path: polygon(var(--shape--blob-1));
 }
 
-/* Card Shape Hover Rules */
-
-@media (prefers-reduced-motion: no-preference) {
-  .product-card-wrapper .shape--round {
-    transition: clip-path var(--duration-long) ease;
-  }
-
-  .product-card-wrapper:hover .shape--round {
-    clip-path: ellipse(47% 47% at 50% 50%);
-  }
-
-  .product-card-wrapper .shape--blob {
-    transition: clip-path var(--duration-long) ease-in-out;
-  }
-
-  .product-card-wrapper:hover .shape--blob {
-    clip-path: polygon(var(--shape--blob-5));
-  }
-
-  .grid__item:nth-child(2n) .product-card-wrapper:hover .shape--blob {
-    clip-path: polygon(var(--shape--blob-6));
-  }
-
-  .grid__item:nth-child(3n) .product-card-wrapper:hover .shape--blob {
-    clip-path: polygon(var(--shape--blob-1));
-  }
-
-  .grid__item:nth-child(4n) .product-card-wrapper:hover .shape--blob {
-    clip-path: polygon(var(--shape--blob-2));
-  }
-
-  .grid__item:nth-child(5n) .product-card-wrapper:hover .shape--blob {
-    clip-path: polygon(var(--shape--blob-3));
-  }
-
-  .grid__item:nth-child(7n) .product-card-wrapper:hover .shape--blob {
-    clip-path: polygon(var(--shape--blob-4));
-  }
-
-  .grid__item:nth-child(8n) .product-card-wrapper:hover .shape--blob {
-    clip-path: polygon(var(--shape--blob-5));
-  }
-}
+/* Card Shape Hover Rules - Disabled */
