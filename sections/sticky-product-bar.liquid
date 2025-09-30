@@ -475,11 +475,11 @@
 
             {% if color_options and color_options.values.size > 0 %}
               {% assign swatch_count = color_options.values.size %}
-              {% if swatch_count <= 2 %}
-                <!-- Show all swatches when 2 or fewer -->
+              {% if swatch_count < 2 %}
+                <!-- Show all swatches when fewer than 2 -->
                 {% render 'product-variant-picker', product: product, block: dummy_block, product_form_id: 'product-form-' | append: section.id %}
               {% else %}
-                <!-- Show condensed swatch + counter when more than 2 -->
+                <!-- Show condensed swatch + counter when 2 or more -->
                 <div class="swatch-condensed" data-swatch-count="{{ swatch_count }}">
                   <div class="current-swatch" data-current-color="{{ color_options.selected_value | default: color_options.values.first }}">
                     {% assign first_value = color_options.values.first %}
