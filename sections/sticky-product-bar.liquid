@@ -293,6 +293,124 @@
   width: 16px !important;
   height: 16px !important;
 }
+
+/* Condensed swatch styling */
+.swatch-condensed {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.current-swatch .swatch {
+  width: 18px !important;
+  height: 18px !important;
+  border: 2px solid #fff !important;
+  box-shadow: 0 0 0 1px #000 !important;
+  border-radius: 0 !important;
+  background-size: cover !important;
+  background-position: center !important;
+}
+
+.swatch-counter {
+  font-size: 12px;
+  font-weight: 500;
+  color: #666;
+}
+
+/* Swatch Drawer Styling */
+.swatch-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  z-index: 1001;
+  transform: translateY(-100%);
+  transition: transform 0.3s ease;
+}
+
+.swatch-drawer.active {
+  transform: translateY(0);
+}
+
+.swatch-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.swatch-drawer-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.swatch-drawer-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.swatch-drawer-content {
+  padding: 20px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.swatch-drawer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 15px;
+}
+
+.swatch-drawer-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.swatch-drawer-item:hover {
+  background-color: #f5f5f5;
+}
+
+.swatch-drawer-item.selected {
+  background-color: #e8f4f8;
+  border: 2px solid #007acc;
+}
+
+.swatch-large {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px #ddd;
+  border-radius: 4px;
+  background-size: cover;
+  background-position: center;
+  margin-bottom: 8px;
+}
+
+.swatch-label {
+  font-size: 12px;
+  text-align: center;
+  font-weight: 500;
+  color: #333;
+}
 </style>
 
 {% liquid
@@ -349,7 +467,30 @@
           </div>
           {% unless product.has_only_default_variant %}
           <div class="product-swatches-inline">
-            {% render 'product-variant-picker', product: product, block: dummy_block, product_form_id: 'product-form-' | append: section.id %}
+            {% assign color_options = product.options_with_values | where: 'name', 'Color' | first %}
+            {% unless color_options %}
+              {% assign color_options = product.options_with_values | where: 'name', 'Cor' | first %}
+            {% endunless %}
+
+            {% if color_options and color_options.values.size > 0 %}
+              {% assign swatch_count = color_options.values.size %}
+              {% if swatch_count <= 3 %}
+                <!-- Show all swatches when 3 or fewer -->
+                {% render 'product-variant-picker', product: product, block: dummy_block, product_form_id: 'product-form-' | append: section.id %}
+              {% else %}
+                <!-- Show condensed swatch + counter when more than 3 -->
+                <div class="swatch-condensed" data-swatch-count="{{ swatch_count }}">
+                  <div class="current-swatch" data-current-color="{{ color_options.selected_value | default: color_options.values.first }}">
+                    {% assign first_swatch = color_options.values.first.swatch | default: color_options.selected_value.swatch %}
+                    <span class="swatch" style="background: {{ first_swatch.color | default: '#cccccc' }}; background-image: url('{{ first_swatch.image | image_url: width: 50 }}');"></span>
+                  </div>
+                  <span class="swatch-counter">+{{ swatch_count | minus: 1 }}</span>
+                </div>
+              {% endif %}
+            {% else %}
+              <!-- No color options, show regular variant picker -->
+              {% render 'product-variant-picker', product: product, block: dummy_block, product_form_id: 'product-form-' | append: section.id %}
+            {% endif %}
           </div>
           {% endunless %}
         </div>
@@ -371,6 +512,45 @@
       </div>
     </div>
   </div>
+
+  <!-- Swatch Selection Drawer -->
+  <div id="swatch-drawer" class="swatch-drawer" style="display: none;">
+    <div class="swatch-drawer-header">
+      <h3>Selecionar Cor</h3>
+      <button class="swatch-drawer-close" aria-label="Fechar">&times;</button>
+    </div>
+    <div class="swatch-drawer-content">
+      {% unless product.has_only_default_variant %}
+        {% assign color_options = product.options_with_values | where: 'name', 'Color' | first %}
+        {% unless color_options %}
+          {% assign color_options = product.options_with_values | where: 'name', 'Cor' | first %}
+        {% endunless %}
+
+        {% if color_options and color_options.values.size > 0 %}
+          <div class="swatch-drawer-grid">
+            {% for value in color_options.values %}
+              {% assign variant_for_color = product.variants | where: 'option1', value | first %}
+              {% unless variant_for_color %}
+                {% assign variant_for_color = product.variants | where: 'option2', value | first %}
+              {% endunless %}
+              {% unless variant_for_color %}
+                {% assign variant_for_color = product.variants | where: 'option3', value | first %}
+              {% endunless %}
+
+              <div class="swatch-drawer-item" data-color-value="{{ value | escape }}" data-variant-id="{{ variant_for_color.id | default: '' }}">
+                <div class="swatch-large"
+                     style="background: {{ value.swatch.color | default: '#cccccc' }};
+                            background-image: url('{{ value.swatch.image | image_url: width: 100 }}');">
+                </div>
+                <span class="swatch-label">{{ value }}</span>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endunless %}
+    </div>
+  </div>
+
   <div class="size-chart">
   {% render 'size-chart' %}
     </div>
@@ -754,6 +934,102 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 {% endraw %}
+
+<!-- Swatch Drawer Functionality -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const swatchCondensed = document.querySelector('.swatch-condensed');
+  const swatchDrawer = document.getElementById('swatch-drawer');
+  const swatchDrawerClose = document.querySelector('.swatch-drawer-close');
+  const swatchDrawerItems = document.querySelectorAll('.swatch-drawer-item');
+  const currentSwatchEl = document.querySelector('.current-swatch .swatch');
+  const buyButtonsForm = document.querySelector('#sticky-product-bar .add-to-cart form');
+  const hiddenInput = buyButtonsForm ? buyButtonsForm.querySelector('input[name="id"]') : null;
+
+  // Open drawer when condensed swatch is clicked
+  if (swatchCondensed) {
+    swatchCondensed.addEventListener('click', function() {
+      swatchDrawer.style.display = 'block';
+      setTimeout(() => {
+        swatchDrawer.classList.add('active');
+      }, 10);
+    });
+  }
+
+  // Close drawer
+  function closeDrawer() {
+    swatchDrawer.classList.remove('active');
+    setTimeout(() => {
+      swatchDrawer.style.display = 'none';
+    }, 300);
+  }
+
+  if (swatchDrawerClose) {
+    swatchDrawerClose.addEventListener('click', closeDrawer);
+  }
+
+  // Close drawer when clicking outside
+  swatchDrawer.addEventListener('click', function(e) {
+    if (e.target === swatchDrawer) {
+      closeDrawer();
+    }
+  });
+
+  // Handle swatch selection
+  swatchDrawerItems.forEach(item => {
+    item.addEventListener('click', function() {
+      const colorValue = this.dataset.colorValue;
+      const variantId = this.dataset.variantId;
+
+      // Remove selected class from all items
+      swatchDrawerItems.forEach(i => i.classList.remove('selected'));
+
+      // Add selected class to clicked item
+      this.classList.add('selected');
+
+      // Update the condensed swatch display
+      const swatchLarge = this.querySelector('.swatch-large');
+      if (currentSwatchEl && swatchLarge) {
+        currentSwatchEl.style.background = swatchLarge.style.background;
+        currentSwatchEl.style.backgroundImage = swatchLarge.style.backgroundImage;
+      }
+
+      // Update current color data attribute
+      if (swatchCondensed) {
+        swatchCondensed.querySelector('.current-swatch').dataset.currentColor = colorValue;
+      }
+
+      // Update variant ID in form
+      if (hiddenInput && variantId) {
+        hiddenInput.value = variantId;
+        hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+
+      // Close drawer after selection
+      closeDrawer();
+
+      // Trigger any existing variant change events
+      const changeEvent = new CustomEvent('variantchange', {
+        detail: {
+          colorValue: colorValue,
+          variantId: variantId
+        }
+      });
+      document.dispatchEvent(changeEvent);
+    });
+  });
+
+  // Set initial selected state based on current selection
+  const currentColor = swatchCondensed ? swatchCondensed.querySelector('.current-swatch').dataset.currentColor : null;
+  if (currentColor) {
+    swatchDrawerItems.forEach(item => {
+      if (item.dataset.colorValue === currentColor) {
+        item.classList.add('selected');
+      }
+    });
+  }
+});
+</script>
 
 <!-- Hide sticky bar when recommendations become visible -->
 <script>
