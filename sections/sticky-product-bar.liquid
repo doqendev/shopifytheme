@@ -318,69 +318,43 @@
   color: #666;
 }
 
-/* Swatch Drawer Styling */
-.swatch-drawer {
+/* External Swatch Drawer - positioned above sticky bar */
+.swatch-drawer-external {
   position: fixed;
-  top: 0;
   left: 0;
   right: 0;
+  bottom: 180px; /* Position above the sticky bar */
   background: #fff;
+  border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
   z-index: 1001;
-  transform: translateY(-100%);
+  transform: translateY(100%);
   transition: transform 0.3s ease;
 }
 
-.swatch-drawer.active {
+.swatch-drawer-external.active {
   transform: translateY(0);
 }
 
-.swatch-drawer-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.swatch-drawer-content-external {
   padding: 15px 20px;
-  border-bottom: 1px solid #eee;
-}
-
-.swatch-drawer-header h3 {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.swatch-drawer-close {
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  padding: 0;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.swatch-drawer-content {
-  padding: 20px;
   overflow-x: auto;
   overflow-y: hidden;
 }
 
-.swatch-drawer-horizontal {
+.swatch-drawer-horizontal-external {
   display: flex;
-  gap: 12px;
+  gap: 15px;
   align-items: center;
-  min-height: 60px;
-  padding: 5px 0;
+  justify-content: flex-start;
+  min-height: 50px;
 }
 
 .swatch-drawer-item {
   flex-shrink: 0;
   cursor: pointer;
-  padding: 6px;
+  padding: 8px;
   border-radius: 6px;
   transition: background-color 0.2s ease;
   display: flex;
@@ -397,10 +371,10 @@
   border: 2px solid #007acc;
 }
 
-/* Style swatches in the drawer */
+/* Style swatches in the external drawer */
 .swatch-drawer-item .swatch {
-  width: 35px !important;
-  height: 35px !important;
+  width: 30px !important;
+  height: 30px !important;
   border: 2px solid #fff !important;
   box-shadow: 0 0 0 1px #ddd !important;
   border-radius: 4px !important;
@@ -504,40 +478,6 @@
             show_pickup_availability: false
         %}
       </div>
-    </div>
-  </div>
-
-  <!-- Swatch Selection Drawer -->
-  <div id="swatch-drawer" class="swatch-drawer" style="display: none;">
-    <div class="swatch-drawer-header">
-      <h3>Selecionar Cor</h3>
-      <button class="swatch-drawer-close" aria-label="Fechar">&times;</button>
-    </div>
-    <div class="swatch-drawer-content">
-      {% unless product.has_only_default_variant %}
-        {% assign color_options = product.options_with_values | where: 'name', 'Color' | first %}
-        {% unless color_options %}
-          {% assign color_options = product.options_with_values | where: 'name', 'Cor' | first %}
-        {% endunless %}
-
-        {% if color_options and color_options.values.size > 0 %}
-          <div class="swatch-drawer-horizontal">
-            {% for value in color_options.values %}
-              {% assign variant_for_color = product.variants | where: 'option1', value | first %}
-              {% unless variant_for_color %}
-                {% assign variant_for_color = product.variants | where: 'option2', value | first %}
-              {% endunless %}
-              {% unless variant_for_color %}
-                {% assign variant_for_color = product.variants | where: 'option3', value | first %}
-              {% endunless %}
-
-              <div class="swatch-drawer-item" data-color-value="{{ value | escape }}" data-variant-id="{{ variant_for_color.id | default: '' }}">
-                {% render 'swatch', swatch: value.swatch, shape: 'square' %}
-              </div>
-            {% endfor %}
-          </div>
-        {% endif %}
-      {% endunless %}
     </div>
   </div>
 
@@ -659,6 +599,35 @@
   </div>
 </div>
 
+<!-- External Swatch Selection Drawer - positioned above sticky bar -->
+<div id="swatch-drawer" class="swatch-drawer-external" style="display: none;">
+  <div class="swatch-drawer-content-external">
+    {% unless product.has_only_default_variant %}
+      {% assign color_options = product.options_with_values | where: 'name', 'Color' | first %}
+      {% unless color_options %}
+        {% assign color_options = product.options_with_values | where: 'name', 'Cor' | first %}
+      {% endunless %}
+
+      {% if color_options and color_options.values.size > 0 %}
+        <div class="swatch-drawer-horizontal-external">
+          {% for value in color_options.values %}
+            {% assign variant_for_color = product.variants | where: 'option1', value | first %}
+            {% unless variant_for_color %}
+              {% assign variant_for_color = product.variants | where: 'option2', value | first %}
+            {% endunless %}
+            {% unless variant_for_color %}
+              {% assign variant_for_color = product.variants | where: 'option3', value | first %}
+            {% endunless %}
+
+            <div class="swatch-drawer-item" data-color-value="{{ value | escape }}" data-variant-id="{{ variant_for_color.id | default: '' }}">
+              {% render 'swatch', swatch: value.swatch, shape: 'square' %}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endunless %}
+  </div>
+</div>
 
 <!-- JS for sticky bar drag + momentum + recalc/clamp -->
 <script>
@@ -930,7 +899,6 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
   const swatchCondensed = document.querySelector('.swatch-condensed');
   const swatchDrawer = document.getElementById('swatch-drawer');
-  const swatchDrawerClose = document.querySelector('.swatch-drawer-close');
   const swatchDrawerItems = document.querySelectorAll('.swatch-drawer-item');
   const currentSwatchEl = document.querySelector('.current-swatch .swatch');
   const buyButtonsForm = document.querySelector('#sticky-product-bar .add-to-cart form');
@@ -954,13 +922,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 300);
   }
 
-  if (swatchDrawerClose) {
-    swatchDrawerClose.addEventListener('click', closeDrawer);
-  }
-
-  // Close drawer when clicking outside
-  swatchDrawer.addEventListener('click', function(e) {
-    if (e.target === swatchDrawer) {
+  // Close drawer when clicking outside the drawer content
+  document.addEventListener('click', function(e) {
+    if (swatchDrawer.classList.contains('active') &&
+        !swatchDrawer.contains(e.target) &&
+        !swatchCondensed.contains(e.target)) {
       closeDrawer();
     }
   });
