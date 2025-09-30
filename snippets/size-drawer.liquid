@@ -19,7 +19,7 @@
     aria-labelledby="size-drawer-title-{{ section_id }}"
   >
     <header class="size-drawer__header">
-      <h3 id="size-drawer-title-{{ section_id }}">Escolha o tamanho</h3>
+      <h3 id="size-drawer-title-{{ section_id }}">Seleciona o tamanho</h3>
       <button type="button" class="size-drawer__close" data-size-drawer-close aria-label="Fechar">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -30,18 +30,53 @@
           Guia de tamanhos
         </a>
       </div>
-      <div
-        id="size-options-{{ section_id }}"
-        class="size-drawer__options"
-        role="listbox"
-        aria-label="Selecionar tamanho"
-      ></div>
-      <p
-        id="size-drawer-status-{{ section_id }}"
-        class="size-drawer__status"
-        role="status"
-        aria-live="polite"
-      ></p>
+
+      <!-- Simple vertical list like collection pages -->
+      <div class="size-drawer__list">
+        {%- liquid
+          assign size_option_index = -1
+          for option in product.options_with_values
+            assign option_name = option.name | downcase
+            if option_name == 'size' or option_name == 'tamanho'
+              assign size_option_index = forloop.index0
+              assign size_option = option
+              break
+            endif
+          endfor
+        -%}
+
+        {%- if size_option_index != -1 and size_option -%}
+          {%- for value in size_option.values -%}
+            {%- assign variant_available = false -%}
+            {%- assign low_stock = false -%}
+            {%- assign stock_count = 0 -%}
+
+            {%- for variant in product.variants -%}
+              {%- if variant.options[size_option_index] == value -%}
+                {%- if variant.available -%}
+                  {%- assign variant_available = true -%}
+                  {%- assign stock_count = stock_count | plus: variant.inventory_quantity -%}
+                  {%- if variant.inventory_quantity <= 3 and variant.inventory_quantity > 0 -%}
+                    {%- assign low_stock = true -%}
+                  {%- endif -%}
+                {%- endif -%}
+              {%- endif -%}
+            {%- endfor -%}
+
+            <div class="size-item {% unless variant_available %}size-item--unavailable{% endunless %}"
+                 data-size="{{ value }}"
+                 data-option-index="{{ size_option_index }}">
+              <span class="size-item__label">{{ value }}</span>
+              {%- if low_stock and variant_available -%}
+                <span class="size-item__stock">Poucas unidades</span>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+
+      <!-- Status message for feedback -->
+      <div id="size-drawer-status-{{ section_id }}" class="size-drawer__status"></div>
     </div>
   </div>
 </div>
