@@ -976,26 +976,52 @@ document.addEventListener('DOMContentLoaded', function() {
   // Toggle drawer when condensed swatch is clicked
   if (swatchCondensed) {
     console.log('Swatch condensed element found, adding click listener');
-    swatchCondensed.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      console.log('Swatch condensed clicked!');
 
-      if (swatchDrawer.classList.contains('active')) {
-        // Close drawer if it's open
-        console.log('Closing swatch drawer');
-        closeDrawer();
-      } else {
-        // Open drawer if it's closed
-        console.log('Opening swatch drawer');
-        swatchDrawer.style.display = 'block';
-        positionDrawer(); // Set correct position
-        setTimeout(() => {
-          swatchDrawer.classList.add('active');
-          console.log('Swatch drawer activated');
-        }, 10);
-      }
+    // Add multiple event listeners to catch the click
+    ['click', 'touchstart', 'pointerdown'].forEach(eventType => {
+      swatchCondensed.addEventListener(eventType, function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        console.log(`Swatch condensed ${eventType} triggered!`);
+
+        if (swatchDrawer.classList.contains('active')) {
+          // Close drawer if it's open
+          console.log('Closing swatch drawer');
+          closeDrawer();
+        } else {
+          // Open drawer if it's closed
+          console.log('Opening swatch drawer');
+          swatchDrawer.style.display = 'block';
+          positionDrawer(); // Set correct position
+          setTimeout(() => {
+            swatchDrawer.classList.add('active');
+            console.log('Swatch drawer activated');
+          }, 10);
+        }
+      }, { capture: true });
     });
+
+    // Also add event listener to the counter specifically
+    const swatchCounter = swatchCondensed.querySelector('.swatch-counter');
+    if (swatchCounter) {
+      console.log('Adding click listener to swatch counter');
+      swatchCounter.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Swatch counter clicked directly!');
+
+        if (!swatchDrawer.classList.contains('active')) {
+          console.log('Opening swatch drawer via counter');
+          swatchDrawer.style.display = 'block';
+          positionDrawer();
+          setTimeout(() => {
+            swatchDrawer.classList.add('active');
+          }, 10);
+        }
+      }, { capture: true });
+    }
+
   } else {
     console.log('Swatch condensed element NOT found');
   }
