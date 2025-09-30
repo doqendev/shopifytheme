@@ -300,10 +300,17 @@
 
 /* Style the "Escolher tamanho" button on mobile */
 @media screen and (max-width: 749px) {
-  [data-size-drawer-trigger] {
+  [data-size-drawer-trigger],
+  .add-to-cart [data-size-drawer-trigger] {
     margin-left: 15px !important;
     margin-right: 15px !important;
     margin-bottom: 10px !important;
+    box-sizing: border-box !important;
+  }
+
+  .add-to-cart {
+    padding-right: 0 !important;
+    margin-right: 0 !important;
   }
 }
 
