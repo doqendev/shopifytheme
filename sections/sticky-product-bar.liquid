@@ -254,26 +254,36 @@
 
 /* Ensure consistent swatch active states in mobile sticky bar */
 @media (max-width: 749px) {
-  #sticky-product-bar .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label,
-  #sticky-product-bar .product-form__input--swatch .swatch-input__label.active,
-  #sticky-product-bar .swatch.active,
-  #sticky-product-bar .swatch.selected {
-    width: 15px !important;
-    height: 15px !important;
-    border: 3px solid #fff !important;
-    box-shadow: 0 0 0 0.5px #000 !important;
+  /* Base swatch styling for mobile sticky bar */
+  #sticky-product-bar .swatch {
+    width: 18px !important;
+    height: 18px !important;
+    border: 1px solid #fff !important;
+    box-shadow: none !important;
     border-radius: 0 !important;
     background-clip: border-box !important;
   }
 
+  /* Active state styling - consistent for both default and selected */
+  #sticky-product-bar .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label > .swatch,
   #sticky-product-bar .product-form__input--swatch .swatch-input__label.active > .swatch,
-  #sticky-product-bar .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label > .swatch {
-    width: 15px !important;
-    height: 15px !important;
-    border: 3px solid #fff !important;
-    box-shadow: 0 0 0 0.5px #000 !important;
+  #sticky-product-bar .swatch.active,
+  #sticky-product-bar .swatch.selected {
+    width: 18px !important;
+    height: 18px !important;
+    border: 1px solid #fff !important;
+    box-shadow: 0 0 0 1px #000 !important;
     border-radius: 0 !important;
     background-clip: border-box !important;
+  }
+
+  /* Label container sizing */
+  #sticky-product-bar .product-form__input--swatch .swatch-input__label {
+    width: 20px !important;
+    height: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 }
 </style>
