@@ -250,7 +250,31 @@
   margin-top: 10px;
   margin-left: 4%;
   margin-bottom: 6px;
+}
 
+/* Ensure consistent swatch active states in mobile sticky bar */
+@media (max-width: 749px) {
+  #sticky-product-bar .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label,
+  #sticky-product-bar .product-form__input--swatch .swatch-input__label.active,
+  #sticky-product-bar .swatch.active,
+  #sticky-product-bar .swatch.selected {
+    width: 15px !important;
+    height: 15px !important;
+    border: 3px solid #fff !important;
+    box-shadow: 0 0 0 0.5px #000 !important;
+    border-radius: 0 !important;
+    background-clip: border-box !important;
+  }
+
+  #sticky-product-bar .product-form__input--swatch .swatch-input__label.active > .swatch,
+  #sticky-product-bar .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label > .swatch {
+    width: 15px !important;
+    height: 15px !important;
+    border: 3px solid #fff !important;
+    box-shadow: 0 0 0 0.5px #000 !important;
+    border-radius: 0 !important;
+    background-clip: border-box !important;
+  }
 }
 </style>
 
