@@ -365,24 +365,26 @@
 
 .swatch-drawer-content {
   padding: 20px;
-  max-height: 300px;
-  overflow-y: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
-.swatch-drawer-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+.swatch-drawer-horizontal {
+  display: flex;
   gap: 15px;
+  align-items: center;
+  min-height: 60px;
 }
 
 .swatch-drawer-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-shrink: 0;
   cursor: pointer;
-  padding: 10px;
+  padding: 8px;
   border-radius: 8px;
   transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .swatch-drawer-item:hover {
@@ -394,7 +396,7 @@
   border: 2px solid #007acc;
 }
 
-.swatch-large {
+.swatch-horizontal {
   width: 40px;
   height: 40px;
   border: 2px solid #fff;
@@ -402,14 +404,6 @@
   border-radius: 4px;
   background-size: cover;
   background-position: center;
-  margin-bottom: 8px;
-}
-
-.swatch-label {
-  font-size: 12px;
-  text-align: center;
-  font-weight: 500;
-  color: #333;
 }
 </style>
 
@@ -481,8 +475,13 @@
                 <!-- Show condensed swatch + counter when more than 2 -->
                 <div class="swatch-condensed" data-swatch-count="{{ swatch_count }}">
                   <div class="current-swatch" data-current-color="{{ color_options.selected_value | default: color_options.values.first }}">
-                    {% assign first_swatch = color_options.values.first.swatch | default: color_options.selected_value.swatch %}
-                    <span class="swatch" style="background: {{ first_swatch.color | default: '#cccccc' }}; background-image: url('{{ first_swatch.image | image_url: width: 50 }}');"></span>
+                    {% assign current_value = color_options.selected_value | default: color_options.values.first %}
+                    {% assign current_swatch = current_value.swatch %}
+                    <span class="swatch"
+                          style="background: {{ current_swatch.color | default: '#cccccc' }};
+                                 {% if current_swatch.image %}background-image: url('{{ current_swatch.image | image_url: width: 50 }}');{% endif %}
+                                 background-size: cover;
+                                 background-position: center;"></span>
                   </div>
                   <span class="swatch-counter">+{{ swatch_count | minus: 1 }}</span>
                 </div>
@@ -527,7 +526,7 @@
         {% endunless %}
 
         {% if color_options and color_options.values.size > 0 %}
-          <div class="swatch-drawer-grid">
+          <div class="swatch-drawer-horizontal">
             {% for value in color_options.values %}
               {% assign variant_for_color = product.variants | where: 'option1', value | first %}
               {% unless variant_for_color %}
@@ -538,11 +537,12 @@
               {% endunless %}
 
               <div class="swatch-drawer-item" data-color-value="{{ value | escape }}" data-variant-id="{{ variant_for_color.id | default: '' }}">
-                <div class="swatch-large"
+                <div class="swatch-horizontal"
                      style="background: {{ value.swatch.color | default: '#cccccc' }};
-                            background-image: url('{{ value.swatch.image | image_url: width: 100 }}');">
+                            {% if value.swatch.image %}background-image: url('{{ value.swatch.image | image_url: width: 100 }}');{% endif %}
+                            background-size: cover;
+                            background-position: center;">
                 </div>
-                <span class="swatch-label">{{ value }}</span>
               </div>
             {% endfor %}
           </div>
@@ -988,10 +988,12 @@ document.addEventListener('DOMContentLoaded', function() {
       this.classList.add('selected');
 
       // Update the condensed swatch display
-      const swatchLarge = this.querySelector('.swatch-large');
-      if (currentSwatchEl && swatchLarge) {
-        currentSwatchEl.style.background = swatchLarge.style.background;
-        currentSwatchEl.style.backgroundImage = swatchLarge.style.backgroundImage;
+      const swatchHorizontal = this.querySelector('.swatch-horizontal');
+      if (currentSwatchEl && swatchHorizontal) {
+        currentSwatchEl.style.background = swatchHorizontal.style.background;
+        currentSwatchEl.style.backgroundImage = swatchHorizontal.style.backgroundImage;
+        currentSwatchEl.style.backgroundSize = 'cover';
+        currentSwatchEl.style.backgroundPosition = 'center';
       }
 
       // Update current color data attribute
