@@ -337,6 +337,7 @@
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
   user-select: none;
   -webkit-user-select: none;
+  touch-action: auto !important;
 }
 
 .current-swatch .swatch {
@@ -790,12 +791,19 @@ document.addEventListener('DOMContentLoaded', function() {
   // --------------------------
 
   
-  // Prevent pointer events from interfering with <select> usage
+  // Prevent pointer events from interfering with <select> usage and swatch-condensed
   document.querySelectorAll('select').forEach(function(selectEl) {
     selectEl.addEventListener('pointerdown', function(e) {
       e.stopPropagation();
     });
   });
+
+  // Allow touch events on swatch-condensed element
+  const swatchCondensedEl = document.querySelector('.swatch-condensed');
+  if (swatchCondensedEl) {
+    swatchCondensedEl.style.touchAction = 'auto';
+    console.log('✓ Set touch-action: auto on swatch-condensed');
+  }
 
   // --------------------------
   // LISTEN FOR SUBMENU OPEN/CLOSE
