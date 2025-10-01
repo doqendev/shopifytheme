@@ -311,8 +311,10 @@
 }
 
 @media screen and (max-width: 749px) {
-  .card__heading {
+  .card__heading,
+  .title-cheyenne {
     font-size: 1.1rem !important;
+    font-weight: 200 !important;
   }
 }
 
