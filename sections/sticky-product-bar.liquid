@@ -281,23 +281,24 @@
   padding: 0;
   margin: 0;
   margin-left: auto;
-  margin-right: 8px;
+  margin-right: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
+  order: 2;
 }
 
 .wishlist-heart-inline .wishlist-toggle__icon {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   fill: none;
   stroke: #000;
   stroke-width: 2;
 }
 
 .wishlist-heart-inline[aria-pressed="true"] .wishlist-toggle__icon {
-  fill: #000;
-  stroke: #000;
+  fill: #dc2e2e;
+  stroke: #dc2e2e;
 }
 
 .product-swatches-inline {
@@ -309,6 +310,7 @@
   padding: 0;
   pointer-events: auto;
   z-index: 10;
+  order: 3;
 }
 
 /* Add spacing to price section */
