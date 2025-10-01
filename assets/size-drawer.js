@@ -686,6 +686,8 @@
   }
 
   function handleDocumentClick(event) {
+    console.log('Document click detected:', event.target);
+
     const trigger = event.target.closest('[data-size-drawer-trigger]');
     if (trigger) {
       const sectionId = trigger.getAttribute('data-size-drawer-trigger');
@@ -701,19 +703,25 @@
     }
 
     const closeTrigger = event.target.closest('[data-size-drawer-close]');
+    console.log('Close trigger found:', closeTrigger);
     if (closeTrigger) {
       const drawer = closeTrigger.closest('.size-drawer');
+      console.log('Drawer found from close trigger:', drawer);
+      console.log('Drawer sectionId:', drawer?.dataset.sectionId);
       if (drawer?.dataset.sectionId) {
+        console.log('Closing drawer for section:', drawer.dataset.sectionId);
         closeDrawer(drawer.dataset.sectionId);
       }
       return;
     }
 
-    // Close drawer when clicking on overlay
+    // Close drawer when clicking on overlay (fallback)
     const overlay = event.target.closest('.size-drawer__overlay');
     if (overlay) {
+      console.log('Overlay click detected:', overlay);
       const drawer = overlay.closest('.size-drawer');
       if (drawer?.dataset.sectionId) {
+        console.log('Closing drawer via overlay for section:', drawer.dataset.sectionId);
         closeDrawer(drawer.dataset.sectionId);
       }
     }
