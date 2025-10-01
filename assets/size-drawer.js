@@ -674,6 +674,12 @@
   function closeDrawer(sectionId) {
     const drawer = document.getElementById(`size-drawer-${sectionId}`);
     if (!drawer) return;
+
+    // Remove active state from all size items
+    drawer.querySelectorAll('.size-item').forEach((element) => {
+      element.classList.remove('size-item--active');
+    });
+
     drawer.classList.remove('is-open');
     drawer.setAttribute('aria-hidden', 'true');
     const state = stateBySection.get(sectionId);
