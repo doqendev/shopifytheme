@@ -4,7 +4,7 @@
   display: none;
   align-items: flex-end;
   justify-content: center;
-  z-index: 60;
+  z-index: 9999;
 }
 
 .size-drawer.is-open {
@@ -15,6 +15,7 @@
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.45);
+  z-index: 1;
 }
 
 .size-drawer__content {
@@ -28,6 +29,7 @@
   transform: translateY(20px);
   opacity: 0;
   transition: transform 0.3s ease, opacity 0.3s ease;
+  z-index: 2;
 }
 
 .size-drawer.is-open .size-drawer__content {
