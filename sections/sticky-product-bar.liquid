@@ -1206,6 +1206,12 @@ document.addEventListener('DOMContentLoaded', function() {
         currentSwatchEl.style.backgroundColor = computedStyle.backgroundColor;
         currentSwatchEl.style.backgroundSize = 'cover';
         currentSwatchEl.style.backgroundPosition = 'center';
+
+        // Also copy the CSS variable if it exists
+        const swatchBackground = computedStyle.getPropertyValue('--swatch--background');
+        if (swatchBackground) {
+          currentSwatchEl.style.setProperty('--swatch--background', swatchBackground);
+        }
       }
 
       // Update current color data attribute
