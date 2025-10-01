@@ -1219,9 +1219,11 @@ document.addEventListener('DOMContentLoaded', function() {
         swatchCondensed.querySelector('.current-swatch').dataset.currentColor = colorValue;
       }
 
+      // Define correctVariantId at the top level
+      let correctVariantId = variantId;
+
       // Update variant ID in form - find correct variant for selected color
       if (hiddenInput) {
-        let correctVariantId = variantId;
 
         // If no variant ID found, try to find it by matching color option
         if (!correctVariantId && typeof productData !== 'undefined') {
