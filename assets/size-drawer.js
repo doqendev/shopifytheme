@@ -754,6 +754,10 @@
         const sectionId = openDrawerElement.dataset.sectionId;
         console.log('Closing drawer (clicked outside) for section:', sectionId);
         if (sectionId) {
+          // Prevent default action and stop propagation to prevent clicking through to elements behind
+          event.preventDefault();
+          event.stopPropagation();
+          event.stopImmediatePropagation();
           closeDrawer(sectionId);
         }
         return;
@@ -768,6 +772,8 @@
       console.log('Drawer sectionId:', drawer?.dataset.sectionId);
       if (drawer?.dataset.sectionId) {
         console.log('Closing drawer for section:', drawer.dataset.sectionId);
+        event.preventDefault();
+        event.stopPropagation();
         closeDrawer(drawer.dataset.sectionId);
       }
       return;
