@@ -306,7 +306,7 @@
   right: auto !important;
   width: auto !important;
   height: auto !important;
-  background: none;
+  background: none !important;
   border: none;
   cursor: pointer;
   padding: 0;
@@ -315,6 +315,12 @@
   align-items: center;
   justify-content: center;
   line-height: 1;
+}
+
+.wishlist-heart-inline[aria-pressed="true"],
+.wishlist-heart-inline.is-active {
+  background: none !important;
+  border: none !important;
 }
 
 .wishlist-heart-inline .wishlist-toggle__icon {
