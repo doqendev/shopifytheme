@@ -451,7 +451,16 @@
         newSizeItem.classList.remove('size-item--unavailable');
         newSizeItem.style.cursor = 'pointer';
         newSizeItem.style.pointerEvents = 'auto';
-        newSizeItem.addEventListener('click', () => handleSizeSelection(sectionId, entry.variant, newSizeItem));
+
+        // Add both touch and click events for mobile compatibility
+        const handleSelection = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          handleSizeSelection(sectionId, entry.variant, newSizeItem);
+        };
+
+        newSizeItem.addEventListener('touchend', handleSelection, { passive: false });
+        newSizeItem.addEventListener('click', handleSelection);
       }
     });
 
