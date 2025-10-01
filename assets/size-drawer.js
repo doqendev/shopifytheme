@@ -706,6 +706,16 @@
       if (drawer?.dataset.sectionId) {
         closeDrawer(drawer.dataset.sectionId);
       }
+      return;
+    }
+
+    // Close drawer when clicking on overlay
+    const overlay = event.target.closest('.size-drawer__overlay');
+    if (overlay) {
+      const drawer = overlay.closest('.size-drawer');
+      if (drawer?.dataset.sectionId) {
+        closeDrawer(drawer.dataset.sectionId);
+      }
     }
   }
 
