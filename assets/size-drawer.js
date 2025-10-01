@@ -703,9 +703,9 @@
     }
 
     // Check if any drawer is open
-    const openDrawer = document.querySelector('.size-drawer.is-open');
-    if (openDrawer) {
-      console.log('Open drawer detected:', openDrawer);
+    const openDrawerElement = document.querySelector('.size-drawer.is-open');
+    if (openDrawerElement) {
+      console.log('Open drawer detected:', openDrawerElement);
 
       // Check if click is inside drawer content
       const drawerContent = event.target.closest('.size-drawer__content');
@@ -713,7 +713,7 @@
 
       if (!drawerContent) {
         // Click is outside drawer content, close the drawer
-        const sectionId = openDrawer.dataset.sectionId;
+        const sectionId = openDrawerElement.dataset.sectionId;
         console.log('Closing drawer (clicked outside) for section:', sectionId);
         if (sectionId) {
           closeDrawer(sectionId);
