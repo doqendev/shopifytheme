@@ -16,10 +16,6 @@
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.wishlist-toggle:hover {
-  transform: scale(1.04);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-}
 
 .wishlist-toggle.is-active {
   color: var(--wishlist-accent, #d23f57);
