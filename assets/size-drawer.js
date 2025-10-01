@@ -510,10 +510,13 @@
     }
     sizeItem.classList.add('size-item--active');
 
+    // Mark that we're processing to prevent drawer refresh
+    const state = ensureState(sectionId);
+    state.isProcessing = true;
+
     syncVariantOptionSelections(sectionId, variant);
     updateProductFormVariant(sectionId, variant.id);
 
-    const state = ensureState(sectionId);
     const chooseButton = state.activeTrigger || state.triggers[0] || null;
     const triggerData = chooseButton ? state.triggerData.get(chooseButton) : null;
 
@@ -577,6 +580,9 @@
         }
       })
       .finally(() => {
+        // Clear processing flag
+        state.isProcessing = false;
+
         sizeItem.classList.remove('size-item--loading');
         if (variant.available) {
           sizeItem.style.pointerEvents = 'auto';
@@ -812,11 +818,16 @@
     // Only sync if we're not already syncing, and disable aggressive sync for now
     // syncVariantSelectionAcrossSections(event.target, sourceSectionId);
 
-    // Update any open size drawers
+    // Update any open size drawers (but not if we're processing a cart addition)
     const openDrawers = document.querySelectorAll('.size-drawer.is-open');
     openDrawers.forEach(drawer => {
       const drawerSectionId = drawer.dataset.sectionId;
       if (drawerSectionId) {
+        const state = stateBySection.get(drawerSectionId);
+        if (state && state.isProcessing) {
+          console.log('Skipping refresh for drawer during cart addition:', drawerSectionId);
+          return;
+        }
         console.log('Refreshing size options for open drawer:', drawerSectionId);
         renderSizeOptions(drawerSectionId);
       }
