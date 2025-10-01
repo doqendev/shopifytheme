@@ -398,6 +398,13 @@
   user-select: none;
   -webkit-user-select: none;
   touch-action: auto !important;
+  align-items: center;
+}
+
+.current-swatch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .current-swatch .swatch {
@@ -408,6 +415,7 @@
   border-radius: 0 !important;
   background-size: cover !important;
   background-position: center !important;
+  display: block;
 }
 
 .swatch-counter {
@@ -416,6 +424,9 @@
   color: #666;
   pointer-events: auto;
   cursor: pointer;
+  line-height: 1;
+  display: flex;
+  align-items: center;
 }
 
 /* External Swatch Drawer - positioned directly above sticky bar */
