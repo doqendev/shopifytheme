@@ -3732,6 +3732,13 @@ element.style {
   margin-bottom: 0;
 }
 
+@media screen and (max-width: 749px) {
+  .card__heading,
+  .card__heading a {
+    font-size: 1.1rem !important;
+  }
+}
+
 .card__information {
   width: 100%!important;
   overflow: hidden;
