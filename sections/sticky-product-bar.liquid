@@ -282,6 +282,11 @@
 }
 
 .wishlist-heart-inline {
+  position: static !important;
+  top: auto !important;
+  right: auto !important;
+  width: auto !important;
+  height: auto !important;
   background: none;
   border: none;
   cursor: pointer;
@@ -293,14 +298,21 @@
 }
 
 .wishlist-heart-inline .wishlist-toggle__icon {
-  width: 18px;
-  height: 18px;
+  width: 18px !important;
+  height: 18px !important;
   fill: none;
   stroke: #000;
   stroke-width: 2;
 }
 
-.wishlist-heart-inline[aria-pressed="true"] .wishlist-toggle__icon {
+.wishlist-heart-inline[aria-pressed="true"] .wishlist-toggle__icon,
+.wishlist-heart-inline.is-active .wishlist-toggle__icon {
+  fill: #dc2e2e;
+  stroke: #dc2e2e;
+}
+
+.wishlist-heart-inline[aria-pressed="true"] .wishlist-toggle__icon path,
+.wishlist-heart-inline.is-active .wishlist-toggle__icon path {
   fill: #dc2e2e;
   stroke: #dc2e2e;
 }
