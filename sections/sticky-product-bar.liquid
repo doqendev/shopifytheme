@@ -957,6 +957,8 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- Swatch Drawer Functionality -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  console.log('=== SWATCH DRAWER SCRIPT LOADED ===');
+
   const swatchCondensed = document.querySelector('.swatch-condensed');
   const swatchDrawer = document.getElementById('swatch-drawer');
   const swatchDrawerItems = document.querySelectorAll('.swatch-drawer-item');
@@ -966,9 +968,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
   console.log('Swatch drawer initialization:');
   console.log('- swatchCondensed:', swatchCondensed);
+  console.log('- swatchCondensed exists?:', !!swatchCondensed);
   console.log('- swatchDrawer:', swatchDrawer);
-  console.log('- swatchDrawerItems:', swatchDrawerItems.length);
+  console.log('- swatchDrawer exists?:', !!swatchDrawer);
+  console.log('- swatchDrawerItems count:', swatchDrawerItems.length);
   console.log('- currentSwatchEl:', currentSwatchEl);
+
+  if (swatchCondensed) {
+    console.log('- swatchCondensed computed style:', window.getComputedStyle(swatchCondensed));
+    console.log('- swatchCondensed pointer-events:', window.getComputedStyle(swatchCondensed).pointerEvents);
+    console.log('- swatchCondensed z-index:', window.getComputedStyle(swatchCondensed).zIndex);
+  }
 
   // Function to position the drawer right above the sticky bar
   function positionDrawer() {
@@ -985,39 +995,52 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Toggle drawer when condensed swatch is clicked
   if (swatchCondensed) {
-    console.log('Swatch condensed element found, adding click listener');
+    console.log('✓ Swatch condensed element found, adding event listeners');
 
-    // Add touchend event listener for better mobile support
+    // Add ALL possible event types to debug which one fires
+    swatchCondensed.addEventListener('touchstart', function(e) {
+      console.log('>>> TOUCHSTART event fired on swatchCondensed');
+    }, { passive: true });
+
     swatchCondensed.addEventListener('touchend', function(e) {
+      console.log('>>> TOUCHEND event fired on swatchCondensed');
+      console.log('- Event target:', e.target);
+      console.log('- Current target:', e.currentTarget);
+      console.log('- Drawer active?:', swatchDrawer.classList.contains('active'));
+
       e.preventDefault();
       e.stopPropagation();
-      console.log('Swatch condensed touchend triggered!');
 
       if (swatchDrawer.classList.contains('active')) {
-        // Close drawer if it's open
-        console.log('Closing swatch drawer');
+        console.log('→ Closing swatch drawer');
         closeDrawer();
       } else {
-        // Open drawer if it's closed
-        console.log('Opening swatch drawer');
+        console.log('→ Opening swatch drawer');
+        console.log('- Setting drawer display to block');
         swatchDrawer.style.display = 'block';
-        positionDrawer(); // Set correct position
+        console.log('- Positioning drawer');
+        positionDrawer();
         setTimeout(() => {
+          console.log('- Adding active class to drawer');
           swatchDrawer.classList.add('active');
-          console.log('Swatch drawer activated');
+          console.log('- Drawer should now be visible');
         }, 10);
       }
     }, { passive: false });
 
-    // Also add click for desktop
     swatchCondensed.addEventListener('click', function(e) {
+      console.log('>>> CLICK event fired on swatchCondensed');
+      console.log('- Event target:', e.target);
+      console.log('- Current target:', e.currentTarget);
+
       e.preventDefault();
       e.stopPropagation();
-      console.log('Swatch condensed click triggered!');
 
       if (swatchDrawer.classList.contains('active')) {
+        console.log('→ Closing drawer (click)');
         closeDrawer();
       } else {
+        console.log('→ Opening drawer (click)');
         swatchDrawer.style.display = 'block';
         positionDrawer();
         setTimeout(() => {
@@ -1026,15 +1049,27 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
 
+    swatchCondensed.addEventListener('pointerdown', function(e) {
+      console.log('>>> POINTERDOWN event fired on swatchCondensed');
+    });
+
+    swatchCondensed.addEventListener('pointerup', function(e) {
+      console.log('>>> POINTERUP event fired on swatchCondensed');
+    });
+
+    console.log('✓ All event listeners added to swatchCondensed');
+
   } else {
-    console.log('Swatch condensed element NOT found');
+    console.log('✗ Swatch condensed element NOT found - drawer will not work');
   }
 
   // Close drawer
   function closeDrawer() {
+    console.log('→ closeDrawer() called');
     swatchDrawer.classList.remove('active');
     setTimeout(() => {
       swatchDrawer.style.display = 'none';
+      console.log('→ Drawer display set to none');
     }, 300);
   }
 
@@ -1043,8 +1078,18 @@ document.addEventListener('DOMContentLoaded', function() {
     if (swatchDrawer.classList.contains('active') &&
         !swatchDrawer.contains(e.target) &&
         !swatchCondensed.contains(e.target)) {
+      console.log('→ Closing drawer (clicked outside)');
       closeDrawer();
     }
+  });
+
+  // Add a general click listener to document to see if ANY clicks are registered
+  document.addEventListener('click', function(e) {
+    console.log('>>> Document click detected at:', e.target);
+  });
+
+  document.addEventListener('touchend', function(e) {
+    console.log('>>> Document touchend detected at:', e.target);
   });
 
   // Handle swatch selection
