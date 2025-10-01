@@ -507,7 +507,19 @@
     const chooseButton = state.activeTrigger || state.triggers[0] || null;
     const triggerData = chooseButton ? state.triggerData.get(chooseButton) : null;
 
-    setStatus(sectionId, 'Adicionando ao carrinho...');
+    // Add loading message inline to the size item
+    const stockSpan = sizeItem.querySelector('.size-item__stock');
+    let originalStockText = '';
+    if (stockSpan) {
+      originalStockText = stockSpan.textContent;
+      stockSpan.textContent = 'Adicionando...';
+    } else {
+      const loadingSpan = document.createElement('span');
+      loadingSpan.className = 'size-item__stock size-item__loading-message';
+      loadingSpan.textContent = 'Adicionando...';
+      sizeItem.appendChild(loadingSpan);
+    }
+
     sizeItem.classList.add('size-item--loading');
     sizeItem.style.pointerEvents = 'none';
 
@@ -520,7 +532,6 @@
     addVariantToCart(sectionId, variant.id)
       .then(() => {
         closeDrawer(sectionId);
-        setStatus(sectionId, 'Adicionado ao carrinho.');
         if (chooseButton) {
           const label = chooseButton.querySelector('span');
           if (label) {
@@ -541,7 +552,16 @@
       .catch((error) => {
         console.error('Size drawer add to cart failed', error);
         const message = error?.message || 'Erro ao adicionar ao carrinho.';
-        setStatus(sectionId, message);
+
+        // Show error inline
+        if (stockSpan) {
+          stockSpan.textContent = message;
+        } else {
+          const loadingSpan = sizeItem.querySelector('.size-item__loading-message');
+          if (loadingSpan) {
+            loadingSpan.textContent = message;
+          }
+        }
       })
       .finally(() => {
         sizeItem.classList.remove('size-item--loading');
@@ -553,6 +573,18 @@
           chooseButton.removeAttribute('aria-busy');
           chooseButton.disabled = false;
         }
+
+        // Restore original stock text or remove loading message after delay
+        setTimeout(() => {
+          if (stockSpan && originalStockText) {
+            stockSpan.textContent = originalStockText;
+          } else {
+            const loadingSpan = sizeItem.querySelector('.size-item__loading-message');
+            if (loadingSpan) {
+              loadingSpan.remove();
+            }
+          }
+        }, 1000);
       });
   }
 
