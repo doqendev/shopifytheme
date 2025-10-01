@@ -866,7 +866,7 @@
   function initialize() {
     console.log('Size drawer initializing...');
     hideProductSizeInputs();
-    document.addEventListener('click', handleDocumentClick);
+    document.addEventListener('click', handleDocumentClick, true); // Use capture phase
     document.addEventListener('keydown', handleDocumentKeydown);
     document.addEventListener('change', handleVariantChange, true);
     document.addEventListener('product-info:loaded', handleProductInfoLoaded);
