@@ -279,6 +279,8 @@
   align-items: flex-start;
   margin-right: 15px;
   padding-top: 2px;
+  pointer-events: auto;
+  z-index: 10;
 }
 
 /* Add spacing to price section */
@@ -329,6 +331,12 @@
   display: flex;
   gap: 5px;
   cursor: pointer;
+  pointer-events: auto;
+  position: relative;
+  z-index: 10;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .current-swatch .swatch {
@@ -345,6 +353,8 @@
   font-size: 12px;
   font-weight: 500;
   color: #666;
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 /* External Swatch Drawer - positioned directly above sticky bar */
@@ -977,50 +987,44 @@ document.addEventListener('DOMContentLoaded', function() {
   if (swatchCondensed) {
     console.log('Swatch condensed element found, adding click listener');
 
-    // Add multiple event listeners to catch the click
-    ['click', 'touchstart', 'pointerdown'].forEach(eventType => {
-      swatchCondensed.addEventListener(eventType, function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-        console.log(`Swatch condensed ${eventType} triggered!`);
+    // Add touchend event listener for better mobile support
+    swatchCondensed.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('Swatch condensed touchend triggered!');
 
-        if (swatchDrawer.classList.contains('active')) {
-          // Close drawer if it's open
-          console.log('Closing swatch drawer');
-          closeDrawer();
-        } else {
-          // Open drawer if it's closed
-          console.log('Opening swatch drawer');
-          swatchDrawer.style.display = 'block';
-          positionDrawer(); // Set correct position
-          setTimeout(() => {
-            swatchDrawer.classList.add('active');
-            console.log('Swatch drawer activated');
-          }, 10);
-        }
-      }, { capture: true });
+      if (swatchDrawer.classList.contains('active')) {
+        // Close drawer if it's open
+        console.log('Closing swatch drawer');
+        closeDrawer();
+      } else {
+        // Open drawer if it's closed
+        console.log('Opening swatch drawer');
+        swatchDrawer.style.display = 'block';
+        positionDrawer(); // Set correct position
+        setTimeout(() => {
+          swatchDrawer.classList.add('active');
+          console.log('Swatch drawer activated');
+        }, 10);
+      }
+    }, { passive: false });
+
+    // Also add click for desktop
+    swatchCondensed.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('Swatch condensed click triggered!');
+
+      if (swatchDrawer.classList.contains('active')) {
+        closeDrawer();
+      } else {
+        swatchDrawer.style.display = 'block';
+        positionDrawer();
+        setTimeout(() => {
+          swatchDrawer.classList.add('active');
+        }, 10);
+      }
     });
-
-    // Also add event listener to the counter specifically
-    const swatchCounter = swatchCondensed.querySelector('.swatch-counter');
-    if (swatchCounter) {
-      console.log('Adding click listener to swatch counter');
-      swatchCounter.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log('Swatch counter clicked directly!');
-
-        if (!swatchDrawer.classList.contains('active')) {
-          console.log('Opening swatch drawer via counter');
-          swatchDrawer.style.display = 'block';
-          positionDrawer();
-          setTimeout(() => {
-            swatchDrawer.classList.add('active');
-          }, 10);
-        }
-      }, { capture: true });
-    }
 
   } else {
     console.log('Swatch condensed element NOT found');
