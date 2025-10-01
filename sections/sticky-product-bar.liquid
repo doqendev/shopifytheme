@@ -256,11 +256,11 @@
 /* Title and swatches inline layout */
 .title-and-swatches {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: flex-start;
   width: 100%;
   margin-top: 20px;
-  gap: 10px;
+  gap: 8px;
 }
 
 .product-title {
@@ -272,12 +272,12 @@
   overflow: visible;
   text-overflow: initial;
   line-height: 1.4;
+  min-width: 0;
 }
 
 .wishlist-heart-inline {
   flex-shrink: 0;
-  margin-left: auto;
-  padding-top: 0;
+  order: 2;
   background: none;
   border: none;
   cursor: pointer;
@@ -302,10 +302,11 @@
 
 .product-swatches-inline {
   flex-shrink: 0;
+  order: 3;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   margin-right: 15px;
-  padding-top: 2px;
+  padding-top: 0;
   pointer-events: auto;
   z-index: 10;
 }
