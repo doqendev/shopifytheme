@@ -1253,6 +1253,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }
 
+      // Scroll to the variant image if available
+      if (correctVariantId && typeof productData !== 'undefined') {
+        const variant = productData.variants.find(v => v.id === correctVariantId);
+        if (variant && variant.featured_media && variant.featured_media.id) {
+          // Find the media gallery
+          const galleryEl = document.querySelector('[id^="MediaGallery-"]');
+          if (galleryEl) {
+            const sectionId = galleryEl.id.replace('MediaGallery-', '');
+            const targetMediaId = sectionId + '-' + variant.featured_media.id;
+            const mediaEl = document.querySelector('[data-media-id="' + targetMediaId + '"]');
+            if (mediaEl) {
+              mediaEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }
+        }
+      }
+
       // Close drawer after selection
       closeDrawer();
 
