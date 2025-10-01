@@ -1254,20 +1254,43 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       // Scroll to the variant image if available
+      console.log('Attempting to scroll to variant image...');
+      console.log('correctVariantId:', correctVariantId);
+      console.log('productData:', typeof productData !== 'undefined' ? productData : 'undefined');
+
       if (correctVariantId && typeof productData !== 'undefined') {
-        const variant = productData.variants.find(v => v.id === correctVariantId);
+        const variant = productData.variants.find(v => v.id == correctVariantId);
+        console.log('Found variant:', variant);
+
         if (variant && variant.featured_media && variant.featured_media.id) {
+          console.log('Variant has featured_media:', variant.featured_media);
+
           // Find the media gallery
           const galleryEl = document.querySelector('[id^="MediaGallery-"]');
+          console.log('Gallery element:', galleryEl);
+
           if (galleryEl) {
             const sectionId = galleryEl.id.replace('MediaGallery-', '');
             const targetMediaId = sectionId + '-' + variant.featured_media.id;
+            console.log('Looking for media with ID:', targetMediaId);
+
             const mediaEl = document.querySelector('[data-media-id="' + targetMediaId + '"]');
+            console.log('Media element found:', mediaEl);
+
             if (mediaEl) {
+              console.log('Scrolling to media element...');
               mediaEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+              console.log('No media element found with data-media-id:', targetMediaId);
             }
+          } else {
+            console.log('No gallery element found');
           }
+        } else {
+          console.log('Variant does not have featured_media');
         }
+      } else {
+        console.log('No correctVariantId or productData not available');
       }
 
       // Close drawer after selection
