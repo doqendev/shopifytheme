@@ -116,11 +116,14 @@
   font-size: 11px;
   color: #ff6600;
   font-weight: 500;
+  display: inline-block;
 }
 
 .size-item__loading-message {
   color: #000 !important;
   font-weight: 500;
+  display: inline-block !important;
+  visibility: visible !important;
 }
 
 .size-item--unavailable {
