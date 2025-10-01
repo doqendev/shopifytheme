@@ -6,6 +6,14 @@
   color: rgb(var(--color-foreground));
 }
 
+@media screen and (max-width: 749px) {
+  .card__information .price,
+  .card__information .price-item {
+    font-size: 1.1rem !important;
+    font-weight: 200 !important;
+  }
+}
+
 .price > * {
   display: inline-block;
 }
