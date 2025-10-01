@@ -551,7 +551,17 @@
 
     addVariantToCart(sectionId, variant.id)
       .then(() => {
-        closeDrawer(sectionId);
+        // Show success message briefly before closing
+        const loadingSpan = sizeItem.querySelector('.size-item__loading-message');
+        if (loadingSpan) {
+          loadingSpan.textContent = 'Adicionado!';
+        }
+
+        // Wait a moment so user can see the message, then close drawer
+        setTimeout(() => {
+          closeDrawer(sectionId);
+        }, 800);
+
         if (chooseButton) {
           const label = chooseButton.querySelector('span');
           if (label) {
