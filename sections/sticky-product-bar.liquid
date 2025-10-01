@@ -156,6 +156,14 @@
   font-weight: 500;
 }
 
+/* Force button and counter font sizes on mobile */
+#sticky-product-bar button,
+#sticky-product-bar .button,
+#sticky-product-bar .button-label,
+#sticky-product-bar .swatch-counter {
+  font-size: 1.1rem !important;
+}
+
   }
 
 
@@ -379,6 +387,12 @@
     width: 94% !important;
     margin-bottom: 10px !important;
     box-sizing: border-box !important;
+  }
+
+  [data-size-drawer-trigger] .button-label,
+  .add-to-cart [data-size-drawer-trigger] .button-label,
+  button[data-size-drawer-trigger],
+  .button[data-size-drawer-trigger] {
     font-size: 1.1rem !important;
   }
 }
