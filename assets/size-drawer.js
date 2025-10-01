@@ -491,6 +491,7 @@
   }
 
   function handleSizeSelection(sectionId, variant, sizeItem) {
+    console.log('handleSizeSelection called:', sectionId, variant, sizeItem);
     if (!variant || !variant.id) return;
 
     // Remove active state from all size items in this drawer
@@ -509,11 +510,14 @@
 
     // Add loading message inline to the size item
     const stockSpan = sizeItem.querySelector('.size-item__stock');
+    console.log('stockSpan found:', stockSpan);
     let originalStockText = '';
     if (stockSpan) {
       originalStockText = stockSpan.textContent;
+      console.log('Setting stockSpan to Adicionando...');
       stockSpan.textContent = 'Adicionando...';
     } else {
+      console.log('Creating new loading span');
       const loadingSpan = document.createElement('span');
       loadingSpan.className = 'size-item__stock size-item__loading-message';
       loadingSpan.textContent = 'Adicionando...';
