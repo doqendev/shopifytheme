@@ -523,6 +523,7 @@
     // Add loading message inline to the size item
     const stockSpan = sizeItem.querySelector('.size-item__stock');
     console.log('stockSpan found:', stockSpan);
+    console.log('sizeItem HTML before:', sizeItem.innerHTML);
     let originalStockText = '';
     if (stockSpan) {
       originalStockText = stockSpan.textContent;
@@ -533,7 +534,10 @@
       const loadingSpan = document.createElement('span');
       loadingSpan.className = 'size-item__stock size-item__loading-message';
       loadingSpan.textContent = 'Adicionando...';
+      loadingSpan.style.marginLeft = '8px';
       sizeItem.appendChild(loadingSpan);
+      console.log('Loading span created:', loadingSpan);
+      console.log('sizeItem HTML after:', sizeItem.innerHTML);
     }
 
     sizeItem.classList.add('size-item--loading');
