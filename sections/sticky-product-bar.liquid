@@ -1226,6 +1226,8 @@ document.addEventListener('DOMContentLoaded', function() {
   setTimeout(syncSelectedColorToHiddenCard, 2000);
 
   // Listen for color changes from swatch drawer
+  let isRetriggering = false; // Flag to prevent infinite loop
+
   document.addEventListener('click', function(e) {
     const swatchDrawerItem = e.target.closest('.swatch-drawer-item');
     if (swatchDrawerItem) {
@@ -1235,9 +1237,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Also sync before wishlist heart click
     const wishlistHeart = e.target.closest('.wishlist-heart-inline, .wishlist-toggle');
-    if (wishlistHeart && wishlistHeart.closest('.sticky-bar-summary')) {
-      console.log('Wishlist heart clicked on sticky bar, syncing NOW...');
+    if (wishlistHeart && wishlistHeart.closest('.sticky-bar-summary') && !isRetriggering) {
+      console.log('Wishlist heart clicked on sticky bar, PREVENTING default and syncing...');
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+
+      // Sync the color/image first
       syncSelectedColorToHiddenCard();
+
+      // Then trigger the wishlist click after a small delay
+      setTimeout(() => {
+        console.log('Now triggering wishlist add after sync...');
+        isRetriggering = true;
+        wishlistHeart.click();
+        setTimeout(() => { isRetriggering = false; }, 100);
+      }, 50);
     }
   }, true); // Use capture phase to run before other handlers
 });
