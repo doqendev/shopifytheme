@@ -1103,20 +1103,37 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- Sync selected color to hidden card for wishlist -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  console.log('=== WISHLIST COLOR SYNC SCRIPT LOADED ===');
+
   const stickyBarWrapper = document.querySelector('.sticky-bar-summary.product-card-wrapper');
   const hiddenCard = stickyBarWrapper?.querySelector('.sticky-bar-hidden-card .product-card-wrapper');
 
-  if (!stickyBarWrapper || !hiddenCard) return;
+  console.log('Sticky bar wrapper:', stickyBarWrapper);
+  console.log('Hidden card:', hiddenCard);
+
+  if (!stickyBarWrapper || !hiddenCard) {
+    console.error('Could not find sticky bar wrapper or hidden card!');
+    return;
+  }
 
   function syncSelectedColorToHiddenCard() {
+    console.log('--- Syncing selected color to hidden card ---');
+
     // Get the selected color from condensed swatch or variant picker
     const currentSwatchEl = document.querySelector('.swatch-condensed .current-swatch');
     const selectedColorName = currentSwatchEl?.dataset?.currentColor;
 
-    if (!selectedColorName || !hiddenCard) return;
+    console.log('Current swatch element:', currentSwatchEl);
+    console.log('Selected color name:', selectedColorName);
+
+    if (!selectedColorName || !hiddenCard) {
+      console.warn('No selected color or hidden card found');
+      return;
+    }
 
     // Find all swatches in the hidden card
     const hiddenSwatches = hiddenCard.querySelectorAll('.swatch');
+    console.log('Hidden swatches found:', hiddenSwatches.length);
 
     // Remove active class from all swatches
     hiddenSwatches.forEach(swatch => swatch.classList.remove('active'));
@@ -1125,34 +1142,52 @@ document.addEventListener('DOMContentLoaded', function() {
     const matchingSwatch = Array.from(hiddenSwatches).find(swatch => {
       const swatchColor = swatch.dataset?.color?.toLowerCase().trim();
       const targetColor = selectedColorName?.toLowerCase().trim();
+      console.log('Comparing swatch color:', swatchColor, 'with target:', targetColor);
       return swatchColor === targetColor;
     });
 
+    console.log('Matching swatch:', matchingSwatch);
+
     if (matchingSwatch) {
       matchingSwatch.classList.add('active');
+      console.log('✓ Marked swatch as active');
 
       // Update the image if variant image is available
       const variantImage = matchingSwatch.dataset?.variantImage;
+      console.log('Variant image URL:', variantImage);
+
       if (variantImage) {
         const hiddenCardImage = hiddenCard.querySelector('.swiper-slide-active img, .card__media img');
+        console.log('Hidden card image element:', hiddenCardImage);
+
         if (hiddenCardImage) {
           hiddenCardImage.src = variantImage;
           hiddenCardImage.srcset = variantImage;
+          console.log('✓ Updated hidden card image to:', variantImage);
+        } else {
+          console.warn('Could not find hidden card image element');
         }
+      } else {
+        console.warn('No variant image available on swatch');
       }
+    } else {
+      console.warn('No matching swatch found in hidden card');
     }
 
     // Store the selected color on the main wrapper
     stickyBarWrapper.dataset.selectedColor = selectedColorName;
+    console.log('✓ Stored selected color on wrapper:', selectedColorName);
   }
 
   // Sync on page load (default color)
+  console.log('Scheduling initial sync in 500ms...');
   setTimeout(syncSelectedColorToHiddenCard, 500);
 
   // Listen for color changes from swatch drawer
   document.addEventListener('click', function(e) {
     const swatchDrawerItem = e.target.closest('.swatch-drawer-item');
     if (swatchDrawerItem) {
+      console.log('Swatch drawer item clicked, syncing...');
       setTimeout(syncSelectedColorToHiddenCard, 100);
     }
   });
