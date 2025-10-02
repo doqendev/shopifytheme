@@ -12,6 +12,12 @@
   letter-spacing: 0 !important;
 }
 
+@media screen and (max-width: 749px) {
+  body, body * {
+    font-size: 12px !important;
+  }
+}
+
 .product-card-wrapper .card,
 .contains-card--product {
   --border-radius: var(--product-card-corner-radius);
