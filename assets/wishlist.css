@@ -566,9 +566,38 @@ cart-drawer.drawer--wishlist-active #CartDrawer-CartErrors {
   }
 
   .wishlist-toggle {
-    width: 3rem;
-    height: 3rem;
+    width: auto !important;
+    height: auto !important;
+    background: none !important;
+    border: none;
     color: grey;
+  }
+
+  .wishlist-toggle .wishlist-toggle__icon {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .wishlist-toggle .wishlist-toggle__icon path {
+    stroke-width: 1;
+  }
+
+  .wishlist-toggle.is-active .wishlist-toggle__icon,
+  .wishlist-toggle[aria-pressed="true"] .wishlist-toggle__icon {
+    fill: #dc2e2e;
+    stroke: #dc2e2e;
+  }
+
+  .wishlist-toggle.is-active .wishlist-toggle__icon path,
+  .wishlist-toggle[aria-pressed="true"] .wishlist-toggle__icon path {
+    fill: #dc2e2e;
+    stroke: #dc2e2e;
+    stroke-width: 1;
+  }
+
+  .wishlist-toggle:hover {
+    background: none !important;
+    border: none !important;
   }
 
   .wishlist-item__size-drawer {
