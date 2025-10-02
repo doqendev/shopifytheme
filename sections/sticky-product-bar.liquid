@@ -569,6 +569,17 @@
       break
     endif
   endfor
+
+  capture variant_inventory_map
+    echo '{'
+    for variant in product.variants
+      echo '"' | append: variant.id | append: '": ' | append: variant.inventory_quantity | default: 0
+      unless forloop.last
+        echo ','
+      endunless
+    endfor
+    echo '}'
+  endcapture
 %}
 
 <!-- Provide the product data in JSON -->
@@ -582,18 +593,20 @@
     <div class="sticky-bar-header">
       <!-- Left side: Title, Price, Variant Picker -->
       <div
-        class="sticky-bar-summary product-card-wrapper"
+        class="sticky-bar-summary product-card-wrapper product-card underline-links-hover"
         data-product-handle="{{ product.handle }}"
         data-product-title="{{ product.title | escape }}"
         data-product-url="{{ product.url | escape }}"
         data-product-image="{{ wishlist_image | escape }}"
         data-product-price="{{ product.price | money_without_trailing_zeros | escape }}"
         data-variants='{{ product.variants | json | escape }}'
+        data-variant-inventory='{{ variant_inventory_map | strip_newlines | escape }}'
         data-size-index="{{ size_option_index }}"
         data-color-index="{{ color_option_index }}"
+        data-tags="{{ product.tags | join: ',' | downcase }}"
       >
         {%- comment -%} Hidden card structure for wishlist functionality {%- endcomment -%}
-        <div class="card card--standard card--media" style="display: none;">
+        <div class="card card--standard card--media" style="display: none !important; position: absolute; pointer-events: none;">
           <button class="wishlist-toggle" type="button" aria-pressed="false" aria-label="Add to wishlist">
             <svg class="wishlist-toggle__icon" viewBox="0 0 24 24" role="presentation" focusable="false">
               <path d="M12 21.35 10.55 20.03C6.2 15.99 3 12.99 3 9.31 3 6.28 5.42 4 8.4 4A5.2 5.2 0 0 1 12 5.86 5.2 5.2 0 0 1 15.6 4C18.58 4 21 6.28 21 9.31c0 3.68-3.2 6.68-7.55 10.72z" />
@@ -602,11 +615,26 @@
           <div class="card__inner ratio">
             <div class="card__media swiper-container">
               <div class="swiper-wrapper">
-                <div class="swiper-slide swiper-slide-active">
-                  <a href="{{ product.url }}" class="full-unstyled-link">
-                    <img src="{{ wishlist_image }}" alt="{{ product.title | escape }}" loading="lazy">
-                  </a>
-                </div>
+                {%- for media in product.media limit: 1 -%}
+                  {%- if media.preview_image != blank -%}
+                    <div class="swiper-slide swiper-slide-active">
+                      <a href="{{ product.url }}" class="full-unstyled-link">
+                        <img
+                          src="{{ media | image_url: width: 533 }}"
+                          srcset="
+                            {{ media | image_url: width: 165 }} 165w,
+                            {{ media | image_url: width: 360 }} 360w,
+                            {{ media | image_url: width: 533 }} 533w
+                          "
+                          alt="{{ media.alt | escape }}"
+                          loading="lazy"
+                          width="{{ media.preview_image.width }}"
+                          height="{{ media.preview_image.height }}"
+                        >
+                      </a>
+                    </div>
+                  {%- endif -%}
+                {%- endfor -%}
               </div>
             </div>
           </div>
