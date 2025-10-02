@@ -605,93 +605,9 @@
         data-color-index="{{ color_option_index }}"
         data-tags="{{ product.tags | join: ',' | downcase }}"
       >
-        {%- comment -%} Hidden card structure for wishlist functionality {%- endcomment -%}
-        <div class="card card--standard card--media" style="display: none !important; position: absolute; pointer-events: none;">
-          <button class="wishlist-toggle" type="button" aria-pressed="false" aria-label="Add to wishlist">
-            <svg class="wishlist-toggle__icon" viewBox="0 0 24 24" role="presentation" focusable="false">
-              <path d="M12 21.35 10.55 20.03C6.2 15.99 3 12.99 3 9.31 3 6.28 5.42 4 8.4 4A5.2 5.2 0 0 1 12 5.86 5.2 5.2 0 0 1 15.6 4C18.58 4 21 6.28 21 9.31c0 3.68-3.2 6.68-7.55 10.72z" />
-            </svg>
-          </button>
-          <div class="card__inner ratio">
-            <div class="card__media swiper-container">
-              <div class="swiper-wrapper">
-                {%- for media in product.media limit: 1 -%}
-                  {%- if media.preview_image != blank -%}
-                    <div class="swiper-slide swiper-slide-active">
-                      <a href="{{ product.url }}" class="full-unstyled-link">
-                        <img
-                          src="{{ media | image_url: width: 533 }}"
-                          srcset="
-                            {{ media | image_url: width: 165 }} 165w,
-                            {{ media | image_url: width: 360 }} 360w,
-                            {{ media | image_url: width: 533 }} 533w
-                          "
-                          alt="{{ media.alt | escape }}"
-                          loading="lazy"
-                          width="{{ media.preview_image.width }}"
-                          height="{{ media.preview_image.height }}"
-                        >
-                      </a>
-                    </div>
-                  {%- endif -%}
-                {%- endfor -%}
-              </div>
-            </div>
-          </div>
-          <div class="card__content">
-            <div class="card__information">
-              <div class="card-information">
-                <div class="price-and-swatch">
-                  {%- for option in product.options_with_values -%}
-                    {%- if option.name == 'Color' or option.name == 'Cor' -%}
-                      {%- assign color_index = forloop.index0 -%}
-                      <div class="product-card__swatch-indicator">
-                        {%- assign swatch_count = 0 -%}
-                        {%- assign additional_swatch_count = 0 -%}
-                        {%- for value in option.values -%}
-                          {%- assign variant_image_url = '' -%}
-                          {%- assign option_text = value.value | default: value -%}
-                          {%- assign option_text_downcase = option_text | downcase -%}
-                          {%- for variant in product.variants -%}
-                            {%- assign variant_option = variant.options[color_index] -%}
-                            {%- assign variant_option_downcase = variant_option | downcase -%}
-                            {%- if variant.image and variant_option_downcase == option_text_downcase -%}
-                              {%- assign variant_image_url = variant.image | image_url: '533x' -%}
-                              {%- break -%}
-                            {%- endif -%}
-                          {%- endfor -%}
-                          {%- if value.swatch != blank -%}
-                            {%- if swatch_count < 3 -%}
-                              {%- assign is_active = false -%}
-                              {%- if swatch_count == 0 -%}
-                                {%- assign is_active = true -%}
-                              {%- endif -%}
-                              {%- render 'swatch', swatch: value.swatch, shape: 'circle', variant_image: variant_image_url, is_default: is_active, option_value: option_text | escape -%}
-                              {%- assign swatch_count = swatch_count | plus: 1 -%}
-                            {%- else -%}
-                              {%- assign additional_swatch_count = additional_swatch_count | plus: 1 -%}
-                            {%- endif -%}
-                          {%- endif -%}
-                        {%- endfor -%}
-                        {%- if additional_swatch_count > 0 -%}
-                          <span class="additional-swatch-count">+{{ additional_swatch_count }}</span>
-                        {%- endif -%}
-                        {%- if size_option_index != -1 -%}
-                          <div class="product-card-plus">
-                            <button type="button" class="plus-icon" aria-label="Add to cart" tabindex="0">
-                              {{ 'icon-plus.svg' | inline_asset_content }}
-                            </button>
-                          </div>
-                        {%- endif -%}
-                      </div>
-                    {%- endif -%}
-                  {%- endfor -%}
-                  <a href="{{ product.url }}" class="title-cheyenne">{{ product.title | escape }}</a>
-                  {%- render 'price', product: product, price_class: '', show_compare_at_price: true -%}
-                </div>
-              </div>
-            </div>
-          </div>
+        {%- comment -%} Hidden card structure for wishlist functionality - render actual card-product {%- endcomment -%}
+        <div style="display: none !important; position: absolute; pointer-events: none; opacity: 0; height: 0; overflow: hidden;">
+          {%- render 'card-product', card_product: product, media_aspect_ratio: 'adapt', show_vendor: false, show_rating: false, skip_styles: true -%}
         </div>
         <div class="title-and-swatches">
           <div class="product-title">
