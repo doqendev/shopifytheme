@@ -295,7 +295,8 @@ h5,
 
 h1,
 .h1 {
-  font-size: calc(var(--font-heading-scale) * 2rem);
+  font-size: 1.5rem;
+  letter-spacing: 0;
   margin-left: 2.3rem;
 }
 
