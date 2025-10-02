@@ -592,8 +592,13 @@
   <div class="sticky-bar-inner">
     <div class="sticky-bar-header">
       <!-- Left side: Title, Price, Variant Picker -->
+      {%- comment -%}
+        Render the actual product card for wishlist functionality
+        The wishlist heart will reference THIS card wrapper
+      {%- endcomment -%}
       <div
-        class="sticky-bar-summary product-card-wrapper product-card underline-links-hover"
+        class="sticky-bar-hidden-card product-card-wrapper product-card underline-links-hover"
+        style="display: none !important; position: absolute; pointer-events: none; opacity: 0; height: 0; overflow: hidden; z-index: -1;"
         data-product-handle="{{ product.handle }}"
         data-product-title="{{ product.title | escape }}"
         data-product-url="{{ product.url | escape }}"
@@ -605,10 +610,10 @@
         data-color-index="{{ color_option_index }}"
         data-tags="{{ product.tags | join: ',' | downcase }}"
       >
-        {%- comment -%} Hidden card structure for wishlist functionality - render actual card-product {%- endcomment -%}
-        <div class="sticky-bar-hidden-card" style="display: none !important; position: absolute; pointer-events: none; opacity: 0; height: 0; overflow: hidden;">
-          {%- render 'card-product', card_product: product, media_aspect_ratio: 'adapt', show_vendor: false, show_rating: false, skip_styles: true -%}
-        </div>
+        {%- render 'card-product', card_product: product, media_aspect_ratio: 'adapt', show_vendor: false, show_rating: false, skip_styles: true -%}
+      </div>
+
+      <div class="sticky-bar-summary">
         <div class="title-and-swatches">
           <div class="product-title">
             {{ product.title }}
@@ -1105,14 +1110,14 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
   console.log('=== WISHLIST COLOR SYNC SCRIPT LOADED ===');
 
-  const stickyBarWrapper = document.querySelector('.sticky-bar-summary.product-card-wrapper');
-  const hiddenCard = stickyBarWrapper?.querySelector('.sticky-bar-hidden-card .product-card-wrapper');
+  const hiddenCardWrapper = document.querySelector('.sticky-bar-hidden-card.product-card-wrapper');
+  const hiddenCard = hiddenCardWrapper?.querySelector('.product-card-wrapper');
 
-  console.log('Sticky bar wrapper:', stickyBarWrapper);
-  console.log('Hidden card:', hiddenCard);
+  console.log('Hidden card wrapper (main):', hiddenCardWrapper);
+  console.log('Hidden card (inner):', hiddenCard);
 
-  if (!stickyBarWrapper || !hiddenCard) {
-    console.error('Could not find sticky bar wrapper or hidden card!');
+  if (!hiddenCardWrapper || !hiddenCard) {
+    console.error('Could not find hidden card wrapper or inner card!');
     return;
   }
 
@@ -1208,14 +1213,14 @@ document.addEventListener('DOMContentLoaded', function() {
       console.warn('No matching swatch found in hidden card');
     }
 
-    // Store the selected color on the main wrapper
-    stickyBarWrapper.dataset.selectedColor = selectedColorName;
-    console.log('✓ Stored selected color on wrapper:', selectedColorName);
+    // Store the selected color on the hidden card wrapper
+    hiddenCardWrapper.dataset.selectedColor = selectedColorName;
+    console.log('✓ Stored selected color on hidden wrapper:', selectedColorName);
 
-    // Force the main wrapper to also update its data-product-image
+    // Force the hidden wrapper to also update its data-product-image
     if (matchingSwatch && variantImage) {
-      stickyBarWrapper.dataset.productImage = variantImage;
-      console.log('✓ Updated main wrapper product image to:', variantImage);
+      hiddenCardWrapper.dataset.productImage = variantImage;
+      console.log('✓ Updated hidden wrapper product image to:', variantImage);
     }
   }
 
@@ -1237,7 +1242,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Also sync before wishlist heart click
     const wishlistHeart = e.target.closest('.wishlist-heart-inline, .wishlist-toggle');
-    if (wishlistHeart && wishlistHeart.closest('.sticky-bar-summary') && !isRetriggering) {
+    const stickyBar = document.getElementById('sticky-product-bar');
+    if (wishlistHeart && stickyBar?.contains(wishlistHeart) && !isRetriggering) {
       console.log('Wishlist heart clicked on sticky bar, PREVENTING default and syncing...');
       e.preventDefault();
       e.stopPropagation();
@@ -1246,12 +1252,24 @@ document.addEventListener('DOMContentLoaded', function() {
       // Sync the color/image first
       syncSelectedColorToHiddenCard();
 
+      // Temporarily move the heart button into the hidden card wrapper
+      // so wishlist.js will find the correct card
+      const originalParent = wishlistHeart.parentElement;
+      hiddenCardWrapper.appendChild(wishlistHeart);
+      console.log('✓ Moved heart button to hidden card wrapper');
+
       // Then trigger the wishlist click after a small delay
       setTimeout(() => {
         console.log('Now triggering wishlist add after sync...');
         isRetriggering = true;
         wishlistHeart.click();
-        setTimeout(() => { isRetriggering = false; }, 100);
+
+        // Move the heart button back after wishlist processes it
+        setTimeout(() => {
+          originalParent.appendChild(wishlistHeart);
+          isRetriggering = false;
+          console.log('✓ Moved heart button back to original position');
+        }, 100);
       }, 50);
     }
   }, true); // Use capture phase to run before other handlers
