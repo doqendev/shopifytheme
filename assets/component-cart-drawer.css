@@ -94,6 +94,7 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
 .drawer__footer {
   border-top: 0.1rem solid rgba(var(--color-foreground), 0.2);
   padding: 1.5rem 0;
+  padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
   position: sticky;
   bottom: 0;
   background: rgb(var(--color-background));
