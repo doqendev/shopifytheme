@@ -560,6 +560,15 @@
       break
     endif
   endfor
+
+  assign color_option_index = -1
+  for option in product.options_with_values
+    assign option_name = option.name | downcase
+    if option_name == 'color' or option_name == 'cor' or option_name == 'colour'
+      assign color_option_index = forloop.index0
+      break
+    endif
+  endfor
 %}
 
 <!-- Provide the product data in JSON -->
@@ -581,6 +590,7 @@
         data-product-price="{{ product.price | money_without_trailing_zeros | escape }}"
         data-variants='{{ product.variants | json | escape }}'
         data-size-index="{{ size_option_index }}"
+        data-color-index="{{ color_option_index }}"
       >
         <div class="title-and-swatches">
           <div class="product-title">
