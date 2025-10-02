@@ -594,11 +594,11 @@
       <!-- Left side: Title, Price, Variant Picker -->
       {%- comment -%}
         Render the actual product card for wishlist functionality
-        The wishlist heart will reference THIS card wrapper
+        The wishlist heart is placed INSIDE this wrapper so wishlist.js finds it
       {%- endcomment -%}
       <div
         class="sticky-bar-hidden-card product-card-wrapper product-card underline-links-hover"
-        style="display: none !important; position: absolute; pointer-events: none; opacity: 0; height: 0; overflow: hidden; z-index: -1;"
+        style="position: relative;"
         data-product-handle="{{ product.handle }}"
         data-product-title="{{ product.title | escape }}"
         data-product-url="{{ product.url | escape }}"
@@ -610,25 +610,30 @@
         data-color-index="{{ color_option_index }}"
         data-tags="{{ product.tags | join: ',' | downcase }}"
       >
-        {%- render 'card-product', card_product: product, media_aspect_ratio: 'adapt', show_vendor: false, show_rating: false, skip_styles: true -%}
+        {%- comment -%} Hidden card for wishlist HTML capture {%- endcomment -%}
+        <div style="display: none !important; position: absolute; pointer-events: none; opacity: 0; height: 0; overflow: hidden;">
+          {%- render 'card-product', card_product: product, media_aspect_ratio: 'adapt', show_vendor: false, show_rating: false, skip_styles: true -%}
+        </div>
+
+        {%- comment -%} Visible heart button - positioned via CSS {%- endcomment -%}
+        <div class="wishlist-heart-wrapper" style="position: fixed; top: var(--sticky-bar-heart-top, 20px); right: var(--sticky-bar-heart-right, 80px); z-index: 1002; pointer-events: auto;">
+          <button
+            class="wishlist-toggle wishlist-heart-inline"
+            type="button"
+            aria-pressed="false"
+            aria-label="{{ 'general.add_to_wishlist' | t | default: 'Add to wishlist' }}"
+          >
+            <svg class="wishlist-toggle__icon" viewBox="0 0 24 24" role="presentation" focusable="false">
+              <path d="M12 21.35 10.55 20.03C6.2 15.99 3 12.99 3 9.31 3 6.28 5.42 4 8.4 4A5.2 5.2 0 0 1 12 5.86 5.2 5.2 0 0 1 15.6 4C18.58 4 21 6.28 21 9.31c0 3.68-3.2 6.68-7.55 10.72z" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       <div class="sticky-bar-summary">
         <div class="title-and-swatches">
           <div class="product-title">
             {{ product.title }}
-          </div>
-          <div class="wishlist-heart-wrapper">
-            <button
-              class="wishlist-toggle wishlist-heart-inline"
-              type="button"
-              aria-pressed="false"
-              aria-label="{{ 'general.add_to_wishlist' | t | default: 'Add to wishlist' }}"
-            >
-              <svg class="wishlist-toggle__icon" viewBox="0 0 24 24" role="presentation" focusable="false">
-                <path d="M12 21.35 10.55 20.03C6.2 15.99 3 12.99 3 9.31 3 6.28 5.42 4 8.4 4A5.2 5.2 0 0 1 12 5.86 5.2 5.2 0 0 1 15.6 4C18.58 4 21 6.28 21 9.31c0 3.68-3.2 6.68-7.55 10.72z" />
-              </svg>
-            </button>
           </div>
           {% unless product.has_only_default_variant %}
           <div class="product-swatches-inline">
@@ -1193,30 +1198,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Sync before wishlist heart click
     const wishlistHeart = e.target.closest('.wishlist-heart-inline, .wishlist-toggle');
     const stickyBar = document.getElementById('sticky-product-bar');
-    if (wishlistHeart && stickyBar?.contains(wishlistHeart) && !isRetriggering) {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-
+    if (wishlistHeart && stickyBar?.contains(wishlistHeart)) {
+      // Just sync the color/image before the click is processed
       syncSelectedColorToHiddenCard();
-
-      // Temporarily move the heart button into the hidden card wrapper
-      const originalParent = wishlistHeart.parentElement;
-      hiddenCardWrapper.appendChild(wishlistHeart);
-
-      // Trigger the wishlist click
-      setTimeout(() => {
-        isRetriggering = true;
-        wishlistHeart.click();
-
-        // Move the heart button back
-        setTimeout(() => {
-          originalParent.appendChild(wishlistHeart);
-          isRetriggering = false;
-        }, 100);
-      }, 50);
     }
-  }, true);
+  });
 });
 </script>
 
