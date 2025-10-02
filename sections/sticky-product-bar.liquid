@@ -1119,15 +1119,47 @@ document.addEventListener('DOMContentLoaded', function() {
   function syncSelectedColorToHiddenCard() {
     console.log('--- Syncing selected color to hidden card ---');
 
-    // Get the selected color from condensed swatch or variant picker
-    const currentSwatchEl = document.querySelector('.swatch-condensed .current-swatch');
-    const selectedColorName = currentSwatchEl?.dataset?.currentColor;
+    // Try multiple ways to get the selected color
+    let selectedColorName = null;
 
+    // Method 1: From condensed swatch
+    const swatchCondensed = document.querySelector('.swatch-condensed');
+    const currentSwatchEl = swatchCondensed?.querySelector('.current-swatch');
+    console.log('Swatch condensed:', swatchCondensed);
     console.log('Current swatch element:', currentSwatchEl);
-    console.log('Selected color name:', selectedColorName);
+
+    if (currentSwatchEl) {
+      selectedColorName = currentSwatchEl.dataset?.currentColor;
+      console.log('Selected color from current swatch:', selectedColorName);
+    }
+
+    // Method 2: From variant picker select
+    if (!selectedColorName) {
+      const variantSelect = document.querySelector('select[name="id"]');
+      if (variantSelect) {
+        const selectedOption = variantSelect.options[variantSelect.selectedIndex];
+        console.log('Variant select found, selected option:', selectedOption);
+        // Try to extract color from option text or data attribute
+        if (selectedOption?.dataset?.color) {
+          selectedColorName = selectedOption.dataset.color;
+          console.log('Selected color from variant select:', selectedColorName);
+        }
+      }
+    }
+
+    // Method 3: From product form or other elements
+    if (!selectedColorName) {
+      const colorInput = document.querySelector('input[name*="Color"], input[name*="Cor"]');
+      if (colorInput) {
+        selectedColorName = colorInput.value;
+        console.log('Selected color from color input:', selectedColorName);
+      }
+    }
+
+    console.log('Final selected color name:', selectedColorName);
 
     if (!selectedColorName || !hiddenCard) {
-      console.warn('No selected color or hidden card found');
+      console.warn('No selected color or hidden card found - selectedColor:', selectedColorName, 'hiddenCard:', hiddenCard);
       return;
     }
 
@@ -1179,9 +1211,11 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('✓ Stored selected color on wrapper:', selectedColorName);
   }
 
-  // Sync on page load (default color)
-  console.log('Scheduling initial sync in 500ms...');
+  // Sync on page load (default color) - multiple attempts
+  console.log('Scheduling initial sync attempts...');
   setTimeout(syncSelectedColorToHiddenCard, 500);
+  setTimeout(syncSelectedColorToHiddenCard, 1000);
+  setTimeout(syncSelectedColorToHiddenCard, 2000);
 
   // Listen for color changes from swatch drawer
   document.addEventListener('click', function(e) {
