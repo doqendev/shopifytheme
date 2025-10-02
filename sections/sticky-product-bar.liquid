@@ -592,18 +592,8 @@
   <div class="sticky-bar-inner">
     <div class="sticky-bar-header">
       <!-- Left side: Title, Price, Variant Picker -->
-<<<<<<< HEAD
-      {%- comment -%}
-        Render the actual product card for wishlist functionality
-        The wishlist heart is placed INSIDE this wrapper so wishlist.js finds it
-      {%- endcomment -%}
-      <div
-        class="sticky-bar-hidden-card product-card-wrapper product-card underline-links-hover"
-        style="position: relative;"
-=======
       <div
         class="sticky-bar-summary product-card-wrapper product-card underline-links-hover"
->>>>>>> parent of e2c3014 (Update sticky-product-bar.liquid)
         data-product-handle="{{ product.handle }}"
         data-product-title="{{ product.title | escape }}"
         data-product-url="{{ product.url | escape }}"
@@ -615,37 +605,25 @@
         data-color-index="{{ color_option_index }}"
         data-tags="{{ product.tags | join: ',' | downcase }}"
       >
-<<<<<<< HEAD
-        {%- comment -%} Hidden card for wishlist HTML capture {%- endcomment -%}
-        <div style="display: none !important; position: absolute; pointer-events: none; opacity: 0; height: 0; overflow: hidden;">
-          {%- render 'card-product', card_product: product, media_aspect_ratio: 'adapt', show_vendor: false, show_rating: false, skip_styles: true -%}
-        </div>
-
-        {%- comment -%} Visible heart button - positioned via CSS {%- endcomment -%}
-        <div class="wishlist-heart-wrapper" style="position: fixed; top: var(--sticky-bar-heart-top, 20px); right: var(--sticky-bar-heart-right, 80px); z-index: 1002; pointer-events: auto;">
-          <button
-            class="wishlist-toggle wishlist-heart-inline"
-            type="button"
-            aria-pressed="false"
-            aria-label="{{ 'general.add_to_wishlist' | t | default: 'Add to wishlist' }}"
-          >
-            <svg class="wishlist-toggle__icon" viewBox="0 0 24 24" role="presentation" focusable="false">
-              <path d="M12 21.35 10.55 20.03C6.2 15.99 3 12.99 3 9.31 3 6.28 5.42 4 8.4 4A5.2 5.2 0 0 1 12 5.86 5.2 5.2 0 0 1 15.6 4C18.58 4 21 6.28 21 9.31c0 3.68-3.2 6.68-7.55 10.72z" />
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <div class="sticky-bar-summary">
-=======
         {%- comment -%} Hidden card structure for wishlist functionality - render actual card-product {%- endcomment -%}
         <div class="sticky-bar-hidden-card" style="display: none !important; position: absolute; pointer-events: none; opacity: 0; height: 0; overflow: hidden;">
           {%- render 'card-product', card_product: product, media_aspect_ratio: 'adapt', show_vendor: false, show_rating: false, skip_styles: true -%}
         </div>
->>>>>>> parent of e2c3014 (Update sticky-product-bar.liquid)
         <div class="title-and-swatches">
           <div class="product-title">
             {{ product.title }}
+          </div>
+          <div class="wishlist-heart-wrapper">
+            <button
+              class="wishlist-toggle wishlist-heart-inline"
+              type="button"
+              aria-pressed="false"
+              aria-label="{{ 'general.add_to_wishlist' | t | default: 'Add to wishlist' }}"
+            >
+              <svg class="wishlist-toggle__icon" viewBox="0 0 24 24" role="presentation" focusable="false">
+                <path d="M12 21.35 10.55 20.03C6.2 15.99 3 12.99 3 9.31 3 6.28 5.42 4 8.4 4A5.2 5.2 0 0 1 12 5.86 5.2 5.2 0 0 1 15.6 4C18.58 4 21 6.28 21 9.31c0 3.68-3.2 6.68-7.55 10.72z" />
+              </svg>
+            </button>
           </div>
           {% unless product.has_only_default_variant %}
           <div class="product-swatches-inline">
@@ -1125,12 +1103,6 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- Sync selected color to hidden card for wishlist -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-<<<<<<< HEAD
-  const hiddenCardWrapper = document.querySelector('.sticky-bar-hidden-card.product-card-wrapper');
-  const hiddenCard = hiddenCardWrapper?.querySelector('.product-card-wrapper');
-
-  if (!hiddenCardWrapper || !hiddenCard) return;
-=======
   console.log('=== WISHLIST COLOR SYNC SCRIPT LOADED ===');
 
   const stickyBarWrapper = document.querySelector('.sticky-bar-summary.product-card-wrapper');
@@ -1143,15 +1115,22 @@ document.addEventListener('DOMContentLoaded', function() {
     console.error('Could not find sticky bar wrapper or hidden card!');
     return;
   }
->>>>>>> parent of e2c3014 (Update sticky-product-bar.liquid)
 
   function syncSelectedColorToHiddenCard() {
+    console.log('--- Syncing selected color to hidden card ---');
+
+    // Try multiple ways to get the selected color
     let selectedColorName = null;
 
     // Method 1: From condensed swatch
-    const currentSwatchEl = document.querySelector('.swatch-condensed .current-swatch');
+    const swatchCondensed = document.querySelector('.swatch-condensed');
+    const currentSwatchEl = swatchCondensed?.querySelector('.current-swatch');
+    console.log('Swatch condensed:', swatchCondensed);
+    console.log('Current swatch element:', currentSwatchEl);
+
     if (currentSwatchEl) {
       selectedColorName = currentSwatchEl.dataset?.currentColor;
+      console.log('Selected color from current swatch:', selectedColorName);
     }
 
     // Method 2: From variant picker select
@@ -1159,54 +1138,76 @@ document.addEventListener('DOMContentLoaded', function() {
       const variantSelect = document.querySelector('select[name="id"]');
       if (variantSelect) {
         const selectedOption = variantSelect.options[variantSelect.selectedIndex];
+        console.log('Variant select found, selected option:', selectedOption);
+        // Try to extract color from option text or data attribute
         if (selectedOption?.dataset?.color) {
           selectedColorName = selectedOption.dataset.color;
+          console.log('Selected color from variant select:', selectedColorName);
         }
       }
     }
 
-    // Method 3: From color input
+    // Method 3: From product form or other elements
     if (!selectedColorName) {
       const colorInput = document.querySelector('input[name*="Color"], input[name*="Cor"]');
       if (colorInput) {
         selectedColorName = colorInput.value;
+        console.log('Selected color from color input:', selectedColorName);
       }
     }
 
-    if (!selectedColorName || !hiddenCard) return;
+    console.log('Final selected color name:', selectedColorName);
+
+    if (!selectedColorName || !hiddenCard) {
+      console.warn('No selected color or hidden card found - selectedColor:', selectedColorName, 'hiddenCard:', hiddenCard);
+      return;
+    }
 
     // Find all swatches in the hidden card
     const hiddenSwatches = hiddenCard.querySelectorAll('.swatch');
+    console.log('Hidden swatches found:', hiddenSwatches.length);
+
+    // Remove active class from all swatches
     hiddenSwatches.forEach(swatch => swatch.classList.remove('active'));
 
     // Find and activate the matching swatch
     const matchingSwatch = Array.from(hiddenSwatches).find(swatch => {
       const swatchColor = swatch.dataset?.color?.toLowerCase().trim();
       const targetColor = selectedColorName?.toLowerCase().trim();
+      console.log('Comparing swatch color:', swatchColor, 'with target:', targetColor);
       return swatchColor === targetColor;
     });
 
-    let variantImage = null;
+    console.log('Matching swatch:', matchingSwatch);
+
+    let variantImage = null; // Declare outside the if block
 
     if (matchingSwatch) {
       matchingSwatch.classList.add('active');
+      console.log('✓ Marked swatch as active');
+
+      // Update the image if variant image is available
       variantImage = matchingSwatch.dataset?.variantImage;
+      console.log('Variant image URL:', variantImage);
 
       if (variantImage) {
         const hiddenCardImage = hiddenCard.querySelector('.swiper-slide-active img, .card__media img');
+        console.log('Hidden card image element:', hiddenCardImage);
+
         if (hiddenCardImage) {
           hiddenCardImage.src = variantImage;
           hiddenCardImage.srcset = variantImage;
+          console.log('✓ Updated hidden card image to:', variantImage);
+        } else {
+          console.warn('Could not find hidden card image element');
         }
+      } else {
+        console.warn('No variant image available on swatch');
       }
+    } else {
+      console.warn('No matching swatch found in hidden card');
     }
 
-<<<<<<< HEAD
-    // Store the selected color and image on the hidden card wrapper
-    hiddenCardWrapper.dataset.selectedColor = selectedColorName;
-    if (matchingSwatch && variantImage) {
-      hiddenCardWrapper.dataset.productImage = variantImage;
-=======
     // Store the selected color on the main wrapper
     stickyBarWrapper.dataset.selectedColor = selectedColorName;
     console.log('✓ Stored selected color on wrapper:', selectedColorName);
@@ -1215,37 +1216,27 @@ document.addEventListener('DOMContentLoaded', function() {
     if (matchingSwatch && variantImage) {
       stickyBarWrapper.dataset.productImage = variantImage;
       console.log('✓ Updated main wrapper product image to:', variantImage);
->>>>>>> parent of e2c3014 (Update sticky-product-bar.liquid)
     }
   }
 
-  // Sync on page load - multiple attempts
+  // Sync on page load (default color) - multiple attempts
+  console.log('Scheduling initial sync attempts...');
   setTimeout(syncSelectedColorToHiddenCard, 500);
   setTimeout(syncSelectedColorToHiddenCard, 1000);
   setTimeout(syncSelectedColorToHiddenCard, 2000);
 
-<<<<<<< HEAD
-  // Listen for color changes and wishlist clicks
-  let isRetriggering = false;
-
-=======
   // Listen for color changes from swatch drawer
->>>>>>> parent of 8372ebf (Update sticky-product-bar.liquid)
+  let isRetriggering = false; // Flag to prevent infinite loop
+
   document.addEventListener('click', function(e) {
     const swatchDrawerItem = e.target.closest('.swatch-drawer-item');
     if (swatchDrawerItem) {
+      console.log('Swatch drawer item clicked, syncing...');
       setTimeout(syncSelectedColorToHiddenCard, 100);
     }
 
-    // Sync before wishlist heart click
+    // Also sync before wishlist heart click
     const wishlistHeart = e.target.closest('.wishlist-heart-inline, .wishlist-toggle');
-<<<<<<< HEAD
-<<<<<<< HEAD
-    const stickyBar = document.getElementById('sticky-product-bar');
-    if (wishlistHeart && stickyBar?.contains(wishlistHeart)) {
-      // Just sync the color/image before the click is processed
-      syncSelectedColorToHiddenCard();
-=======
     if (wishlistHeart && wishlistHeart.closest('.sticky-bar-summary') && !isRetriggering) {
       console.log('Wishlist heart clicked on sticky bar, PREVENTING default and syncing...');
       e.preventDefault();
@@ -1262,14 +1253,8 @@ document.addEventListener('DOMContentLoaded', function() {
         wishlistHeart.click();
         setTimeout(() => { isRetriggering = false; }, 100);
       }, 50);
->>>>>>> parent of e2c3014 (Update sticky-product-bar.liquid)
-=======
-    if (wishlistHeart && wishlistHeart.closest('.sticky-bar-summary')) {
-      console.log('Wishlist heart clicked on sticky bar, syncing NOW...');
-      syncSelectedColorToHiddenCard();
->>>>>>> parent of 8372ebf (Update sticky-product-bar.liquid)
     }
-  });
+  }, true); // Use capture phase to run before other handlers
 });
 </script>
 
