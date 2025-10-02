@@ -305,7 +305,7 @@ h5,
 
 h1,
 .h1 {
-  font-size: 14px;
+  font-size: 14px !important;
   letter-spacing: 0;
   margin-left: 2.3rem;
 }
