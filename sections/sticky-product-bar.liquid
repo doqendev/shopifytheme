@@ -1180,12 +1180,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     console.log('Matching swatch:', matchingSwatch);
 
+    let variantImage = null; // Declare outside the if block
+
     if (matchingSwatch) {
       matchingSwatch.classList.add('active');
       console.log('✓ Marked swatch as active');
 
       // Update the image if variant image is available
-      const variantImage = matchingSwatch.dataset?.variantImage;
+      variantImage = matchingSwatch.dataset?.variantImage;
       console.log('Variant image URL:', variantImage);
 
       if (variantImage) {
