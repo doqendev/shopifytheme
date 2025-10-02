@@ -592,6 +592,39 @@
         data-size-index="{{ size_option_index }}"
         data-color-index="{{ color_option_index }}"
       >
+        {%- comment -%} Hidden card structure for wishlist functionality {%- endcomment -%}
+        <div class="card card--standard" style="display: none;">
+          <div class="card__inner ratio">
+            <div class="card__media">
+              <img src="{{ wishlist_image }}" alt="{{ product.title | escape }}" loading="lazy">
+            </div>
+          </div>
+          <div class="card__content">
+            <div class="card__information">
+              <div class="card-information">
+                <div class="price-and-swatch">
+                  {%- for option in product.options_with_values -%}
+                    {%- if option.name == 'Color' or option.name == 'Cor' -%}
+                      <div class="product-card__swatch-indicator">
+                        {%- for value in option.values limit: 3 -%}
+                          {%- if value.swatch -%}
+                            {%- assign is_active = false -%}
+                            {%- if forloop.first -%}
+                              {%- assign is_active = true -%}
+                            {%- endif -%}
+                            {%- render 'swatch', swatch: value.swatch, shape: 'circle', is_default: is_active -%}
+                          {%- endif -%}
+                        {%- endfor -%}
+                      </div>
+                    {%- endif -%}
+                  {%- endfor -%}
+                  <a href="{{ product.url }}" class="card__heading title-cheyenne">{{ product.title | escape }}</a>
+                  {%- render 'price', product: product, price_class: '', show_compare_at_price: true -%}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="title-and-swatches">
           <div class="product-title">
             {{ product.title }}
