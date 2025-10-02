@@ -1209,6 +1209,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Store the selected color on the main wrapper
     stickyBarWrapper.dataset.selectedColor = selectedColorName;
     console.log('✓ Stored selected color on wrapper:', selectedColorName);
+
+    // Force the main wrapper to also update its data-product-image
+    if (matchingSwatch && variantImage) {
+      stickyBarWrapper.dataset.productImage = variantImage;
+      console.log('✓ Updated main wrapper product image to:', variantImage);
+    }
   }
 
   // Sync on page load (default color) - multiple attempts
@@ -1224,7 +1230,14 @@ document.addEventListener('DOMContentLoaded', function() {
       console.log('Swatch drawer item clicked, syncing...');
       setTimeout(syncSelectedColorToHiddenCard, 100);
     }
-  });
+
+    // Also sync before wishlist heart click
+    const wishlistHeart = e.target.closest('.wishlist-heart-inline, .wishlist-toggle');
+    if (wishlistHeart && wishlistHeart.closest('.sticky-bar-summary')) {
+      console.log('Wishlist heart clicked on sticky bar, syncing NOW...');
+      syncSelectedColorToHiddenCard();
+    }
+  }, true); // Use capture phase to run before other handlers
 });
 </script>
 
