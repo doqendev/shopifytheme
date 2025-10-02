@@ -1224,9 +1224,13 @@ document.addEventListener('DOMContentLoaded', function() {
   setTimeout(syncSelectedColorToHiddenCard, 1000);
   setTimeout(syncSelectedColorToHiddenCard, 2000);
 
+<<<<<<< HEAD
   // Listen for color changes and wishlist clicks
   let isRetriggering = false;
 
+=======
+  // Listen for color changes from swatch drawer
+>>>>>>> parent of 8372ebf (Update sticky-product-bar.liquid)
   document.addEventListener('click', function(e) {
     const swatchDrawerItem = e.target.closest('.swatch-drawer-item');
     if (swatchDrawerItem) {
@@ -1235,6 +1239,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Sync before wishlist heart click
     const wishlistHeart = e.target.closest('.wishlist-heart-inline, .wishlist-toggle');
+<<<<<<< HEAD
 <<<<<<< HEAD
     const stickyBar = document.getElementById('sticky-product-bar');
     if (wishlistHeart && stickyBar?.contains(wishlistHeart)) {
@@ -1258,6 +1263,11 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => { isRetriggering = false; }, 100);
       }, 50);
 >>>>>>> parent of e2c3014 (Update sticky-product-bar.liquid)
+=======
+    if (wishlistHeart && wishlistHeart.closest('.sticky-bar-summary')) {
+      console.log('Wishlist heart clicked on sticky bar, syncing NOW...');
+      syncSelectedColorToHiddenCard();
+>>>>>>> parent of 8372ebf (Update sticky-product-bar.liquid)
     }
   });
 });

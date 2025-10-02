@@ -272,7 +272,15 @@
     const wishlistCard = button.closest('[data-wishlist-item]');
     if (wishlistCard) return wishlistCard;
 
-    return button.closest('.product-card-wrapper');
+    // Try product card wrapper (collection pages, sticky bar)
+    const productCard = button.closest('.product-card-wrapper');
+    if (productCard) return productCard;
+
+    // Try product page containers (desktop and mobile product pages)
+    const productPageCard = button.closest('.desktop-product-title-wrapper, .mobile-product-info, .sticky-bar-summary');
+    if (productPageCard) return productPageCard;
+
+    return null;
   };
 
   const getProductFromCard = (card) => {
@@ -286,9 +294,27 @@
     let selectedColor = '';
     let selectedVariantImage = '';
     const normalizedColorIndex = Number.isNaN(colorIndex) ? -1 : colorIndex;
+
+    // Check if this is a product page (not a collection card)
+    const isProductPage = card.classList.contains('desktop-product-title-wrapper') ||
+                          card.classList.contains('mobile-product-info') ||
+                          card.classList.contains('sticky-bar-summary');
+
     if (normalizedColorIndex >= 0) {
       ensureDefaultCardSwatch(card);
-      const activeSwatch = card.querySelector('.swatch.active');
+      let activeSwatch = card.querySelector('.swatch.active');
+
+      // If on product page and no swatch found in card, look in the page's variant picker
+      if (isProductPage && !activeSwatch) {
+        const productInfo = card.closest('.desktop-product-info, .mobile-product-page, #sticky-product-bar');
+        if (productInfo) {
+          activeSwatch = productInfo.querySelector('.product-form__input--swatch input[type="radio"]:checked + label');
+          if (!activeSwatch) {
+            activeSwatch = productInfo.querySelector('.product-form__input--swatch .swatch.active');
+          }
+        }
+      }
+
       if (activeSwatch?.dataset?.color) {
         selectedColor = activeSwatch.dataset.color;
       } else if (card.dataset.selectedColor) {
@@ -298,7 +324,10 @@
         selectedVariantImage = activeSwatch.dataset.variantImage;
       }
       if (!selectedVariantImage && selectedColor) {
-        const matchingSwatch = Array.from(card.querySelectorAll('.swatch')).find((swatch) => {
+        const swatchSearchContainer = isProductPage ?
+          (card.closest('.desktop-product-info, .mobile-product-page, #sticky-product-bar') || card) :
+          card;
+        const matchingSwatch = Array.from(swatchSearchContainer.querySelectorAll('.swatch')).find((swatch) => {
           const swatchColor = normalizeOptionValue(swatch.dataset?.color);
           return swatchColor && swatchColor === normalizeOptionValue(selectedColor);
         });
@@ -320,8 +349,23 @@
     const cardHeading = card?.querySelector('.card__heading');
     const priceWrapper = card?.querySelector('.card-information');
     const activeImage = card.querySelector('.swiper-slide-active img, .card__media img');
+
+    // Try to get variant-specific image if color is selected
+    let variantSpecificImage = selectedVariantImage;
+    if (!variantSpecificImage && selectedColor && normalizedColorIndex >= 0 && variants.length > 0) {
+      const matchingVariant = variants.find((variant) => {
+        if (!Array.isArray(variant.options) || variant.options.length <= normalizedColorIndex) return false;
+        return normalizeOptionValue(variant.options[normalizedColorIndex]) === normalizeOptionValue(selectedColor);
+      });
+      if (matchingVariant?.featured_image) {
+        variantSpecificImage = matchingVariant.featured_image;
+      } else if (matchingVariant?.featured_media?.preview_image?.src) {
+        variantSpecificImage = matchingVariant.featured_media.preview_image.src;
+      }
+    }
+
     const productImage =
-      selectedVariantImage ||
+      variantSpecificImage ||
       activeImage?.currentSrc ||
       activeImage?.src ||
       activeImage?.dataset?.src ||
