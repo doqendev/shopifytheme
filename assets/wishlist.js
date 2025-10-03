@@ -116,6 +116,11 @@
     const colorIndex = normalizeNumber(card.dataset?.colorIndex, -1);
     if (colorIndex < 0) return '';
 
+    const variantColorKey = getCardVariantColorKey(card);
+    if (variantColorKey) {
+      return variantColorKey;
+    }
+
     const activeSwatch = card.querySelector?.('.swatch.active');
     if (activeSwatch?.dataset?.color) {
       return normalizeOptionValue(activeSwatch.dataset.color);
@@ -127,8 +132,44 @@
 
     return '';
   };
+  const getCardVariantColorKey = (card) => {
+    if (!card) return '';
+    const colorIndex = normalizeNumber(card.dataset?.colorIndex, -1);
+    if (colorIndex < 0) return '';
+
+    const container =
+      card.closest?.('.desktop-product-info, .mobile-product-info, .mobile-product-page, #sticky-product-bar') || card;
+    const variantInput =
+      container?.querySelector?.('input[name="id"]') ||
+      card.querySelector?.('input[name="id"]');
+    const variantId = variantInput?.value;
+    if (!variantId) return '';
+
+    const variants = parseJSONAttribute(card.dataset?.variants, []);
+    if (!Array.isArray(variants) || !variants.length) return '';
+
+    const variant = variants.find((item) => String(item.id) === String(variantId));
+    if (!variant) return '';
+
+    const options = Array.isArray(variant.options) ? variant.options : [];
+    if (options.length <= colorIndex) return '';
+
+    const colorValueRaw = options[colorIndex];
+    if (typeof colorValueRaw !== 'string' || !colorValueRaw.trim()) return '';
+
+    const colorValue = colorValueRaw.trim();
+    card.dataset.selectedColor = colorValue;
+    return normalizeOptionValue(colorValue);
+  };
+
+
   const syncCardSelectedColorFromPicker = (card) => {
     if (!card || !card.dataset?.colorIndex) return '';
+
+    const variantColorKey = getCardVariantColorKey(card);
+    if (variantColorKey) {
+      return variantColorKey;
+    }
 
     const picker = card.closest?.('.desktop-product-info, .mobile-product-info, .mobile-product-page, #sticky-product-bar');
     const checkedInput = picker?.querySelector('.product-form__input--swatch input[type="radio"]:checked');
