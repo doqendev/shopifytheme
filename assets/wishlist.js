@@ -552,7 +552,10 @@
       let pickerColorKey = '';
 
       if (card && handle) {
-        if (card.dataset?.colorIndex) {
+        const colorIndexValue = Number.parseInt(card.dataset?.colorIndex ?? '', 10);
+        const tracksColor = !Number.isNaN(colorIndexValue) && colorIndexValue >= 0;
+
+        if (tracksColor) {
           pickerColorKey = syncCardSelectedColorFromPicker(card);
         }
 
@@ -560,11 +563,11 @@
         const exactKey = buildWishlistKey(handle, colorKey);
         active = wishlistKeys.has(exactKey);
 
-        if (!active && colorKey) {
+        if (!active && colorKey && !tracksColor) {
           active = wishlistKeys.has(buildWishlistKey(handle, ''));
         }
 
-        if (!active && card.dataset?.colorIndex) {
+        if (!active && tracksColor) {
           const storedColorKeys = wishlistItems
             .filter((item) => item.handle === handle)
             .map((item) => item.colorKey)
