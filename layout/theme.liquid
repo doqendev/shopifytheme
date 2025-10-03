@@ -382,32 +382,11 @@ menu-drawer > details[open] > summary::before {
 
   <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
     {% form 'customer_login', id: 'wishlist-csrf-form', style: 'display:none;' %}
-      {{ form | authenticity_token }}
+      <script>
+        window.wishlistCsrfToken = {{ form.authenticity_token | json }};
+      </script>
     {% endform %}
-    <script>
-      (function() {
-        var form = document.getElementById('wishlist-csrf-form');
-        var tokenInput = form ? form.querySelector('input[name="authenticity_token"]') : null;
-        window.wishlistCsrfToken = tokenInput ? tokenInput.value : '';
-        if (form) form.remove();
-      })();
-    </script>
-
-    {% form 'customer_login', id: 'wishlist-csrf-form', class: 'wishlist-csrf-form', style: 'display:none;' %}
-      {{ form | authenticity_token }}
-    {% endform %}
-    <script>
-      (function() {
-        var form = document.getElementById('wishlist-csrf-form');
-        var tokenInput = form ? form.querySelector('input[name="wishlist_csrf_token_output"]') : null;
-        window.wishlistCsrfToken = tokenInput ? tokenInput.value : '';
-        if (form && form.parentNode) {
-          form.parentNode.removeChild(form);
-        }
-      })();
-    </script>
-
-    <script>
+<script>
       try {
         if (sessionStorage.getItem('announcementClosed') === 'true') {
           document.documentElement.classList.add('announcement-closed');
