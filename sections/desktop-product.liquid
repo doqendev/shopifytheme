@@ -862,3 +862,20 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const product = {{ product | json }};
+  const titleWrapper = document.querySelector('.desktop-product-title-wrapper');
+  const variantPicker = document.querySelector('variant-radios, variant-selects');
+
+  if (titleWrapper && variantPicker) {
+    variantPicker.addEventListener('change', function() {
+      const currentVariant = product.variants.find(v => v.id == variantPicker.variant.id);
+      if (currentVariant && currentVariant.featured_image) {
+        titleWrapper.dataset.productImage = currentVariant.featured_image.src;
+      }
+    });
+  }
+});
+</script>
