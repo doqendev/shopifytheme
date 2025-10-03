@@ -93,6 +93,15 @@
       </script>
     {% endif %}
 
+    {% capture _wishlist_auth_form %}
+      {% form 'customer_login' %}
+        {% capture wishlist_auth_token %}{{ form.authenticity_token }}{% endcapture %}
+      {% endform %}
+    {% endcapture %}
+    <script>
+      window.wishlistCsrfToken = {{ wishlist_auth_token | json }};
+    </script>
+
     <script src="{{ 'wishlist.js' | asset_url }}" defer="defer"></script>
     
 

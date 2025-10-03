@@ -176,6 +176,18 @@
   let customerSyncTimer = null;
   let lastSavedCustomerJSON = '';
 
+  const getAuthenticityToken = () => {
+    const contextToken = typeof window !== 'undefined' ? window.wishlistCsrfToken : '';
+    if (contextToken) return contextToken;
+    if (typeof document !== 'undefined') {
+      const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+      if (metaToken) return metaToken;
+      const inputToken = document.querySelector('input[name="authenticity_token"]')?.value;
+      if (inputToken) return inputToken;
+    }
+    return '';
+  };
+
   const readLocalWishlist = () => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
@@ -254,6 +266,13 @@
     formData.append('form_type', 'customer');
     formData.append('utf8', '\u2713');
     formData.append('customer[metafields][wishlist][items]', payloadJSON);
+
+    const authenticityToken = getAuthenticityToken();
+    if (authenticityToken) {
+      formData.append('authenticity_token', authenticityToken);
+    } else {
+      console.warn('Missing authenticity token for wishlist sync');
+    }
 
     fetch('/account', {
       method: 'POST',
