@@ -444,7 +444,7 @@
   endfor
 %}
 
-<div class="desktop-product-section" id="main-product-card">
+<div class="desktop-product-section">
   <!-- Left side: Thumbnails + Scrollable Big Images -->
   <div class="desktop-product-media">
     <!-- Thumbnails (vertical list) -->
@@ -511,6 +511,10 @@
             >
         </div>
       </div>
+    </div>
+
+    <div style="display: none;">
+      {% render 'card-product', card_product: product %}
     </div>
 
     <!-- Price -->

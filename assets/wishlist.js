@@ -407,36 +407,8 @@
     event.preventDefault();
     const button = event.currentTarget;
     const card = getCardFromHeart(button);
-    let product = getProductFromCard(card);
+    const product = getProductFromCard(card);
     if (!product) return;
-
-    const isProductPage = card.classList.contains('desktop-product-title-wrapper') ||
-                          card.classList.contains('mobile-product-info') ||
-                          card.classList.contains('sticky-bar-summary');
-
-    if (isProductPage) {
-      const productMediaContainer = document.querySelector('.desktop-product-media');
-      let image = '';
-      if (productMediaContainer) {
-        const mainImage = productMediaContainer.querySelector('.main-image-slide.active img, .main-image-slide img');
-        if (mainImage) {
-          image = mainImage.src;
-        }
-      }
-
-      const productCard = document.querySelector('#main-product-card');
-      let cardMarkup = '';
-      if(productCard){
-        cardMarkup = productCard.outerHTML;
-      }
-
-
-      product = {
-        ...product,
-        image,
-        cardMarkup,
-      };
-    }
 
     const existingItem = findWishlistItem(product.handle, product.colorKey);
     if (existingItem) {
