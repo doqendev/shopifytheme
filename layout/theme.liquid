@@ -80,28 +80,6 @@
     <script src="{{ 'details-disclosure.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'details-modal.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'search-form.js' | asset_url }}" defer="defer"></script>
-    {% if customer %}
-      <script>
-        window.wishlistCustomer = {
-          loggedIn: true,
-          items: {{ customer.metafields.wishlist.items.value | default: '[]' | json }}
-        };
-      </script>
-    {% else %}
-      <script>
-        window.wishlistCustomer = { loggedIn: false, items: [] };
-      </script>
-    {% endif %}
-
-    {% capture _wishlist_auth_form %}
-      {% form 'customer_login' %}
-        {% capture wishlist_auth_token %}{{ form.authenticity_token }}{% endcapture %}
-      {% endform %}
-    {% endcapture %}
-    <script>
-      window.wishlistCsrfToken = {{ wishlist_auth_token | json }};
-    </script>
-
     <script src="{{ 'wishlist.js' | asset_url }}" defer="defer"></script>
     
 
@@ -351,7 +329,6 @@ menu-drawer > details[open] > summary::before {
     {% endstyle %}
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
-    {{ 'swatches-cheyenne.css' | asset_url | stylesheet_tag }}
     {{ 'filters_cheyenne.css' | asset_url | stylesheet_tag }}
     {{ 'wishlist.css' | asset_url | stylesheet_tag }}
     <link rel="stylesheet" href="{{ 'component-cart-items.css' | asset_url }}" media="print" onload="this.media='all'">
