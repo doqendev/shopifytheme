@@ -350,27 +350,26 @@
     const priceWrapper = card?.querySelector('.card-information');
     const activeImage = card.querySelector('.swiper-slide-active img, .card__media img');
 
-    // Try to get variant-specific image if color is selected
-    let variantSpecificImage = selectedVariantImage;
-    if (!variantSpecificImage && selectedColor && normalizedColorIndex >= 0 && variants.length > 0) {
-      const matchingVariant = variants.find((variant) => {
-        if (!Array.isArray(variant.options) || variant.options.length <= normalizedColorIndex) return false;
-        return normalizeOptionValue(variant.options[normalizedColorIndex]) === normalizeOptionValue(selectedColor);
-      });
-      if (matchingVariant?.featured_image) {
-        variantSpecificImage = matchingVariant.featured_image;
-      } else if (matchingVariant?.featured_media?.preview_image?.src) {
-        variantSpecificImage = matchingVariant.featured_media.preview_image.src;
-      }
+    let productImage;
+    if (isProductPage) {
+        const productMediaContainer = document.querySelector('.desktop-product-media');
+        if (productMediaContainer) {
+            const mainImage = productMediaContainer.querySelector('.main-image-slide.active img, .main-image-slide img');
+            if (mainImage) {
+                productImage = mainImage.src;
+            }
+        }
     }
 
-    const productImage =
-      variantSpecificImage ||
-      activeImage?.currentSrc ||
-      activeImage?.src ||
-      activeImage?.dataset?.src ||
-      card.dataset.productImage ||
-      '';
+    if (!productImage) {
+        productImage =
+            variantSpecificImage ||
+            activeImage?.currentSrc ||
+            activeImage?.src ||
+            activeImage?.dataset?.src ||
+            card.dataset.productImage ||
+            '';
+    }
 
     return {
       handle,
