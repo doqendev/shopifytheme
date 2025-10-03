@@ -547,14 +547,21 @@
             .map((item) => item.colorKey)
             .filter(Boolean);
 
-          if (storedColorKeys.length) {
-            const picker = card.closest?.('.desktop-product-info, .mobile-product-info, .mobile-product-page, #sticky-product-bar');
-            const checkedInput = picker?.querySelector('.product-form__input--swatch input[type="radio"]:checked');
-            const currentColor = checkedInput?.value?.trim().toLowerCase();
+          const picker = card.closest?.('.desktop-product-info, .mobile-product-info, .mobile-product-page, #sticky-product-bar');
+          const checkedInput = picker?.querySelector('.product-form__input--swatch input[type="radio"]:checked');
+          const activePickerSwatch = picker?.querySelector('.product-form__input--swatch .swatch.active');
+          const currentColorRaw = (checkedInput?.value?.trim() || activePickerSwatch?.dataset?.color || '').trim();
+          const currentColorKey = normalizeOptionValue(currentColorRaw);
 
-            if (currentColor && storedColorKeys.includes(currentColor)) {
+          if (currentColorRaw) {
+            card.dataset.selectedColor = currentColorRaw;
+          } else {
+            delete card.dataset.selectedColor;
+          }
+
+          if (currentColorKey && storedColorKeys.length) {
+            if (storedColorKeys.includes(currentColorKey)) {
               active = true;
-              card.dataset.selectedColor = currentColor;
             }
           }
         }
