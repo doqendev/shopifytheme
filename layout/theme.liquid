@@ -2,23 +2,6 @@
 <html class="js" lang="{{ request.locale.iso_code }}">
   <head>
     
-<script>
-  window.customerId = {{ customer.id | json }};
-  // Derive customerLoggedIn as a boolean from customerId
-  window.customerLoggedIn = !!window.customerId;
-  console.log("customerId:", window.customerId, "customerLoggedIn:", window.customerLoggedIn);
-</script>
-
-
-    <script>
-  console.log("Liquid customer.id:", {{ customer.id | json }});
-  console.log("Liquid customer object:", {{ customer | json }});
-  console.log("Liquid customerLoggedIn:", {{ customer != nil | json }});
-</script>
-
-
-    
-
 
 
 
@@ -398,6 +381,18 @@ menu-drawer > details[open] > summary::before {
   </head>
 
   <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
+    {% form 'customer_login', id: 'wishlist-csrf-form', style: 'display:none;' %}
+      {{ form | authenticity_token }}
+    {% endform %}
+    <script>
+      (function() {
+        var form = document.getElementById('wishlist-csrf-form');
+        var tokenInput = form ? form.querySelector('input[name="authenticity_token"]') : null;
+        window.wishlistCsrfToken = tokenInput ? tokenInput.value : '';
+        if (form) form.remove();
+      })();
+    </script>
+
     {% form 'customer_login', id: 'wishlist-csrf-form', class: 'wishlist-csrf-form', style: 'display:none;' %}
       {{ form | authenticity_token }}
     {% endform %}

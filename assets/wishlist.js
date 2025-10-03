@@ -271,6 +271,10 @@
     formData.append('customer[metafields][wishlist][items]', payloadJSON);
 
     const authenticityToken = getAuthenticityToken();
+    if (!authenticityToken) {
+      console.warn('Missing authenticity token for wishlist sync');
+      return;
+    }
     formData.append('authenticity_token', authenticityToken);
 
     fetch('/account', {
