@@ -136,7 +136,6 @@
         contexts.push(context);
       }
     };
-
     if (card instanceof HTMLElement) {
       pushContext(card);
       pushContext(card.parentElement);
@@ -156,6 +155,27 @@
     }
 
     return '';
+  };
+
+  const parseWishlistCardTemplate = (markup) => {
+    if (typeof markup !== 'string') return { markup: '', root: null };
+    const trimmed = markup.trim();
+    if (!trimmed.length) return { markup: '', root: null };
+
+    const templateElement = document.createElement('template');
+    templateElement.innerHTML = trimmed;
+
+    let cardWrapper = templateElement.content?.querySelector?.('.product-card-wrapper, .card-wrapper');
+    if (!cardWrapper) {
+      cardWrapper = templateElement.content?.firstElementChild || null;
+    }
+
+    if (!(cardWrapper instanceof HTMLElement)) {
+      return { markup: '', root: null };
+    }
+
+    const root = cardWrapper.cloneNode(true);
+    return { markup: root.outerHTML, root };
   };
 
 
@@ -332,10 +352,9 @@
     let cardMarkup = '';
 
     if (templateMarkup && templateMarkup.trim()) {
-      cardMarkup = templateMarkup.trim();
-      const templateElement = document.createElement('template');
-      templateElement.innerHTML = cardMarkup;
-      parsedTemplateRoot = templateElement.content?.firstElementChild || null;
+      const parsedTemplate = parseWishlistCardTemplate(templateMarkup);
+      cardMarkup = parsedTemplate.markup;
+      parsedTemplateRoot = parsedTemplate.root;
     }
 
     if (!cardMarkup) {
@@ -425,7 +444,7 @@
     const colorKey = normalizedColorIndex >= 0 ? normalizeOptionValue(selectedColor) : '';
 
     const activeImage =
-      sourceElement?.querySelector?.('.swiper-slide-active img, .card__media img') ||
+      parsedTemplateRoot?.querySelector?.('.swiper-slide-active img, .card__media img') ||
       card.querySelector('.swiper-slide-active img, .card__media img');
 
     let variantSpecificImage = selectedVariantImage;
@@ -788,13 +807,27 @@
     if (item.cardMarkup) {
       const template = document.createElement('template');
       template.innerHTML = item.cardMarkup.trim();
-      element = template.content.firstElementChild;
+      let candidate = template.content?.querySelector?.('.product-card-wrapper, .card-wrapper');
+      if (!candidate) {
+        candidate = template.content?.firstElementChild || null;
+      }
+      if (candidate instanceof HTMLElement) {
+        if (!candidate.matches('.product-card-wrapper, .card-wrapper')) {
+          const nested = candidate.querySelector?.('.product-card-wrapper, .card-wrapper');
+          candidate = nested instanceof HTMLElement ? nested : null;
+        }
+      } else {
+        candidate = null;
+      }
+      if (candidate) {
+        element = candidate.cloneNode(true);
+      }
     }
 
     if (!element) {
       const template = document.createElement('template');
       template.innerHTML = createFallbackWishlistMarkup(item);
-      element = template.content.firstElementChild;
+      element = template.content.firstElementChild || null;
     }
 
     if (!element) return null;
