@@ -163,176 +163,6 @@
   };
 
 
-  const getCustomerContext = () => {
-    if (typeof window === 'undefined') return {};
-    if (!window.wishlistCustomer) {
-      window.wishlistCustomer = { loggedIn: false, items: [] };
-    }
-    return window.wishlistCustomer;
-  };
-
-  const shouldSyncWithCustomer = () => Boolean(getCustomerContext().loggedIn);
-  let customerHydrated = false;
-  let customerSyncTimer = null;
-  let lastSavedCustomerJSON = '';
-
-  const getAuthenticityToken = () => {
-    if (typeof window !== 'undefined' && window.wishlistCsrfToken) {
-      return window.wishlistCsrfToken;
-    }
-    if (typeof document !== 'undefined') {
-      const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-      if (metaToken) return metaToken;
-      const customToken = document.querySelector('input[name="authenticity_token"]')?.value;
-      if (customToken) return customToken;
-      const inputToken = document.querySelector('input[name="authenticity_token"]')?.value;
-      if (inputToken) return inputToken;
-    }
-    return '';
-  };
-
-  const readLocalWishlist = () => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (!stored) return [];
-      const parsed = JSON.parse(stored);
-      if (Array.isArray(parsed)) {
-        return normalizeWishlistItems(parsed);
-      }
-    } catch (error) {
-      console.warn('Unable to read wishlist from storage', error);
-    }
-    return [];
-  };
-
-  const persistLocalWishlist = (items) => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-    } catch (error) {
-      console.warn('Unable to persist wishlist', error);
-    }
-  };
-
-  const compactWishlistItems = (items) =>
-    items.map((item) => ({
-      handle: item.handle,
-      url: item.url,
-      title: item.title,
-      image: item.image,
-      price: item.price,
-      sizeIndex: item.sizeIndex,
-      colorIndex: item.colorIndex,
-      colorValue: item.colorValue,
-      colorKey: item.colorKey,
-      variants: Array.isArray(item.variants)
-        ? item.variants.map((variant) => ({
-            id: variant.id,
-            title: variant.title,
-            available: variant.available,
-            options: Array.isArray(variant.options) ? variant.options.slice() : [],
-            price: variant.price,
-          }))
-        : [],
-    }));
-
-  const getCustomerStoredItems = () => {
-    if (!shouldSyncWithCustomer()) return null;
-    const context = getCustomerContext();
-    let source = context.items;
-    if (!source) return [];
-    if (typeof source === 'string') {
-      const trimmed = source.trim();
-      if (!trimmed.length) {
-        context.items = [];
-        return [];
-      }
-      try {
-        source = JSON.parse(trimmed);
-      } catch (error) {
-        console.warn('Unable to parse customer wishlist metafield', error);
-        context.items = [];
-        return [];
-      }
-    }
-    if (!Array.isArray(source)) {
-      context.items = [];
-      return [];
-    }
-    const normalized = normalizeWishlistItems(source);
-    context.items = compactWishlistItems(normalized);
-    return normalized;
-  };
-
-  const submitCustomerWishlist = (payloadJSON) => {
-    if (!shouldSyncWithCustomer()) return;
-    const formData = new FormData();
-    formData.append('form_type', 'customer');
-    formData.append('utf8', '\u2713');
-    formData.append('customer[metafields][wishlist][items]', payloadJSON);
-
-    const authenticityToken = getAuthenticityToken();
-    if (!authenticityToken) {
-      console.warn('Missing authenticity token for wishlist sync');
-      return;
-    }
-    formData.append('authenticity_token', authenticityToken);
-
-    fetch('/account', {
-      method: 'POST',
-      body: formData,
-      credentials: 'same-origin',
-      headers: { 'X-Requested-With': 'XMLHttpRequest' },
-    })
-      .then((response) => {
-        if (!response.ok && response.type !== 'opaqueredirect') {
-          throw new Error(`Wishlist sync failed with status ${response.status}`);
-        }
-        lastSavedCustomerJSON = payloadJSON;
-        try {
-          getCustomerContext().items = JSON.parse(payloadJSON);
-        } catch (error) {
-          getCustomerContext().items = payloadJSON;
-        }
-      })
-      .catch((error) => {
-        console.warn('Failed to sync wishlist to customer account', error);
-      });
-  };
-
-  const queueCustomerWishlistSave = (items) => {
-    if (!shouldSyncWithCustomer()) return;
-    const payloadArray = compactWishlistItems(items);
-    const payloadJSON = JSON.stringify(payloadArray);
-    if (payloadJSON === lastSavedCustomerJSON) return;
-    if (customerSyncTimer) {
-      clearTimeout(customerSyncTimer);
-    }
-    customerSyncTimer = setTimeout(() => {
-      customerSyncTimer = null;
-      submitCustomerWishlist(payloadJSON);
-    }, 400);
-  };
-
-  const hydrateWishlistFromCustomer = () => {
-    if (customerHydrated) return;
-    const customerItems = getCustomerStoredItems();
-    if (Array.isArray(customerItems) && customerItems.length) {
-      cachedWishlist = customerItems;
-      persistLocalWishlist(cachedWishlist);
-      lastSavedCustomerJSON = JSON.stringify(compactWishlistItems(cachedWishlist));
-      customerHydrated = true;
-      return;
-    }
-
-    const localItems = readLocalWishlist();
-    cachedWishlist = localItems;
-    customerHydrated = true;
-    if (shouldSyncWithCustomer() && cachedWishlist.length) {
-      getCustomerContext().items = compactWishlistItems(cachedWishlist);
-      queueCustomerWishlistSave(cachedWishlist);
-    }
-  };
-
   const syncCardSelectedColorFromPicker = (card) => {
     if (!card || !card.dataset?.colorIndex) return '';
 
@@ -435,19 +265,33 @@
       .join(' ');
 
   const loadWishlist = () => {
-    if (!customerHydrated) {
-      hydrateWishlistFromCustomer();
-    }
     if (cachedWishlist) return cachedWishlist.slice();
-    cachedWishlist = readLocalWishlist();
-    return cachedWishlist.slice();
+
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (!stored) {
+        cachedWishlist = [];
+        return [];
+      }
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed)) {
+        cachedWishlist = normalizeWishlistItems(parsed);
+        return cachedWishlist.slice();
+      }
+    } catch (error) {
+      console.warn('Unable to read wishlist from storage', error);
+    }
+
+    cachedWishlist = [];
+    return [];
   };
 
   const saveWishlist = (items) => {
     cachedWishlist = normalizeWishlistItems(items);
-    persistLocalWishlist(cachedWishlist);
-    if (shouldSyncWithCustomer()) {
-      queueCustomerWishlistSave(cachedWishlist);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cachedWishlist));
+    } catch (error) {
+      console.warn('Unable to persist wishlist', error);
     }
     renderWishlist();
     syncHearts();
@@ -1821,7 +1665,6 @@
 
   const init = () => {
     const drawer = getDrawer();
-    hydrateWishlistFromCustomer();
     const labelSource = drawer?.querySelector('[data-cart-title][data-wishlist]');
     const wishlistLabel = labelSource?.dataset?.wishlistTitle || labelSource?.dataset?.wishlist;
     const closeLabel = drawer?.querySelector('.drawer__close')?.getAttribute('aria-label');
@@ -1862,5 +1705,4 @@
     init();
   }
 })();
-
 
