@@ -182,6 +182,8 @@
     if (typeof document !== 'undefined') {
       const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
       if (metaToken) return metaToken;
+      const customToken = document.querySelector('input[name="wishlist_csrf_token"]')?.value;
+      if (customToken) return customToken;
       const inputToken = document.querySelector('input[name="authenticity_token"]')?.value;
       if (inputToken) return inputToken;
     }
@@ -278,6 +280,7 @@
       method: 'POST',
       body: formData,
       credentials: 'same-origin',
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
     })
       .then((response) => {
         if (!response.ok && response.type !== 'opaqueredirect') {

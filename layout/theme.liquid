@@ -398,12 +398,20 @@ menu-drawer > details[open] > summary::before {
   </head>
 
   <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
-    {% form 'customer_login', id: 'wishlist-csrf-form', class: 'wishlist-csrf-form', style: 'display:none;' %}{% endform %}
+    {% form 'customer_login', id: 'wishlist-csrf-form', class: 'wishlist-csrf-form', style: 'display:none;' %}
+      <input type='hidden' name='wishlist_csrf_token' value='{{ form.authenticity_token }}'>
+    {% endform %}
     <script>
       (function() {
         var form = document.getElementById('wishlist-csrf-form');
-        var tokenInput = form ? form.querySelector('input[name="authenticity_token"]') : null;
+        var tokenInput = null;
+        if (form) {
+          tokenInput = form.querySelector('input[name="wishlist_csrf_token"]') || form.querySelector('input[name="authenticity_token"]');
+        }
         window.wishlistCsrfToken = tokenInput ? tokenInput.value : '';
+        if (form && form.parentNode) {
+          form.parentNode.removeChild(form);
+        }
       })();
     </script>
 
