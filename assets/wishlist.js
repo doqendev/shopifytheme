@@ -127,6 +127,24 @@
 
     return '';
   };
+  const syncCardSelectedColorFromPicker = (card) => {
+    if (!card || !card.dataset?.colorIndex) return '';
+
+    const picker = card.closest?.('.desktop-product-info, .mobile-product-info, .mobile-product-page, #sticky-product-bar');
+    const checkedInput = picker?.querySelector('.product-form__input--swatch input[type="radio"]:checked');
+    const activePickerSwatch = picker?.querySelector('.product-form__input--swatch .swatch.active');
+
+    let selectedColor = checkedInput?.value?.trim() || activePickerSwatch?.dataset?.color || '';
+    if (selectedColor) {
+      selectedColor = selectedColor.trim();
+      card.dataset.selectedColor = selectedColor;
+    } else {
+      delete card.dataset.selectedColor;
+    }
+
+    return normalizeOptionValue(selectedColor);
+  };
+
   const getWishlistCardTemplateMarkup = (card) => {
     if (!card) return '';
 
@@ -531,9 +549,14 @@
       const card = getCardFromHeart(button);
       const handle = card?.dataset?.productHandle;
       let active = false;
+      let pickerColorKey = '';
 
       if (card && handle) {
-        const colorKey = getCardSelectedColorKey(card);
+        if (card.dataset?.colorIndex) {
+          pickerColorKey = syncCardSelectedColorFromPicker(card);
+        }
+
+        const colorKey = pickerColorKey || getCardSelectedColorKey(card);
         const exactKey = buildWishlistKey(handle, colorKey);
         active = wishlistKeys.has(exactKey);
 
@@ -547,22 +570,9 @@
             .map((item) => item.colorKey)
             .filter(Boolean);
 
-          const picker = card.closest?.('.desktop-product-info, .mobile-product-info, .mobile-product-page, #sticky-product-bar');
-          const checkedInput = picker?.querySelector('.product-form__input--swatch input[type="radio"]:checked');
-          const activePickerSwatch = picker?.querySelector('.product-form__input--swatch .swatch.active');
-          const currentColorRaw = (checkedInput?.value?.trim() || activePickerSwatch?.dataset?.color || '').trim();
-          const currentColorKey = normalizeOptionValue(currentColorRaw);
-
-          if (currentColorRaw) {
-            card.dataset.selectedColor = currentColorRaw;
-          } else {
-            delete card.dataset.selectedColor;
-          }
-
-          if (currentColorKey && storedColorKeys.length) {
-            if (storedColorKeys.includes(currentColorKey)) {
-              active = true;
-            }
+          const comparisonKey = pickerColorKey || colorKey;
+          if (comparisonKey && storedColorKeys.includes(comparisonKey)) {
+            active = true;
           }
         }
       }
