@@ -2,6 +2,23 @@
 <html class="js" lang="{{ request.locale.iso_code }}">
   <head>
     
+<script>
+  window.customerId = {{ customer.id | json }};
+  // Derive customerLoggedIn as a boolean from customerId
+  window.customerLoggedIn = !!window.customerId;
+  console.log("customerId:", window.customerId, "customerLoggedIn:", window.customerLoggedIn);
+</script>
+
+
+    <script>
+  console.log("Liquid customer.id:", {{ customer.id | json }});
+  console.log("Liquid customer object:", {{ customer | json }});
+  console.log("Liquid customerLoggedIn:", {{ customer != nil | json }});
+</script>
+
+
+    
+
 
 
 
@@ -63,19 +80,6 @@
     <script src="{{ 'details-disclosure.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'details-modal.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'search-form.js' | asset_url }}" defer="defer"></script>
-    {% if customer %}
-      <script>
-        window.wishlistCustomer = {
-          loggedIn: true,
-          items: {{ customer.metafields.wishlist.items.value | default: '[]' | json }}
-        };
-      </script>
-    {% else %}
-      <script>
-        window.wishlistCustomer = { loggedIn: false, items: [] };
-      </script>
-    {% endif %}
-
     <script src="{{ 'wishlist.js' | asset_url }}" defer="defer"></script>
     
 
@@ -325,7 +329,6 @@ menu-drawer > details[open] > summary::before {
     {% endstyle %}
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
-    {{ 'swatches-cheyenne.css' | asset_url | stylesheet_tag }}
     {{ 'filters_cheyenne.css' | asset_url | stylesheet_tag }}
     {{ 'wishlist.css' | asset_url | stylesheet_tag }}
     <link rel="stylesheet" href="{{ 'component-cart-items.css' | asset_url }}" media="print" onload="this.media='all'">
@@ -381,12 +384,7 @@ menu-drawer > details[open] > summary::before {
   </head>
 
   <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
-    {% form 'customer_login', id: 'wishlist-csrf-form', style: 'display:none;' %}
-      <script>
-        window.wishlistCsrfToken = {{ form.authenticity_token | json }};
-      </script>
-    {% endform %}
-<script>
+    <script>
       try {
         if (sessionStorage.getItem('announcementClosed') === 'true') {
           document.documentElement.classList.add('announcement-closed');
