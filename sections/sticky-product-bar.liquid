@@ -606,7 +606,7 @@
         data-tags="{{ product.tags | join: ',' | downcase }}"
       >
         {%- comment -%} Hidden card structure for wishlist functionality - render actual card-product {%- endcomment -%}
-        <div class="sticky-bar-hidden-card" style="display: none !important; position: absolute; pointer-events: none; opacity: 0; height: 0; overflow: hidden;">
+        <div class="sticky-bar-hidden-card" data-wishlist-card-template style="display: none !important; position: absolute; pointer-events: none; opacity: 0; height: 0; overflow: hidden;">
           {%- render 'card-product', card_product: product, media_aspect_ratio: 'adapt', show_vendor: false, show_rating: false, skip_styles: true -%}
         </div>
         <div class="title-and-swatches">
@@ -1662,3 +1662,4 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+

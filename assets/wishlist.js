@@ -127,6 +127,37 @@
 
     return '';
   };
+  const getWishlistCardTemplateMarkup = (card) => {
+    if (!card) return '';
+
+    const contexts = [];
+    const pushContext = (context) => {
+      if (context && !contexts.includes(context)) {
+        contexts.push(context);
+      }
+    };
+
+    if (card instanceof HTMLElement) {
+      pushContext(card);
+      pushContext(card.parentElement);
+      pushContext(card.closest('.desktop-product-info, .mobile-product-info, .mobile-product-page, #sticky-product-bar, .sticky-bar-summary'));
+    }
+
+    pushContext(document);
+
+    for (const context of contexts) {
+      const templateElement = context?.querySelector?.('[data-wishlist-card-template]');
+      if (templateElement) {
+        if (templateElement.tagName === 'TEMPLATE') {
+          return templateElement.innerHTML || '';
+        }
+        return templateElement.innerHTML || '';
+      }
+    }
+
+    return '';
+  };
+
 
   const parseJSONAttribute = (value, fallback) => {
     if (!value) return fallback;
@@ -283,6 +314,7 @@
     return null;
   };
 
+
   const getProductFromCard = (card) => {
     if (!card) return null;
     const handle = card.dataset.productHandle;
@@ -295,38 +327,86 @@
     let selectedVariantImage = '';
     const normalizedColorIndex = Number.isNaN(colorIndex) ? -1 : colorIndex;
 
-    // Check if this is a product page (not a collection card)
-    const isProductPage = card.classList.contains('desktop-product-title-wrapper') ||
-                          card.classList.contains('mobile-product-info') ||
-                          card.classList.contains('sticky-bar-summary');
+    const templateMarkup = getWishlistCardTemplateMarkup(card);
+    let parsedTemplateRoot = null;
+    let cardMarkup = '';
+
+    if (templateMarkup && templateMarkup.trim()) {
+      cardMarkup = templateMarkup.trim();
+      const templateElement = document.createElement('template');
+      templateElement.innerHTML = cardMarkup;
+      parsedTemplateRoot = templateElement.content?.firstElementChild || null;
+    }
+
+    if (!cardMarkup) {
+      cardMarkup = card?.outerHTML || '';
+    }
+
+    const sourceElement = parsedTemplateRoot || card;
+    const cardShell = sourceElement?.querySelector?.('.card');
+    const cardInner = sourceElement?.querySelector?.('.card__inner');
+    const cardMedia = sourceElement?.querySelector?.('.card__media');
+    const mediaInner = cardMedia?.firstElementChild || null;
+    const cardContent = sourceElement?.querySelector?.('.card__content');
+    const cardInformation = sourceElement?.querySelector?.('.card__information');
+    const cardHeading = sourceElement?.querySelector?.('.card__heading');
+    const priceWrapper = sourceElement?.querySelector?.('.card-information');
+
+    const productInfo =
+      card.closest?.('.desktop-product-info, .mobile-product-info, .mobile-product-page, #sticky-product-bar') || null;
 
     if (normalizedColorIndex >= 0) {
       ensureDefaultCardSwatch(card);
-      let activeSwatch = card.querySelector('.swatch.active');
 
-      // If on product page and no swatch found in card, look in the page's variant picker
-      if (isProductPage && !activeSwatch) {
-        const productInfo = card.closest('.desktop-product-info, .mobile-product-page, #sticky-product-bar');
-        if (productInfo) {
-          activeSwatch = productInfo.querySelector('.product-form__input--swatch input[type="radio"]:checked + label');
-          if (!activeSwatch) {
-            activeSwatch = productInfo.querySelector('.product-form__input--swatch .swatch.active');
-          }
+      let activeSwatch =
+        card.querySelector('.swatch.active') ||
+        productInfo?.querySelector('.product-form__input--swatch .swatch.active') ||
+        null;
+
+      const checkedInput = productInfo?.querySelector('.product-form__input--swatch input[type="radio"]:checked');
+
+      if (checkedInput) {
+        if (!selectedColor) {
+          selectedColor = checkedInput.value || '';
+        }
+
+        const label = checkedInput.nextElementSibling;
+        let labelSwatch = null;
+
+        if (label?.matches?.('.swatch')) {
+          labelSwatch = label;
+        } else if (label?.querySelector?.('.swatch')) {
+          labelSwatch = label.querySelector('.swatch');
+        }
+
+        if (!activeSwatch && labelSwatch) {
+          activeSwatch = labelSwatch;
+        }
+
+        if (!selectedVariantImage && labelSwatch?.dataset?.variantImage) {
+          selectedVariantImage = labelSwatch.dataset.variantImage;
         }
       }
 
-      if (activeSwatch?.dataset?.color) {
+      if (activeSwatch && !activeSwatch.classList.contains('swatch')) {
+        const nestedSwatch = activeSwatch.querySelector?.('.swatch');
+        if (nestedSwatch) {
+          activeSwatch = nestedSwatch;
+        }
+      }
+
+      if (!selectedColor && activeSwatch?.dataset?.color) {
         selectedColor = activeSwatch.dataset.color;
-      } else if (card.dataset.selectedColor) {
+      } else if (!selectedColor && card.dataset.selectedColor) {
         selectedColor = card.dataset.selectedColor;
       }
-      if (activeSwatch?.dataset?.variantImage) {
+
+      if (!selectedVariantImage && activeSwatch?.dataset?.variantImage) {
         selectedVariantImage = activeSwatch.dataset.variantImage;
       }
+
       if (!selectedVariantImage && selectedColor) {
-        const swatchSearchContainer = isProductPage ?
-          (card.closest('.desktop-product-info, .mobile-product-page, #sticky-product-bar') || card) :
-          card;
+        const swatchSearchContainer = productInfo || card;
         const matchingSwatch = Array.from(swatchSearchContainer.querySelectorAll('.swatch')).find((swatch) => {
           const swatchColor = normalizeOptionValue(swatch.dataset?.color);
           return swatchColor && swatchColor === normalizeOptionValue(selectedColor);
@@ -335,22 +415,19 @@
           selectedVariantImage = matchingSwatch.dataset.variantImage;
         }
       }
+
+      selectedColor = typeof selectedColor === 'string' ? selectedColor.trim() : '';
       if (selectedColor) {
         card.dataset.selectedColor = selectedColor;
       }
     }
-    const colorKey = normalizedColorIndex >= 0 ? normalizeOptionValue(selectedColor) : '';
-    const cardShell = card?.querySelector('.card');
-    const cardInner = card?.querySelector('.card__inner');
-    const cardMedia = card?.querySelector('.card__media');
-    const mediaInner = cardMedia?.firstElementChild;
-    const cardContent = card?.querySelector('.card__content');
-    const cardInformation = card?.querySelector('.card__information');
-    const cardHeading = card?.querySelector('.card__heading');
-    const priceWrapper = card?.querySelector('.card-information');
-    const activeImage = card.querySelector('.swiper-slide-active img, .card__media img');
 
-    // Try to get variant-specific image if color is selected
+    const colorKey = normalizedColorIndex >= 0 ? normalizeOptionValue(selectedColor) : '';
+
+    const activeImage =
+      sourceElement?.querySelector?.('.swiper-slide-active img, .card__media img') ||
+      card.querySelector('.swiper-slide-active img, .card__media img');
+
     let variantSpecificImage = selectedVariantImage;
     if (!variantSpecificImage && selectedColor && normalizedColorIndex >= 0 && variants.length > 0) {
       const matchingVariant = variants.find((variant) => {
@@ -389,19 +466,20 @@
         options: variant.options,
         price: variant.price,
       })),
-      cardWrapperClassName: card?.className || '',
+      cardWrapperClassName: parsedTemplateRoot?.className || card?.className || '',
       cardClassName: cardShell?.className || '',
       cardInnerClassName: cardInner?.className || '',
-      cardInnerStyle: cardInner?.getAttribute('style') || '',
+      cardInnerStyle: cardInner?.getAttribute?.('style') || '',
       cardMediaClassName: cardMedia?.className || '',
       cardMediaInnerClassName: mediaInner?.className || '',
       cardContentClassName: cardContent?.className || '',
       cardInformationClassName: cardInformation?.className || '',
       cardHeadingClassName: cardHeading?.className || '',
       cardPriceWrapperClassName: priceWrapper?.className || '',
-      cardMarkup: card?.outerHTML || '',
+      cardMarkup,
     };
   };
+
 
   const handleHeartClick = (event) => {
     event.preventDefault();
