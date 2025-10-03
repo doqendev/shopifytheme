@@ -818,8 +818,8 @@
 
   const createFallbackWishlistMarkup = (item) => {
     const imageMarkup = item.image
-      ? `<img class="product-card__image" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" loading="lazy">`
-      : `<div class="wishlist-card__placeholder" aria-hidden="true"></div>`;
+      ? `<div class="wishlist-card__image-wrapper"><img class="wishlist-card__image" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" loading="lazy"></div>`
+      : `<div class="wishlist-card__image-wrapper wishlist-card__placeholder" aria-hidden="true"></div>`;
 
     const priceMarkup = item.price
       ? `<span class="price price--end">${escapeHtml(item.price)}</span>`
@@ -858,7 +858,7 @@
           <div class="${cardInnerClassName}"${cardInnerStyle}>
             <div class="${cardMediaClassName}">
               <div class="${mediaInnerClassName}">
-                <a href="${escapeHtml(item.url)}" class="full-unstyled-link">
+                <a href="${escapeHtml(item.url)}" class="full-unstyled-link wishlist-card__image-link">
                   ${imageMarkup}
                 </a>
               </div>
@@ -970,6 +970,7 @@
       '';
     const image = existingImage ? existingImage.cloneNode(false) : document.createElement('img');
     image.classList.add('wishlist-card__image');
+    image.removeAttribute('style');
     image.style.width = '100%';
     image.style.height = '100%';
     image.style.objectFit = 'cover';

@@ -280,7 +280,7 @@ cart-drawer.drawer--wishlist-active #CartDrawer-CartErrors {
 
 .wishlist-card__placeholder {
   width: 100%;
-  padding-top: 100%;
+  height: 100%;
   border-radius: var(--media-radius, 0.6rem);
   background: rgba(var(--color-foreground, 18, 18, 18), 0.08);
 }
