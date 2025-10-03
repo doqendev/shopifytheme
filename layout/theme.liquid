@@ -404,7 +404,7 @@ menu-drawer > details[open] > summary::before {
     <script>
       (function() {
         var form = document.getElementById('wishlist-csrf-form');
-        var tokenInput = form ? form.querySelector('input[name="authenticity_token"]') : null;
+        var tokenInput = form ? form.querySelector('input[name="wishlist_csrf_token_output"]') : null;
         window.wishlistCsrfToken = tokenInput ? tokenInput.value : '';
         if (form && form.parentNode) {
           form.parentNode.removeChild(form);
