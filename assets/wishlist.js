@@ -540,6 +540,24 @@
         if (!active && colorKey) {
           active = wishlistKeys.has(buildWishlistKey(handle, ''));
         }
+
+        if (!active && card.dataset?.colorIndex) {
+          const storedColorKeys = wishlistItems
+            .filter((item) => item.handle === handle)
+            .map((item) => item.colorKey)
+            .filter(Boolean);
+
+          if (storedColorKeys.length) {
+            const picker = card.closest?.('.desktop-product-info, .mobile-product-info, .mobile-product-page, #sticky-product-bar');
+            const checkedInput = picker?.querySelector('.product-form__input--swatch input[type="radio"]:checked');
+            const currentColor = checkedInput?.value?.trim().toLowerCase();
+
+            if (currentColor && storedColorKeys.includes(currentColor)) {
+              active = true;
+              card.dataset.selectedColor = currentColor;
+            }
+          }
+        }
       }
 
       button.classList.toggle('is-active', active);
