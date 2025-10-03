@@ -350,26 +350,27 @@
     const priceWrapper = card?.querySelector('.card-information');
     const activeImage = card.querySelector('.swiper-slide-active img, .card__media img');
 
-    let productImage;
-    if (isProductPage) {
-        const productMediaContainer = document.querySelector('.desktop-product-media');
-        if (productMediaContainer) {
-            const mainImage = productMediaContainer.querySelector('.main-image-slide.active img, .main-image-slide img');
-            if (mainImage) {
-                productImage = mainImage.src;
-            }
-        }
+    // Try to get variant-specific image if color is selected
+    let variantSpecificImage = selectedVariantImage;
+    if (!variantSpecificImage && selectedColor && normalizedColorIndex >= 0 && variants.length > 0) {
+      const matchingVariant = variants.find((variant) => {
+        if (!Array.isArray(variant.options) || variant.options.length <= normalizedColorIndex) return false;
+        return normalizeOptionValue(variant.options[normalizedColorIndex]) === normalizeOptionValue(selectedColor);
+      });
+      if (matchingVariant?.featured_image) {
+        variantSpecificImage = matchingVariant.featured_image;
+      } else if (matchingVariant?.featured_media?.preview_image?.src) {
+        variantSpecificImage = matchingVariant.featured_media.preview_image.src;
+      }
     }
 
-    if (!productImage) {
-        productImage =
-            variantSpecificImage ||
-            activeImage?.currentSrc ||
-            activeImage?.src ||
-            activeImage?.dataset?.src ||
-            card.dataset.productImage ||
-            '';
-    }
+    const productImage =
+      variantSpecificImage ||
+      activeImage?.currentSrc ||
+      activeImage?.src ||
+      activeImage?.dataset?.src ||
+      card.dataset.productImage ||
+      '';
 
     return {
       handle,
@@ -406,8 +407,36 @@
     event.preventDefault();
     const button = event.currentTarget;
     const card = getCardFromHeart(button);
-    const product = getProductFromCard(card);
+    let product = getProductFromCard(card);
     if (!product) return;
+
+    const isProductPage = card.classList.contains('desktop-product-title-wrapper') ||
+                          card.classList.contains('mobile-product-info') ||
+                          card.classList.contains('sticky-bar-summary');
+
+    if (isProductPage) {
+      const productMediaContainer = document.querySelector('.desktop-product-media');
+      let image = '';
+      if (productMediaContainer) {
+        const mainImage = productMediaContainer.querySelector('.main-image-slide.active img, .main-image-slide img');
+        if (mainImage) {
+          image = mainImage.src;
+        }
+      }
+
+      const productCard = document.querySelector('#main-product-card');
+      let cardMarkup = '';
+      if(productCard){
+        cardMarkup = productCard.outerHTML;
+      }
+
+
+      product = {
+        ...product,
+        image,
+        cardMarkup,
+      };
+    }
 
     const existingItem = findWishlistItem(product.handle, product.colorKey);
     if (existingItem) {
