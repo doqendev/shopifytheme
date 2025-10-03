@@ -1535,6 +1535,11 @@
         requestAnimationFrame(() => syncHearts());
       }
     });
+    document.addEventListener('change', (event) => {
+      if (event.target.matches?.('.product-form__input--swatch input[type="radio"]')) {
+        requestAnimationFrame(() => syncHearts());
+      }
+    });
     swatchSyncBound = true;
   };
 
