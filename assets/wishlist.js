@@ -949,10 +949,17 @@
 
     const imageWrapper = document.createElement('div');
     imageWrapper.className = 'wishlist-card__image-wrapper';
+    imageWrapper.style.setProperty('aspect-ratio', '2 / 3');
+    imageWrapper.style.height = 'auto';
+    imageWrapper.style.maxHeight = 'none';
+    imageWrapper.style.position = 'relative';
 
     const imageLink = document.createElement('a');
     imageLink.className = 'full-unstyled-link wishlist-card__image-link';
     imageLink.setAttribute('href', productLink);
+    imageLink.style.display = 'block';
+    imageLink.style.width = '100%';
+    imageLink.style.height = '100%';
     const storedImage = item?.image || '';
     const fallbackImage =
       storedImage ||
@@ -963,6 +970,9 @@
       '';
     const image = existingImage ? existingImage.cloneNode(false) : document.createElement('img');
     image.classList.add('wishlist-card__image');
+    image.style.width = '100%';
+    image.style.height = '100%';
+    image.style.objectFit = 'cover';
 
     if (fallbackImage) {
       image.src = fallbackImage;
