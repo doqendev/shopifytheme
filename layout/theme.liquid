@@ -93,15 +93,6 @@
       </script>
     {% endif %}
 
-    {% capture _wishlist_auth_form %}
-      {% form 'customer_login' %}
-        {% capture wishlist_auth_token %}{{ form.authenticity_token }}{% endcapture %}
-      {% endform %}
-    {% endcapture %}
-    <script>
-      window.wishlistCsrfToken = {{ wishlist_auth_token | json }};
-    </script>
-
     <script src="{{ 'wishlist.js' | asset_url }}" defer="defer"></script>
     
 
@@ -407,6 +398,15 @@ menu-drawer > details[open] > summary::before {
   </head>
 
   <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
+    {% form 'customer_login', id: 'wishlist-csrf-form', class: 'wishlist-csrf-form', style: 'display:none;' %}{% endform %}
+    <script>
+      (function() {
+        var form = document.getElementById('wishlist-csrf-form');
+        var tokenInput = form ? form.querySelector('input[name="authenticity_token"]') : null;
+        window.wishlistCsrfToken = tokenInput ? tokenInput.value : '';
+      })();
+    </script>
+
     <script>
       try {
         if (sessionStorage.getItem('announcementClosed') === 'true') {
