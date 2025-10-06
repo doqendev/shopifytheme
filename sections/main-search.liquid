@@ -535,6 +535,9 @@
   </div>
   <script>
     (function() {
+      // Store the current grid layout state
+      window.currentGridLayout = window.currentGridLayout || 'two-col';
+
       if (typeof window.initializeGridOptions !== 'function') {
         window.initializeGridOptions = function() {
           var productGrid = document.getElementById('product-grid');
@@ -558,30 +561,37 @@
             });
           }
 
+          function applyGridLayout(layout) {
+            productGrid.classList.remove('one-col', 'two-col', 'three-col');
+            productGrid.classList.add(layout);
+            window.currentGridLayout = layout;
+          }
+
           btnOneCol.addEventListener('click', function() {
-            productGrid.classList.remove('two-col', 'three-col');
-            productGrid.classList.add('one-col');
+            applyGridLayout('one-col');
             setActive(btnOneCol);
           });
 
           btnTwoCol.addEventListener('click', function() {
-            productGrid.classList.remove('one-col', 'three-col');
-            productGrid.classList.add('two-col');
+            applyGridLayout('two-col');
             setActive(btnTwoCol);
           });
 
           btnThreeCol.addEventListener('click', function() {
-            productGrid.classList.remove('one-col', 'two-col');
-            productGrid.classList.add('three-col');
+            applyGridLayout('three-col');
             setActive(btnThreeCol);
           });
 
-          if (btnOneCol.classList.contains('active')) {
-            productGrid.classList.add('one-col');
-          } else if (btnTwoCol.classList.contains('active')) {
-            productGrid.classList.add('two-col');
-          } else if (btnThreeCol.classList.contains('active')) {
-            productGrid.classList.add('three-col');
+          // Restore the saved grid layout
+          applyGridLayout(window.currentGridLayout);
+
+          // Update active button based on current layout
+          if (window.currentGridLayout === 'one-col') {
+            setActive(btnOneCol);
+          } else if (window.currentGridLayout === 'two-col') {
+            setActive(btnTwoCol);
+          } else if (window.currentGridLayout === 'three-col') {
+            setActive(btnThreeCol);
           }
         };
       }
