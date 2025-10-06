@@ -38,6 +38,12 @@
         padding-bottom: {{ section.settings.padding_bottom }}px;
       }
     }
+
+    /* Remove letter spacing from product page */
+    #MainProduct-{{ section.id }},
+    #MainProduct-{{ section.id }} * {
+      letter-spacing: 0 !important;
+    }
   {%- endstyle -%}
 
   <script src="{{ 'product-info.js' | asset_url }}" defer="defer"></script>
@@ -115,7 +121,7 @@
                   {%- render 'price',
                     product: product,
                     use_variant: true,
-                    show_badges: true,
+                    show_badges: false,
                     price_class: 'price--large'
                   -%}
                 </div>

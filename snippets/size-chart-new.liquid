@@ -20,8 +20,14 @@
     {%- elsif tag_lower == 'saia' or tag_lower == 'saias' -%}
       {%- assign sizechart_key = 'saia' -%}
       {%- break -%}
+    {%- elsif tag_lower == 'saia-calção' or tag_lower == 'saias-calção' -%}
+      {%- assign sizechart_key = 'saia-calcao' -%}
+      {%- break -%}
     {%- elsif tag_lower == 'calcas' or tag_lower == 'calças' or tag_lower == 'jeans' or tag_lower == 'calças de ganga' -%}
       {%- assign sizechart_key = 'calcas' -%}
+      {%- break -%}
+    {%- elsif tag_lower == 'calção' or tag_lower == 'calções' -%}
+      {%- assign sizechart_key = 'calcoes' -%}
       {%- break -%}
     {%- endif -%}
   {%- endfor -%}
@@ -151,10 +157,72 @@
               <div class="sg-fade sg-fade--right" aria-hidden="true"></div>
             </div>
 
+            {%- when 'calcoes' -%}
+            <div class="sg-scroll" data-sg-swipe>
+              <div class="sg-viewport" data-sg-viewport tabindex="0" aria-label="Tabela de tamanhos com scroll horizontal">
+                <table class="sg-table" aria-label="Tabela de tamanhos: Calções (cm)">
+                  <thead>
+                    <tr>
+                      <th class="sg-sticky">ZONA</th>
+                      <th class="sg-size">S</th>
+                      <th class="sg-size">M</th>
+                      <th class="sg-size">L</th>
+                      <th class="sg-size">XL</th>
+                      <th class="sg-size">XXL</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><th scope="row" class="sg-sticky">Cintura</th>
+                      <td>72</td><td>77</td><td>82</td><td>87</td><td>92</td>
+                    </tr>
+                    <tr><th scope="row" class="sg-sticky">Anca</th>
+                      <td>92</td><td>97</td><td>102</td><td>107</td><td>112</td>
+                    </tr>
+                    <tr><th scope="row" class="sg-sticky">Comprimento</th>
+                      <td>45</td><td>47</td><td>49</td><td>51</td><td>53</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="sg-fade sg-fade--left" aria-hidden="true"></div>
+              <div class="sg-fade sg-fade--right" aria-hidden="true"></div>
+            </div>
+
+            {%- when 'saia-calcao' -%}
+            <div class="sg-scroll" data-sg-swipe>
+              <div class="sg-viewport" data-sg-viewport tabindex="0" aria-label="Tabela de tamanhos com scroll horizontal">
+                <table class="sg-table" aria-label="Tabela de tamanhos: Saia-calção (cm)">
+                  <thead>
+                    <tr>
+                      <th class="sg-sticky">ZONA</th>
+                      <th class="sg-size">S</th>
+                      <th class="sg-size">M</th>
+                      <th class="sg-size">L</th>
+                      <th class="sg-size">XL</th>
+                      <th class="sg-size">XXL</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><th scope="row" class="sg-sticky">Cintura</th>
+                      <td>68</td><td>72</td><td>76</td><td>80</td><td>84</td>
+                    </tr>
+                    <tr><th scope="row" class="sg-sticky">Anca</th>
+                      <td>88</td><td>92</td><td>96</td><td>100</td><td>104</td>
+                    </tr>
+                    <tr><th scope="row" class="sg-sticky">Comprimento</th>
+                      <td>40</td><td>41</td><td>42</td><td>43</td><td>44</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="sg-fade sg-fade--left" aria-hidden="true"></div>
+              <div class="sg-fade sg-fade--right" aria-hidden="true"></div>
+            </div>
+
             {%- else -%}
             <div class="sg-empty">
               <p><strong>Sem tabela específica</strong></p>
-              <p>Adiciona uma tag como <code>camisola</code>, <code>t-shirt</code>, <code>sweatshirt</code>, <code>tops</code>, <code>bodies</code>, <code>blusa</code>, <code>camisa</code>, <code>saia</code>, <code>calcas</code>, <code>calças</code>, <code>jeans</code> ou <code>calças de ganga</code>.</p>
+              <p>Adiciona uma tag como <code>tops</code>, <code>saia</code>, <code>saia-calção</code>, <code>calcas</code>, <code>calções</code>, etc.</p>
             </div>
           {%- endcase -%}
         </div>
