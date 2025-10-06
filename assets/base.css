@@ -4061,6 +4061,7 @@ font-style: normal;
 
 .product-card-plus.active .size-options {
   display: flex;
+  z-index: 6;
 }
 
 .product-card-plus.active .plus-icon {
