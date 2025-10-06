@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <li class="menu-item saldos-item">
             <a href="/collections/novidades" class="menu-link novidades-link">NOVIDADES</a>
           </li>
-          <li class="menu-separator"></li>
+      
           <li class="menu-item has-submenu">
             <a href="#" class="menu-link">
               ROUPA
