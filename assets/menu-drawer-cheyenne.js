@@ -28,8 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
           </li>
       
           <li><a href="/collections/casacos" class="menu-link">Casacos</a></li>
-          <li><a href="/collections/acessorios" class="menu-link">ACESSÓRIOS</a></li>
-          <li><a href="/collections/vestidos" class="menu-link">Camisas/Blusas</a></li>
+          <li><a href="/collections/vestidos" class="menu-link">Vestidos</a></li>
+          <li><a href="/collections/camisas e blusas" class="menu-link">Camisas/Blusas</a></li>
           <li><a href="/collections/tops e bodies" class="menu-link">Top/Bodies</a></li>
           <li><a href="/collections/t-shirts" class="menu-link">T-Shirts</a></li>
           <li><a href="/collections/camisola e cardigans" class="menu-link">Camisolas/Cardigans</a></li>
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <li><a href="/collections/calças" class="menu-link">Calças</a></li>
           <li><a href="/collections/jeans" class="menu-link">Jeans</a></li>
           <li><a href="/collections/calções e saias" class="menu-link">Calções/Saias</a></li>
-          <li><a href="/collections/acessorios" class="menu-link">ACESSÓRIOS</a></li>
+          
           <li class="menu-item has-submenu">
             <a href="#" class="menu-link info-item">
               + INFO
