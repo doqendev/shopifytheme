@@ -139,12 +139,9 @@
     align-items: center;
     margin-left: auto;
     flex-shrink: 0;
-  }
-
-  .size-guide-ruler-btn .ruler-icon {
-    width: 16px;
-    height: 16px;
-    display: block;
+    font-size: 12px;
+    text-decoration: underline;
+    color: inherit;
   }
 
   .size-guide-ruler-btn:hover {

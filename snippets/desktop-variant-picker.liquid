@@ -73,7 +73,7 @@ data-option-position="{{ option.position }}" data-option-name="{{ option.name | 
               {%- assign _scope_id = section.id | default: block.id | default: product.id -%}
               {%- assign sg_id = 'sg-' | append: product.id | append: '-' | append: _scope_id -%}
               <button type="button" class="size-guide-ruler-btn" onclick="document.querySelector('[data-sg-open=&quot;{{ sg_id }}&quot;]')?.click()">
-                {{ 'icon-ruler.svg' | asset_url | img_tag: '', class: 'ruler-icon' }}
+                Guia de tamanhos
               </button>
             {% endif %}
           </div>
