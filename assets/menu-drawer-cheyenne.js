@@ -29,6 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
       
           <li><a href="/collections/malas-mochilas" class="menu-link">MALAS | MOCHILAS</a></li>
           <li><a href="/collections/acessorios" class="menu-link">ACESSÓRIOS</a></li>
+          <li><a href="/collections/acessorios" class="menu-link">ACESSÓRIOS</a></li>
+          <li><a href="/collections/acessorios" class="menu-link">ACESSÓRIOS</a></li>
+          <li><a href="/collections/acessorios" class="menu-link">ACESSÓRIOS</a></li>
+          <li><a href="/collections/acessorios" class="menu-link">ACESSÓRIOS</a></li>
+          <li><a href="/collections/acessorios" class="menu-link">ACESSÓRIOS</a></li>
+          <li><a href="/collections/acessorios" class="menu-link">ACESSÓRIOS</a></li>
+          <li><a href="/collections/acessorios" class="menu-link">ACESSÓRIOS</a></li>
+          <li><a href="/collections/acessorios" class="menu-link">ACESSÓRIOS</a></li>
           <li class="menu-item has-submenu">
             <a href="#" class="menu-link info-item">
               + INFO
