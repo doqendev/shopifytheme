@@ -4219,3 +4219,7 @@ font-style: normal;
 #CartDrawer-CartPanel > div.drawer__empty-state > div > div > a {
   display: none;
 }
+
+#shopify-section-template--25444169974084__main > div > a {
+  display: none;
+}

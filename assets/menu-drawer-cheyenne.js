@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <li><a href="/collections/camisas-blusas" class="menu-link">CAMISAS/BLUSAS</a></li>
           <li><a href="/collections/tops-bodies" class="menu-link">TOP/BODIES</a></li>
           <li><a href="/collections/t-shirts" class="menu-link">T-SHIRTS</a></li>
-          <li><a href="/collections/camisola/cardigans" class="menu-link">CAMISOLAS/CARDIGANS</a></li>
+          <li><a href="/collections/camisola-cardigans" class="menu-link">CAMISOLAS/CARDIGANS</a></li>
           <li><a href="/collections/sweatshirts" class="menu-link">SWEATSHIRTS</a></li>
           <li><a href="/collections/calças" class="menu-link">CALÇAS</a></li>
           <li><a href="/collections/jeans" class="menu-link">JEANS</a></li>
