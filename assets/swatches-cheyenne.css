@@ -124,7 +124,7 @@
   .swatch-row-with-ruler {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     width: 100%;
     gap: 8px;
   }
@@ -139,10 +139,11 @@
     align-items: center;
     margin-left: auto;
     flex-shrink: 0;
-    font-size: 12px;
+    font-size: 11px;
     text-decoration: underline;
     color: inherit;
     white-space: nowrap;
+    padding-right: 0;
   }
 
   .size-guide-ruler-btn:hover {
