@@ -329,7 +329,7 @@ details[open].menu-opening > .menu-drawer__submenu {
   color: red !important;
   font-weight: bold!important;
   margin-top: 20px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 @media (min-width: 1023px) {
@@ -337,7 +337,7 @@ details[open].menu-opening > .menu-drawer__submenu {
 .saldos-link {
   color: red !important;
   font-weight: bold!important;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 }
 /* Add spacing below the Novidades link */
