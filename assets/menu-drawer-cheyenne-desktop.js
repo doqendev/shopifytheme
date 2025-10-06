@@ -362,22 +362,11 @@ document.addEventListener("DOMContentLoaded", () => {
       element.style.display = element === section ? "block" : "none";
     });
   }
-  function updateActiveLink(activeLink, menuKeyOverride = '') {
-    const resolvedKey = menuKeyOverride || activeLink?.dataset?.menu || '';
-
-    const movedLinks = menuDrawerContent.querySelectorAll('.moved-into-drawer a[data-menu]');
-    movedLinks.forEach((link) => {
-      link.classList.toggle('active', resolvedKey ? link.dataset.menu === resolvedKey : link === activeLink);
-    });
-
-    const drawerTabs = menuDrawerContent.querySelectorAll('.drawer-menu-link[data-menu]');
-    drawerTabs.forEach((link) => {
-      link.classList.toggle('active', resolvedKey ? link.dataset.menu === resolvedKey : link === activeLink);
-    });
-
-    if (!resolvedKey && activeLink) {
-      activeLink.classList.add('active');
-    }
+  function updateActiveLink(activeLink) {
+    menuDrawerContent
+      .querySelectorAll(".moved-into-drawer a")
+      .forEach(a => a.classList.remove("active"));
+    activeLink.classList.add("active");
   }
   function updateTrendingNow(category) {
     if (!trendingSource || !trendingImg) return;
@@ -408,9 +397,7 @@ document.addEventListener("DOMContentLoaded", () => {
     persistMenuKey(menuKey);
 
     if (targetLink) {
-      updateActiveLink(targetLink, menuKey);
-    } else {
-      updateActiveLink(null, menuKey);
+      updateActiveLink(targetLink);
     }
 
     let targetSection = null;
