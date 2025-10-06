@@ -198,6 +198,20 @@
     left: auto;
   }
 
+  /* Expand newsletter to full width on desktop */
+  .footer-block__newsletter {
+    text-align: left;
+  }
+
+  .footer-block__newsletter .footer__newsletter {
+    margin: 0;
+    width: 100%;
+  }
+
+  .footer-block__newsletter .newsletter-form__field-wrapper {
+    max-width: 100%;
+  }
+
   .footer__follow-on-shop {
     margin-bottom: 0.4rem;
   }
