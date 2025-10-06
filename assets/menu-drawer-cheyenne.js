@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <li><a href="/collections/homem-t-shirts" class="menu-link">T-SHIRTS</a></li>
           <li><a href="/collections/homem-camisolas-cardigans" class="menu-link">CAMISOLAS/CARDIGANS</a></li>
           <li><a href="/collections/homem-sweatshirts" class="menu-link">SWEATSHIRTS</a></li>
-          <li><a href="/collections/homem-camisolas-cardigans" class="menu-link">POLOS</a></li>
+          <li><a href="/collections/homem-polos" class="menu-link">POLOS</a></li>
           <li><a href="/collections/homem-calças" class="menu-link">CALÇAS</a></li>
           <li><a href="/collections/homem-jeans" class="menu-link">JEANS</a></li>
           <li><a href="/collections/homem-calções" class="menu-link">CALÇÕES</a></li>
