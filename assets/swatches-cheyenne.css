@@ -142,6 +142,7 @@
     font-size: 12px;
     text-decoration: underline;
     color: inherit;
+    white-space: nowrap;
   }
 
   .size-guide-ruler-btn:hover {
