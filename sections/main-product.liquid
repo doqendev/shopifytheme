@@ -45,8 +45,9 @@
       letter-spacing: 0 !important;
     }
 
-    /* Hide sale badge on product page */
+    /* Desktop product page customizations */
     @media screen and (min-width: 750px) {
+      /* Hide sale badge on product page */
       #MainProduct-{{ section.id }} .badge,
       #MainProduct-{{ section.id }} .price__badge-sale,
       #MainProduct-{{ section.id }} .price__badge-sold-out,
@@ -55,6 +56,17 @@
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
+      }
+
+      /* Make product title smaller - 20px */
+      #MainProduct-{{ section.id }} .product__title {
+        font-size: 20px !important;
+      }
+
+      /* Make sale price smaller and red */
+      #MainProduct-{{ section.id }} .price__sale .price-item--sale {
+        font-size: 18px !important;
+        color: #d32f2f !important;
       }
     }
   {%- endstyle -%}
