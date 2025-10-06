@@ -199,6 +199,41 @@ document.addEventListener("DOMContentLoaded", () => {
     `
   };
 
+  const MENU_STORAGE_KEY = 'menuDrawerActiveMenu';
+  const DEFAULT_MENU_KEY = 'women-menu';
+  const MENU_KEY_TO_CATEGORY = {
+    'women-menu': 'mulher',
+    'homem-menu': 'homem',
+    'crianca-menu': 'crianca',
+  };
+
+  const getStoredMenuKey = () => {
+    if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
+      return DEFAULT_MENU_KEY;
+    }
+    try {
+      const stored = window.localStorage.getItem(MENU_STORAGE_KEY);
+      if (stored && Object.prototype.hasOwnProperty.call(menus, stored)) {
+        return stored;
+      }
+    } catch (error) {
+      // Ignore storage access issues
+    }
+    return DEFAULT_MENU_KEY;
+  };
+
+  const persistMenuKey = (key) => {
+    if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') return;
+    if (!Object.prototype.hasOwnProperty.call(menus, key)) return;
+    try {
+      window.localStorage.setItem(MENU_STORAGE_KEY, key);
+    } catch (error) {
+      // Ignore persistence issues
+    }
+  };
+
+  const initialMenuKey = getStoredMenuKey();
+
   // (D) Append the “CONTA” link at the bottom of whichever menu is active.
   function appendAuthLink() {
     const isLoggedIn = window.customerLoggedIn === 'true';
@@ -261,18 +296,17 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // (F) Render default "women-menu" on desktop
-  const defaultMenu = "women-menu";
-  if (menus[defaultMenu]) {
+  // (F) Render stored menu on desktop (defaults to women-menu)
+  if (menus[initialMenuKey]) {
     // Keep the nav at the top when adding menu content
     const existingNav = menuDrawerContent.querySelector(".moved-into-drawer");
-    menuDrawerContent.insertAdjacentHTML("beforeend", menus[defaultMenu]);
+    menuDrawerContent.insertAdjacentHTML("beforeend", menus[initialMenuKey]);
     initializeSubmenuBehavior();
     appendAuthLink();
-    
+
     // Set initial active state
     if (existingNav) {
-      existingNav.querySelector('a[data-menu="women-menu"]')?.classList.add("active");
+      existingNav.querySelector(`a[data-menu="${initialMenuKey}"]`)?.classList.add("active");
     }
   }
 
@@ -290,12 +324,10 @@ document.addEventListener("DOMContentLoaded", () => {
         // Add new menu
         menuDrawerContent.insertAdjacentHTML("beforeend", menus[menuKey]);
         
-        // Update active states
-        menuDrawerContent.querySelectorAll(".moved-into-drawer a").forEach(a => a.classList.remove("active"));
-        link.classList.add("active");
-        
         initializeSubmenuBehavior();
         appendAuthLink();
+
+        applyActiveMenuState(menuKey, link);
       }
     });
   });
@@ -325,10 +357,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const trendingImg     = document.querySelector(".trending-now__picture img");
 
   function showSection(section) {
-    mulherSection.style.display = "none";
-    homemSection.style.display  = "none";
-    criancaSection.style.display= "none";
-    section.style.display       = "block";
+    [mulherSection, homemSection, criancaSection].forEach((element) => {
+      if (!element) return;
+      element.style.display = element === section ? "block" : "none";
+    });
   }
   function updateActiveLink(activeLink) {
     menuDrawerContent
@@ -337,6 +369,8 @@ document.addEventListener("DOMContentLoaded", () => {
     activeLink.classList.add("active");
   }
   function updateTrendingNow(category) {
+    if (!trendingSource || !trendingImg) return;
+
     if (category === "mulher") {
       trendingSource.srcset = "https://cdn.shopify.com/s/files/1/0911/7843/4884/files/fashion-model-in-black-white.jpg?v=1743757550";
       trendingImg.src       = "https://cdn.shopify.com/s/files/1/0911/7843/4884/files/hero_woman.jpg?v=1747744739";
@@ -352,11 +386,40 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Initial state on desktop: show Mulher by default
-  showSection(mulherSection);
-  const defaultDrawerLink = menuDrawerContent.querySelector(".moved-into-drawer a[data-menu='women-menu']");
-  if (defaultDrawerLink) {
-    updateActiveLink(defaultDrawerLink);
-    updateTrendingNow("mulher");
+  function applyActiveMenuState(menuKey, providedLink) {
+    const resolvedCategory =
+      MENU_KEY_TO_CATEGORY[menuKey] || MENU_KEY_TO_CATEGORY[DEFAULT_MENU_KEY];
+    const targetLink =
+      providedLink ||
+      menuDrawerContent.querySelector(`.moved-into-drawer a[data-menu='${menuKey}']`) ||
+      null;
+
+    persistMenuKey(menuKey);
+
+    if (targetLink) {
+      updateActiveLink(targetLink);
+    }
+
+    let targetSection = null;
+    if (resolvedCategory === "homem" && homemSection) {
+      targetSection = homemSection;
+    } else if (resolvedCategory === "crianca" && criancaSection) {
+      targetSection = criancaSection;
+    } else if (mulherSection) {
+      targetSection = mulherSection;
+    }
+
+    if (targetSection) {
+      showSection(targetSection);
+    }
+
+    updateTrendingNow(resolvedCategory);
   }
+
+  // Initial state on desktop: apply persisted category (fallback to Mulher)
+  const initialDrawerLink =
+    menuDrawerContent.querySelector(`.moved-into-drawer a[data-menu='${initialMenuKey}']`) ||
+    menuDrawerContent.querySelector(".moved-into-drawer a[data-menu='women-menu']");
+
+  applyActiveMenuState(initialMenuKey, initialDrawerLink);
 });
