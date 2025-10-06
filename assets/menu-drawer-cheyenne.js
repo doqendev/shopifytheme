@@ -29,14 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
       
           <li><a href="/collections/casacos" class="menu-link">CASACOS</a></li>
           <li><a href="/collections/vestidos" class="menu-link">VESTIDOS</a></li>
-          <li><a href="/collections/camisas e blusas" class="menu-link">CAMISAS/BLUSAS</a></li>
-          <li><a href="/collections/tops e bodies" class="menu-link">TOP/BODIES</a></li>
+          <li><a href="/collections/camisas-blusas" class="menu-link">CAMISAS/BLUSAS</a></li>
+          <li><a href="/collections/tops-bodies" class="menu-link">TOP/BODIES</a></li>
           <li><a href="/collections/t-shirts" class="menu-link">T-SHIRTS</a></li>
-          <li><a href="/collections/camisola e cardigans" class="menu-link">CAMISOLAS/CARDIGANS</a></li>
+          <li><a href="/collections/camisola-cardigans" class="menu-link">CAMISOLAS/CARDIGANS</a></li>
           <li><a href="/collections/sweatshirts" class="menu-link">SWEATSHIRTS</a></li>
           <li><a href="/collections/calças" class="menu-link">CALÇAS</a></li>
           <li><a href="/collections/jeans" class="menu-link">JEANS</a></li>
-          <li><a href="/collections/calções e saias" class="menu-link">CALÇÕES/SAIAS</a></li>
+          <li><a href="/collections/calções-saias" class="menu-link">CALÇÕES/SAIAS</a></li>
           
           <li class="menu-item has-submenu">
             <a href="#" class="menu-link info-item">
