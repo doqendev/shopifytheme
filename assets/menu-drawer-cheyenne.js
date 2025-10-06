@@ -27,19 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
             <a href="/collections/novidades" class="menu-link novidades-link">NOVIDADES</a>
           </li>
       
-          <li class="menu-item has-submenu">
-            <a href="#" class="menu-link">
-              CALÇADO
-              <span class="submenu-arrow">▶</span>
-            </a>
-            <div class="submenu hidden">
-              <ul class="submenu-list">
-                <li><a href="/collections/shoes-sneakers">SAPATILHAS</a></li>
-                <li><a href="/collections/shoes-boots">BOTAS</a></li>
-                <li><a href="/collections/shoes-sandals">SANDÁLIAS</a></li>
-              </ul>
-            </div>
-          </li>
           <li><a href="/collections/malas-mochilas" class="menu-link">MALAS | MOCHILAS</a></li>
           <li><a href="/collections/acessorios" class="menu-link">ACESSÓRIOS</a></li>
           <li class="menu-item has-submenu">
