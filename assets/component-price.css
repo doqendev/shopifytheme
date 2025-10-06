@@ -108,6 +108,7 @@
   text-decoration: line-through;
   color: white, 0.75!important);
   font-size: 1.3rem;
+  font-weight: 100;
 }
 
 .unit-price {
