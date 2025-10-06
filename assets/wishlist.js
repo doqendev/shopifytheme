@@ -42,6 +42,48 @@
     }));
   };
 
+  const WISHLIST_RATIO_VALUE = '150%';
+  const WISHLIST_RATIO_DECLARATION = `--ratio-percent: ${WISHLIST_RATIO_VALUE};`;
+  const WISHLIST_RATIO_PATTERN = /--ratio-percent\s*:\s*[^;]+;?/i;
+
+  const sanitizeStyleValue = (value) => {
+    if (typeof value !== 'string') return '';
+    return value.replace(/^style\s*=\s*/i, '').replace(/^['"]|['"]$/g, '').trim();
+  };
+
+  const ensureWishlistRatioStyle = (value) => {
+    const sanitized = sanitizeStyleValue(value);
+    if (!sanitized) return WISHLIST_RATIO_DECLARATION;
+    if (WISHLIST_RATIO_PATTERN.test(sanitized)) {
+      return sanitized.replace(WISHLIST_RATIO_PATTERN, WISHLIST_RATIO_DECLARATION).trim();
+    }
+    const appendSeparator = sanitized.endsWith(';') ? '' : ';';
+    return `${sanitized}${appendSeparator} ${WISHLIST_RATIO_DECLARATION}`.trim();
+  };
+
+  const normalizeWishlistCardMarkup = (markup) => {
+    if (typeof markup !== 'string') return '';
+    const trimmed = markup.trim();
+    if (!trimmed.length) return '';
+
+    const template = document.createElement('template');
+    template.innerHTML = trimmed;
+
+    const cardInners = template.content?.querySelectorAll?.('.card__inner');
+    if (cardInners && cardInners.length) {
+      cardInners.forEach((inner) => {
+        const normalizedStyle = ensureWishlistRatioStyle(inner.getAttribute('style') || '');
+        if (normalizedStyle) {
+          inner.setAttribute('style', normalizedStyle);
+        } else {
+          inner.removeAttribute('style');
+        }
+      });
+    }
+
+    return template.innerHTML;
+  };
+
   const normalizeWishlistItem = (item) => {
     if (!item || typeof item !== 'object') return null;
 
@@ -62,6 +104,10 @@
 
     const colorKey = colorIndex >= 0 ? normalizeOptionValue(item.colorKey ?? colorValue) : '';
 
+    const normalizedCardInnerStyle = ensureWishlistRatioStyle(item.cardInnerStyle);
+    const normalizedCardMarkup =
+      typeof item.cardMarkup === 'string' ? normalizeWishlistCardMarkup(item.cardMarkup) : '';
+
     return {
       ...item,
       handle,
@@ -70,7 +116,8 @@
       colorValue,
       colorKey,
       variants: normalizeVariants(item.variants),
-      cardMarkup: typeof item.cardMarkup === 'string' ? item.cardMarkup : '',
+      cardInnerStyle: normalizedCardInnerStyle,
+      cardMarkup: normalizedCardMarkup,
     };
   };
 
@@ -547,7 +594,7 @@
       cardWrapperClassName: parsedTemplateRoot?.className || card?.className || '',
       cardClassName: cardShell?.className || '',
       cardInnerClassName: cardInner?.className || '',
-      cardInnerStyle: cardInner?.getAttribute?.('style') || '',
+      cardInnerStyle: ensureWishlistRatioStyle(cardInner?.getAttribute?.('style') || ''),
       cardMediaClassName: cardMedia?.className || '',
       cardMediaInnerClassName: mediaInner?.className || '',
       cardContentClassName: cardContent?.className || '',
@@ -830,9 +877,8 @@
     );
     const cardClassName = escapeHtml(item.cardClassName || 'card card--standard card--media');
     const cardInnerClassName = escapeHtml(item.cardInnerClassName || 'card__inner ratio');
-    const cardInnerStyle = item.cardInnerStyle
-      ? ` style="${escapeHtml(item.cardInnerStyle)}"`
-      : ' style="--ratio-percent: 150%;"';
+    const cardInnerStyleValue = ensureWishlistRatioStyle(item.cardInnerStyle);
+    const cardInnerStyle = cardInnerStyleValue ? ` style="${escapeHtml(cardInnerStyleValue)}"` : '';
     const cardMediaClassName = escapeHtml(item.cardMediaClassName || 'card__media');
     const mediaInnerClassName = escapeHtml(item.cardMediaInnerClassName || 'media media--transparent media--hover-effect');
     const cardContentClassName = escapeHtml(item.cardContentClassName || 'card__content');
