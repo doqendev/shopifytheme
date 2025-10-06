@@ -29,19 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
       
           <li class="menu-item has-submenu">
             <a href="#" class="menu-link">
-              ROUPA
-              <span class="submenu-arrow">▶</span>
-            </a>
-            <div class="submenu hidden">
-              <ul class="submenu-list">
-                <li><a href="/collections/women-dresses">VESTIDOS</a></li>
-                <li><a href="/collections/women-tops">BLUSAS</a></li>
-                <li><a href="/collections/women-shoes">CALÇAS</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="menu-item has-submenu">
-            <a href="#" class="menu-link">
               CALÇADO
               <span class="submenu-arrow">▶</span>
             </a>
