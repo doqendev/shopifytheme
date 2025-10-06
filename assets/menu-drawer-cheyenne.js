@@ -27,15 +27,15 @@ document.addEventListener('DOMContentLoaded', () => {
             <a href="/collections/novidades" class="menu-link novidades-link">NOVIDADES</a>
           </li>
       
-          <li><a href="/collections/malas-mochilas" class="menu-link">MALAS | MOCHILAS</a></li>
-          <li><a href="/collections/acessorios" class="menu-link">ACESSÓRIOS</a></li>
-          <li><a href="/collections/acessorios" class="menu-link">ACESSÓRIOS</a></li>
-          <li><a href="/collections/acessorios" class="menu-link">ACESSÓRIOS</a></li>
-          <li><a href="/collections/acessorios" class="menu-link">ACESSÓRIOS</a></li>
-          <li><a href="/collections/acessorios" class="menu-link">ACESSÓRIOS</a></li>
-          <li><a href="/collections/acessorios" class="menu-link">ACESSÓRIOS</a></li>
-          <li><a href="/collections/acessorios" class="menu-link">ACESSÓRIOS</a></li>
-          <li><a href="/collections/acessorios" class="menu-link">ACESSÓRIOS</a></li>
+          <li><a href="/collections/casacos" class="menu-link">Casacos</a></li>
+          <li><a href="/collections/vestidos" class="menu-link">Camisas/Blusas</a></li>
+          <li><a href="/collections/tops e bodies" class="menu-link">Top/Bodies</a></li>
+          <li><a href="/collections/t-shirts" class="menu-link">T-Shirts</a></li>
+          <li><a href="/collections/camisola e cardigans" class="menu-link">Camisolas/Cardigans</a></li>
+          <li><a href="/collections/sweatshirts" class="menu-link">Sweatshirts</a></li>
+          <li><a href="/collections/calças" class="menu-link">Calças</a></li>
+          <li><a href="/collections/jeans" class="menu-link">Jeans</a></li>
+          <li><a href="/collections/calções e saias" class="menu-link">Calções/Saias</a></li>
           <li><a href="/collections/acessorios" class="menu-link">ACESSÓRIOS</a></li>
           <li class="menu-item has-submenu">
             <a href="#" class="menu-link info-item">
