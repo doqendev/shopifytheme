@@ -4216,3 +4216,6 @@ font-style: normal;
   padding: 0;
 }
 
+#CartDrawer-CartPanel > div.drawer__empty-state > div > div > a {
+  display: none;
+}
