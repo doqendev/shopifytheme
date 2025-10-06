@@ -832,7 +832,7 @@
     const cardInnerClassName = escapeHtml(item.cardInnerClassName || 'card__inner ratio');
     const cardInnerStyle = item.cardInnerStyle
       ? ` style="${escapeHtml(item.cardInnerStyle)}"`
-      : ' style="--ratio-percent: 100%;"';
+      : ' style="--ratio-percent: 150%;"';
     const cardMediaClassName = escapeHtml(item.cardMediaClassName || 'card__media');
     const mediaInnerClassName = escapeHtml(item.cardMediaInnerClassName || 'media media--transparent media--hover-effect');
     const cardContentClassName = escapeHtml(item.cardContentClassName || 'card__content');
