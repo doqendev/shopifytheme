@@ -14,10 +14,10 @@
   {%- assign sizechart_key = '' -%}
   {%- for tag in product.tags -%}
     {%- assign tag_lower = tag | downcase | strip -%}
-    {%- if tag_lower == 'camisola' or tag_lower == 't-shirt' or tag_lower == 'tshirt' or tag_lower == 'sweatshirt' or tag_lower == 'tops' or tag_lower == 'bodies' -%}
+    {%- if tag_lower == 'camisola' or tag_lower == 'camisolas' or tag_lower == 't-shirt' or tag_lower == 't-shirts' or tag_lower == 'tshirt' or tag_lower == 'tshirts' or tag_lower == 'sweatshirt' or tag_lower == 'sweatshirts' or tag_lower == 'tops' or tag_lower == 'bodies' or tag_lower == 'blusa' or tag_lower == 'blusas' or tag_lower == 'camisa' or tag_lower == 'camisas' -%}
       {%- assign sizechart_key = 'tops' -%}
       {%- break -%}
-    {%- elsif tag_lower == 'saia' -%}
+    {%- elsif tag_lower == 'saia' or tag_lower == 'saias' -%}
       {%- assign sizechart_key = 'saia' -%}
       {%- break -%}
     {%- elsif tag_lower == 'calcas' or tag_lower == 'calças' or tag_lower == 'jeans' or tag_lower == 'calças de ganga' -%}
@@ -154,7 +154,7 @@
             {%- else -%}
             <div class="sg-empty">
               <p><strong>Sem tabela específica</strong></p>
-              <p>Adiciona uma tag como <code>camisola</code>, <code>t-shirt</code>, <code>sweatshirt</code>, <code>tops</code>, <code>bodies</code>, <code>saia</code>, <code>calcas</code>, <code>calças</code>, <code>jeans</code> ou <code>calças de ganga</code>.</p>
+              <p>Adiciona uma tag como <code>camisola</code>, <code>t-shirt</code>, <code>sweatshirt</code>, <code>tops</code>, <code>bodies</code>, <code>blusa</code>, <code>camisa</code>, <code>saia</code>, <code>calcas</code>, <code>calças</code>, <code>jeans</code> ou <code>calças de ganga</code>.</p>
             </div>
           {%- endcase -%}
         </div>
