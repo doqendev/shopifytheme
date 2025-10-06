@@ -1382,6 +1382,8 @@ input.mobile-facets__checkbox {
 
 #FacetsWrapperMobile > details.mobile-facet.facet-accordion.mobile-facet-filter\.v\.t\.shopify\.color-pattern.menu-opening > div > ul > li > div > label.swatch-input__label > span {
   border-radius: 0%!important;
+  width: 20px!important;
+  height: 20px!important;
 }
 
 /* ---------- SORT PILLS (Desktop): igual às pills de size/product ---------- */
