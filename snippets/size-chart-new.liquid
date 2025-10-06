@@ -13,8 +13,9 @@
 
   {%- assign sizechart_key = '' -%}
   {%- for tag in product.tags -%}
-    {%- if tag contains 'sizechart:' -%}
-      {%- assign sizechart_key = tag | split: ':' | last | downcase | strip -%}
+    {%- assign tag_lower = tag | downcase | strip -%}
+    {%- if tag_lower == 'camisola' or tag_lower == 'tshirt' or tag_lower == 'saia' or tag_lower == 'calcas' -%}
+      {%- assign sizechart_key = tag_lower -%}
       {%- break -%}
     {%- endif -%}
   {%- endfor -%}
@@ -185,7 +186,7 @@
             {%- else -%}
             <div class="sg-empty">
               <p><strong>Sem tabela específica</strong></p>
-              <p>Adiciona uma tag como <code>sizechart:camisola</code>, <code>sizechart:tshirt</code>, <code>sizechart:saia</code> ou <code>sizechart:calcas</code>.</p>
+              <p>Adiciona uma tag como <code>camisola</code>, <code>tshirt</code>, <code>saia</code> ou <code>calcas</code>.</p>
             </div>
           {%- endcase -%}
         </div>
