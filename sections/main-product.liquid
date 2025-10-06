@@ -47,15 +47,14 @@
 
     /* Hide sale badge on product page */
     @media screen and (min-width: 750px) {
-      .product .badge,
-      .product__info-wrapper .badge,
-      .product .price .badge,
-      .product .price__badge-sale,
-      .product .price__badge-sold-out,
       #MainProduct-{{ section.id }} .badge,
       #MainProduct-{{ section.id }} .price__badge-sale,
-      #MainProduct-{{ section.id }} .price__badge-sold-out {
+      #MainProduct-{{ section.id }} .price__badge-sold-out,
+      #MainProduct-{{ section.id }} span.badge,
+      #MainProduct-{{ section.id }} .price span.badge {
         display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
       }
     }
   {%- endstyle -%}
