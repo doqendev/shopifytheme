@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </li>
       
           <li><a href="/collections/casacos" class="menu-link">Casacos</a></li>
+          <li><a href="/collections/acessorios" class="menu-link">ACESSÓRIOS</a></li>
           <li><a href="/collections/vestidos" class="menu-link">Camisas/Blusas</a></li>
           <li><a href="/collections/tops e bodies" class="menu-link">Top/Bodies</a></li>
           <li><a href="/collections/t-shirts" class="menu-link">T-Shirts</a></li>
