@@ -27,16 +27,16 @@ document.addEventListener('DOMContentLoaded', () => {
             <a href="/collections/novidades" class="menu-link novidades-link">NOVIDADES</a>
           </li>
       
-          <li><a href="/collections/casacos" class="menu-link">CASACOS</a></li>
-          <li><a href="/collections/vestidos" class="menu-link">VESTIDOS</a></li>
-          <li><a href="/collections/camisas-blusas" class="menu-link">CAMISAS/BLUSAS</a></li>
-          <li><a href="/collections/tops-bodies" class="menu-link">TOP/BODIES</a></li>
-          <li><a href="/collections/t-shirts" class="menu-link">T-SHIRTS</a></li>
-          <li><a href="/collections/camisola-cardigans" class="menu-link">CAMISOLAS/CARDIGANS</a></li>
-          <li><a href="/collections/sweatshirts" class="menu-link">SWEATSHIRTS</a></li>
-          <li><a href="/collections/calças" class="menu-link">CALÇAS</a></li>
-          <li><a href="/collections/jeans" class="menu-link">JEANS</a></li>
-          <li><a href="/collections/calções-saias" class="menu-link">CALÇÕES/SAIAS</a></li>
+          <li><a href="/collections/mulher-casacos" class="menu-link">CASACOS</a></li>
+          <li><a href="/collections/mulher-vestidos" class="menu-link">VESTIDOS</a></li>
+          <li><a href="/collections/mulher-camisas-blusas" class="menu-link">CAMISAS/BLUSAS</a></li>
+          <li><a href="/collections/mulher-tops-bodies" class="menu-link">TOP/BODIES</a></li>
+          <li><a href="/collections/mulher-t-shirts" class="menu-link">T-SHIRTS</a></li>
+          <li><a href="/collections/mulher-camisola-cardigans" class="menu-link">CAMISOLAS/CARDIGANS</a></li>
+          <li><a href="/collections/mulher-sweatshirts" class="menu-link">SWEATSHIRTS</a></li>
+          <li><a href="/collections/mulher-calças" class="menu-link">CALÇAS</a></li>
+          <li><a href="/collections/mulher-jeans" class="menu-link">JEANS</a></li>
+          <li><a href="/collections/mulher-calções-saias" class="menu-link">CALÇÕES/SAIAS</a></li>
           
           <li class="menu-item has-submenu">
             <a href="#" class="menu-link info-item">
