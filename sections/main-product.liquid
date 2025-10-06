@@ -59,12 +59,21 @@
       }
 
       /* Make product title smaller - 20px */
-      #MainProduct-{{ section.id }} .product__title {
+      #MainProduct-{{ section.id }} .product__title,
+      #MainProduct-{{ section.id }} .product__title h1,
+      #MainProduct-{{ section.id }} .product__title h2 {
         font-size: 20px !important;
       }
 
       /* Make sale price smaller and red */
-      #MainProduct-{{ section.id }} .price__sale .price-item--sale {
+      #MainProduct-{{ section.id }} .price__sale .price-item--sale,
+      #MainProduct-{{ section.id }} .price-item--sale {
+        font-size: 18px !important;
+        color: #d32f2f !important;
+      }
+
+      /* Also target the regular price display */
+      #MainProduct-{{ section.id }} .price--on-sale .price-item--sale {
         font-size: 18px !important;
         color: #d32f2f !important;
       }
