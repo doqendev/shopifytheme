@@ -189,9 +189,40 @@ document.addEventListener('DOMContentLoaded', () => {
     `
   };
 
+  const MENU_STORAGE_KEY = 'menuDrawerActiveMenu';
+  const DEFAULT_MENU_KEY = 'women-menu';
+
+  const isValidMenuKey = (key) => Object.prototype.hasOwnProperty.call(menus, key);
+
+  const getStoredMenuKey = () => {
+    if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
+      return DEFAULT_MENU_KEY;
+    }
+    try {
+      const stored = window.localStorage.getItem(MENU_STORAGE_KEY);
+      if (stored && isValidMenuKey(stored)) {
+        return stored;
+      }
+    } catch (error) {
+      // Ignore storage access issues
+    }
+    return DEFAULT_MENU_KEY;
+  };
+
+  const persistMenuKey = (key) => {
+    if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') return;
+    if (!isValidMenuKey(key)) return;
+    try {
+      window.localStorage.setItem(MENU_STORAGE_KEY, key);
+    } catch (error) {
+      // Ignore persistence issues
+    }
+  };
   const navLinks = menuDrawerContent.querySelectorAll('.drawer-menu-link');
 
-  const setActiveMenu = (menuKey) => {
+  const setActiveMenu = (rawKey) => {
+    const menuKey = isValidMenuKey(rawKey) ? rawKey : DEFAULT_MENU_KEY;
+
     // Update active tab
     navLinks.forEach(link => {
       link.classList.toggle('active', link.dataset.menu === menuKey);
@@ -200,12 +231,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Replace menu content
     menuDrawerContent.querySelectorAll('.menu-drawer__navigation').forEach(nav => nav.remove());
     menuDrawerContent.insertAdjacentHTML('beforeend', menus[menuKey]);
-    
+
     // Initialize submenu and auth link if needed
     initializeSubmenuBehavior();
     appendAuthLink();
-  };
 
+    persistMenuKey(menuKey);
+  };
   navLinks.forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
@@ -213,9 +245,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Initialize default menu
-  setActiveMenu('women-menu');
-
+  // Initialize menu with persisted state
+  const initialMenuKey = getStoredMenuKey();
+  setActiveMenu(initialMenuKey);
   function initializeSubmenuBehavior() {
     const submenuLinks = menuDrawerContent.querySelectorAll(".menu-item.has-submenu > .menu-link");
     submenuLinks.forEach(link => {
@@ -252,4 +284,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
+
 
