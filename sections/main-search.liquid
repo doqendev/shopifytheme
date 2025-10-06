@@ -511,12 +511,12 @@
     (function() {
       if (typeof window.initializeGridOptions !== 'function') {
         window.initializeGridOptions = function() {
-          var grid = document.getElementById('product-grid');
+          var productGrid = document.querySelector('#product-grid .product-grid');
           var btnOneCol = document.getElementById('layout-one-col');
           var btnTwoCol = document.getElementById('layout-two-col');
           var btnThreeCol = document.getElementById('layout-three-col');
 
-          if (!grid || !btnOneCol || !btnTwoCol || !btnThreeCol) return;
+          if (!productGrid || !btnOneCol || !btnTwoCol || !btnThreeCol) return;
 
           btnOneCol.replaceWith(btnOneCol.cloneNode(true));
           btnTwoCol.replaceWith(btnTwoCol.cloneNode(true));
@@ -533,29 +533,29 @@
           }
 
           btnOneCol.addEventListener('click', function() {
-            grid.classList.remove('two-col', 'three-col');
-            grid.classList.add('one-col');
+            productGrid.classList.remove('two-col', 'three-col');
+            productGrid.classList.add('one-col');
             setActive(btnOneCol);
           });
 
           btnTwoCol.addEventListener('click', function() {
-            grid.classList.remove('one-col', 'three-col');
-            grid.classList.add('two-col');
+            productGrid.classList.remove('one-col', 'three-col');
+            productGrid.classList.add('two-col');
             setActive(btnTwoCol);
           });
 
           btnThreeCol.addEventListener('click', function() {
-            grid.classList.remove('one-col', 'two-col');
-            grid.classList.add('three-col');
+            productGrid.classList.remove('one-col', 'two-col');
+            productGrid.classList.add('three-col');
             setActive(btnThreeCol);
           });
 
           if (btnOneCol.classList.contains('active')) {
-            grid.classList.add('one-col');
+            productGrid.classList.add('one-col');
           } else if (btnTwoCol.classList.contains('active')) {
-            grid.classList.add('two-col');
+            productGrid.classList.add('two-col');
           } else if (btnThreeCol.classList.contains('active')) {
-            grid.classList.add('three-col');
+            productGrid.classList.add('three-col');
           }
         };
       }
