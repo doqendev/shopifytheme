@@ -118,6 +118,12 @@
     display: inline-block;
   }
 
+  .product-grid.one-col,
+  .product-grid.two-col,
+  .product-grid.three-col {
+    display: grid !important;
+  }
+
   @media (max-width: 749px) {
     .product-grid.one-col {
       grid-template-columns: 1fr !important;
