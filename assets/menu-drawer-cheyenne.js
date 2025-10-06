@@ -58,43 +58,26 @@ document.addEventListener('DOMContentLoaded', () => {
     `,
     "homem-menu": `
       <nav class="menu-drawer__navigation">
-        <ul class="menu-drawer__menu list-menu" role="list">
+                <ul class="menu-drawer__menu list-menu" role="list">
           <li class="menu-item saldos-item">
-            <a href="/collections/homem-saldos" class="menu-link saldos-link">SALDOS</a>
+            <a href="/collections/saldos" class="menu-link saldos-link">SALDOS</a>
           </li>
           <li class="menu-separator"></li>
           <li class="menu-item saldos-item">
-            <a href="/collections/homem-novidades" class="menu-link novidades-link">NOVIDADES</a>
+            <a href="/collections/novidades" class="menu-link novidades-link">NOVIDADES</a>
           </li>
-          <li class="menu-separator"></li>
-          <li class="menu-item has-submenu">
-            <a href="#" class="menu-link">
-              ROUPA
-              <span class="submenu-arrow">▶</span>
-            </a>
-            <div class="submenu hidden">
-              <ul class="submenu-list">
-                <li><a href="/collections/homem-shirts">CAMISAS</a></li>
-                <li><a href="/collections/homem-pants">CALÇAS</a></li>
-                <li><a href="/collections/homem-jackets">CASACOS</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="menu-item has-submenu">
-            <a href="#" class="menu-link">
-              CALÇADO
-              <span class="submenu-arrow">▶</span>
-            </a>
-            <div class="submenu hidden">
-              <ul class="submenu-list">
-                <li><a href="/collections/homem-sneakers">SAPATILHAS</a></li>
-                <li><a href="/collections/homem-boots">BOTAS</a></li>
-                <li><a href="/collections/homem-formal-shoes">SAPATOS</a></li>
-              </ul>
-            </div>
-          </li>
-          <li><a href="/collections/homem-malas" class="menu-link">MALAS | MOCHILAS</a></li>
-          <li><a href="/collections/homem-acessorios" class="menu-link">ACESSÓRIOS</a></li>
+      
+          <li><a href="/collections/mulher-casacos" class="menu-link">CASACOS</a></li>
+          <li><a href="/collections/mulher-vestidos" class="menu-link">VESTIDOS</a></li>
+          <li><a href="/collections/mulher-camisas-blusas" class="menu-link">CAMISAS/BLUSAS</a></li>
+          <li><a href="/collections/mulher-tops-bodies" class="menu-link">TOP/BODIES</a></li>
+          <li><a href="/collections/mulher-t-shirts" class="menu-link">T-SHIRTS</a></li>
+          <li><a href="/collections/mulher-camisolas-cardigans" class="menu-link">CAMISOLAS/CARDIGANS</a></li>
+          <li><a href="/collections/mulher-sweatshirts" class="menu-link">SWEATSHIRTS</a></li>
+          <li><a href="/collections/mulher-calças" class="menu-link">CALÇAS</a></li>
+          <li><a href="/collections/mulher-jeans" class="menu-link">JEANS</a></li>
+          <li><a href="/collections/mulher-calções-saias" class="menu-link">CALÇÕES/SAIAS</a></li>
+          
           <li class="menu-item has-submenu">
             <a href="#" class="menu-link info-item">
               + INFO
@@ -115,43 +98,26 @@ document.addEventListener('DOMContentLoaded', () => {
     `,
     "crianca-menu": `
       <nav class="menu-drawer__navigation">
-        <ul class="menu-drawer__menu list-menu" role="list">
+                <ul class="menu-drawer__menu list-menu" role="list">
           <li class="menu-item saldos-item">
-            <a href="/collections/crianca-saldos" class="menu-link saldos-link">SALDOS</a>
+            <a href="/collections/saldos" class="menu-link saldos-link">SALDOS</a>
           </li>
           <li class="menu-separator"></li>
           <li class="menu-item saldos-item">
-            <a href="/collections/crianca-novidades" class="menu-link novidades-link">NOVIDADES</a>
+            <a href="/collections/novidades" class="menu-link novidades-link">NOVIDADES</a>
           </li>
-          <li class="menu-separator"></li>
-          <li class="menu-item has-submenu">
-            <a href="#" class="menu-link">
-              ROUPA
-              <span class="submenu-arrow">▶</span>
-            </a>
-            <div class="submenu hidden">
-              <ul class="submenu-list">
-                <li><a href="/collections/crianca-shirts">CAMISAS</a></li>
-                <li><a href="/collections/crianca-pants">CALÇAS</a></li>
-                <li><a href="/collections/crianca-jackets">CASACOS</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="menu-item has-submenu">
-            <a href="#" class="menu-link">
-              CALÇADO
-              <span class="submenu-arrow">▶</span>
-            </a>
-            <div class="submenu hidden">
-              <ul class="submenu-list">
-                <li><a href="/collections/crianca-sneakers">SAPATILHAS</a></li>
-                <li><a href="/collections/crianca-boots">BOTAS</a></li>
-                <li><a href="/collections/crianca-formal-shoes">SAPATOS</a></li>
-              </ul>
-            </div>
-          </li>
-          <li><a href="/collections/crianca-malas" class="menu-link">MALAS | MOCHILAS</a></li>
-          <li><a href="/collections/crianca-acessorios" class="menu-link">ACESSÓRIOS</a></li>
+      
+          <li><a href="/collections/mulher-casacos" class="menu-link">CASACOS</a></li>
+          <li><a href="/collections/mulher-vestidos" class="menu-link">VESTIDOS</a></li>
+          <li><a href="/collections/mulher-camisas-blusas" class="menu-link">CAMISAS/BLUSAS</a></li>
+          <li><a href="/collections/mulher-tops-bodies" class="menu-link">TOP/BODIES</a></li>
+          <li><a href="/collections/mulher-t-shirts" class="menu-link">T-SHIRTS</a></li>
+          <li><a href="/collections/mulher-camisolas-cardigans" class="menu-link">CAMISOLAS/CARDIGANS</a></li>
+          <li><a href="/collections/mulher-sweatshirts" class="menu-link">SWEATSHIRTS</a></li>
+          <li><a href="/collections/mulher-calças" class="menu-link">CALÇAS</a></li>
+          <li><a href="/collections/mulher-jeans" class="menu-link">JEANS</a></li>
+          <li><a href="/collections/mulher-calções-saias" class="menu-link">CALÇÕES/SAIAS</a></li>
+          
           <li class="menu-item has-submenu">
             <a href="#" class="menu-link info-item">
               + INFO
