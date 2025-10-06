@@ -60,11 +60,11 @@ document.addEventListener('DOMContentLoaded', () => {
       <nav class="menu-drawer__navigation">
                 <ul class="menu-drawer__menu list-menu" role="list">
           <li class="menu-item saldos-item">
-            <a href="/collections/saldos" class="menu-link saldos-link">SALDOS</a>
+            <a href="/collections/homem-saldos" class="menu-link saldos-link">SALDOS</a>
           </li>
           <li class="menu-separator"></li>
           <li class="menu-item saldos-item">
-            <a href="/collections/novidades" class="menu-link novidades-link">NOVIDADES</a>
+            <a href="/collections/homem-novidades" class="menu-link novidades-link">NOVIDADES</a>
           </li>
       
           <li><a href="/collections/homem-casacos" class="menu-link">CASACOS</a></li>
