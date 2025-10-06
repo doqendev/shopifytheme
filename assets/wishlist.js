@@ -1449,7 +1449,12 @@
       .then((responseText) => {
         const parser = new DOMParser();
         const html = parser.parseFromString(responseText, 'text/html');
-        const selectors = ['cart-drawer-items', '.cart-drawer__footer'];
+        const selectors = [
+          '#CartDrawer-CartPanel .drawer__empty-state',
+          'cart-drawer-items',
+          '#CartDrawer-CartErrors',
+          '.drawer__footer',
+        ];
         selectors.forEach((selector) => {
           const target = document.querySelector(selector);
           const source = html.querySelector(selector);
@@ -1459,7 +1464,7 @@
         });
         const drawer = getDrawer();
         if (drawer) {
-          drawer.classList.remove('is-empty');
+          drawer.classList.toggle('is-empty', getCartItemCount(drawer) === 0);
           if (!drawer.classList.contains('active')) {
             drawer.open();
           }
