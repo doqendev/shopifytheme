@@ -3,6 +3,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (!menuDrawerContent) return;
 
+  if (window.innerWidth >= 768) return;
+
+  const MENU_STORAGE_KEY = 'menuDrawerActiveMenu';
+  const DEFAULT_MENU_KEY = 'women-menu';
+
   const navMenuHtml = `
     <div class="drawer-nav-menu">
       <div class="drawer-menu-nav">
@@ -189,32 +194,66 @@ document.addEventListener('DOMContentLoaded', () => {
     `
   };
 
-  const navLinks = menuDrawerContent.querySelectorAll('.drawer-menu-link');
 
-  const setActiveMenu = (menuKey) => {
-    // Update active tab
-    navLinks.forEach(link => {
-      link.classList.toggle('active', link.dataset.menu === menuKey);
-    });
-
-    // Replace menu content
-    menuDrawerContent.querySelectorAll('.menu-drawer__navigation').forEach(nav => nav.remove());
-    menuDrawerContent.insertAdjacentHTML('beforeend', menus[menuKey]);
-    
-    // Initialize submenu and auth link if needed
-    initializeSubmenuBehavior();
-    appendAuthLink();
+  const getStoredMenuKey = () => {
+    if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
+      return DEFAULT_MENU_KEY;
+    }
+    try {
+      const stored = window.localStorage.getItem(MENU_STORAGE_KEY);
+      if (stored && Object.prototype.hasOwnProperty.call(menus, stored)) {
+        return stored;
+      }
+    } catch (error) {
+      // Ignore storage access issues
+    }
+    return DEFAULT_MENU_KEY;
   };
 
-  navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      setActiveMenu(link.dataset.menu);
+  const persistMenuKey = (menuKey) => {
+    if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') return;
+    if (!Object.prototype.hasOwnProperty.call(menus, menuKey)) return;
+    try {
+      window.localStorage.setItem(MENU_STORAGE_KEY, menuKey);
+    } catch (error) {
+      // Ignore persistence issues
+    }
+  };
+
+  const navLinks = menuDrawerContent.querySelectorAll('.drawer-menu-link');
+
+  const setActiveMenu = (menuKey, { persist = true } = {}) => {
+    const resolvedKey = Object.prototype.hasOwnProperty.call(menus, menuKey)
+      ? menuKey
+      : DEFAULT_MENU_KEY;
+
+    navLinks.forEach((link) => {
+      link.classList.toggle('active', link.dataset.menu === resolvedKey);
+    });
+
+    menuDrawerContent.querySelectorAll('.menu-drawer__navigation').forEach((nav) => nav.remove());
+    menuDrawerContent.insertAdjacentHTML('beforeend', menus[resolvedKey]);
+
+    initializeSubmenuBehavior();
+    appendAuthLink();
+
+    if (persist) {
+      persistMenuKey(resolvedKey);
+    }
+  };
+
+  const initialMenuKey = getStoredMenuKey();
+
+  navLinks.forEach((link) => {
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      const menuKey = link.dataset.menu;
+      setActiveMenu(menuKey);
     });
   });
 
-  // Initialize default menu
-  setActiveMenu('women-menu');
+  setActiveMenu(initialMenuKey, { persist: false });
+
 
   function initializeSubmenuBehavior() {
     const submenuLinks = menuDrawerContent.querySelectorAll(".menu-item.has-submenu > .menu-link");
