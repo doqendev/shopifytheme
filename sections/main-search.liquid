@@ -44,6 +44,144 @@
   .search__button .icon {
     height: 1.8rem;
   }
+  .grid-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.6rem;
+  }
+
+  .layout-options {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-left: 3.2rem;
+    margin-top: 5px;
+  }
+
+  @media (max-width: 749px) {
+    .layout-options {
+      margin-left: 1.9rem;
+    }
+  }
+
+  .layout-options .layout-option-button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .layout-option-button .grid-icon {
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+  }
+
+  .layout-option-button .grid-icon--full {
+    display: none;
+  }
+
+  .layout-option-button.active .grid-icon--full {
+    display: inline-block;
+  }
+
+  .layout-option-button.active .grid-icon--empty {
+    display: none;
+  }
+
+  .facets-toggle-container {
+    margin-left: auto;
+  }
+
+  .facets-toggle-button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    letter-spacing: 0;
+  }
+
+  .facets-toggle-button .facets-icon {
+    font-size: 1.1rem;
+    font-family: 'Figtree', Arial, Helvetica, sans-serif;
+  }
+
+  #facets-toggle-button > span > svg {
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+  }
+
+  @media (max-width: 749px) {
+    .product-grid.one-col {
+      grid-template-columns: 1fr !important;
+    }
+
+    .product-grid.two-col {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .product-grid.three-col {
+      grid-template-columns: repeat(3, 1fr) !important;
+    }
+  }
+
+  @media (min-width: 750px) {
+    .product-grid.one-col {
+      grid-template-columns: repeat(280, 1fr) !important;
+    }
+
+    .product-grid.one-col .grid__item {
+      max-width: none;
+    }
+
+    .product-grid.one-col .grid__item:nth-child(7n + 1) {
+      grid-column: 113 / span 56;
+    }
+
+    .product-grid.one-col .grid__item:nth-child(7n + 2) {
+      grid-column: 81 / span 40;
+    }
+
+    .product-grid.one-col .grid__item:nth-child(7n + 3) {
+      grid-column: 121 / span 40;
+    }
+
+    .product-grid.one-col .grid__item:nth-child(7n + 4) {
+      grid-column: 161 / span 40;
+    }
+
+    .product-grid.one-col .grid__item:nth-child(7n + 5) {
+      grid-column: 113 / span 56;
+    }
+
+    .product-grid.one-col .grid__item:nth-child(7n + 6) {
+      grid-column: 106 / span 35;
+    }
+
+    .product-grid.one-col .grid__item:nth-child(7n + 7) {
+      grid-column: 141 / span 35;
+    }
+
+    .product-grid.two-col {
+      grid-template-columns: repeat(6, 1fr) !important;
+    }
+
+    .product-grid.three-col {
+      grid-template-columns: repeat(8, 1fr) !important;
+    }
+  }
+
+  .product-grid.three-col .card__content,
+  .product-grid.three-col .product-card-plus {
+    display: none !important;
+  }
 </style>
 
 {%- liquid
@@ -149,6 +287,43 @@
       {%- endif -%}
     </div>
     {%- if search.performed -%}
+      {%- if search.results_count > 0 -%}
+        <div class="grid-controls page-width">
+          <div class="layout-options">
+            <button type="button" id="layout-one-col" class="layout-option-button" aria-label="{{ 'accessibility.grid_layout_one_column' | default: 'One column grid' }}">
+              <span class="grid-icon grid-icon--full">
+                {{ 'grid_1_thinner_active.svg' | inline_asset_content }}
+              </span>
+              <span class="grid-icon grid-icon--empty">
+                {{ 'grid_1_thinner.svg' | inline_asset_content }}
+              </span>
+            </button>
+            <button type="button" id="layout-two-col" class="layout-option-button active" aria-label="{{ 'accessibility.grid_layout_two_column' | default: 'Two column grid' }}">
+              <span class="grid-icon grid-icon--full">
+                {{ 'grid_2_thinner_active.svg' | inline_asset_content }}
+              </span>
+              <span class="grid-icon grid-icon--empty">
+                {{ 'grid_2_thinner.svg' | inline_asset_content }}
+              </span>
+            </button>
+            <button type="button" id="layout-three-col" class="layout-option-button" aria-label="{{ 'accessibility.grid_layout_three_column' | default: 'Three column grid' }}">
+              <span class="grid-icon grid-icon--full">
+                {{ 'grid_4_thinner_active.svg' | inline_asset_content }}
+              </span>
+              <span class="grid-icon grid-icon--empty">
+                {{ 'grid_4_thinner.svg' | inline_asset_content }}
+              </span>
+            </button>
+          </div>
+          {%- if section.settings.enable_filtering or section.settings.enable_sorting -%}
+            <div class="facets-toggle-container">
+              <button type="button" id="facets-toggle-button" class="facets-toggle-button">
+                <span class="facets-icon">FILTROS</span>
+              </button>
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
       {%- if section.settings.enable_sorting
         and section.settings.filter_type == 'vertical'
         and search.filters != empty
@@ -256,7 +431,7 @@
             >
               <div class="loading-overlay gradient"></div>
               <ul
-                class="grid product-grid  grid--{{ section.settings.columns_mobile }}-col-tablet-down grid--{{ section.settings.columns_desktop }}-col-desktop"
+                class="grid product-grid two-col grid--{{ section.settings.columns_mobile }}-col-tablet-down grid--{{ section.settings.columns_desktop }}-col-desktop"
                 role="list"
               >
                 {%- assign skip_card_product_styles = false -%}
@@ -332,6 +507,93 @@
       </div>
     {%- endif -%}
   </div>
+  <script>
+    (function() {
+      if (typeof window.initializeGridOptions !== 'function') {
+        window.initializeGridOptions = function() {
+          var grid = document.getElementById('product-grid');
+          var btnOneCol = document.getElementById('layout-one-col');
+          var btnTwoCol = document.getElementById('layout-two-col');
+          var btnThreeCol = document.getElementById('layout-three-col');
+
+          if (!grid || !btnOneCol || !btnTwoCol || !btnThreeCol) return;
+
+          btnOneCol.replaceWith(btnOneCol.cloneNode(true));
+          btnTwoCol.replaceWith(btnTwoCol.cloneNode(true));
+          btnThreeCol.replaceWith(btnThreeCol.cloneNode(true));
+
+          btnOneCol = document.getElementById('layout-one-col');
+          btnTwoCol = document.getElementById('layout-two-col');
+          btnThreeCol = document.getElementById('layout-three-col');
+
+          function setActive(button) {
+            [btnOneCol, btnTwoCol, btnThreeCol].forEach(function(btn) {
+              if (btn) btn.classList.toggle('active', btn === button);
+            });
+          }
+
+          btnOneCol.addEventListener('click', function() {
+            grid.classList.remove('two-col', 'three-col');
+            grid.classList.add('one-col');
+            setActive(btnOneCol);
+          });
+
+          btnTwoCol.addEventListener('click', function() {
+            grid.classList.remove('one-col', 'three-col');
+            grid.classList.add('two-col');
+            setActive(btnTwoCol);
+          });
+
+          btnThreeCol.addEventListener('click', function() {
+            grid.classList.remove('one-col', 'two-col');
+            grid.classList.add('three-col');
+            setActive(btnThreeCol);
+          });
+
+          if (btnOneCol.classList.contains('active')) {
+            grid.classList.add('one-col');
+          } else if (btnTwoCol.classList.contains('active')) {
+            grid.classList.add('two-col');
+          } else if (btnThreeCol.classList.contains('active')) {
+            grid.classList.add('three-col');
+          }
+        };
+      }
+
+      function bindFacetsToggle() {
+        var facetsToggleBtn = document.getElementById('facets-toggle-button');
+        var facetsDrawerSummary = document.querySelector('menu-drawer details.mobile-facets__disclosure summary.mobile-facets__open-wrapper');
+        var facetsWrapper = document.getElementById('main-search-filters') || document.getElementById('main-collection-filters');
+
+        if (!facetsToggleBtn) return;
+
+        facetsToggleBtn.replaceWith(facetsToggleBtn.cloneNode(true));
+        facetsToggleBtn = document.getElementById('facets-toggle-button');
+
+        facetsToggleBtn.addEventListener('click', function() {
+          if (facetsDrawerSummary) {
+            facetsDrawerSummary.click();
+          } else if (facetsWrapper) {
+            facetsWrapper.classList.toggle('active');
+            facetsToggleBtn.classList.toggle('active');
+          }
+        });
+      }
+
+      function initSearchGridControls() {
+        if (typeof window.initializeGridOptions === 'function') {
+          window.initializeGridOptions();
+        }
+        bindFacetsToggle();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initSearchGridControls);
+      } else {
+        initSearchGridControls();
+      }
+    })();
+  </script>
 {% endpaginate %}
 {% if section.settings.image_shape == 'arch' %}
   {{ 'mask-arch.svg' | inline_asset_content }}
@@ -538,3 +800,4 @@
   ]
 }
 {% endschema %}
+
