@@ -378,6 +378,7 @@
   }
 
   function positionDrawer(sectionId) {
+    updateDisplayedPrice(sectionId);
     const drawer = document.getElementById(`size-drawer-${sectionId}`);
     if (!drawer || !drawer.classList.contains('is-open')) return;
 
@@ -459,6 +460,139 @@
       status.textContent = message || '';
     }
   }
+
+  const formatMoney = (cents) => {
+    if (cents == null) return '';
+    try {
+      if (typeof Shopify !== 'undefined' && typeof Shopify.formatMoney === 'function') {
+        const moneyFormat = (window.theme && window.theme.moneyFormat) || Shopify.money_format || '${{amount}}';
+        return Shopify.formatMoney(cents, moneyFormat);
+      }
+    } catch (error) {
+      console.warn('formatMoney fallback triggered', error);
+    }
+    const amount = Number(cents) / 100;
+    if (Number.isNaN(amount)) return '';
+    return amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
+  function getVariantForSelections(sectionId) {
+    const data = getSectionData(sectionId);
+    if (!data || !Array.isArray(data.variants)) return null;
+
+    const selections = Array.isArray(data.options)
+      ? data.options.map((option) => {
+          const value = getSelectedOptionValue(sectionId, option);
+          return value ? normalize(value) : '';
+        })
+      : [];
+
+    if (!selections.length || selections.every((value) => !value)) {
+      return data.variants.find((variant) => variant.available) || data.variants[0] || null;
+    }
+
+    const match = data.variants.find((variant) => {
+      if (!Array.isArray(variant.options)) return false;
+      for (let index = 0; index < variant.options.length; index += 1) {
+        const selectedValue = selections[index];
+        if (!selectedValue) continue;
+        if (normalize(variant.options[index]) !== selectedValue) {
+          return false;
+        }
+      }
+      return true;
+    });
+
+    return match || data.variants.find((variant) => variant.available) || data.variants[0] || null;
+  }
+
+  function updateProductBadges(priceElement, variant) {
+    if (!priceElement) return;
+    const saleBadge = priceElement.querySelector('.price__badge-sale');
+    const soldOutBadge = priceElement.querySelector('.price__badge-sold-out');
+    const isAvailable = !!(variant && variant.available);
+    const compare = variant?.compare_at_price || 0;
+    const price = variant?.price || 0;
+    const onSale = compare > price;
+
+    priceElement.classList.toggle('price--sold-out', !isAvailable);
+    priceElement.classList.toggle('price--on-sale', onSale);
+
+    if (saleBadge && !saleBadge.dataset.defaultText) {
+      saleBadge.dataset.defaultText = saleBadge.textContent.trim();
+    }
+
+    if (saleBadge) {
+      if (onSale && compare) {
+        const discount = Math.round(((compare - price) / compare) * 100);
+        const label = discount > 0 ? `-${discount}%` : saleBadge.dataset.defaultText || saleBadge.textContent;
+        saleBadge.textContent = label;
+        saleBadge.classList.remove('hidden');
+        saleBadge.style.display = '';
+      } else {
+        saleBadge.classList.add('hidden');
+        saleBadge.style.display = 'none';
+      }
+    }
+
+    if (soldOutBadge) {
+      if (!isAvailable) {
+        soldOutBadge.classList.remove('hidden');
+        soldOutBadge.style.display = '';
+      } else {
+        soldOutBadge.classList.add('hidden');
+        soldOutBadge.style.display = 'none';
+      }
+    }
+  }
+
+  function updateDisplayedPrice(sectionId, overrideVariant) {
+    const priceWrapper = document.getElementById(`price-${sectionId}`);
+    if (!priceWrapper) return;
+
+    const priceElement = priceWrapper.querySelector('.price');
+    if (!priceElement) return;
+
+    const variant = overrideVariant || getVariantForSelections(sectionId);
+    if (!variant) return;
+
+    const priceValue = typeof variant.price === 'number' ? variant.price : Number(variant.price);
+    const compareValue =
+      typeof variant.compare_at_price === 'number' ? variant.compare_at_price : Number(variant.compare_at_price);
+
+    const regularPrice = priceElement.querySelector('.price__regular .price-item--regular');
+    if (regularPrice && !Number.isNaN(priceValue)) {
+      regularPrice.textContent = formatMoney(priceValue);
+    }
+
+    const salePrice = priceElement.querySelector('.price__sale .price-item--sale');
+    if (salePrice && !Number.isNaN(priceValue)) {
+      salePrice.textContent = formatMoney(priceValue);
+    }
+
+    const comparePrice = priceElement.querySelector('.price__sale .price-item--regular');
+    const saleContainer = priceElement.querySelector('.price__sale');
+    const isOnSale = compareValue > priceValue;
+
+    if (comparePrice) {
+      if (isOnSale && !Number.isNaN(compareValue)) {
+        comparePrice.textContent = formatMoney(compareValue);
+        if (saleContainer) {
+          saleContainer.style.display = '';
+          saleContainer.classList.remove('hidden');
+        }
+      } else {
+        comparePrice.textContent = '';
+        if (saleContainer) {
+          saleContainer.style.display = 'none';
+          saleContainer.classList.add('hidden');
+        }
+      }
+    }
+
+    updateProductBadges(priceElement, variant);
+  }
+
 
   function findProductForm(sectionId) {
     const data = getSectionData(sectionId);
@@ -651,6 +785,7 @@
 
     syncVariantOptionSelections(sectionId, variant);
     updateProductFormVariant(sectionId, variant.id);
+    updateDisplayedPrice(sectionId, variant);
 
     const chooseButton = state.activeTrigger || state.triggers[0] || null;
     const triggerData = chooseButton ? state.triggerData.get(chooseButton) : null;
@@ -975,6 +1110,8 @@
     if (!sourceSectionId) return;
 
     console.log('Variant change detected in section:', sourceSectionId);
+
+    updateDisplayedPrice(sourceSectionId);
 
     // Only sync if we're not already syncing, and disable aggressive sync for now
     // syncVariantSelectionAcrossSections(event.target, sourceSectionId);
