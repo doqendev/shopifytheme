@@ -645,6 +645,14 @@
     priceElements.forEach((priceElement) => {
       if (!priceElement) return;
 
+      // CRITICAL: Update the price--on-sale class on the parent price element
+      // This class controls CSS visibility of .price__regular and .price__sale containers
+      if (isOnSale) {
+        priceElement.classList.add('price--on-sale');
+      } else {
+        priceElement.classList.remove('price--on-sale');
+      }
+
       const regularPrice = priceElement.querySelector('.price__regular .price-item--regular');
       if (regularPrice && !Number.isNaN(priceValue)) {
         regularPrice.textContent = formatMoney(priceValue);
