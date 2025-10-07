@@ -17,7 +17,7 @@
   stroke-width: 1!important;
 }
 
-@media and screen {max-width:749px} {
+@media {max-width:749px} {
   .wishlist-toggle {
     top: 0.5rem;
     right: 0.3rem;
