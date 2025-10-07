@@ -1,7 +1,7 @@
 .wishlist-toggle {
   position: absolute;
   top: 0.5rem;
-  right: 0.3rem;
+  right: 0.5rem;
   z-index: 5;
   display: inline-flex;
   align-items: center;
@@ -15,6 +15,13 @@
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   stroke-width: 1!important;
+}
+
+@media and screen {max-width:749px} {
+  .wishlist-toggle {
+    top: 0.5rem;
+    right: 0.3rem;
+  }
 }
 
 
