@@ -792,11 +792,55 @@ document.addEventListener('DOMContentLoaded', function() {
   optionWrappers.forEach(function(wrapper) {
     var elements = wrapper.querySelectorAll('input, select');
     elements.forEach(function(el) {
-      el.addEventListener('change', updateVariant);
+      el.addEventListener('change', function() {
+        updateVariant();
+        updatePrice();
+      });
     });
   });
 
+  // Function to update the price display when variant changes
+  function updatePrice() {
+    var selectedOptions = getSelectedOptions();
+    var matchingVariant = findVariant(selectedOptions);
+    
+    if (!matchingVariant) return;
+    
+    var priceContainer = document.querySelector('.desktop-product-info .price-container .price');
+    if (!priceContainer) return;
+    
+    var hasComparePrice = matchingVariant.compare_at_price && matchingVariant.compare_at_price > matchingVariant.price;
+    
+    // Update the price container classes
+    if (hasComparePrice) {
+      priceContainer.classList.add('price--on-sale');
+    } else {
+      priceContainer.classList.remove('price--on-sale');
+    }
+    
+    // Update regular price
+    var regularPriceEl = priceContainer.querySelector('.price__regular .price-item--regular');
+    if (regularPriceEl) {
+      regularPriceEl.textContent = Shopify.formatMoney(matchingVariant.price, "{{amount_no_decimals_with_comma_separator}}€");
+    }
+    
+    // Update sale price
+    var salePriceEl = priceContainer.querySelector('.price__sale .price-item--sale');
+    if (salePriceEl) {
+      salePriceEl.textContent = Shopify.formatMoney(matchingVariant.price, "{{amount_no_decimals_with_comma_separator}}€");
+    }
+    
+    // Update compare at price (strikethrough price)
+    var compareAtEls = priceContainer.querySelectorAll('.price__sale s.price-item--regular');
+    compareAtEls.forEach(function(el) {
+      if (matchingVariant.compare_at_price) {
+        el.textContent = Shopify.formatMoney(matchingVariant.compare_at_price, "{{amount_no_decimals_with_comma_separator}}€");
+      }
+    });
+  }
+
   updateVariant();
+  updatePrice();
 });
 </script>
 
