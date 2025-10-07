@@ -20,7 +20,7 @@
     display: inline-block;
     color: black;
     width: 95%;
-    text-decoration: none;
+    text-decoration: none !important;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -30,8 +30,12 @@
     line-height: 16px;
   }
 
-  .title-cheyenne:hover {
-    text-decoration: none;
+  .underline-links-hover:hover .title-cheyenne {
+    text-decoration: none !important;
+  }
+
+  .card-wrapper:hover .title-cheyenne {
+    text-decoration: none !important;
   }
   
   /* Temporary CSS to help ensure proper Swiper behavior */
