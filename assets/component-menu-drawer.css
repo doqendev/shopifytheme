@@ -444,6 +444,7 @@ details[open].menu-opening > .menu-drawer__submenu {
   float: right;
   font-size: 8px;
   transition: transform 0.3s ease;
+  display: none;
 }
 
 .menu-item.open .submenu-arrow {
