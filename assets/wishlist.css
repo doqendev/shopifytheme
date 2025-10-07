@@ -1,7 +1,7 @@
 .wishlist-toggle {
   position: absolute;
   top: 0.5rem;
-  right: 0.5rem;
+  right: 0.3rem;
   z-index: 5;
   display: inline-flex;
   align-items: center;
