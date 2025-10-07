@@ -116,6 +116,9 @@
       try {
         const matches = document.querySelectorAll(selector);
         matches.forEach((element) => roots.add(element));
+        if (matches.length) {
+          console.log('[SizeDrawer] Found variant root via selector', { sectionId, selector, matchCount: matches.length });
+        }
       } catch (error) {
         console.warn('Variant root selector failed', selector, error);
       }
@@ -209,6 +212,12 @@
     const normalizedOptionName = optionName.toLowerCase();
     let selectedValue = null;
 
+    console.log('[SizeDrawer] Resolving selected value', {
+      sectionId,
+      optionName,
+      optionPosition: option?.position,
+    });
+
     const buildPatterns = (contextSectionId) =>
       [
         optionName ? `${optionName}-${option.position}` : '',
@@ -231,6 +240,11 @@
           trimmedName === `options[${optionName}]` ||
           trimmedName === `options[${normalizedOptionName}]`
         ) {
+          console.log('[SizeDrawer] Found value via direct checked radio match', {
+            contextSectionId,
+            value: radio.value,
+            radioName: radio.name,
+          });
           return radio.value;
         }
       }
@@ -239,6 +253,11 @@
       for (const pattern of patterns) {
         const radio = root.querySelector(`input[name="${cssEscape(pattern)}"]:checked`);
         if (radio) {
+          console.log('[SizeDrawer] Found value via pattern match', {
+            contextSectionId,
+            pattern,
+            value: radio.value,
+          });
           return radio.value;
         }
       }
@@ -251,6 +270,11 @@
         for (const selector of selectSelectors) {
           const select = root.querySelector(selector);
           if (select && select.value) {
+            console.log('[SizeDrawer] Found value via select element', {
+              contextSectionId,
+              selector,
+              value: select.value,
+            });
             return select.value;
           }
         }
@@ -260,6 +284,10 @@
         `[data-option-value][data-option-position="${option.position}"].is-active, [data-option-value].active, [data-option-value].selected`
       );
       if (activeSwatch?.dataset?.optionValue) {
+        console.log('[SizeDrawer] Found value via active swatch dataset', {
+          contextSectionId,
+          value: activeSwatch.dataset.optionValue,
+        });
         return activeSwatch.dataset.optionValue;
       }
 
@@ -267,6 +295,10 @@
         `[data-option-index="${option.position - 1}"] input[type="radio"]:checked`
       );
       if (inputWithDataset) {
+        console.log('[SizeDrawer] Found value via data-option-index match', {
+          contextSectionId,
+          value: inputWithDataset.value,
+        });
         return inputWithDataset.value;
       }
 
@@ -290,6 +322,17 @@
 
     if (!selectedValue) {
       selectedValue = getOptionValueString(option.selected_value);
+      console.log('[SizeDrawer] Falling back to option default', {
+        sectionId,
+        optionName,
+        value: selectedValue,
+      });
+    } else {
+      console.log('[SizeDrawer] Resolved selected value', {
+        sectionId,
+        optionName,
+        value: selectedValue,
+      });
     }
 
     return selectedValue;
@@ -572,17 +615,32 @@
   }
 
   function updateDisplayedPrice(sectionId, overrideVariant) {
+    console.groupCollapsed('[SizeDrawer] updateDisplayedPrice', sectionId);
     const priceElements = getPriceElementsForSection(sectionId);
-    if (!priceElements.length) return;
+    console.log('[SizeDrawer] Found price elements', priceElements.length, priceElements);
+    if (!priceElements.length) {
+      console.groupEnd();
+      return;
+    }
 
     const variant = overrideVariant || getVariantForSelections(sectionId);
-    if (!variant) return;
+    if (!variant) {
+      console.log('[SizeDrawer] No matching variant found for price update');
+      console.groupEnd();
+      return;
+    }
 
     const priceValue = typeof variant.price === 'number' ? variant.price : Number(variant.price);
     const compareValue =
       typeof variant.compare_at_price === 'number' ? variant.compare_at_price : Number(variant.compare_at_price);
 
     const isOnSale = compareValue > priceValue;
+    console.log('[SizeDrawer] Variant price data', {
+      variantId: variant.id,
+      priceValue,
+      compareValue,
+      isOnSale,
+    });
 
     priceElements.forEach((priceElement) => {
       if (!priceElement) return;
@@ -635,6 +693,7 @@
 
       updateProductBadges(priceElement, variant);
     });
+    console.groupEnd();
   }
 
 
@@ -1153,7 +1212,11 @@
     const sourceSectionId = variantElement.dataset.section;
     if (!sourceSectionId) return;
 
-    console.log('Variant change detected in section:', sourceSectionId);
+    console.log('[SizeDrawer] Variant change detected', {
+      sourceSectionId,
+      changedElement: event.target,
+      pickerType: variantElement.tagName,
+    });
 
     updateDisplayedPrice(sourceSectionId);
 
