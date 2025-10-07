@@ -303,9 +303,10 @@ h5,
   }
 }
 
+@media only screen and (max-width: 749px) {
 h1,
 .h1 {
-  font-size: 22px !important;
+  font-size: 14px !important;
   letter-spacing: 0;
   margin-left: 2.3rem;
 }
