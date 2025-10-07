@@ -659,7 +659,7 @@
       }
 
       const salePrice = priceElement.querySelector('.price__sale .price-item--sale');
-      if (salePrice && !Number.isNaN(priceValue)) {
+      if (salePrice && isOnSale && !Number.isNaN(priceValue)) {
         salePrice.textContent = formatMoney(priceValue);
       }
 
