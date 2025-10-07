@@ -2,9 +2,28 @@
   const stateBySection = new Map();
   const COLOR_KEYWORDS = ['color', 'cor', 'colour'];
   const SIZE_KEYWORDS = ['size', 'tamanho', 'talla'];
+  const DESKTOP_MEDIA_QUERY = '(min-width: 990px)';
+  const VIEWPORT_MARGIN = 12;
 
   // Flag to prevent infinite sync loops
   let isSyncing = false;
+
+  const isDesktopViewport = () => {
+    if (window.matchMedia) {
+      return window.matchMedia(DESKTOP_MEDIA_QUERY).matches;
+    }
+    return window.innerWidth >= 990;
+  };
+
+  const clearDesktopStyles = (content) => {
+    if (!content) return;
+    ['width', 'left', 'top', 'right', 'bottom', 'max-height'].forEach((property) => {
+      content.style.removeProperty(property);
+    });
+    if (content.dataset && Object.prototype.hasOwnProperty.call(content.dataset, 'drop')) {
+      delete content.dataset.drop;
+    }
+  };
 
   const cssEscape = (value) => {
     if (window.CSS && typeof window.CSS.escape === 'function') {
@@ -284,6 +303,7 @@
         activeTrigger: null,
         triggers: [],
         triggerData: new Map(),
+        positionListeners: [],
       };
       stateBySection.set(sectionId, state);
     }
@@ -320,6 +340,117 @@
     }
 
     return state;
+  }
+
+  const getActiveTriggerForSection = (sectionId) => {
+    const state = ensureState(sectionId);
+    return state.activeTrigger || state.triggers[0] || null;
+  };
+
+  function stopDesktopPositioning(sectionId) {
+    const state = stateBySection.get(sectionId);
+    if (!state || !Array.isArray(state.positionListeners)) return;
+    state.positionListeners.forEach(({ target, type, handler, options }) => {
+      if (target && typeof target.removeEventListener === 'function') {
+        target.removeEventListener(type, handler, options);
+      }
+    });
+    state.positionListeners = [];
+  }
+
+  function startDesktopPositioning(sectionId) {
+    const state = ensureState(sectionId);
+    stopDesktopPositioning(sectionId);
+
+    const updatePosition = () => positionDrawer(sectionId);
+    const listeners = [
+      { target: window, type: 'resize', handler: updatePosition, options: false },
+      { target: window, type: 'scroll', handler: updatePosition, options: { passive: true } },
+    ];
+
+    listeners.forEach(({ target, type, handler, options }) => {
+      if (target && typeof target.addEventListener === 'function') {
+        target.addEventListener(type, handler, options);
+      }
+    });
+
+    state.positionListeners = listeners;
+  }
+
+  function positionDrawer(sectionId) {
+    const drawer = document.getElementById(`size-drawer-${sectionId}`);
+    if (!drawer || !drawer.classList.contains('is-open')) return;
+
+    const content = drawer.querySelector('.size-drawer__content');
+    if (!content) return;
+
+    if (content.dataset && Object.prototype.hasOwnProperty.call(content.dataset, 'drop')) {
+      delete content.dataset.drop;
+    }
+
+    const desktop = isDesktopViewport();
+    drawer.classList.toggle('size-drawer--desktop', desktop);
+
+    if (!desktop) {
+      clearDesktopStyles(content);
+      stopDesktopPositioning(sectionId);
+      return;
+    }
+
+    const trigger = getActiveTriggerForSection(sectionId);
+    if (!trigger) return;
+
+    const triggerRect = trigger.getBoundingClientRect();
+    if (!triggerRect || (!triggerRect.width && !triggerRect.height)) return;
+
+    const viewportWidth = document.documentElement.clientWidth || window.innerWidth;
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+    const margin = VIEWPORT_MARGIN;
+
+    content.style.removeProperty('top');
+    content.style.removeProperty('bottom');
+    content.style.removeProperty('left');
+    content.style.removeProperty('right');
+
+    const width = Math.max(0, Math.round(triggerRect.width));
+    if (width > 0) {
+      content.style.width = `${width}px`;
+    } else {
+      content.style.removeProperty('width');
+    }
+
+    const maxHeight = Math.max(200, viewportHeight - margin * 2);
+    content.style.maxHeight = `${maxHeight}px`;
+
+    const contentWidth = content.offsetWidth;
+    const contentHeight = content.offsetHeight;
+
+    let left = triggerRect.left;
+    if (left + contentWidth > viewportWidth - margin) {
+      left = viewportWidth - margin - contentWidth;
+    }
+    if (left < margin) {
+      left = margin;
+    }
+
+    let top = triggerRect.bottom + margin;
+    let drop = 'down';
+
+    if (top + contentHeight > viewportHeight - margin) {
+      const above = triggerRect.top - margin - contentHeight;
+      if (above >= margin) {
+        top = above;
+        drop = 'up';
+      } else {
+        const clamped = Math.max(margin, viewportHeight - margin - contentHeight);
+        top = clamped;
+        drop = clamped >= triggerRect.bottom ? 'down' : 'up';
+      }
+    }
+
+    content.style.left = `${Math.round(left)}px`;
+    content.style.top = `${Math.round(top)}px`;
+    content.dataset.drop = drop;
   }
 
   function setStatus(sectionId, message) {
@@ -468,6 +599,10 @@
       setStatus(sectionId, 'Esgotado para a combinação selecionada.');
     } else {
       setStatus(sectionId, '');
+    }
+    const drawer = document.getElementById(`size-drawer-${sectionId}`);
+    if (drawer && drawer.classList.contains('is-open')) {
+      requestAnimationFrame(() => positionDrawer(sectionId));
     }
   }
 
@@ -717,6 +852,7 @@
       console.log(`  ${index + 1}. ID: ${el.id}, data-section: ${el.dataset.section}`);
     });
 
+    stopDesktopPositioning(sectionId);
     const state = ensureState(sectionId);
     console.log('State ensured for section:', sectionId, state);
     renderSizeOptions(sectionId);
@@ -726,6 +862,13 @@
 
     drawer.classList.add('is-open');
     drawer.setAttribute('aria-hidden', 'false');
+    positionDrawer(sectionId);
+    if (isDesktopViewport()) {
+      startDesktopPositioning(sectionId);
+      requestAnimationFrame(() => positionDrawer(sectionId));
+    } else {
+      clearDesktopStyles(drawer.querySelector('.size-drawer__content'));
+    }
 
     const firstAvailable = drawer.querySelector('.size-item:not(.size-item--unavailable)');
     if (firstAvailable) {
@@ -747,6 +890,10 @@
 
     drawer.classList.remove('is-open');
     drawer.setAttribute('aria-hidden', 'true');
+    stopDesktopPositioning(sectionId);
+    const content = drawer.querySelector('.size-drawer__content');
+    clearDesktopStyles(content);
+    drawer.classList.remove('size-drawer--desktop');
     const state = stateBySection.get(sectionId);
     if (state) {
       if (state.lastFocused) {
