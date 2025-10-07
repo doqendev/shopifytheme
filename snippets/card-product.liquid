@@ -44,7 +44,6 @@
     overflow: hidden;
     pointer-events: auto; /* Ensure pointer events are allowed */
     touch-action: auto; /* Let the browser decide (default behavior) */
-    position: relative;
   }
   .swiper-wrapper {
     display: flex;
@@ -55,100 +54,8 @@
   .swiper-slide {
     width: 100%;
   }
-
-  /* Show pagination dots on hover */
-  .swiper-pagination {
-    position: absolute;
-    bottom: 8px;
-    left: 0;
-    right: 0;
-    text-align: center;
-    z-index: 20;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .product-card:hover .swiper-pagination {
-    opacity: 1;
-  }
-
   .swiper-pagination-bullet {
-    width: 6px;
-    height: 6px;
-    background: rgba(255, 255, 255, 0.7);
-    border-radius: 50%;
-    display: inline-block;
-    margin: 0 4px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .swiper-pagination-bullet-active {
-    background: white;
-    width: 8px;
-    height: 8px;
-  }
-
-  /* Navigation arrows - only visible on hover (desktop only) */
-  .swiper-button-prev,
-  .swiper-button-next {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 32px;
-    height: 32px;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 20;
-    opacity: 0;
-    transition: opacity 0.3s ease, background 0.2s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  .swiper-button-prev:hover,
-  .swiper-button-next:hover {
-    background: white;
-  }
-
-  .product-card:hover .swiper-button-prev,
-  .product-card:hover .swiper-button-next {
-    opacity: 1;
-  }
-
-  .swiper-button-prev {
-    left: 8px;
-  }
-
-  .swiper-button-next {
-    right: 8px;
-  }
-
-  .swiper-button-prev svg,
-  .swiper-button-next svg {
-    width: 16px;
-    height: 16px;
-    fill: black;
-  }
-
-  /* Hide arrows on mobile/touch devices */
-  @media (hover: none) {
-    .swiper-button-prev,
-    .swiper-button-next {
-      display: none;
-    }
-  }
-
-  /* Show cursor grab hint */
-  .swiper-container {
-    cursor: grab;
-  }
-
-  .swiper-container:active {
-    cursor: grabbing;
+    display: none;
   }
 
 @media screen and (min-width: 750px) {
@@ -323,17 +230,6 @@
       {% endfor %}
     </div>
 
-    <div class="swiper-button-prev">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-      </svg>
-    </div>
-    <div class="swiper-button-next">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>
-      </svg>
-    </div>
-
     <div class="swiper-pagination"></div>
   </div>
 {% endif %}
@@ -500,10 +396,6 @@
           pagination: {
             el: card.querySelector('.swiper-pagination'),
             clickable: true,
-          },
-          navigation: {
-            nextEl: card.querySelector('.swiper-button-next'),
-            prevEl: card.querySelector('.swiper-button-prev'),
           },
           simulateTouch: true,
           touchRatio: 1,
