@@ -1214,6 +1214,24 @@
     closeDrawer(openDrawerElement.dataset.sectionId);
   }
 
+  // New handler for variant change from pub/sub (after product-info.js updates)
+  function handleVariantChangeFromPubSub(event) {
+    const sectionId = event.data?.sectionId;
+    const variant = event.data?.variant;
+
+    if (!sectionId) return;
+
+    console.log('[SizeDrawer] Variant change from pub/sub', {
+      sectionId,
+      variantId: variant?.id,
+      variant
+    });
+
+    // Use the variant from the event data if available
+    updateDisplayedPrice(sectionId, variant);
+  }
+
+  // Keep the old handler for backwards compatibility but it's now disabled
   function handleVariantChange(event) {
     const variantElement = event.target.closest('variant-selects, variant-radios');
     if (!variantElement) return;
@@ -1307,7 +1325,14 @@
     hideProductSizeInputs();
     document.addEventListener('click', handleDocumentClick, true); // Use capture phase
     document.addEventListener('keydown', handleDocumentKeydown);
-    document.addEventListener('change', handleVariantChange, true);
+    // Commenting out the change event listener - we'll use variantChange pubsub instead
+    // document.addEventListener('change', handleVariantChange, true);
+
+    // Subscribe to variant change events after product-info.js has updated
+    if (typeof subscribe === 'function' && window.PUB_SUB_EVENTS?.variantChange) {
+      subscribe(window.PUB_SUB_EVENTS.variantChange, handleVariantChangeFromPubSub);
+    }
+
     document.addEventListener('product-info:loaded', handleProductInfoLoaded);
     document.addEventListener('shopify:section:load', handleSectionLoad);
     console.log('Size drawer initialized. Event listeners attached.');
