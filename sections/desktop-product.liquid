@@ -804,39 +804,65 @@ document.addEventListener('DOMContentLoaded', function() {
     var selectedOptions = getSelectedOptions();
     var matchingVariant = findVariant(selectedOptions);
     
-    if (!matchingVariant) return;
+    if (!matchingVariant) {
+      console.warn('No matching variant found for price update');
+      return;
+    }
+    
+    console.log('Updating price for variant:', matchingVariant.title);
+    console.log('Variant price:', matchingVariant.price);
+    console.log('Variant compare_at_price:', matchingVariant.compare_at_price);
     
     var priceContainer = document.querySelector('.desktop-product-info .price-container .price');
-    if (!priceContainer) return;
+    if (!priceContainer) {
+      console.warn('Price container not found');
+      return;
+    }
     
     var hasComparePrice = matchingVariant.compare_at_price && matchingVariant.compare_at_price > matchingVariant.price;
+    
+    console.log('Has compare price (on sale):', hasComparePrice);
     
     // Update the price container classes
     if (hasComparePrice) {
       priceContainer.classList.add('price--on-sale');
+      priceContainer.classList.remove('price--sold-out');
     } else {
       priceContainer.classList.remove('price--on-sale');
+      if (!matchingVariant.available) {
+        priceContainer.classList.add('price--sold-out');
+      }
     }
     
-    // Update regular price
+    // Format prices properly - prices in Shopify are in cents
+    var priceInCents = matchingVariant.price;
+    var compareAtPriceInCents = matchingVariant.compare_at_price || 0;
+    
+    // Update regular price (shown when NOT on sale)
     var regularPriceEl = priceContainer.querySelector('.price__regular .price-item--regular');
     if (regularPriceEl) {
-      regularPriceEl.textContent = Shopify.formatMoney(matchingVariant.price, "{{amount_no_decimals_with_comma_separator}}€");
+      regularPriceEl.textContent = formatPrice(priceInCents);
     }
     
-    // Update sale price
+    // Update sale price (shown when on sale)
     var salePriceEl = priceContainer.querySelector('.price__sale .price-item--sale');
     if (salePriceEl) {
-      salePriceEl.textContent = Shopify.formatMoney(matchingVariant.price, "{{amount_no_decimals_with_comma_separator}}€");
+      salePriceEl.textContent = formatPrice(priceInCents);
     }
     
-    // Update compare at price (strikethrough price)
+    // Update compare at price (strikethrough price when on sale)
     var compareAtEls = priceContainer.querySelectorAll('.price__sale s.price-item--regular');
     compareAtEls.forEach(function(el) {
-      if (matchingVariant.compare_at_price) {
-        el.textContent = Shopify.formatMoney(matchingVariant.compare_at_price, "{{amount_no_decimals_with_comma_separator}}€");
+      if (compareAtPriceInCents > 0) {
+        el.textContent = formatPrice(compareAtPriceInCents);
       }
     });
+  }
+  
+  // Helper function to format price from cents to euros
+  function formatPrice(priceInCents) {
+    var euros = priceInCents / 100;
+    return euros.toFixed(2).replace('.', ',') + '€';
   }
 
   updateVariant();
