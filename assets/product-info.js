@@ -186,11 +186,15 @@ if (!customElements.get('product-info')) {
               // Update price classes to ensure correct display of sale/regular prices
               if (id === 'price') {
                 // Copy all classes from source to destination to ensure price display is correct
-                console.log('[ProductInfo] Updating price classes', {
-                  oldClass: destination.className,
-                  newClass: source.className
-                });
                 destination.className = source.className;
+                
+                // Also update the parent price container if it exists
+                const sourceParent = source.closest('.price');
+                const destParent = destination.closest('.price');
+                if (sourceParent && destParent) {
+                  // Copy the price state classes (on-sale, sold-out, etc.)
+                  destParent.className = sourceParent.className;
+                }
               }
 
               destination.classList.toggle('hidden', shouldHide(source));

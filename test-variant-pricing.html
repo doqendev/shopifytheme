@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Variant Pricing Fix</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .code-block {
+            background: #f4f4f4;
+            padding: 15px;
+            border-left: 3px solid #007bff;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .warning {
+            color: orange;
+            font-weight: bold;
+        }
+        ul {
+            margin: 10px 0;
+        }
+        li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Shopify Variant Pricing Fix - Test Documentation</h1>
+    
+    <div class="test-section">
+        <h2>🔧 Issue Fixed</h2>
+        <p><strong>Problem:</strong> When switching between product variants, if one variant is on sale and another isn't, the price display doesn't update correctly. The sale price continues to show even for variants that aren't on sale.</p>
+        <p><strong>Solution:</strong> Updated the JavaScript to properly sync the price container's CSS classes when variants change.</p>
+    </div>
+
+    <div class="test-section">
+        <h2>📁 Modified File</h2>
+        <div class="code-block">
+            <strong>File:</strong> C:\Users\Utilizador\Downloads\theme\assets\product-info.js<br>
+            <strong>Function:</strong> handleUpdateProductInfo<br>
+            <strong>Line:</strong> ~185-199
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔍 What Was Changed</h2>
+        <p>The update logic for price display now includes:</p>
+        <ul>
+            <li>✅ Copying all classes from the source price element to the destination</li>
+            <li>✅ Finding and updating the parent .price container</li>
+            <li>✅ Ensuring the price--on-sale class is properly applied/removed based on variant selection</li>
+        </ul>
+        
+        <div class="code-block">
+            <pre>// Update price classes to ensure correct display of sale/regular prices
+if (id === 'price') {
+  // Copy all classes from source to destination
+  destination.className = source.className;
+  
+  // Also update the parent price container if it exists
+  const sourceParent = source.closest('.price');
+  const destParent = destination.closest('.price');
+  if (sourceParent && destParent) {
+    // Copy the price state classes (on-sale, sold-out, etc.)
+    destParent.className = sourceParent.className;
+  }
+}</pre>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>✅ Testing Steps</h2>
+        <ol>
+            <li><strong>Upload the modified file to Shopify:</strong>
+                <ul>
+                    <li>Go to your Shopify Admin → Online Store → Themes</li>
+                    <li>Click "Actions" → "Edit code" on your theme</li>
+                    <li>Navigate to Assets → product-info.js</li>
+                    <li>Replace the content with the modified version</li>
+                    <li>Save the file</li>
+                </ul>
+            </li>
+            
+            <li><strong>Test on a product with multiple variants:</strong>
+                <ul>
+                    <li>Find a product with at least 2 color variants</li>
+                    <li>Ensure one variant has a compare_at_price (on sale)</li>
+                    <li>Ensure another variant has no compare_at_price (regular price)</li>
+                </ul>
+            </li>
+            
+            <li><strong>Verify the fix:</strong>
+                <ul>
+                    <li>Select the variant that's on sale → Should show strikethrough regular price and red sale price</li>
+                    <li>Select the variant that's NOT on sale → Should show only regular price (no strikethrough, no red price)</li>
+                    <li>Switch back and forth → Prices should update correctly each time</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>🎨 CSS Classes Involved</h2>
+        <p>The fix ensures these CSS classes are properly managed:</p>
+        <ul>
+            <li><code>.price</code> - Main price container</li>
+            <li><code>.price--on-sale</code> - Added when variant has a sale price</li>
+            <li><code>.price__regular</code> - Regular price display (hidden when on sale)</li>
+            <li><code>.price__sale</code> - Sale price display (shown when on sale)</li>
+            <li><code>.price-item--regular</code> - Regular price text</li>
+            <li><code>.price-item--sale</code> - Sale price text (styled in red)</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>⚠️ Important Notes</h2>
+        <ul>
+            <li class="warning">Always test on a development/staging theme first</li>
+            <li>Clear browser cache after uploading changes</li>
+            <li>Test on both desktop and mobile views</li>
+            <li>Check that the fix works with your specific theme customizations</li>
+            <li>The fix maintains all existing price functionality (badges, availability, etc.)</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>🔄 Rollback Instructions</h2>
+        <p>If you need to revert the changes:</p>
+        <ol>
+            <li>Go to Online Store → Themes → Edit code</li>
+            <li>Navigate to Assets → product-info.js</li>
+            <li>Click "Older versions" to see the file history</li>
+            <li>Select the version before your changes</li>
+            <li>Click "Use this version" to restore</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>✨ Expected Result</h2>
+        <p class="success">After implementing this fix, your product page should correctly display:</p>
+        <ul>
+            <li>✅ Sale prices (with strikethrough regular price) ONLY for variants that are actually on sale</li>
+            <li>✅ Regular prices (without any sale styling) for variants that are not on sale</li>
+            <li>✅ Smooth transitions when switching between variants</li>
+            <li>✅ Proper price formatting and styling based on your theme's design</li>
+        </ul>
+    </div>
+
+</body>
+</html>
