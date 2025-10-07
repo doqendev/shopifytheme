@@ -6,12 +6,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 3.5rem;
-  height: 3.5rem;
+  width: 3rem;
+  height: 3rem;
   border-radius: 999px;
   border: none;
   background: transparent;
-  color: grey;
+  color: black;
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
