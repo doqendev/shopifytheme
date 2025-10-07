@@ -182,6 +182,13 @@ if (!customElements.get('product-info')) {
             const destination = this.querySelector(`#${id}-${this.dataset.section}`);
             if (source && destination) {
               destination.innerHTML = source.innerHTML;
+
+              // Update price classes to ensure correct display of sale/regular prices
+              if (id === 'price') {
+                // Copy all classes from source to destination to ensure price display is correct
+                destination.className = source.className;
+              }
+
               destination.classList.toggle('hidden', shouldHide(source));
             }
           };
