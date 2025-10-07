@@ -413,12 +413,136 @@
       var plusEls = document.querySelectorAll('.product-card-plus');
       var productCards = document.querySelectorAll('.product-card-wrapper');
 
+      function formatMoney(cents) {
+        try {
+          if (typeof Shopify !== 'undefined' && typeof Shopify.formatMoney === 'function') {
+            var moneyFormat = (window.theme && window.theme.moneyFormat) || Shopify.money_format || '${{amount}}';
+            return Shopify.formatMoney(cents, moneyFormat);
+          }
+        } catch (error) {
+          console.warn('Money formatting failed', error);
+        }
+        var amount = typeof cents === 'number' ? cents / 100 : parseFloat(cents) / 100;
+        if (Number.isNaN(amount)) return '';
+        return amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+
+      function parseVariants(card) {
+        if (!card) return [];
+        try {
+          return JSON.parse(card.dataset.variants || '[]') || [];
+        } catch (error) {
+          console.warn('Unable to parse variants for card', card, error);
+          return [];
+        }
+      }
+
+      function findVariantForCard(card) {
+        var variants = parseVariants(card);
+        if (!variants.length) return null;
+
+        var colorIndex = parseInt(card.dataset.colorIndex || '-1', 10);
+        var selectedColor = null;
+        var activeSwatch = card.querySelector('.swatch.active');
+        if (activeSwatch) {
+          selectedColor = (activeSwatch.dataset.color || '').toLowerCase();
+        }
+
+        if (selectedColor && colorIndex !== -1) {
+          for (var i = 0; i < variants.length; i++) {
+            var optionValue = (variants[i].options && variants[i].options[colorIndex] ? variants[i].options[colorIndex] : '').toLowerCase();
+            if (optionValue === selectedColor) {
+              return variants[i];
+            }
+          }
+        }
+
+        return variants[0];
+      }
+
+      function updateSaleAndSoldOutBadges(priceElement, variant) {
+        if (!priceElement) return;
+        var saleBadge = priceElement.querySelector('.price__badge-sale');
+        var soldOutBadge = priceElement.querySelector('.price__badge-sold-out');
+        var onSale = variant && variant.compare_at_price && variant.compare_at_price > variant.price;
+        var available = !!(variant && variant.available);
+
+        priceElement.classList.toggle('price--on-sale', !!onSale);
+        priceElement.classList.toggle('price--sold-out', !available);
+
+        if (saleBadge && !saleBadge.dataset.defaultText) {
+          saleBadge.dataset.defaultText = saleBadge.textContent.trim();
+        }
+
+        if (saleBadge) {
+          if (onSale) {
+            var discount = 0;
+            if (variant.compare_at_price) {
+              discount = Math.round(((variant.compare_at_price - variant.price) / variant.compare_at_price) * 100);
+            }
+            var defaultText = saleBadge.dataset.defaultText || saleBadge.textContent || 'Sale';
+            saleBadge.textContent = discount > 0 ? '-' + discount + '%' : defaultText;
+            saleBadge.classList.remove('hidden');
+            saleBadge.style.display = '';
+          } else {
+            saleBadge.classList.add('hidden');
+            saleBadge.style.display = 'none';
+          }
+        }
+
+        if (soldOutBadge) {
+          if (!available) {
+            soldOutBadge.classList.remove('hidden');
+            soldOutBadge.style.display = '';
+          } else {
+            soldOutBadge.classList.add('hidden');
+            soldOutBadge.style.display = 'none';
+          }
+        }
+      }
+
+      function updateCardPrice(card) {
+        if (!card) return;
+        var priceElement = card.querySelector('.price');
+        var variant = findVariantForCard(card);
+        if (!priceElement || !variant) return;
+
+        var formattedPrice = formatMoney(variant.price);
+        var formattedCompare = variant.compare_at_price ? formatMoney(variant.compare_at_price) : '';
+        var onSale = !!(variant.compare_at_price && variant.compare_at_price > variant.price);
+
+        var regularPrice = priceElement.querySelector('.price__regular .price-item--regular');
+        if (regularPrice) {
+          regularPrice.textContent = formattedPrice;
+        }
+
+        var salePrice = priceElement.querySelector('.price__sale .price-item--sale');
+        if (salePrice) {
+          salePrice.textContent = formattedPrice;
+        }
+
+        var comparePrice = priceElement.querySelector('.price__sale .price-item--regular');
+        if (comparePrice) {
+          if (onSale && formattedCompare) {
+            comparePrice.textContent = formattedCompare;
+            if (comparePrice.parentElement) {
+              comparePrice.parentElement.style.display = '';
+            }
+          } else {
+            comparePrice.textContent = '';
+            if (comparePrice.parentElement) {
+              comparePrice.parentElement.style.display = 'none';
+            }
+          }
+        }
+
+        updateSaleAndSoldOutBadges(priceElement, variant);
+        card.dataset.productPrice = formattedPrice;
+      }
+
       function updateSizeButtons(card) {
         if (!card) return;
-        var variants = [];
-        try {
-          variants = JSON.parse(card.dataset.variants);
-        } catch (e) {}
+        var variants = parseVariants(card);
         var variantInventory = {};
         try {
           variantInventory = JSON.parse(card.dataset.variantInventory || '{}');
@@ -476,6 +600,7 @@
 
       productCards.forEach(function(card){
         updateSizeButtons(card);
+        updateCardPrice(card);
       });
 
       function closeAllPlus() {
@@ -618,14 +743,17 @@
           });
           swatchEl.classList.add('active');
           var newImage = swatchEl.getAttribute('data-variant-image');
-          if (!newImage) return;
-          var mediaContainer = card.querySelector('.card__media');
-          if (!mediaContainer) return;
-          var img = card.querySelector('.swiper-slide-active img') || mediaContainer.querySelector('img');
-          if (img) {
-            img.src = newImage;
-            img.srcset = newImage;
+          if (newImage) {
+            var mediaContainer = card.querySelector('.card__media');
+            if (mediaContainer) {
+              var img = card.querySelector('.swiper-slide-active img') || mediaContainer.querySelector('img');
+              if (img) {
+                img.src = newImage;
+                img.srcset = newImage;
+              }
+            }
           }
+          updateCardPrice(card);
           updateSizeButtons(card);
         });
       }
