@@ -31,7 +31,7 @@
 .wishlist-toggle__icon path {
   fill: transparent;
   stroke: currentColor;
-  stroke-width: 1.8;
+  stroke-width: 1;
   transition: fill 0.15s ease;
 }
 
