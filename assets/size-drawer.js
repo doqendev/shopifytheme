@@ -546,12 +546,34 @@
     }
   }
 
-  function updateDisplayedPrice(sectionId, overrideVariant) {
-    const priceWrapper = document.getElementById(`price-${sectionId}`);
-    if (!priceWrapper) return;
+  function getPriceElementsForSection(sectionId) {
+    const priceElements = new Set();
+    const selectors = [
+      `#price-${cssEscape(sectionId)}`,
+      `#ProductInfo-${cssEscape(sectionId)}`,
+      `[data-section="${cssEscape(sectionId)}"]`,
+      `[data-section-id="${cssEscape(sectionId)}"]`,
+    ];
 
-    const priceElement = priceWrapper.querySelector('.price');
-    if (!priceElement) return;
+    selectors.forEach((selector) => {
+      const nodes = document.querySelectorAll(selector);
+      nodes.forEach((node) => {
+        if (!node) return;
+        if (node.classList?.contains('price')) {
+          priceElements.add(node);
+        }
+        if (typeof node.querySelectorAll === 'function') {
+          node.querySelectorAll('.price').forEach((priceNode) => priceElements.add(priceNode));
+        }
+      });
+    });
+
+    return Array.from(priceElements);
+  }
+
+  function updateDisplayedPrice(sectionId, overrideVariant) {
+    const priceElements = getPriceElementsForSection(sectionId);
+    if (!priceElements.length) return;
 
     const variant = overrideVariant || getVariantForSelections(sectionId);
     if (!variant) return;
@@ -560,37 +582,59 @@
     const compareValue =
       typeof variant.compare_at_price === 'number' ? variant.compare_at_price : Number(variant.compare_at_price);
 
-    const regularPrice = priceElement.querySelector('.price__regular .price-item--regular');
-    if (regularPrice && !Number.isNaN(priceValue)) {
-      regularPrice.textContent = formatMoney(priceValue);
-    }
-
-    const salePrice = priceElement.querySelector('.price__sale .price-item--sale');
-    if (salePrice && !Number.isNaN(priceValue)) {
-      salePrice.textContent = formatMoney(priceValue);
-    }
-
-    const comparePrice = priceElement.querySelector('.price__sale .price-item--regular');
-    const saleContainer = priceElement.querySelector('.price__sale');
     const isOnSale = compareValue > priceValue;
 
-    if (comparePrice) {
-      if (isOnSale && !Number.isNaN(compareValue)) {
-        comparePrice.textContent = formatMoney(compareValue);
-        if (saleContainer) {
-          saleContainer.style.display = '';
-          saleContainer.classList.remove('hidden');
+    priceElements.forEach((priceElement) => {
+      if (!priceElement) return;
+
+      const regularPrice = priceElement.querySelector('.price__regular .price-item--regular');
+      if (regularPrice && !Number.isNaN(priceValue)) {
+        regularPrice.textContent = formatMoney(priceValue);
+      }
+
+      const salePrice = priceElement.querySelector('.price__sale .price-item--sale');
+      if (salePrice && !Number.isNaN(priceValue)) {
+        salePrice.textContent = formatMoney(priceValue);
+      }
+
+      const comparePrice = priceElement.querySelector('.price__sale .price-item--regular');
+      const saleContainer = priceElement.querySelector('.price__sale');
+
+      if (comparePrice) {
+        if (isOnSale && !Number.isNaN(compareValue)) {
+          comparePrice.textContent = formatMoney(compareValue);
+          if (saleContainer) {
+            saleContainer.style.removeProperty('display');
+            saleContainer.classList.remove('hidden');
+          }
+        } else {
+          comparePrice.textContent = '';
+          if (saleContainer) {
+            saleContainer.style.display = 'none';
+            saleContainer.classList.add('hidden');
+          }
         }
-      } else {
-        comparePrice.textContent = '';
-        if (saleContainer) {
+      } else if (saleContainer && !isOnSale) {
+        saleContainer.style.display = 'none';
+        saleContainer.classList.add('hidden');
+      } else if (saleContainer) {
+        saleContainer.style.removeProperty('display');
+        saleContainer.classList.remove('hidden');
+      }
+
+      // Hide sale container entirely if there's nothing meaningful inside
+      if (saleContainer) {
+        const hasVisibleContent = Array.from(saleContainer.querySelectorAll('.price-item')).some(
+          (node) => node.textContent && node.textContent.trim() !== ''
+        );
+        if (!hasVisibleContent) {
           saleContainer.style.display = 'none';
           saleContainer.classList.add('hidden');
         }
       }
-    }
 
-    updateProductBadges(priceElement, variant);
+      updateProductBadges(priceElement, variant);
+    });
   }
 
 
@@ -1174,6 +1218,7 @@
     if (!sectionId) return;
     hideProductSizeInputs(productInfo);
     resetTriggerLabel(sectionId);
+    updateDisplayedPrice(sectionId);
   }
 
   function handleSectionLoad(event) {
@@ -1183,6 +1228,7 @@
     if (!sectionId) return;
     hideProductSizeInputs(event.target);
     resetTriggerLabel(sectionId);
+    updateDisplayedPrice(sectionId);
   }
 
   function initialize() {
@@ -1201,6 +1247,12 @@
     // Debug: Check for size drawer triggers
     const triggers = document.querySelectorAll('[data-size-drawer-trigger]');
     console.log('Found size drawer triggers:', triggers.length, triggers);
+
+    if (window.themeSizeDrawerData && typeof window.themeSizeDrawerData === 'object') {
+      Object.keys(window.themeSizeDrawerData).forEach((sectionKey) => {
+        updateDisplayedPrice(sectionKey);
+      });
+    }
   }
 
   // Initialize with multiple fallbacks to ensure it runs
