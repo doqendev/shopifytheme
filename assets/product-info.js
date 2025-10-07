@@ -186,6 +186,10 @@ if (!customElements.get('product-info')) {
               // Update price classes to ensure correct display of sale/regular prices
               if (id === 'price') {
                 // Copy all classes from source to destination to ensure price display is correct
+                console.log('[ProductInfo] Updating price classes', {
+                  oldClass: destination.className,
+                  newClass: source.className
+                });
                 destination.className = source.className;
               }
 
