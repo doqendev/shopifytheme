@@ -416,7 +416,7 @@
       function formatMoney(cents) {
         try {
           if (typeof Shopify !== 'undefined' && typeof Shopify.formatMoney === 'function') {
-            var moneyFormat = (window.theme && window.theme.moneyFormat) || Shopify.money_format || '${{amount}}';
+            var moneyFormat = (window.theme && window.theme.moneyFormat) || Shopify.money_format || '€{{amount}}';
             return Shopify.formatMoney(cents, moneyFormat);
           }
         } catch (error) {
@@ -424,7 +424,7 @@
         }
         var amount = typeof cents === 'number' ? cents / 100 : parseFloat(cents) / 100;
         if (Number.isNaN(amount)) return '';
-        return amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        return '€' + amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       }
 
       function parseVariants(card) {
@@ -730,33 +730,30 @@
         }
       });
 
-      // Swatch click handling remains unchanged
-      var productGridContainer = document.getElementById('ProductGridContainer');
-      if (productGridContainer) {
-        productGridContainer.addEventListener('click', function(e) {
-          var swatchEl = e.target.closest('.swatch');
-          if (!swatchEl) return;
-          var card = swatchEl.closest('.product-card-wrapper');
-          if (!card) return;
-          card.querySelectorAll('.swatch').forEach(function(el) {
-            el.classList.remove('active');
-          });
-          swatchEl.classList.add('active');
-          var newImage = swatchEl.getAttribute('data-variant-image');
-          if (newImage) {
-            var mediaContainer = card.querySelector('.card__media');
-            if (mediaContainer) {
-              var img = card.querySelector('.swiper-slide-active img') || mediaContainer.querySelector('img');
-              if (img) {
-                img.src = newImage;
-                img.srcset = newImage;
-              }
+      // Swatch click handling - works for all product cards (collections, recommended products, etc.)
+      document.addEventListener('click', function(e) {
+        var swatchEl = e.target.closest('.swatch');
+        if (!swatchEl) return;
+        var card = swatchEl.closest('.product-card-wrapper');
+        if (!card) return;
+        card.querySelectorAll('.swatch').forEach(function(el) {
+          el.classList.remove('active');
+        });
+        swatchEl.classList.add('active');
+        var newImage = swatchEl.getAttribute('data-variant-image');
+        if (newImage) {
+          var mediaContainer = card.querySelector('.card__media');
+          if (mediaContainer) {
+            var img = card.querySelector('.swiper-slide-active img') || mediaContainer.querySelector('img');
+            if (img) {
+              img.src = newImage;
+              img.srcset = newImage;
             }
           }
-          updateCardPrice(card);
-          updateSizeButtons(card);
-        });
-      }
+        }
+        updateCardPrice(card);
+        updateSizeButtons(card);
+      });
     });
   </script>
 
