@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <li class="menu-item has-submenu">
             <a href="#" class="menu-link info-item">
               + INFO
-              <span class="submenu-arrow">J</span>
+              <span class="submenu-arrow">›</span>
             </a>
             <div class="submenu hidden">
               <ul class="submenu-list">
