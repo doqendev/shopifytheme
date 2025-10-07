@@ -46,7 +46,7 @@
       price
       {%- if price_class %} {{ price_class }}{% endif -%}
       {%- if available == false %} price--sold-out{% endif -%}
-      {%- if compare_at_price > price and product.quantity_price_breaks_configured? != true %} price--on-sale{% endif -%}
+      {%- if target and compare_at_price > price and product.quantity_price_breaks_configured? != true %} price--on-sale{% endif -%}
       {%- if compare_at_price > price and product.quantity_price_breaks_configured? %} volume-pricing--sale-badge{% endif -%}
       {%- if product.price_varies == false and product.compare_at_price_varies %} price--no-compare{% endif -%}
       {%- if show_badges %} price--show-badge{% endif -%}
@@ -124,14 +124,10 @@
       </small>
     </div>
     {%- if show_badges -%}
-  {% if product.compare_at_price > product.price %}
-    {%- assign discount_percentage = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price | round -%}
+  {% if compare_at_price and compare_at_price > price %}
+    {%- assign discount_percentage = compare_at_price | minus: price | times: 100 | divided_by: compare_at_price | round -%}
     <span class="badge price__badge-sale color-{{ settings.sale_badge_color_scheme }}">
       -{{ discount_percentage }}%
-    </span>
-  {% else %}
-    <span class="badge price__badge-sale color-{{ settings.sale_badge_color_scheme }}">
-      {{ 'products.product.on_sale' | t }}
     </span>
   {% endif %}
 
