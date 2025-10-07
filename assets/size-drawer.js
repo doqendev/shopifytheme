@@ -78,7 +78,9 @@
   };
   const hideProductSizeInputs = (root = document) => {
     if (!root || typeof root.querySelectorAll !== 'function') return;
-    const wrappers = root.querySelectorAll('variant-selects .product-form__input, .product-form__input');
+    const wrappers = root.querySelectorAll(
+      'variant-selects .product-form__input, variant-radios .product-form__input, .product-form__input'
+    );
     wrappers.forEach((wrapper) => {
       if (!wrapper) return;
       const dataOption = (wrapper.getAttribute?.('data-option-name') || wrapper.dataset?.optionName || '').toLowerCase();
@@ -93,18 +95,47 @@
   };
 
 
-  const getVariantSelectRoot = (sectionId) => {
-    const root = document.getElementById(`variant-selects-${sectionId}`);
-    console.log(`Looking for variant-selects-${sectionId}:`, root);
+  const getVariantRoots = (sectionId) => {
+    if (!sectionId) return [];
 
-    // Also try to find by data-section attribute as fallback
-    if (!root) {
-      const fallback = document.querySelector(`variant-selects[data-section="${sectionId}"]`);
-      console.log(`Fallback search for variant-selects with data-section="${sectionId}":`, fallback);
-      return fallback;
+    const escapedId = cssEscape(sectionId);
+    const directRoots = [
+      document.getElementById(`variant-selects-${sectionId}`),
+      document.getElementById(`variant-radios-${sectionId}`),
+    ].filter(Boolean);
+
+    const selectors = [
+      `#variant-selects-${escapedId}`,
+      `#variant-radios-${escapedId}`,
+      `variant-selects[data-section="${escapedId}"]`,
+      `variant-radios[data-section="${escapedId}"]`,
+    ];
+
+    const roots = new Set(directRoots);
+    selectors.forEach((selector) => {
+      try {
+        const matches = document.querySelectorAll(selector);
+        matches.forEach((element) => roots.add(element));
+      } catch (error) {
+        console.warn('Variant root selector failed', selector, error);
+      }
+    });
+
+    return Array.from(roots).filter(Boolean);
+  };
+
+  const getVariantSelectRoot = (sectionId) => {
+    const roots = getVariantRoots(sectionId);
+    if (roots.length) {
+      console.log(`Using variant root for section ${sectionId}:`, roots[0]);
+      return roots[0];
     }
 
-    return root;
+    const fallback = document.querySelector(
+      `variant-selects[data-section="${sectionId}"], variant-radios[data-section="${sectionId}"]`
+    );
+    console.log(`Fallback search for variant roots with data-section="${sectionId}":`, fallback);
+    return fallback || null;
   };
 
   const setVariantOptionOnRoot = (root, option, value) => {
@@ -155,8 +186,7 @@
     const data = getSectionData(sectionId);
     if (!data || !Array.isArray(data.options) || !data.options.length) return;
 
-    const escapedSectionId = cssEscape(sectionId);
-    let roots = Array.from(document.querySelectorAll(`variant-selects[data-section="${escapedSectionId}"]`));
+    let roots = getVariantRoots(sectionId);
     const fallbackRoot = getVariantSelectRoot(sectionId);
     if (fallbackRoot && !roots.includes(fallbackRoot)) {
       roots.push(fallbackRoot);
@@ -175,121 +205,91 @@
   };
 
   function getSelectedOptionValue(sectionId, option) {
-    // First try the specific section
-    const root = getVariantSelectRoot(sectionId);
-    console.log(`Getting selected value for option "${option.name}" in section "${sectionId}"`);
-    console.log('Variant select root:', root);
-
+    const optionName = typeof option?.name === 'string' ? option.name.trim() : '';
+    const normalizedOptionName = optionName.toLowerCase();
     let selectedValue = null;
 
-    if (root) {
-      // Debug: Show all inputs in this section
-      const allInputs = root.querySelectorAll('input');
-      console.log('All inputs in this section:', allInputs);
-      allInputs.forEach((input, index) => {
-        console.log(`  Input ${index + 1}: name="${input.name}", value="${input.value}", checked=${input.checked}, type=${input.type}`);
-      });
+    const buildPatterns = (contextSectionId) =>
+      [
+        optionName ? `${optionName}-${option.position}` : '',
+        contextSectionId ? `${contextSectionId}-${option.position}-1` : '',
+        contextSectionId ? `${contextSectionId}-${option.position}-${option.position}` : '',
+        optionName,
+        optionName ? `options[${optionName}]` : '',
+        optionName ? `options[${normalizedOptionName}]` : '',
+      ].filter(Boolean);
 
-      // Try multiple naming patterns for the inputs
-      const patterns = [
-        `${option.name}-${option.position}`, // Original pattern: Color-1
-        `${sectionId}-${option.position}-1`, // Section-based pattern: template--...-1-1
-        `${sectionId}-${option.position}-${option.position}`, // Section-based pattern alt
-        `${option.name}` // Simple name: Color
-      ];
+    const tryResolveFromRoot = (root, contextSectionId) => {
+      if (!root) return null;
 
-      // Also try finding by checking all radios and matching name (handling newlines)
-      const allRadios = root.querySelectorAll('input[type="radio"]:checked');
-      console.log('All checked radios in section:', allRadios);
-      for (const radio of allRadios) {
-        const trimmedName = radio.name.trim();
-        console.log(`Checking radio: name="${radio.name}" (trimmed: "${trimmedName}"), value="${radio.value}"`);
-        if (trimmedName === `${option.name}-${option.position}`) {
-          selectedValue = radio.value;
-          console.log(`Found checked radio with trimmed name match: ${selectedValue}`);
-          break;
+      const directMatches = root.querySelectorAll('input[type="radio"]:checked');
+      for (const radio of directMatches) {
+        const trimmedName = (radio.name || '').trim();
+        if (
+          trimmedName === `${optionName}-${option.position}` ||
+          trimmedName === optionName ||
+          trimmedName === `options[${optionName}]` ||
+          trimmedName === `options[${normalizedOptionName}]`
+        ) {
+          return radio.value;
         }
       }
 
-      // If still no match, try the original pattern matching
-      if (!selectedValue) {
-        for (const pattern of patterns) {
-          const radio = root.querySelector(`input[name="${cssEscape(pattern)}"]:checked`);
-          console.log(`Looking for radio with pattern "${pattern}":`, radio);
-          if (radio) {
-            selectedValue = radio.value;
-            console.log(`Radio value found with pattern ${pattern}: ${selectedValue}`);
-            break;
-          }
+      const patterns = buildPatterns(contextSectionId);
+      for (const pattern of patterns) {
+        const radio = root.querySelector(`input[name="${cssEscape(pattern)}"]:checked`);
+        if (radio) {
+          return radio.value;
         }
       }
 
-      // If no radio found, try select
-      if (!selectedValue) {
-        const selectName = `options[${option.name}]`;
-        const select = root.querySelector(`select[name="${cssEscape(selectName)}"]`);
-        console.log(`Looking for select with name "${selectName}":`, select);
-        if (select) {
-          selectedValue = select.value;
-          console.log(`Select value found in section ${sectionId}: ${selectedValue}`);
-        }
-      }
-    }
-
-    // If no value found in specific section, search across ALL variant-selects elements
-    if (!selectedValue) {
-      console.log('No value found in specific section, searching all variant-selects...');
-      const allVariantSelects = document.querySelectorAll('variant-selects');
-
-      for (const variantSelect of allVariantSelects) {
-        const targetSectionId = variantSelect.dataset.section;
-
-        // First try checking all radios for trimmed name match
-        const allRadios = variantSelect.querySelectorAll('input[type="radio"]:checked');
-        for (const radio of allRadios) {
-          const trimmedName = radio.name.trim();
-          if (trimmedName === `${option.name}-${option.position}`) {
-            selectedValue = radio.value;
-            console.log(`Found checked radio in section ${targetSectionId} with trimmed name match: ${selectedValue}`);
-            break;
-          }
-        }
-
-        if (selectedValue) break;
-
-        // If no match, try multiple naming patterns for each section
-        const patterns = [
-          `${option.name}-${option.position}`, // Original pattern: Color-1
-          `${targetSectionId}-${option.position}-1`, // Section-based pattern: template--...-1-1
-          `${targetSectionId}-${option.position}-${option.position}`, // Section-based pattern alt
-          `${option.name}` // Simple name: Color
+      if (optionName) {
+        const selectSelectors = [
+          `select[name="${cssEscape(`options[${optionName}]`)}"]`,
+          `select[name="${cssEscape(`options[${normalizedOptionName}]`)}"]`,
         ];
-
-        for (const pattern of patterns) {
-          const radio = variantSelect.querySelector(`input[name="${cssEscape(pattern)}"]:checked`);
-          if (radio) {
-            selectedValue = radio.value;
-            console.log(`Found radio value in section ${targetSectionId} with pattern ${pattern}: ${selectedValue}`);
-            break;
+        for (const selector of selectSelectors) {
+          const select = root.querySelector(selector);
+          if (select && select.value) {
+            return select.value;
           }
         }
+      }
 
+      const activeSwatch = root.querySelector(
+        `[data-option-value][data-option-position="${option.position}"].is-active, [data-option-value].active, [data-option-value].selected`
+      );
+      if (activeSwatch?.dataset?.optionValue) {
+        return activeSwatch.dataset.optionValue;
+      }
+
+      const inputWithDataset = root.querySelector(
+        `[data-option-index="${option.position - 1}"] input[type="radio"]:checked`
+      );
+      if (inputWithDataset) {
+        return inputWithDataset.value;
+      }
+
+      return null;
+    };
+
+    const roots = getVariantRoots(sectionId);
+    for (const root of roots) {
+      selectedValue = tryResolveFromRoot(root, sectionId);
+      if (selectedValue) break;
+    }
+
+    if (!selectedValue) {
+      const allPickers = document.querySelectorAll('variant-selects, variant-radios');
+      for (const picker of allPickers) {
+        const contextId = picker.dataset.section || '';
+        selectedValue = tryResolveFromRoot(picker, contextId);
         if (selectedValue) break;
-
-        const selectName = `options[${option.name}]`;
-        const select = variantSelect.querySelector(`select[name="${cssEscape(selectName)}"]`);
-        if (select && select.value) {
-          selectedValue = select.value;
-          console.log(`Found select value in section ${targetSectionId}: ${selectedValue}`);
-          break;
-        }
       }
     }
 
-    // Final fallback to default value
     if (!selectedValue) {
       selectedValue = getOptionValueString(option.selected_value);
-      console.log(`Using fallback default value: ${selectedValue}`);
     }
 
     return selectedValue;
@@ -1025,8 +1025,8 @@
     }
 
     // Debug: Check all variant-selects elements on page
-    const allVariantSelects = document.querySelectorAll('variant-selects');
-    console.log('All variant-selects elements on page:', allVariantSelects);
+    const allVariantSelects = document.querySelectorAll('variant-selects, variant-radios');
+    console.log('All variant pickers on page:', allVariantSelects);
     allVariantSelects.forEach((el, index) => {
       console.log(`  ${index + 1}. ID: ${el.id}, data-section: ${el.dataset.section}`);
     });
@@ -1148,9 +1148,9 @@
   }
 
   function handleVariantChange(event) {
-    const variantSelects = event.target.closest('variant-selects');
-    if (!variantSelects) return;
-    const sourceSectionId = variantSelects.dataset.section;
+    const variantElement = event.target.closest('variant-selects, variant-radios');
+    if (!variantElement) return;
+    const sourceSectionId = variantElement.dataset.section;
     if (!sourceSectionId) return;
 
     console.log('Variant change detected in section:', sourceSectionId);
@@ -1188,7 +1188,7 @@
       console.log(`Syncing ${optionName} = ${optionValue} from section ${sourceSectionId} to all sections`);
 
       // Find all variant-selects elements except the source
-      const allVariantSelects = document.querySelectorAll('variant-selects');
+      const allVariantSelects = document.querySelectorAll('variant-selects, variant-radios');
 
       allVariantSelects.forEach(variantSelect => {
         if (variantSelect.dataset.section === sourceSectionId) return; // Skip source section
