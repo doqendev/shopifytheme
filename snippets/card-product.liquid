@@ -664,14 +664,10 @@
 
         plusIcon.addEventListener('click', function(ev) {
           ev.stopPropagation();
-          if (el.classList.contains('active')) {
-            el.classList.remove('active');
-          } else {
-            closeAllPlus();
-            updateSizeButtons(card);
-            el.classList.add('active');
-            sizeOptions.focus();
-          }
+          closeAllPlus();
+          updateSizeButtons(card);
+          el.classList.add('active');
+          sizeOptions.focus();
         });
 
         plusIcon.addEventListener('keydown', function(ev){
