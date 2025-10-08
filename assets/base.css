@@ -4070,7 +4070,7 @@ font-style: normal;
 }
 
 .product-card-plus.active .plus-icon {
-  visibility: hidden;
+  transform: rotate(45deg);
 }
 
 .product-card-plus .size-option {
