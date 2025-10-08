@@ -184,6 +184,18 @@ class CartItems extends HTMLElement {
             section.selector
           );
         });
+        const cartDrawerItemsElement = cartDrawerWrapper?.querySelector('cart-drawer-items');
+        const cartDrawerEmptyState = cartDrawerWrapper?.querySelector('.drawer__empty-state');
+
+        if (cartDrawerItemsElement) {
+          cartDrawerItemsElement.classList.toggle('is-empty', parsedState.item_count === 0);
+          cartDrawerItemsElement.toggleAttribute('hidden', parsedState.item_count === 0);
+        }
+
+        if (cartDrawerEmptyState) {
+          cartDrawerEmptyState.toggleAttribute('hidden', parsedState.item_count !== 0);
+        }
+
         const updatedValue = parsedState.items[line - 1] ? parsedState.items[line - 1].quantity : undefined;
         let message = '';
         if (items.length === parsedState.items.length && updatedValue !== parseInt(quantityElement.value)) {
@@ -202,7 +214,15 @@ class CartItems extends HTMLElement {
             ? trapFocus(cartDrawerWrapper, lineItem.querySelector(`[name="${name}"]`))
             : lineItem.querySelector(`[name="${name}"]`).focus();
         } else if (parsedState.item_count === 0 && cartDrawerWrapper) {
-          trapFocus(cartDrawerWrapper.querySelector('.drawer__inner-empty'), cartDrawerWrapper.querySelector('a'));
+          const emptyContainer =
+            cartDrawerWrapper.querySelector('.drawer__empty-state:not([hidden])') ||
+            cartDrawerWrapper.querySelector('.drawer__empty-state') ||
+            cartDrawerWrapper.querySelector('.drawer__inner');
+          const focusFallback =
+            emptyContainer?.querySelector('a, button') ||
+            cartDrawerWrapper.querySelector('.drawer__close') ||
+            cartDrawerWrapper;
+          trapFocus(emptyContainer || cartDrawerWrapper, focusFallback);
         } else if (document.querySelector('.cart-item') && cartDrawerWrapper) {
           trapFocus(cartDrawerWrapper, document.querySelector('.cart-item__name'));
         }
