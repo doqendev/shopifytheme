@@ -4140,6 +4140,16 @@ font-style: normal;
   }
 }
 
+.product-card-wrapper--size-open {
+  overflow: visible !important;
+}
+
+body.size-drawer-open .product-grid-container,
+body.size-drawer-open .collection,
+body.size-drawer-open .page-width {
+  overflow: visible !important;
+}
+
 /* Auto color switch for sticky header based on background 
 .header {
   --header-icon-color: #000;
