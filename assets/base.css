@@ -4034,6 +4034,7 @@ font-style: normal;
   border-radius: 0%;
   cursor: pointer;
   border: none;
+  transition: transform 0.3s ease;
 }
 
 .product-card-plus .plus-icon svg {
