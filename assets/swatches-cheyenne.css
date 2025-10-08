@@ -16,8 +16,10 @@
   margin-top: -4px;
 }
 
-.product-card-plus {
-  margin-left: auto;
+.product-card__swatch-indicator .product-card-plus {
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
 @media (min-width: 768px) {
