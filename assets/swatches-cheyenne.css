@@ -17,10 +17,7 @@
 }
 
 .product-card-plus {
-  position: relative !important;
   margin-left: auto;
-  right: auto !important;
-  bottom: auto !important;
 }
 
 @media (min-width: 768px) {
