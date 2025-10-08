@@ -4036,6 +4036,11 @@ font-style: normal;
   border: none;
 }
 
+.product-card-plus .plus-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
 .product-card-plus .size-options {
   display: none;
   position: fixed;
