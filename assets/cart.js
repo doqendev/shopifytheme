@@ -169,12 +169,20 @@ class CartItems extends HTMLElement {
           return;
         }
 
-        this.classList.toggle('is-empty', parsedState.item_count === 0);
         const cartDrawerWrapper = document.querySelector('cart-drawer');
+        const isCartDrawerContext = this.tagName === 'CART-DRAWER-ITEMS';
+
+        this.classList.toggle('is-empty', parsedState.item_count === 0);
         const cartFooter = document.getElementById('main-cart-footer');
 
         if (cartFooter) cartFooter.classList.toggle('is-empty', parsedState.item_count === 0);
         if (cartDrawerWrapper) cartDrawerWrapper.classList.toggle('is-empty', parsedState.item_count === 0);
+
+        if (isCartDrawerContext && cartDrawerWrapper) {
+          cartDrawerWrapper.renderContents(parsedState);
+          publish(PUB_SUB_EVENTS.cartUpdate, { source: 'cart-items', cartData: parsedState, variantId: variantId });
+          return;
+        }
 
         this.getSectionsToRender().forEach((section) => {
           const elementToReplace =
@@ -184,17 +192,6 @@ class CartItems extends HTMLElement {
             section.selector
           );
         });
-        const cartDrawerItemsElement = cartDrawerWrapper?.querySelector('cart-drawer-items');
-        const cartDrawerEmptyState = cartDrawerWrapper?.querySelector('.drawer__empty-state');
-
-        if (cartDrawerItemsElement) {
-          cartDrawerItemsElement.classList.toggle('is-empty', parsedState.item_count === 0);
-          cartDrawerItemsElement.toggleAttribute('hidden', parsedState.item_count === 0);
-        }
-
-        if (cartDrawerEmptyState) {
-          cartDrawerEmptyState.toggleAttribute('hidden', parsedState.item_count !== 0);
-        }
 
         const updatedValue = parsedState.items[line - 1] ? parsedState.items[line - 1].quantity : undefined;
         let message = '';
