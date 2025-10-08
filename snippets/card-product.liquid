@@ -640,9 +640,8 @@
         panel.style.position = 'fixed';
         panel.style.left = Math.round(left) + 'px';
         panel.style.right = 'auto';
-        panel.style.bottom = 'auto';
+        panel.style.top = 'auto';
         panel.style.width = Math.round(maxWidth) + 'px';
-        panel.style.maxHeight = Math.round(window.innerHeight - viewportPadding * 2) + 'px';
         panel.style.zIndex = 1000;
 
         var availableHeight = window.innerHeight - viewportPadding * 2;
@@ -652,18 +651,20 @@
         if (naturalHeight > availableHeight) {
           panel.style.height = Math.round(availableHeight) + 'px';
           panel.style.overflowY = 'auto';
+          panelHeight = availableHeight;
         } else {
           panel.style.height = '';
           panel.style.overflowY = '';
         }
 
-        var top = anchorRect.bottom;
-        if (top + panelHeight > window.innerHeight - viewportPadding) {
-          top = window.innerHeight - viewportPadding - panelHeight;
+        var bottom = window.innerHeight - anchorRect.bottom;
+        bottom = Math.max(viewportPadding, bottom);
+        if (bottom + panelHeight > window.innerHeight - viewportPadding) {
+          bottom = window.innerHeight - viewportPadding - panelHeight;
         }
-        top = Math.max(viewportPadding, top);
+        bottom = Math.max(viewportPadding, bottom);
 
-        panel.style.top = Math.round(top) + 'px';
+        panel.style.bottom = Math.round(bottom) + 'px';
       }
 
       function repositionActiveSizeOptions() {
