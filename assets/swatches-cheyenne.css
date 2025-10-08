@@ -21,6 +21,9 @@
   margin-left: auto;
   right: auto !important;
   bottom: auto !important;
+  display: flex;
+  align-items: center;
+  min-height: 2.5rem;
 }
 
 @media (min-width: 768px) {
