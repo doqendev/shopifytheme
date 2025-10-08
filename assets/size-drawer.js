@@ -34,6 +34,15 @@
 
   const normalize = (value) => (typeof value === 'string' ? value.trim().toLowerCase() : '');
 
+  const focusWithoutScroll = (element) => {
+    if (!element || typeof element.focus !== 'function') return;
+    try {
+      element.focus({ preventScroll: true });
+    } catch (error) {
+      element.focus();
+    }
+  };
+
   const getOptionValueString = (optionValue) => {
     if (optionValue == null) return '';
     if (typeof optionValue === 'string') return optionValue;
@@ -1118,10 +1127,10 @@
 
     const firstAvailable = drawer.querySelector('.size-item:not(.size-item--unavailable)');
     if (firstAvailable) {
-      firstAvailable.focus();
+      focusWithoutScroll(firstAvailable);
     } else {
       const closeButton = drawer.querySelector('.size-drawer__close');
-      closeButton?.focus();
+      focusWithoutScroll(closeButton);
     }
   }
 
@@ -1143,7 +1152,7 @@
     const state = stateBySection.get(sectionId);
     if (state) {
       if (state.lastFocused) {
-        state.lastFocused.focus();
+        focusWithoutScroll(state.lastFocused);
       }
       state.activeTrigger = null;
     }
