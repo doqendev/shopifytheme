@@ -4071,7 +4071,7 @@ font-style: normal;
 }
 
 .product-card-plus.active .plus-icon {
-  transform: rotate(45deg);
+  /* Keep icon visible and as plus */
 }
 
 .product-card-plus .size-option {
