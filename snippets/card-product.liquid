@@ -611,9 +611,62 @@
         updateCardPrice(card);
       });
 
+      function resetSizeOptionsPanel(panel) {
+        if (!panel) return;
+        panel.classList.remove('size-options--desktop');
+        panel.removeAttribute('style');
+      }
+
+      function positionSizeOptionsPanel(card, panel) {
+        resetSizeOptionsPanel(panel);
+        if (!card || !panel) return;
+        if (!window.matchMedia('(min-width: 990px)').matches) {
+          return;
+        }
+
+        var rect = card.getBoundingClientRect();
+        var viewportPadding = 16;
+        var maxWidth = Math.min(rect.width, window.innerWidth - viewportPadding * 2);
+        var left = rect.left;
+
+        if (left + maxWidth > window.innerWidth - viewportPadding) {
+          left = window.innerWidth - viewportPadding - maxWidth;
+        }
+        left = Math.max(viewportPadding, left);
+
+        var desiredHeight = rect.height;
+        var maxHeight = Math.min(desiredHeight, window.innerHeight - viewportPadding * 2);
+        var top = rect.top;
+
+        if (top + maxHeight > window.innerHeight - viewportPadding) {
+          top = Math.max(viewportPadding, window.innerHeight - viewportPadding - maxHeight);
+        }
+        top = Math.max(viewportPadding, top);
+
+        panel.classList.add('size-options--desktop');
+        panel.style.position = 'fixed';
+        panel.style.left = Math.round(left) + 'px';
+        panel.style.top = Math.round(top) + 'px';
+        panel.style.width = Math.round(maxWidth) + 'px';
+        panel.style.minHeight = Math.round(maxHeight) + 'px';
+        panel.style.maxHeight = Math.round(maxHeight) + 'px';
+        panel.style.overflowY = desiredHeight > maxHeight ? 'auto' : '';
+        panel.style.zIndex = 1000;
+      }
+
+      function repositionActiveSizeOptions() {
+        var active = document.querySelector('.product-card-plus.active');
+        if (!active) return;
+        var panel = active.querySelector('.size-options');
+        var card = active.closest('.product-card-wrapper');
+        if (!panel || !card) return;
+        positionSizeOptionsPanel(card, panel);
+      }
+
       function closeAllPlus() {
         plusEls.forEach(function(el) {
           el.classList.remove('active');
+          resetSizeOptionsPanel(el.querySelector('.size-options'));
         });
       }
 
@@ -667,6 +720,7 @@
           closeAllPlus();
           updateSizeButtons(card);
           el.classList.add('active');
+          positionSizeOptionsPanel(card, sizeOptions);
           sizeOptions.focus();
         });
 
@@ -684,6 +738,7 @@
         sizeOptions.addEventListener('keydown', function(ev){
           if(ev.key === 'Escape'){
             el.classList.remove('active');
+            resetSizeOptionsPanel(sizeOptions);
             plusIcon.focus();
           }
         });
@@ -762,6 +817,12 @@
         updateCardPrice(card);
         updateSizeButtons(card);
       });
+
+      window.addEventListener('resize', repositionActiveSizeOptions);
+      window.addEventListener('scroll', function() {
+        if (!window.matchMedia('(min-width: 990px)').matches) return;
+        repositionActiveSizeOptions();
+      }, { passive: true });
     });
   </script>
 
