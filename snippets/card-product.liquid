@@ -624,6 +624,11 @@
           return;
         }
 
+        if (card) {
+          card.classList.add('product-card-wrapper--size-open');
+        }
+        document.body.classList.add('size-drawer-open');
+
         var rect = card.getBoundingClientRect();
         var media = card.querySelector('.card__media');
         var anchorRect = media ? media.getBoundingClientRect() : rect;
@@ -731,13 +736,6 @@
           closeAllPlus();
           updateSizeButtons(card);
           el.classList.add('active');
-          var isDesktop = window.matchMedia('(min-width: 990px)').matches;
-          if (isDesktop && card) {
-            card.classList.add('product-card-wrapper--size-open');
-          }
-          if (isDesktop) {
-            document.body.classList.add('size-drawer-open');
-          }
           positionSizeOptionsPanel(card, sizeOptions);
           sizeOptions.focus();
         });
