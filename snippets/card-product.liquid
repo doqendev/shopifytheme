@@ -621,6 +621,10 @@
         resetSizeOptionsPanel(panel);
         if (!card || !panel) return;
         if (!window.matchMedia('(min-width: 990px)').matches) {
+          if (card) {
+            card.classList.remove('product-card-wrapper--size-open');
+          }
+          document.body.classList.remove('size-drawer-open');
           return;
         }
 
