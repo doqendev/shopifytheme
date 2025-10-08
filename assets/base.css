@@ -4070,7 +4070,7 @@ font-style: normal;
 }
 
 .product-card-plus.active .plus-icon {
-  display: none;
+  visibility: hidden;
 }
 
 .product-card-plus .size-option {
