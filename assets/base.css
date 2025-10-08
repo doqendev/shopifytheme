@@ -4096,8 +4096,8 @@ font-style: normal;
 
 @media screen and (min-width: 1160px) {
   .product-card-plus .plus-icon {
-    width: 3rem;
-    height: 3rem;
+    width: 2.5rem;
+    height: 2.5rem;
   }
   .product-card-plus .size-options {
     padding: 1rem;
