@@ -767,6 +767,7 @@ a.active-facets__button.focused .active-facets__button-inner {
 .mobile-facets__wrapper {
   margin-left: 0;
   display: flex;
+  justify-content: flex-end;
 }
 
 .mobile-facets__wrapper .disclosure-has-popup[open] > summary::before {
@@ -777,6 +778,7 @@ a.active-facets__button.focused .active-facets__button-inner {
 .mobile-facets__inner {
   background-color: rgb(var(--color-background));
   width: 100%;
+  max-width: 40rem;
   margin-left: auto;
   height: 100%;
   overflow-y: auto;
