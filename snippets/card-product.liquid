@@ -637,13 +637,27 @@
         var media = card.querySelector('.card__media');
         var anchorRect = media ? media.getBoundingClientRect() : rect;
         var viewportPadding = 16;
-        var maxWidth = Math.min(rect.width, window.innerWidth - viewportPadding * 2);
-        var left = rect.left;
+        var maxWidth = Math.min(anchorRect.width, window.innerWidth - viewportPadding * 2);
+        var left = anchorRect.left;
 
-        if (left + maxWidth > window.innerWidth - viewportPadding) {
-          left = window.innerWidth - viewportPadding - maxWidth;
+        var container = card.closest('.product-grid, .slider--desktop, .grid, .page-width, .product-recommendations, .product-grid-container');
+        var containerRect = container ? container.getBoundingClientRect() : null;
+        var boundaryLeft = viewportPadding;
+        var boundaryRight = window.innerWidth - viewportPadding;
+
+        if (containerRect) {
+          boundaryLeft = Math.max(boundaryLeft, containerRect.left);
+          boundaryRight = Math.min(boundaryRight, containerRect.right);
         }
-        left = Math.max(viewportPadding, left);
+
+        var maxLeft = boundaryRight - maxWidth;
+        if (maxLeft < boundaryLeft) {
+          left = boundaryLeft;
+          maxWidth = Math.max(0, boundaryRight - boundaryLeft);
+        } else {
+          if (left < boundaryLeft) left = boundaryLeft;
+          if (left > maxLeft) left = maxLeft;
+        }
 
         panel.classList.add('size-options--desktop');
         panel.style.position = 'fixed';
