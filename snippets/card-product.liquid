@@ -635,27 +635,28 @@
 
         var rect = card.getBoundingClientRect();
         var media = card.querySelector('.card__media');
-        var anchorRect = media ? media.getBoundingClientRect() : rect;
+        var mediaImg = media
+          ? (media.querySelector('.swiper-slide-active img') || media.querySelector('img'))
+          : null;
+        var anchorRect = mediaImg
+          ? mediaImg.getBoundingClientRect()
+          : media
+            ? media.getBoundingClientRect()
+            : rect;
         var viewportPadding = 16;
         var desiredWidth = Math.max(0, anchorRect.width);
-        var left = anchorRect.left;
-
-        var minLeft = viewportPadding;
-        var maxLeft = window.innerWidth - viewportPadding - desiredWidth;
-        if (maxLeft < minLeft) {
-          left = minLeft;
-          desiredWidth = Math.max(0, window.innerWidth - viewportPadding * 2);
-        } else {
-          if (left < minLeft) left = minLeft;
-          if (left > maxLeft) left = maxLeft;
+        var left = Math.max(0, anchorRect.left);
+        var maxLeft = window.innerWidth - desiredWidth;
+        if (left > maxLeft) {
+          left = Math.max(0, maxLeft);
         }
 
         panel.classList.add('size-options--desktop');
         panel.style.position = 'fixed';
-        panel.style.left = left + 'px';
+        panel.style.left = Math.round(left) + 'px';
         panel.style.right = 'auto';
         panel.style.top = 'auto';
-        panel.style.width = desiredWidth + 'px';
+        panel.style.width = Math.round(desiredWidth) + 'px';
         panel.style.zIndex = 1000;
 
         var availableHeight = window.innerHeight - viewportPadding * 2;
