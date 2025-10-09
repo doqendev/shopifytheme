@@ -675,12 +675,8 @@
           panel.style.overflowY = '';
         }
 
-        var top = anchorRect.bottom - panelHeight;
-        if (top < 0) {
-          top = 0;
-        }
-        panel.style.top = Math.round(top) + 'px';
-        panel.style.bottom = 'auto';
+        panel.style.top = 'auto';
+        panel.style.bottom = Math.round(window.innerHeight - anchorRect.bottom) + 'px';
       }
 
       function repositionActiveSizeOptions() {
