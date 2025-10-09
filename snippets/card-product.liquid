@@ -644,8 +644,8 @@
             ? media.getBoundingClientRect()
             : rect;
         var viewportPadding = 16;
-        var desiredWidth = Math.max(0, anchorRect.width);
-        var left = Math.max(0, anchorRect.left);
+        var desiredWidth = Math.max(0, anchorRect.width || rect.width);
+        var left = Math.max(0, anchorRect.width ? anchorRect.left : rect.left);
         var maxLeft = window.innerWidth - desiredWidth;
         if (left > maxLeft) {
           left = Math.max(0, maxLeft);
@@ -658,7 +658,11 @@
         panel.style.width = Math.round(desiredWidth) + 'px';
         panel.style.zIndex = 1000;
 
-        var availableHeight = window.innerHeight - viewportPadding * 2;
+        var anchorHeight = anchorRect.height || rect.height;
+        var availableHeight = Math.max(
+          0,
+          Math.min(anchorHeight, window.innerHeight - viewportPadding * 2)
+        );
         var naturalHeight = panel.scrollHeight;
         var panelHeight = Math.min(naturalHeight, availableHeight);
 
@@ -671,16 +675,9 @@
           panel.style.overflowY = '';
         }
 
-        var top = anchorRect.bottom;
-        var maxTop = window.innerHeight - viewportPadding - panelHeight;
-        if (top > maxTop) {
-          top = Math.max(viewportPadding, maxTop);
-        }
-        if (top < viewportPadding) {
-          top = viewportPadding;
-        }
-        panel.style.top = Math.round(top) + 'px';
-        panel.style.bottom = 'auto';
+        var bottomOffset = Math.max(0, window.innerHeight - anchorRect.bottom);
+        panel.style.top = 'auto';
+        panel.style.bottom = Math.round(bottomOffset) + 'px';
       }
 
       function repositionActiveSizeOptions() {
