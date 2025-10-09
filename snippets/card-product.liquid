@@ -637,34 +637,25 @@
         var media = card.querySelector('.card__media');
         var anchorRect = media ? media.getBoundingClientRect() : rect;
         var viewportPadding = 16;
-        var maxWidth = Math.min(anchorRect.width, window.innerWidth - viewportPadding * 2);
+        var desiredWidth = Math.max(0, anchorRect.width);
         var left = anchorRect.left;
 
-        var container = card.closest('.product-grid, .slider--desktop, .grid, .page-width, .product-recommendations, .product-grid-container');
-        var containerRect = container ? container.getBoundingClientRect() : null;
-        var boundaryLeft = viewportPadding;
-        var boundaryRight = window.innerWidth - viewportPadding;
-
-        if (containerRect) {
-          boundaryLeft = Math.max(boundaryLeft, containerRect.left);
-          boundaryRight = Math.min(boundaryRight, containerRect.right);
-        }
-
-        var maxLeft = boundaryRight - maxWidth;
-        if (maxLeft < boundaryLeft) {
-          left = boundaryLeft;
-          maxWidth = Math.max(0, boundaryRight - boundaryLeft);
+        var minLeft = viewportPadding;
+        var maxLeft = window.innerWidth - viewportPadding - desiredWidth;
+        if (maxLeft < minLeft) {
+          left = minLeft;
+          desiredWidth = Math.max(0, window.innerWidth - viewportPadding * 2);
         } else {
-          if (left < boundaryLeft) left = boundaryLeft;
+          if (left < minLeft) left = minLeft;
           if (left > maxLeft) left = maxLeft;
         }
 
         panel.classList.add('size-options--desktop');
         panel.style.position = 'fixed';
-        panel.style.left = Math.round(left) + 'px';
+        panel.style.left = left + 'px';
         panel.style.right = 'auto';
         panel.style.top = 'auto';
-        panel.style.width = Math.round(maxWidth) + 'px';
+        panel.style.width = desiredWidth + 'px';
         panel.style.zIndex = 1000;
 
         var availableHeight = window.innerHeight - viewportPadding * 2;
