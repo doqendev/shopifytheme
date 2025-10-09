@@ -1,4 +1,4 @@
-﻿{% comment %}
+{% comment %}
   facets.liquid
   Filters shown as accordions (details/summary).
   Mobile white-screen fix: removed Dawn's `has-submenu` on the mobile panel.
@@ -766,7 +766,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   /* Checked state emphasis for pills */
-  .mobile-facet__label input[type="checkbox"]:checked + .mobile-facet__checkbox-text { font-weight: bold; }
+  .mobile-facet__label input[type="checkbox"]:checked + .mobile-facet__checkbox-text { font-weight: bold; color: black;}
 
   /* ---------- Optional: desktop parity for size/product grids ---------- */
   .facet-{{ 'filter.v.t.shopify.size' | escape }} > .facet__content > ul { display:flex; flex-wrap:wrap; gap:10px; }
