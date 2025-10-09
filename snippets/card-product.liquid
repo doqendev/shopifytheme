@@ -672,13 +672,11 @@
           panel.style.overflowY = '';
         }
 
-        var bottom = window.innerHeight - anchorRect.bottom;
-        bottom = Math.max(viewportPadding, bottom);
-        if (bottom + panelHeight > window.innerHeight - viewportPadding) {
-          bottom = window.innerHeight - viewportPadding - panelHeight;
+        var bottom = Math.max(0, window.innerHeight - anchorRect.bottom);
+        var maxBottom = Math.max(0, window.innerHeight - panelHeight);
+        if (bottom > maxBottom) {
+          bottom = maxBottom;
         }
-        bottom = Math.max(viewportPadding, bottom);
-
         panel.style.bottom = Math.round(bottom) + 'px';
       }
 
