@@ -655,7 +655,6 @@
         panel.style.position = 'fixed';
         panel.style.left = Math.round(left) + 'px';
         panel.style.right = 'auto';
-        panel.style.top = 'auto';
         panel.style.width = Math.round(desiredWidth) + 'px';
         panel.style.zIndex = 1000;
 
@@ -672,12 +671,16 @@
           panel.style.overflowY = '';
         }
 
-        var bottom = Math.max(0, window.innerHeight - anchorRect.bottom);
-        var maxBottom = Math.max(0, window.innerHeight - panelHeight);
-        if (bottom > maxBottom) {
-          bottom = maxBottom;
+        var top = anchorRect.bottom;
+        var maxTop = window.innerHeight - viewportPadding - panelHeight;
+        if (top > maxTop) {
+          top = Math.max(viewportPadding, maxTop);
         }
-        panel.style.bottom = Math.round(bottom) + 'px';
+        if (top < viewportPadding) {
+          top = viewportPadding;
+        }
+        panel.style.top = Math.round(top) + 'px';
+        panel.style.bottom = 'auto';
       }
 
       function repositionActiveSizeOptions() {
