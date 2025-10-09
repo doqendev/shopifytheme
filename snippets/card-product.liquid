@@ -658,23 +658,19 @@
         panel.style.width = Math.round(desiredWidth) + 'px';
         panel.style.zIndex = 1000;
 
-        var anchorHeight = anchorRect.height || rect.height;
-        var availableHeight = Math.max(
-          0,
-          Math.min(anchorHeight, window.innerHeight - viewportPadding * 2)
-        );
+        // Calculate available height from image bottom upward
+        var maxHeight = anchorRect.bottom - viewportPadding;
         var naturalHeight = panel.scrollHeight;
-        var panelHeight = Math.min(naturalHeight, availableHeight);
 
-        if (naturalHeight > availableHeight) {
-          panel.style.height = Math.round(availableHeight) + 'px';
+        if (naturalHeight > maxHeight) {
+          panel.style.height = Math.round(maxHeight) + 'px';
           panel.style.overflowY = 'auto';
-          panelHeight = availableHeight;
         } else {
           panel.style.height = '';
           panel.style.overflowY = '';
         }
 
+        // Position drawer bottom to align with image bottom
         panel.style.top = 'auto';
         panel.style.bottom = Math.round(window.innerHeight - anchorRect.bottom) + 'px';
       }
