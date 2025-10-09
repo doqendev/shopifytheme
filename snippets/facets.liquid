@@ -1,4 +1,4 @@
-{% comment %}
+﻿{% comment %}
   facets.liquid
   Filters shown as accordions (details/summary).
   Mobile white-screen fix: removed Dawn's `has-submenu` on the mobile panel.
@@ -581,7 +581,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  /* 2) Utilitários de sort */
+  /* 2) UtilitÃ¡rios de sort */
   function syncAllSortSelects(val) {
     document.querySelectorAll('select[name="sort_by"]').forEach(function(sel){
       if (sel && sel.value !== val) sel.value = val;
@@ -618,10 +618,10 @@ document.addEventListener('DOMContentLoaded', function() {
   function applySort(val) {
     setActiveSortPills(val);
 
-    // 1ª tentativa: deixar o Dawn tratar (AJAX)
+    // 1Âª tentativa: deixar o Dawn tratar (AJAX)
     var dispatched = triggerThemeSort(val);
 
-    // Fallback seguro: se o URL não refletir o sort, navegamos
+    // Fallback seguro: se o URL nÃ£o refletir o sort, navegamos
     setTimeout(function(){
       var current = new URL(window.location.href).searchParams.get('sort_by');
       if (!dispatched || current !== val) {
@@ -746,7 +746,7 @@ document.addEventListener('DOMContentLoaded', function() {
   #FacetsWrapperMobile details.mobile-facet.mobile-facet-filter\.p\.tag > .mobile-facet__content > ul > li,
   #FacetsWrapperMobile details.mobile-facet[class*="mobile-facet-filter\\.v\\.t\\.shopify\\.product"] > .mobile-facet__content > ul > li,
   #FacetsWrapperMobile details.mobile-facet[class*="mobile-facet-filter\\.v\\.t\\.product"] > .mobile-facet__content > ul > li {
-    flex: 0 0 calc(20% - 20px);
+    flex: 0 0 auto;
     border: 1px solid #969696;
     padding: 0px 5px;
     text-align: center;
@@ -755,7 +755,7 @@ document.addEventListener('DOMContentLoaded', function() {
   #FacetsWrapperMobile details.mobile-facet.mobile-facet-filter\.p\.tag > .mobile-facet__content > ul > li > label,
   #FacetsWrapperMobile details.mobile-facet[class*="mobile-facet-filter\\.v\\.t\\.shopify\\.product"] > .mobile-facet__content > ul > li > label,
   #FacetsWrapperMobile details.mobile-facet[class*="mobile-facet-filter\\.v\\.t\\.product"] > .mobile-facet__content > ul > li > label {
-    width: 100%; justify-content: center;
+    width: 100%; justify-content: center; white-space: nowrap;
   }
   /* Hide native checkboxes inside the Product facet pills */
   #FacetsWrapperMobile details.mobile-facet.mobile-facet-filter\.p\.product_type input[type="checkbox"],
@@ -784,3 +784,4 @@ document.addEventListener('DOMContentLoaded', function() {
     .facet-sorting select { padding: 6px; }
   }
 </style>
+
