@@ -618,22 +618,6 @@
         panel.removeAttribute('style');
       }
 
-      function findFixedPositionContext(element) {
-        var current = element ? element.parentElement : null;
-        while (current && current !== document.body && current !== document.documentElement) {
-          var style = window.getComputedStyle(current);
-          if (
-            (style.transform && style.transform !== 'none') ||
-            (style.perspective && style.perspective !== 'none') ||
-            (style.willChange && style.willChange.indexOf('transform') !== -1)
-          ) {
-            return current;
-          }
-          current = current.parentElement;
-        }
-        return null;
-      }
-
       function positionSizeOptionsPanel(card, panel) {
         resetSizeOptionsPanel(panel);
         if (!card || !panel) return;
@@ -650,7 +634,9 @@
         }
         document.body.classList.add('size-drawer-open');
 
-        var rect = card.getBoundingClientRect();
+        var cardRect = card.getBoundingClientRect();
+        var container = panel.closest('.product-card-plus');
+        var containerRect = container ? container.getBoundingClientRect() : cardRect;
         var media = card.querySelector('.card__media');
         var mediaImg = media
           ? (media.querySelector('.swiper-slide-active img') || media.querySelector('img'))
@@ -659,46 +645,25 @@
           ? mediaImg.getBoundingClientRect()
           : media
             ? media.getBoundingClientRect()
-            : rect;
+            : cardRect;
         var viewportPadding = 16;
-        var desiredWidth = Math.max(0, anchorRect.width || rect.width);
-        var left = Math.max(0, anchorRect.width ? anchorRect.left : rect.left);
-        var maxLeft = window.innerWidth - desiredWidth;
-        if (left > maxLeft) {
-          left = Math.max(0, maxLeft);
-        }
+        var desiredWidth = Math.max(0, anchorRect.width || cardRect.width);
+        var left = anchorRect.left - containerRect.left;
+        var top = anchorRect.bottom - containerRect.top;
 
-        var anchorHeight = anchorRect.height || rect.height;
-        var availableHeight = Math.max(
-          0,
-          Math.min(anchorHeight, window.innerHeight - viewportPadding * 2)
-        );
+        var viewportBottom = window.innerHeight - viewportPadding;
+        var availableHeight = Math.max(0, viewportBottom - anchorRect.bottom);
         var naturalHeight = panel.scrollHeight;
-        var panelHeight = Math.min(naturalHeight, availableHeight);
-
-        if (naturalHeight > availableHeight) {
+        if (availableHeight > 0 && naturalHeight > availableHeight) {
           panel.style.height = Math.round(availableHeight) + 'px';
           panel.style.overflowY = 'auto';
-          panelHeight = availableHeight;
         } else {
           panel.style.height = '';
           panel.style.overflowY = '';
         }
 
-        var top = anchorRect.bottom - panelHeight;
-        if (top < 0) {
-          top = 0;
-        }
-
-        var fixedContext = findFixedPositionContext(panel);
-        if (fixedContext) {
-          var contextRect = fixedContext.getBoundingClientRect();
-          left -= contextRect.left;
-          top -= contextRect.top;
-        }
-
         panel.classList.add('size-options--desktop');
-        panel.style.position = 'fixed';
+        panel.style.position = 'absolute';
         panel.style.left = Math.round(left) + 'px';
         panel.style.right = 'auto';
         panel.style.width = Math.round(desiredWidth) + 'px';
