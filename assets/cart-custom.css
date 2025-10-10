@@ -11,11 +11,16 @@
 #CartDrawer .il-item-title{display:block;margin-bottom:2px;font-weight:700;line-height:1.2}
 #CartDrawer .il-icons-row{display:flex;gap:12px;align-items:center;margin-top:6px}
 #CartDrawer .il-variant-small{font-size:13px;color:#666;margin-top:4px}
+/* Hide all default Shopify price displays - we show .il-price instead */
 #CartDrawer .il-item-details > .product-option,
 #CartDrawer .il-item-details > dl,
 #CartDrawer .il-item-details .unit-price,
 #CartDrawer .il-item-details > .cart-item__discounted-prices,
-#CartDrawer .il-item-details .discounts{display:none !important}
+#CartDrawer .il-item-details .cart-item__discounted-prices,
+#CartDrawer .il-item-details .discounts,
+#CartDrawer .il-item-details .cart-item__old-price,
+#CartDrawer .il-item-details .cart-item__final-price,
+#CartDrawer .il-item-details .price{display:none !important}
 #CartDrawer .cart-item__quantity{display:none !important}
 #CartDrawer .il-item-details .il-icons-row{display:flex;gap:12px;align-items:center;margin-top:6px}
 
