@@ -469,64 +469,8 @@
         }
       }
 
-      attachHandlers(drawer || document);
       drawer?.open();
     } catch(e){ console.error('Section render failed', e); location.reload(); }
-  }
-
-  function attachHandlers(root=document){
-    // Edit
-    qsa('.il-cart-line__edit', root).forEach(btn => {
-      btn.addEventListener('click', () => {
-        const host = btn.closest('[data-line-key]');
-        if(host) openEditor(host);
-      });
-    });
-    // Optional extra remove icon
-    qsa('.il-cart-line__remove', root).forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const host = btn.closest('[data-line-key]');
-        const key = host?.getAttribute('data-line-key');
-        if(!key) return;
-        await fetch('/cart/change.js', { method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify({ id: key, quantity: 0 }) });
-        await refreshCartDrawer();
-      });
-    });
-    // Move to favorites
-    qsa('[data-move-to-wishlist]', root).forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const host = btn.closest('[data-line-key]');
-        if (!host) return;
-        const prod = parseJSONAttr(host, 'data-product', {});
-        const variantIdAttr = host.getAttribute('data-variant-id') || '';
-        const key = host.getAttribute('data-line-key');
-        const wishlistItem = buildWishlistItemFromCart(host, prod, variantIdAttr);
-        let addedToWishlist = false;
-        btn.disabled = true;
-        try{
-          if (wishlistItem) {
-            addedToWishlist = pushWishlistItem(wishlistItem);
-          }
-          if (prod && prod.id) {
-            await syncWishlistApp(prod, variantIdAttr, wishlistItem);
-          }
-          if (key) {
-            const removeRes = await fetch('/cart/change.js', { method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify({ id: key, quantity: 0 }) });
-            if (!removeRes.ok) throw new Error('cart_remove_failed');
-          }
-          await refreshCartDrawer();
-        } catch(e){
-          if (addedToWishlist) {
-            removeWishlistItem(wishlistItem);
-          }
-          console.error('Move to wishlist failed', e);
-          alert('Nao foi possivel mover para favoritos.');
-        }
-        finally {
-          btn.disabled = false;
-        }
-      });
-    });
   }
 
   function getDrawerRoot(){
@@ -537,20 +481,69 @@
   function observeDrawer(){
     const root = getDrawerRoot();
     if(!root) return;
-    attachHandlers(root);
-    const mo = new MutationObserver(() => attachHandlers(root));
-    mo.observe(root, {subtree:true, childList:true});
 
-    // Safety: event delegation so edits still work even if we miss a rebind
-    if(!window.__IL_CART_EDIT_BOUND__){
-      window.__IL_CART_EDIT_BOUND__ = true;
-      document.addEventListener('click', (ev) => {
+    // Use event delegation for ALL buttons - much faster and more reliable
+    if(!window.__IL_CART_HANDLERS_BOUND__){
+      window.__IL_CART_HANDLERS_BOUND__ = true;
+
+      document.addEventListener('click', async (ev) => {
+        // Edit button
         const editBtn = ev.target.closest && ev.target.closest('.il-cart-line__edit');
         if(editBtn){
           const host = editBtn.closest('[data-line-key]') || getDrawerRoot();
           if(host && host !== document.body){
             ev.preventDefault();
             openEditor(host);
+          }
+          return;
+        }
+
+        // Remove button
+        const removeBtn = ev.target.closest && ev.target.closest('.il-cart-line__remove');
+        if(removeBtn){
+          const host = removeBtn.closest('[data-line-key]');
+          const key = host?.getAttribute('data-line-key');
+          if(!key) return;
+          ev.preventDefault();
+          await fetch('/cart/change.js', { method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify({ id: key, quantity: 0 }) });
+          await refreshCartDrawer();
+          return;
+        }
+
+        // Move to favorites button
+        const moveBtn = ev.target.closest && ev.target.closest('[data-move-to-wishlist]');
+        if(moveBtn){
+          if(moveBtn.disabled) return;
+          const host = moveBtn.closest('[data-line-key]');
+          if (!host) return;
+          ev.preventDefault();
+          const prod = parseJSONAttr(host, 'data-product', {});
+          const variantIdAttr = host.getAttribute('data-variant-id') || '';
+          const key = host.getAttribute('data-line-key');
+          const wishlistItem = buildWishlistItemFromCart(host, prod, variantIdAttr);
+          let addedToWishlist = false;
+          moveBtn.disabled = true;
+          try{
+            if (wishlistItem) {
+              addedToWishlist = pushWishlistItem(wishlistItem);
+            }
+            if (prod && prod.id) {
+              await syncWishlistApp(prod, variantIdAttr, wishlistItem);
+            }
+            if (key) {
+              const removeRes = await fetch('/cart/change.js', { method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify({ id: key, quantity: 0 }) });
+              if (!removeRes.ok) throw new Error('cart_remove_failed');
+            }
+            await refreshCartDrawer();
+          } catch(e){
+            if (addedToWishlist) {
+              removeWishlistItem(wishlistItem);
+            }
+            console.error('Move to wishlist failed', e);
+            alert('Nao foi possivel mover para favoritos.');
+          }
+          finally {
+            moveBtn.disabled = false;
           }
         }
       });
