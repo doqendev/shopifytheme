@@ -86,7 +86,7 @@
 
 /* Reduce left padding between image and details to gain width */
 #CartDrawer .cart-item > td + td { padding-left: 1.2rem !important }
-/* Ensure details column isn’t capped at 50% by upstream CSS */
+/* Ensure details column isnï¿½t capped at 50% by upstream CSS */
 #CartDrawer .cart-items thead th:nth-child(2){ width:auto !important; padding-left: 0 !important }
 /* Better word-breaking for long product names */
 #CartDrawer .il-item-title{ overflow-wrap: anywhere }
@@ -98,3 +98,26 @@
 .il-icon-btn .svg-wrapper{display:inline-block;width:18px;height:18px}
 
 .il-icon-btn .svg-wrapper svg{width:18px;height:18px;display:block}
+
+/* Removal animation */
+@keyframes fadeOutSlide {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+}
+
+#CartDrawer .cart-item.is-removing {
+  animation: fadeOutSlide 0.3s ease-out forwards;
+  pointer-events: none;
+}
+
+#CartDrawer .cart-item.is-removing .il-icon-btn,
+#CartDrawer .cart-item.is-removing .il-move-to-favorites {
+  pointer-events: none;
+  opacity: 0.5;
+}

@@ -505,6 +505,11 @@
           const key = host?.getAttribute('data-line-key');
           if(!key) return;
           ev.preventDefault();
+
+          // Add animation class
+          const cartItem = host.closest('.cart-item');
+          if(cartItem) cartItem.classList.add('is-removing');
+
           await fetch('/cart/change.js', { method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify({ id: key, quantity: 0 }) });
           await refreshCartDrawer();
           return;
@@ -517,6 +522,11 @@
           const host = moveBtn.closest('[data-line-key]');
           if (!host) return;
           ev.preventDefault();
+
+          // Add animation class
+          const cartItem = host.closest('.cart-item');
+          if(cartItem) cartItem.classList.add('is-removing');
+
           const prod = parseJSONAttr(host, 'data-product', {});
           const variantIdAttr = host.getAttribute('data-variant-id') || '';
           const key = host.getAttribute('data-line-key');
@@ -536,6 +546,9 @@
             }
             await refreshCartDrawer();
           } catch(e){
+            // Remove animation if failed
+            if(cartItem) cartItem.classList.remove('is-removing');
+
             if (addedToWishlist) {
               removeWishlistItem(wishlistItem);
             }
