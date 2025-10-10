@@ -451,6 +451,24 @@
       if (drawer) {
         drawer.classList.toggle('is-empty', docIsEmpty);
       }
+
+      // Show or hide empty state and cart items based on cart state
+      const emptyState = drawer?.querySelector('.drawer__empty-state');
+      const cartDrawerItems = drawer?.querySelector('cart-drawer-items');
+      if (docIsEmpty) {
+        if (emptyState) emptyState.removeAttribute('hidden');
+        if (cartDrawerItems) {
+          cartDrawerItems.setAttribute('hidden', '');
+          cartDrawerItems.classList.add('is-empty');
+        }
+      } else {
+        if (emptyState) emptyState.setAttribute('hidden', '');
+        if (cartDrawerItems) {
+          cartDrawerItems.removeAttribute('hidden');
+          cartDrawerItems.classList.remove('is-empty');
+        }
+      }
+
       attachHandlers(drawer || document);
       drawer?.open();
     } catch(e){ console.error('Section render failed', e); location.reload(); }
