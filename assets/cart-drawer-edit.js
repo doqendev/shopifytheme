@@ -487,12 +487,8 @@
       window.__IL_CART_HANDLERS_BOUND__ = true;
 
       document.addEventListener('click', async (ev) => {
-        // Check if click target has .closest method (might be SVG)
-        const target = ev.target;
-        if (!target.closest) return;
-
         // Edit button
-        const editBtn = target.closest('.il-cart-line__edit');
+        const editBtn = ev.target.closest && ev.target.closest('.il-cart-line__edit');
         if(editBtn){
           const host = editBtn.closest('[data-line-key]') || getDrawerRoot();
           if(host && host !== document.body){
@@ -503,7 +499,7 @@
         }
 
         // Remove button
-        const removeBtn = target.closest('.il-cart-line__remove');
+        const removeBtn = ev.target.closest && ev.target.closest('.il-cart-line__remove');
         if(removeBtn){
           const host = removeBtn.closest('[data-line-key]');
           const key = host?.getAttribute('data-line-key');
@@ -528,7 +524,7 @@
         }
 
         // Move to favorites button
-        const moveBtn = target.closest('[data-move-to-wishlist]');
+        const moveBtn = ev.target.closest && ev.target.closest('[data-move-to-wishlist]');
         if(moveBtn){
           if(moveBtn.disabled) return;
           const host = moveBtn.closest('[data-line-key]');
