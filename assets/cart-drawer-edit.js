@@ -510,7 +510,15 @@
           const cartItem = host.closest('.cart-item');
           if(cartItem) cartItem.classList.add('is-removing');
 
-          await fetch('/cart/change.js', { method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify({ id: key, quantity: 0 }) });
+          // Start removal request and animation in parallel
+          const removePromise = fetch('/cart/change.js', { method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify({ id: key, quantity: 0 }) });
+
+          // Wait for animation to complete (300ms) before refreshing
+          await Promise.all([
+            removePromise,
+            new Promise(resolve => setTimeout(resolve, 300))
+          ]);
+
           await refreshCartDrawer();
           return;
         }
@@ -544,6 +552,10 @@
               const removeRes = await fetch('/cart/change.js', { method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify({ id: key, quantity: 0 }) });
               if (!removeRes.ok) throw new Error('cart_remove_failed');
             }
+
+            // Wait for animation to complete (300ms) before refreshing
+            await new Promise(resolve => setTimeout(resolve, 300));
+
             await refreshCartDrawer();
           } catch(e){
             // Remove animation if failed
