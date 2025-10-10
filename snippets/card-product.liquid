@@ -618,6 +618,22 @@
         panel.removeAttribute('style');
       }
 
+      function findFixedPositionContext(element) {
+        var current = element ? element.parentElement : null;
+        while (current && current !== document.body && current !== document.documentElement) {
+          var style = window.getComputedStyle(current);
+          if (
+            (style.transform && style.transform !== 'none') ||
+            (style.perspective && style.perspective !== 'none') ||
+            (style.willChange && style.willChange.indexOf('transform') !== -1)
+          ) {
+            return current;
+          }
+          current = current.parentElement;
+        }
+        return null;
+      }
+
       function positionSizeOptionsPanel(card, panel) {
         resetSizeOptionsPanel(panel);
         if (!card || !panel) return;
@@ -652,13 +668,6 @@
           left = Math.max(0, maxLeft);
         }
 
-        panel.classList.add('size-options--desktop');
-        panel.style.position = 'fixed';
-        panel.style.left = Math.round(left) + 'px';
-        panel.style.right = 'auto';
-        panel.style.width = Math.round(desiredWidth) + 'px';
-        panel.style.zIndex = 1000;
-
         var anchorHeight = anchorRect.height || rect.height;
         var availableHeight = Math.max(
           0,
@@ -680,6 +689,20 @@
         if (top < 0) {
           top = 0;
         }
+
+        var fixedContext = findFixedPositionContext(panel);
+        if (fixedContext) {
+          var contextRect = fixedContext.getBoundingClientRect();
+          left -= contextRect.left;
+          top -= contextRect.top;
+        }
+
+        panel.classList.add('size-options--desktop');
+        panel.style.position = 'fixed';
+        panel.style.left = Math.round(left) + 'px';
+        panel.style.right = 'auto';
+        panel.style.width = Math.round(desiredWidth) + 'px';
+        panel.style.zIndex = 1000;
         panel.style.top = Math.round(top) + 'px';
         panel.style.bottom = 'auto';
       }
