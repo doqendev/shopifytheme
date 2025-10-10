@@ -84,6 +84,23 @@ class CartDrawer extends HTMLElement {
       sectionElement.innerHTML = this.getSectionInnerHTML(parsedState.sections[section.id], section.selector);
     });
 
+    // Show or hide empty state and cart items based on item count
+    const emptyState = this.querySelector('.drawer__empty-state');
+    const cartDrawerItems = this.querySelector('cart-drawer-items');
+    if (parsedState.item_count === 0) {
+      if (emptyState) emptyState.removeAttribute('hidden');
+      if (cartDrawerItems) {
+        cartDrawerItems.setAttribute('hidden', '');
+        cartDrawerItems.classList.add('is-empty');
+      }
+    } else {
+      if (emptyState) emptyState.setAttribute('hidden', '');
+      if (cartDrawerItems) {
+        cartDrawerItems.removeAttribute('hidden');
+        cartDrawerItems.classList.remove('is-empty');
+      }
+    }
+
     setTimeout(() => {
       this.querySelector('#CartDrawer-Overlay').addEventListener('click', this.close.bind(this));
       this.open();
