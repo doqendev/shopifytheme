@@ -736,6 +736,12 @@
       }
 
       plusEls.forEach(function(el) {
+        // Prevent duplicate listeners when the snippet inits repeatedly
+        if (el.dataset.quickAddBound === 'true') {
+          return;
+        }
+        el.dataset.quickAddBound = 'true';
+
         var plusIcon = el.querySelector('.plus-icon');
         var sizeOptions = el.querySelector('.size-options');
         var card = el.closest('.product-card-wrapper');
