@@ -4180,11 +4180,18 @@ body.size-drawer-open .page-width {
 /* --- Size-drawer header row --- */
 .size-options-header {
   display: flex;
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
   align-items: center;
   gap: 1rem;              /* keeps text and link tidy on small screens */
   margin-bottom: 1rem;    /* space above the size buttons */
   justify-content: space-between;
+}
+
+/* Hide header on desktop (990px+) */
+@media screen and (min-width: 990px) {
+  .size-options-header--mobile-only {
+    display: none;
+  }
 }
 
 /* Left label */
