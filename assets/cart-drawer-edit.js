@@ -286,20 +286,9 @@
           swatch.dataset.optIndex = String(idx);
           swatch.dataset.value = val;
 
-          // Find variant with this color option to get swatch data
-          const withVariant = (product.variants || []).find(v => v['option'+idx] === val);
-
-          // Check if there's a featured image for this color variant
-          if(withVariant && withVariant.featured_image?.src){
-            const imageUrl = withVariant.featured_image.src.replace(/\.(jpg|jpeg|png|gif|webp)/, '_50x.$1');
-            swatch.style.setProperty('--swatch--background', `url(${imageUrl})`);
-            swatch.style.backgroundSize = 'cover';
-            swatch.style.backgroundPosition = 'center';
-          } else {
-            // Use the color value itself (Shopify will handle color swatches via theme settings)
-            const lower = val.toLowerCase().trim();
-            swatch.style.setProperty('--swatch--background', lower);
-          }
+          // Use the color value itself for solid color swatches
+          const lower = val.toLowerCase().trim();
+          swatch.style.setProperty('--swatch--background', lower);
 
           if(selected[idx] === val) {
             swatchWrapper.classList.add('is-selected');
