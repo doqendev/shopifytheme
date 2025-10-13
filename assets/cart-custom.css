@@ -104,7 +104,7 @@
   color:#121212;
   text-align:center;
 }
-.il-pill:hover{
+.il-pill:hover:not(.il-pill-disabled){
   background:rgba(0,0,0,0.03);
 }
 .il-pill.is-selected{
@@ -114,6 +114,28 @@
   background:#fff;
   font-weight:700;
 }
+
+/* Disabled/out of stock state for size pills */
+.il-pill.il-pill-disabled{
+  opacity:0.4;
+  cursor:not-allowed;
+  color:#999;
+  border-color:#ddd;
+  position:relative;
+}
+
+/* Diagonal line for out of stock pills */
+.il-pill.il-pill-disabled::after{
+  content:'';
+  position:absolute;
+  top:50%;
+  left:-2px;
+  right:-2px;
+  height:1px;
+  background-color:#999;
+  transform:translateY(-50%);
+}
+
 @media (max-width: 900px){
   .il-pill{
     padding:10px 16px;
@@ -169,9 +191,34 @@
 }
 
 /* Hover state */
-.il-swatch-wrapper:hover:not(.is-selected){
+.il-swatch-wrapper:hover:not(.is-selected):not(.il-swatch-disabled){
   transform:scale(1.05);
   opacity:0.9;
+}
+
+/* Disabled/out of stock state for color swatches */
+.il-swatch-wrapper.il-swatch-disabled{
+  opacity:0.4;
+  cursor:not-allowed;
+  position:relative;
+}
+
+.il-swatch-wrapper.il-swatch-disabled .swatch.il-swatch-span{
+  position:relative;
+  overflow:hidden;
+}
+
+/* Diagonal line for out of stock swatches */
+.il-swatch-wrapper.il-swatch-disabled .swatch.il-swatch-span::after{
+  content:'';
+  position:absolute;
+  bottom:0;
+  left:0;
+  width:141.4%;
+  height:0.1rem;
+  background-color:#000;
+  transform:rotate(-45deg);
+  transform-origin:left;
 }
 
 /* Mobile optimizations */

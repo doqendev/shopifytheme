@@ -329,11 +329,22 @@
           swatch.style.setProperty('--swatch--background', swatchValue);
           swatch.style.background = `var(--swatch--background)`;
 
+          // Check if this color option has any available variants
+          const tempSelected = {...selected, [idx]: val};
+          const testVariant = findVariant(product, tempSelected);
+          const isAvailable = testVariant && testVariant.available !== false;
+
+          if(!isAvailable){
+            swatchWrapper.classList.add('il-swatch-disabled');
+            swatchWrapper.title = `${val} - Esgotado`;
+          }
+
           if(selected[idx] === val) {
             swatchWrapper.classList.add('is-selected');
           }
 
           swatchWrapper.addEventListener('click', () => {
+            if(!isAvailable) return;
             qsa('.il-swatch-wrapper', list).forEach(b => b.classList.remove('is-selected'));
             swatchWrapper.classList.add('is-selected');
             selected[idx] = val;
@@ -352,8 +363,20 @@
           btn.dataset.value = val;
           btn.textContent = val;
 
+          // Check if this size option has any available variants
+          const tempSelected = {...selected, [idx]: val};
+          const testVariant = findVariant(product, tempSelected);
+          const isAvailable = testVariant && testVariant.available !== false;
+
+          if(!isAvailable){
+            btn.classList.add('il-pill-disabled');
+            btn.disabled = true;
+            btn.title = `${val} - Esgotado`;
+          }
+
           if(selected[idx] === val) btn.classList.add('is-selected');
           btn.addEventListener('click', () => {
+            if(!isAvailable) return;
             qsa(`[data-opt-index="${idx}"]`, list).forEach(b => b.classList.remove('is-selected'));
             btn.classList.add('is-selected');
             selected[idx] = val;
