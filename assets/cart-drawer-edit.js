@@ -258,8 +258,25 @@
     return val;
   }
 
-  function buildOptions(container, product, selected){
+  async function buildOptions(container, product, selected){
     container.innerHTML = '';
+
+    // Fetch full product data with swatch information
+    let productWithSwatches = product;
+    if(product.handle){
+      try {
+        const response = await fetch(`/products/${product.handle}?view=swatches`);
+        if(response.ok){
+          const swatchData = await response.json();
+          if(swatchData && swatchData.options_with_values){
+            productWithSwatches = {...product, options_with_values: swatchData.options_with_values};
+          }
+        }
+      } catch(e){
+        console.warn('Could not fetch swatch data', e);
+      }
+    }
+
     (product.options || []).forEach((name, iIdx) => {
       const idx = iIdx + 1;
       const wrap = document.createElement('div');
@@ -286,9 +303,30 @@
           swatch.dataset.optIndex = String(idx);
           swatch.dataset.value = val;
 
-          // Use the color value itself for solid color swatches
-          const lower = val.toLowerCase().trim();
-          swatch.style.setProperty('--swatch--background', lower);
+          // Get swatch data from productWithSwatches if available
+          let swatchValue = null;
+          if(productWithSwatches.options_with_values){
+            const option = productWithSwatches.options_with_values[iIdx];
+            if(option && option.values){
+              const valueObj = option.values.find(v => (v.value || v) === val);
+              if(valueObj && valueObj.swatch){
+                if(valueObj.swatch.image && valueObj.swatch.image.src){
+                  const imgUrl = valueObj.swatch.image.src.replace(/\.(jpg|jpeg|png|gif|webp)/, '_50x.$1');
+                  swatchValue = `url(${imgUrl})`;
+                } else if(valueObj.swatch.color && valueObj.swatch.color.rgb){
+                  swatchValue = `rgb(${valueObj.swatch.color.rgb})`;
+                }
+              }
+            }
+          }
+
+          // Fallback to color name if no swatch data
+          if(!swatchValue){
+            const lower = val.toLowerCase().trim();
+            swatchValue = lower;
+          }
+
+          swatch.style.setProperty('--swatch--background', swatchValue);
 
           if(selected[idx] === val) {
             swatchWrapper.classList.add('is-selected');
@@ -364,7 +402,7 @@
     })();
   }
 
-  function openEditor(hostEl){
+  async function openEditor(hostEl){
     const modal = ensureModal();
     modal.hidden = false;
     document.body.style.overflow = 'hidden';
@@ -387,7 +425,7 @@
 
     buildGallery(gallery, product);
     const selected = {1: variant?.option1, 2: variant?.option2, 3: variant?.option3};
-    buildOptions(options, product, selected);
+    await buildOptions(options, product, selected);
 
     const onChange = (ev) => { const v = ev.detail.variant; if(v) price.textContent = money((v.price*100) || v.price || 0); };
     options.addEventListener('variant:change', onChange, {once:false});
