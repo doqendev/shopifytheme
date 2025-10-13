@@ -677,24 +677,24 @@
         var panelHeight = Math.min(naturalHeight, availableHeight);
 
         if (naturalHeight > availableHeight) {
-          panel.style.height = Math.round(availableHeight) + 'px';
+          panel.style.maxHeight = Math.round(availableHeight) + 'px';
           panel.style.overflowY = 'auto';
-          panelHeight = availableHeight;
         } else {
-          panel.style.height = '';
+          panel.style.maxHeight = '';
           panel.style.overflowY = '';
         }
 
-        var top = anchorRect.bottom - panelHeight;
-        if (top < 0) {
-          top = 0;
+        // Always align the bottom of the drawer with the bottom of the image
+        var bottom = window.innerHeight - anchorRect.bottom;
+        if (bottom < 0) {
+          bottom = 0;
         }
 
         var fixedContext = findFixedPositionContext(panel);
         if (fixedContext) {
           var contextRect = fixedContext.getBoundingClientRect();
           left -= contextRect.left;
-          top -= contextRect.top;
+          bottom -= (window.innerHeight - contextRect.bottom);
         }
 
         panel.classList.add('size-options--desktop');
@@ -703,8 +703,8 @@
         panel.style.right = 'auto';
         panel.style.width = Math.round(desiredWidth) + 'px';
         panel.style.zIndex = 1000;
-        panel.style.top = Math.round(top) + 'px';
-        panel.style.bottom = 'auto';
+        panel.style.top = 'auto';
+        panel.style.bottom = Math.round(bottom) + 'px';
       }
 
       function repositionActiveSizeOptions() {
