@@ -312,20 +312,6 @@
                           {{ 'icon-plus.svg' | inline_asset_content }}
                         </button>
                         <div class="size-options" tabindex="-1">
-
-                          <div class="size-options-header">
-    <span class="size-options-title">Seleciona o tamanho</span>
-
-    <a href="/pages/guia-de-tamanhos" class="size-guide-link">
-      Guia de tamanhos
-    </a>
-  </div>
-
-
-
-
-  
-
                           <div class="overlay-sizes">
                             {% for size in all_sizes %}
                               <button type="button" class="size-option{% unless available_sizes contains size %} sold-out{% endunless %}" data-size="{{ size }}" {% unless available_sizes contains size %}disabled="disabled"{% endunless %}>
