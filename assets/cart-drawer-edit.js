@@ -281,10 +281,6 @@
       const idx = iIdx + 1;
       const wrap = document.createElement('div');
       wrap.className = 'il-opt';
-      const label = document.createElement('div');
-      label.className = 'il-opt__name';
-      label.textContent = name;
-      wrap.appendChild(label);
 
       const isColor = /color|cor|couleur|farbe/i.test(name);
       const values = optionValues(product, idx);
@@ -409,7 +405,6 @@
             <div class="il-cart-edit__price" data-price></div>
             <div class="il-cart-edit__options" data-options></div>
             <div class="il-cart-edit__qty">
-              <span>Quantidade</span>
               <div class="il-stepper">
                 <button type="button" class="il-stepper__btn" data-qty-minus>-</button>
                 <input type="number" class="il-stepper__input" min="1" value="1" data-qty>
@@ -444,14 +439,14 @@
     const qtyInput = qs('[data-qty]', modal);
 
     title.textContent = product.title || '';
-    price.textContent = variant ? money((variant.price*100) || variant.price || 0) : '';
+    price.textContent = variant ? money(variant.price || 0) : '';
     qtyInput.value = String(qty);
 
     buildGallery(gallery, product);
     const selected = {1: variant?.option1, 2: variant?.option2, 3: variant?.option3};
     await buildOptions(options, product, selected);
 
-    const onChange = (ev) => { const v = ev.detail.variant; if(v) price.textContent = money((v.price*100) || v.price || 0); };
+    const onChange = (ev) => { const v = ev.detail.variant; if(v) price.textContent = money(v.price || 0); };
     options.addEventListener('variant:change', onChange, {once:false});
 
     qs('[data-qty-minus]', modal).onclick = () => { qtyInput.value = Math.max(1, (Number(qtyInput.value)||1)-1); };
