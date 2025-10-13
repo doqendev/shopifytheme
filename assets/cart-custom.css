@@ -238,7 +238,7 @@
 }
 
 .il-cart-edit__qty{margin-top:12px;display:flex;align-items:center;gap:12px}
-.il-cart-edit__qty > span{font-size:14px;font-weight:500;color:#444}
+.il-cart-edit__qty > span{display:none}
 .il-stepper{display:flex;align-items:center;gap:8px}
 .il-stepper__btn{width:36px;height:36px;border:1px solid #ddd;background:#fff;border-radius:6px;cursor:pointer;transition:background 0.2s ease;font-size:18px}
 .il-stepper__btn:hover{background:#f5f5f5}
