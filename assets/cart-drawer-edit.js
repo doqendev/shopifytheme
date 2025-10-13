@@ -275,35 +275,66 @@
       list.className = isColor ? 'il-swatches' : 'il-pills';
 
       values.forEach(val => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = isColor ? 'il-swatch' : 'il-pill';
-        btn.dataset.optIndex = String(idx);
-        btn.dataset.value = val;
-
         if(isColor){
-          const lower = val.toLowerCase().trim();
-          btn.title = val;
-          btn.style.background = lower;
-          const withImg = (product.variants || []).find(v => v['option'+idx] === val && v.featured_image?.src);
-          if(withImg){
-            btn.classList.add('is-image');
-            btn.style.backgroundImage = `url(${withImg.featured_image.src})`;
+          // Create swatch wrapper to match product page structure
+          const swatchWrapper = document.createElement('label');
+          swatchWrapper.className = 'il-swatch-wrapper';
+          swatchWrapper.title = val;
+
+          const swatch = document.createElement('span');
+          swatch.className = 'swatch il-swatch-span';
+          swatch.dataset.optIndex = String(idx);
+          swatch.dataset.value = val;
+
+          // Find variant with this color option to get swatch data
+          const withVariant = (product.variants || []).find(v => v['option'+idx] === val);
+
+          // Check if there's a featured image for this color variant
+          if(withVariant && withVariant.featured_image?.src){
+            const imageUrl = withVariant.featured_image.src.replace(/\.(jpg|jpeg|png|gif|webp)/, '_50x.$1');
+            swatch.style.setProperty('--swatch--background', `url(${imageUrl})`);
+            swatch.style.backgroundSize = 'cover';
+            swatch.style.backgroundPosition = 'center';
+          } else {
+            // Use the color value itself (Shopify will handle color swatches via theme settings)
+            const lower = val.toLowerCase().trim();
+            swatch.style.setProperty('--swatch--background', lower);
           }
+
+          if(selected[idx] === val) {
+            swatchWrapper.classList.add('is-selected');
+          }
+
+          swatchWrapper.addEventListener('click', () => {
+            qsa('.il-swatch-wrapper', list).forEach(b => b.classList.remove('is-selected'));
+            swatchWrapper.classList.add('is-selected');
+            selected[idx] = val;
+            const v = findVariant(product, selected);
+            container.dispatchEvent(new CustomEvent('variant:change', {detail: {variant: v, selected}}));
+          });
+
+          swatchWrapper.appendChild(swatch);
+          list.appendChild(swatchWrapper);
         } else {
+          // Pills for non-color options
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'il-pill';
+          btn.dataset.optIndex = String(idx);
+          btn.dataset.value = val;
           btn.textContent = val;
+
+          if(selected[idx] === val) btn.classList.add('is-selected');
+          btn.addEventListener('click', () => {
+            qsa(`[data-opt-index="${idx}"]`, list).forEach(b => b.classList.remove('is-selected'));
+            btn.classList.add('is-selected');
+            selected[idx] = val;
+            const v = findVariant(product, selected);
+            container.dispatchEvent(new CustomEvent('variant:change', {detail: {variant: v, selected}}));
+          });
+
+          list.appendChild(btn);
         }
-
-        if(selected[idx] === val) btn.classList.add('is-selected');
-        btn.addEventListener('click', () => {
-          qsa(`[data-opt-index="${idx}"]`, list).forEach(b => b.classList.remove('is-selected'));
-          btn.classList.add('is-selected');
-          selected[idx] = val;
-          const v = findVariant(product, selected);
-          container.dispatchEvent(new CustomEvent('variant:change', {detail: {variant: v, selected}}));
-        });
-
-        list.appendChild(btn);
       });
 
       wrap.appendChild(list);
