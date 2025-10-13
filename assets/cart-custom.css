@@ -177,10 +177,7 @@
 
 /* Selected state - matching product page with white border + black outline */
 .il-swatch-wrapper.is-selected{
-  width:19px !important;
-  height:19px !important;
-  border:2px solid #fff !important;
-  box-shadow:0 0 0 0.5px #000 !important;
+  box-shadow:0 0 0 2px #fff, 0 0 0 3px #000;
 }
 
 .il-swatch-wrapper.is-selected .swatch.il-swatch-span{
@@ -230,10 +227,6 @@
   .il-swatch-wrapper .swatch.il-swatch-span{
     width:15px !important;
     height:15px !important;
-  }
-  .il-swatch-wrapper.is-selected{
-    width:19px !important;
-    height:19px !important;
   }
 }
 
