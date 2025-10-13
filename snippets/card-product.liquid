@@ -878,7 +878,7 @@
       window.addEventListener('resize', repositionActiveSizeOptions);
       window.addEventListener('scroll', function() {
         if (!window.matchMedia('(min-width: 990px)').matches) return;
-        repositionActiveSizeOptions();
+        closeAllPlus();
       }, { passive: true });
     });
   </script>
