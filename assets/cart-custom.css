@@ -239,16 +239,15 @@
 
 .il-cart-edit__qty{margin-top:12px;display:flex;align-items:center;gap:12px}
 .il-cart-edit__qty > span{display:none}
-.il-stepper{display:flex;align-items:center;gap:8px}
-.il-stepper__btn{width:36px;height:36px;border:1px solid #ddd;background:#fff;border-radius:6px;cursor:pointer;transition:background 0.2s ease;font-size:18px}
+.il-stepper{display:flex;align-items:center;gap:4px}
+.il-stepper__btn{width:28px;height:28px;border:1px solid #ddd;background:#fff;border-radius:4px;cursor:pointer;transition:background 0.2s ease;font-size:14px;display:flex;align-items:center;justify-content:center}
 .il-stepper__btn:hover{background:#f5f5f5}
-.il-stepper__input{width:56px;text-align:center;border:1px solid #ddd;border-radius:6px;height:36px;font-size:15px}
+.il-stepper__input{width:40px;text-align:center;border:1px solid #ddd;border-radius:4px;height:28px;font-size:13px;padding:0}
 @media (max-width: 900px){
-  .il-cart-edit__qty{margin-top:20px;gap:16px}
-  .il-cart-edit__qty > span{font-size:15px}
-  .il-stepper{gap:10px}
-  .il-stepper__btn{width:44px;height:44px;font-size:20px}
-  .il-stepper__input{width:64px;height:44px;font-size:16px}
+  .il-cart-edit__qty{margin-top:20px;gap:12px}
+  .il-stepper{gap:6px}
+  .il-stepper__btn{width:32px;height:32px;font-size:16px}
+  .il-stepper__input{width:44px;height:32px;font-size:14px}
 }
 
 .il-cart-edit__actions{margin-top:20px}
