@@ -651,15 +651,11 @@
         document.body.classList.add('size-drawer-open');
 
         var rect = card.getBoundingClientRect();
-        var media = card.querySelector('.card__media');
-        var mediaImg = media
-          ? (media.querySelector('.swiper-slide-active img') || media.querySelector('img'))
-          : null;
-        var anchorRect = mediaImg
-          ? mediaImg.getBoundingClientRect()
-          : media
-            ? media.getBoundingClientRect()
-            : rect;
+        // Use .card__inner as the anchor since it contains the image and defines the visual boundary
+        var cardInner = card.querySelector('.card__inner');
+        var anchorRect = cardInner
+          ? cardInner.getBoundingClientRect()
+          : rect;
         var viewportPadding = 16;
         var desiredWidth = Math.max(0, anchorRect.width || rect.width);
         var left = Math.max(0, anchorRect.width ? anchorRect.left : rect.left);
