@@ -4,49 +4,39 @@
   Usage:
   /products/HANDLE?view=swatches
 {% endcomment %}
-
 {%- layout none -%}
 {%- liquid
   assign product_handle = product.handle | default: ''
-  if product_handle == blank
-    echo '{}'
-  else
-    assign options_data = ''
-    for option in product.options_with_values
-      assign option_json = ''
-      capture option_json
-        echo '{'
-        echo '"name":"' | append: option.name | json | append: '",'
-        echo '"position":' | append: option.position | append: ','
-        echo '"values":['
-        for value in option.values
-          if forloop.first == false
-            echo ','
-          endif
-          echo '{'
-          echo '"value":"' | append: value | json | append: '",'
-          if value.swatch
-            echo '"swatch":{'
-            if value.swatch.color
-              echo '"color":{"rgb":"' | append: value.swatch.color.rgb | append: '"}'
-            elsif value.swatch.image
-              echo '"image":{"src":"' | append: value.swatch.image | image_url: width: 50 | append: '"}'
-            endif
-            echo '}'
-          else
-            echo '"swatch":null'
-          endif
-          echo '}'
-        endfor
-        echo ']}'
-      endcapture
-
-      if forloop.first == false
-        assign options_data = options_data | append: ','
-      endif
-      assign options_data = options_data | append: option_json
-    endfor
-
-    echo '{"options_with_values":[' | append: options_data | append: ']}'
-  endif
 -%}
+{%- if product_handle == blank -%}
+{}
+{%- else -%}
+{"options_with_values":[
+{%- for option in product.options_with_values -%}
+  {%- if forloop.first == false -%},{%- endif -%}
+  {
+    "name":{{ option.name | json }},
+    "position":{{ option.position | json }},
+    "values":[
+    {%- for value in option.values -%}
+      {%- if forloop.first == false -%},{%- endif -%}
+      {
+        "value":{{ value | json }},
+        {%- if value.swatch -%}
+        "swatch":{
+          {%- if value.swatch.color -%}
+          "color":{"rgb":"{{ value.swatch.color.rgb }}"}
+          {%- elsif value.swatch.image -%}
+          "image":{"src":"{{ value.swatch.image | image_url: width: 50 }}"}
+          {%- endif -%}
+        }
+        {%- else -%}
+        "swatch":null
+        {%- endif -%}
+      }
+    {%- endfor -%}
+    ]
+  }
+{%- endfor -%}
+]}
+{%- endif -%}

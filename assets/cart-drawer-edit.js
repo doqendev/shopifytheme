@@ -311,7 +311,7 @@
               const valueObj = option.values.find(v => (v.value || v) === val);
               if(valueObj && valueObj.swatch){
                 if(valueObj.swatch.image && valueObj.swatch.image.src){
-                  const imgUrl = valueObj.swatch.image.src.replace(/\.(jpg|jpeg|png|gif|webp)/, '_50x.$1');
+                  const imgUrl = valueObj.swatch.image.src;
                   swatchValue = `url(${imgUrl})`;
                 } else if(valueObj.swatch.color && valueObj.swatch.color.rgb){
                   swatchValue = `rgb(${valueObj.swatch.color.rgb})`;
@@ -327,6 +327,7 @@
           }
 
           swatch.style.setProperty('--swatch--background', swatchValue);
+          swatch.style.background = `var(--swatch--background)`;
 
           if(selected[idx] === val) {
             swatchWrapper.classList.add('is-selected');
