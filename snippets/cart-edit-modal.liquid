@@ -1,7 +1,16 @@
 <div id="il-cart-edit" class="il-cart-edit" hidden>
   <div class="il-cart-edit__backdrop" data-close></div>
   <div class="il-cart-edit__card" role="dialog" aria-modal="true" aria-labelledby="ilCartEditTitle">
-    <button class="il-cart-edit__close" data-close aria-label="Fechar">×</button>
+    <button
+      class="il-cart-edit__close"
+      type="button"
+      data-close
+      aria-label="{{ 'accessibility.close' | t }}"
+    >
+      <span class="svg-wrapper">
+        {{- 'icon-close.svg' | inline_asset_content -}}
+      </span>
+    </button>
 
     <div class="il-cart-edit__gallery" data-gallery></div>
 
@@ -26,4 +35,3 @@
     </div>
   </div>
 </div>
-

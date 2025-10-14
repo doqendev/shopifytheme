@@ -398,7 +398,11 @@
       host.innerHTML = `
         <div class="il-cart-edit__backdrop" data-close></div>
         <div class="il-cart-edit__card">
-          <button class="il-cart-edit__close" data-close>&times;</button>
+          <button class="il-cart-edit__close" type="button" data-close aria-label="{{ 'accessibility.close' | t }}">
+            <span class="svg-wrapper">
+              {{- 'icon-close.svg' | inline_asset_content -}}
+            </span>
+          </button>
           <div class="il-cart-edit__gallery" data-gallery></div>
           <div class="il-cart-edit__info">
             <h3 class="il-cart-edit__title" data-title></h3>
