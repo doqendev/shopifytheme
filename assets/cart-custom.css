@@ -58,8 +58,8 @@
   top:12px;
   right:12px;
   padding:0;
-  min-width:4.4rem;
-  min-height:4.4rem;
+  min-width:3.2rem;
+  min-height:3.2rem;
   background:transparent;
   border:none;
   box-shadow:0 0 0 0.2rem rgba(var(--color-button), 0);
@@ -71,8 +71,8 @@
   z-index:10;
 }
 .il-cart-edit__close .svg-wrapper{
-  width:2rem;
-  height:2rem;
+  width:1.4rem;
+  height:1.4rem;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -88,8 +88,8 @@
   .il-cart-edit__close{
     top:calc(8px + env(safe-area-inset-top, 0px));
     right:calc(8px + env(safe-area-inset-right, 0px));
-    min-width:4rem;
-    min-height:4rem;
+    min-width:3rem;
+    min-height:3rem;
   }
 }
 
