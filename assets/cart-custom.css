@@ -57,40 +57,39 @@
   position:absolute;
   top:12px;
   right:12px;
-  background:#fff;
-  border:1px solid #e6e6e6;
-  border-radius:0;
-  width:20px;
-  height:20px;
+  padding:0;
+  min-width:4.4rem;
+  min-height:4.4rem;
+  background:transparent;
+  border:none;
+  box-shadow:0 0 0 0.2rem rgba(var(--color-button), 0);
   cursor:pointer;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:14px;
-  line-height:1;
+  color:rgb(var(--color-foreground));
   z-index:10;
-  transition:background 0.2s ease;
 }
 .il-cart-edit__close .svg-wrapper{
-  width:12px;
-  height:12px;
+  width:2rem;
+  height:2rem;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 .il-cart-edit__close .svg-wrapper > svg{
   width:100%;
   height:100%;
 }
-.il-cart-edit__close:hover{background:#f5f5f5}
+.il-cart-edit__close:hover{
+  background:transparent;
+}
 @media (max-width: 900px){
   .il-cart-edit__close{
     top:calc(8px + env(safe-area-inset-top, 0px));
     right:calc(8px + env(safe-area-inset-right, 0px));
-    width:24px;
-    height:24px;
-    font-size:16px;
-  }
-  .il-cart-edit__close .svg-wrapper{
-    width:14px;
-    height:14px;
+    min-width:4rem;
+    min-height:4rem;
   }
 }
 
