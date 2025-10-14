@@ -319,7 +319,16 @@
 #CartDrawer .drawer__panels{ flex:1 1 auto; display:flex; flex-direction:column; min-height:0 }
 #CartDrawer #CartDrawer-CartPanel{ flex:1 1 auto; display:flex; flex-direction:column; min-height:0 }
 #CartDrawer cart-drawer-items{ flex:1 1 auto; min-height:0; overflow:auto }
-#CartDrawer .drawer__footer{ flex:0 0 auto; margin-top:12px }
+#CartDrawer .drawer__footer{
+  flex:0 0 auto;
+  margin-top:12px;
+  padding-bottom:calc(2.4rem + env(safe-area-inset-bottom, 0px));
+}
+@supports (padding: max(0px)){
+  #CartDrawer .drawer__footer{
+    padding-bottom:max(2.4rem, calc(1.5rem + env(safe-area-inset-bottom, 0px)));
+  }
+}
 
 /* Expand the details width to the right edge; remove extra columns */
 #CartDrawer-ColumnTotal, #CartDrawer td.cart-item__totals{ display:none !important }
