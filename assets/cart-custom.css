@@ -322,12 +322,15 @@
 #CartDrawer .drawer__footer{
   flex:0 0 auto;
   margin-top:12px;
-  padding-bottom:calc(2.4rem + env(safe-area-inset-bottom, 0px));
+  padding-bottom:calc(4rem + env(safe-area-inset-bottom, 0px));
 }
 @supports (padding: max(0px)){
   #CartDrawer .drawer__footer{
-    padding-bottom:max(2.4rem, calc(1.5rem + env(safe-area-inset-bottom, 0px)));
+    padding-bottom:max(4rem, calc(1.5rem + env(safe-area-inset-bottom, 0px)));
   }
+}
+#CartDrawer .cart__ctas{
+  padding-bottom:env(safe-area-inset-bottom, 0px);
 }
 
 /* Expand the details width to the right edge; remove extra columns */
