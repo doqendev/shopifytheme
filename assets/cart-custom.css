@@ -59,14 +59,14 @@
   right:12px;
   background:#fff;
   border:1px solid #e6e6e6;
-  border-radius:4px;
-  width:24px;
-  height:24px;
+  border-radius:0;
+  width:20px;
+  height:20px;
   cursor:pointer;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:16px;
+  font-size:14px;
   line-height:1;
   z-index:10;
   transition:background 0.2s ease;
@@ -76,9 +76,9 @@
   .il-cart-edit__close{
     top:calc(8px + env(safe-area-inset-top, 0px));
     right:calc(8px + env(safe-area-inset-right, 0px));
-    width:28px;
-    height:28px;
-    font-size:18px;
+    width:24px;
+    height:24px;
+    font-size:16px;
   }
 }
 
