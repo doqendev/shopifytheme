@@ -93,6 +93,7 @@
 .il-opt{display:grid;gap:8px}
 .il-opt__name{font-size:14px;color:#444;font-weight:500}
 .il-swatches,.il-pills{display:flex;flex-wrap:wrap;gap:8px}
+.il-swatches{margin-left:4px}
 @media (max-width: 900px){
   .il-cart-edit__options{gap:20px}
   .il-opt{gap:10px}
