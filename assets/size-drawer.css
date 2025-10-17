@@ -130,6 +130,7 @@
 
 .size-item--unavailable {
   cursor: not-allowed;
+  background-color: transparent !important;
 }
 
 .size-item--unavailable .size-item__label {
