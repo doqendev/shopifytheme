@@ -7,6 +7,8 @@
   - Filters by base color, size, product type, etc.
 {% endcomment %}
 
+{% render 'page-loading-animation' %}
+
 {{ 'template-collection.css' | asset_url | stylesheet_tag }}
 {% unless section.settings.quick_add == 'none' %}
   {{ 'quick-add.css' | asset_url | stylesheet_tag }}
