@@ -18,6 +18,31 @@
     }
   }
 
+  /* Match collection page heading styling */
+  .collection-header h1.collection-title {
+    margin-bottom: 0px!important;
+  }
+
+  @media screen and (max-width: 749px) {
+    .collection-header h1.collection-title {
+      margin-left: 20px;
+      font-weight: 500;
+      font-size: 1.5rem!important;
+      letter-spacing: 0!important;
+      margin-bottom: 0px!important;
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .collection-header h1.collection-title {
+      margin-left: 25px;
+      font-weight: 600;
+      font-size: 20px;
+      line-height: 18px;
+      letter-spacing: .56px;
+    }
+  }
+
   /* Match collection page grid styling */
   #wishlist-product-grid {
     display: grid;
@@ -73,27 +98,28 @@
   }
 {%- endstyle -%}
 
-<div class="color-{{ section.settings.color_scheme }} gradient">
-  <div class="page-width section-{{ section.id }}-padding">
-    <h1 class="main-page-title page-title h0{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
-      {{ section.settings.heading | default: page.title | escape }}
-    </h1>
+<div class="section-{{ section.id }}-padding gradient color-{{ section.settings.color_scheme }}">
+  <!-- Wishlist Heading (matches collection page structure) -->
+  <div class="collection-header page-width">
+    <h1 class="collection-title">{{ section.settings.heading | default: page.title | escape }}</h1>
+  </div>
 
-    {%- if section.settings.show_description and page.content != blank -%}
+  {%- if section.settings.show_description and page.content != blank -%}
+    <div class="page-width">
       <div class="rte{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
         {{ page.content }}
       </div>
-    {%- endif -%}
+    </div>
+  {%- endif -%}
 
-    <div class="product-grid-container{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}" data-wishlist-container>
-      <ul id="wishlist-product-grid" class="grid product-grid" data-wishlist-grid role="list"></ul>
+  <div class="product-grid-container{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}" data-wishlist-container>
+    <ul id="wishlist-product-grid" class="grid product-grid" data-wishlist-grid role="list"></ul>
 
-      <div class="wishlist-empty" data-wishlist-empty>
-        <p>{{ 'general.wishlist_empty' | t | default: 'Your wishlist is empty.' }}</p>
-        <a href="{{ routes.all_products_collection_url }}" class="button">
-          {{ 'general.continue_shopping' | t | default: 'Continue shopping' }}
-        </a>
-      </div>
+    <div class="wishlist-empty" data-wishlist-empty>
+      <p>{{ 'general.wishlist_empty' | t | default: 'Your wishlist is empty.' }}</p>
+      <a href="{{ routes.all_products_collection_url }}" class="button">
+        {{ 'general.continue_shopping' | t | default: 'Continue shopping' }}
+      </a>
     </div>
   </div>
 </div>
