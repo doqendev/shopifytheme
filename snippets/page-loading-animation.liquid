@@ -38,8 +38,27 @@
     left: 0;
     width: 100%;
     height: 50%;
-    background-color: #000;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 1) 70%);
     transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+  }
+
+  /* Darker overlay while loading */
+  .page-loading-overlay::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, transparent 15%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.8) 100%);
+    z-index: 1;
+    opacity: 1;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+
+  .page-loading-overlay.loaded::before {
+    opacity: 0;
   }
 
   .page-loading-overlay__top {
@@ -64,7 +83,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 100000;
+    z-index: 100001;
     opacity: 1;
     transition: opacity 0.4s ease;
   }
