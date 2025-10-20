@@ -83,23 +83,28 @@
   }
 
   /* Product title link styling - match collection page */
-  #wishlist-product-grid .card__heading a {
+  #wishlist-product-grid .card__heading a,
+  #wishlist-product-grid .card__heading a:link,
+  #wishlist-product-grid .card__heading a:visited,
+  #wishlist-product-grid .card__heading a:hover,
+  #wishlist-product-grid .card__heading a:active,
+  #wishlist-product-grid .card-wrapper a,
+  #wishlist-product-grid .product-card-wrapper a,
+  #wishlist-product-grid a.full-unstyled-link {
     text-decoration: none !important;
     color: rgb(var(--color-foreground)) !important;
+    border-bottom: none !important;
   }
 
-  #wishlist-product-grid .card__heading a:visited {
-    color: rgb(var(--color-foreground)) !important;
-  }
-
-  #wishlist-product-grid .card__heading a:hover {
+  /* Force remove all underlines on wishlist page */
+  #wishlist-product-grid .underline-links-hover a,
+  #wishlist-product-grid .underline-links-hover:hover a,
+  #wishlist-product-grid .underline-links-hover a:hover,
+  #wishlist-product-grid .card-wrapper:hover a,
+  #wishlist-product-grid .product-card-wrapper:hover a {
     text-decoration: none !important;
-    color: rgb(var(--color-foreground)) !important;
-  }
-
-  /* Remove hover underline effect on wishlist page */
-  #wishlist-product-grid .underline-links-hover:hover a {
-    text-decoration: none !important;
+    text-underline-offset: 0 !important;
+    border-bottom: none !important;
   }
 
   .wishlist-empty {
