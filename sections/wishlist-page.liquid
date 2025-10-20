@@ -129,16 +129,6 @@
     <h1 class="collection-title">{{ section.settings.heading | default: page.title | escape }}</h1>
   </div>
 
-  {%- comment -%}
-  {%- if section.settings.show_description and page.content != blank -%}
-    <div class="page-width">
-      <div class="rte{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
-        {{ page.content }}
-      </div>
-    </div>
-  {%- endif -%}
-  {%- endcomment -%}
-
   <div class="product-grid-container{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}" data-wishlist-container>
     <ul id="wishlist-product-grid" class="grid product-grid" data-wishlist-grid role="list"></ul>
 
