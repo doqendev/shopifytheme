@@ -155,7 +155,7 @@
   flex: 1;
   background: transparent;
   border: 1px solid rgba(var(--color-foreground, 18, 18, 18), 0.15);
-  border-radius: 999px;
+  border-radius: 0;
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
   font-weight: 600;
@@ -342,7 +342,7 @@ cart-drawer.drawer--wishlist-active #CartDrawer-CartErrors {
   flex: 1;
   background: transparent;
   border: 1px solid rgba(var(--color-foreground, 18, 18, 18), 0.15);
-  border-radius: 999px;
+  border-radius: 0;
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
   font-weight: 600;
