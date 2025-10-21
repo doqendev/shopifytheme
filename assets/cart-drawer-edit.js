@@ -612,12 +612,9 @@
           if (!host) return;
           ev.preventDefault();
 
-          // Add loading class to show rotating icon
-          moveBtn.classList.add('is-loading');
-
-          // Add animation class
+          // Add loading overlay to cart item
           const cartItem = host.closest('.cart-item');
-          if(cartItem) cartItem.classList.add('is-removing');
+          if(cartItem) cartItem.classList.add('is-moving-to-wishlist');
 
           const prod = parseJSONAttr(host, 'data-product', {});
           const variantIdAttr = host.getAttribute('data-variant-id') || '';
@@ -642,9 +639,8 @@
 
             await refreshCartDrawer();
           } catch(e){
-            // Remove animation and loading state if failed
-            if(cartItem) cartItem.classList.remove('is-removing');
-            moveBtn.classList.remove('is-loading');
+            // Remove loading overlay if failed
+            if(cartItem) cartItem.classList.remove('is-moving-to-wishlist');
 
             if (addedToWishlist) {
               removeWishlistItem(wishlistItem);
@@ -654,7 +650,6 @@
           }
           finally {
             moveBtn.disabled = false;
-            moveBtn.classList.remove('is-loading');
           }
         }
       });

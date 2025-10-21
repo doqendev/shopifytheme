@@ -1,30 +1,43 @@
 .il-icons-row{display:flex;gap:12px;align-items:center;margin-top:6px}
 .il-icon-btn{background:transparent;border:none;border-radius:0;width:auto;height:auto;padding:0;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:rgb(var(--color-foreground))}
-.il-move-to-favorites{background:none;border:none;color:inherit;padding:0;margin-top:6px;cursor:pointer;font-weight:500;text-align:left;font-family:'Figtree',sans-serif;position:relative}
+.il-move-to-favorites{background:none;border:none;color:inherit;padding:0;margin-top:6px;cursor:pointer;font-weight:500;text-align:left;font-family:'Figtree',sans-serif}
 
-.il-move-to-favorites.is-loading{
-  color:transparent;
+/* Loading overlay for cart item when moving to favorites */
+#CartDrawer .cart-item.is-moving-to-wishlist{
+  position:relative;
   pointer-events:none;
 }
 
-.il-move-to-favorites.is-loading::before{
+#CartDrawer .cart-item.is-moving-to-wishlist::before{
   content:'';
   position:absolute;
+  top:0;
   left:0;
+  width:100%;
+  height:100%;
+  background-color:rgba(255,255,255,0.9);
+  z-index:10;
+}
+
+#CartDrawer .cart-item.is-moving-to-wishlist::after{
+  content:'';
+  position:absolute;
   top:50%;
-  transform:translateY(-50%);
-  width:20px;
-  height:20px;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:40px;
+  height:40px;
   background-image:url('chey.png');
   background-size:contain;
   background-repeat:no-repeat;
   background-position:center;
   animation:rotate-favorites-logo 2s linear infinite;
+  z-index:11;
 }
 
 @keyframes rotate-favorites-logo{
-  from{transform:translateY(-50%) rotate(0deg)}
-  to{transform:translateY(-50%) rotate(360deg)}
+  from{transform:translate(-50%,-50%) rotate(0deg)}
+  to{transform:translate(-50%,-50%) rotate(360deg)}
 }
 
 /* Compact cart line look in drawer */
