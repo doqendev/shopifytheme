@@ -5,6 +5,7 @@
 /* Compact cart line look in drawer */
 #CartDrawer .cart-items tbody tr.cart-item{border-bottom:1px solid #e6e6e6}
 #CartDrawer td.cart-item__totals{vertical-align: top}
+#CartDrawer td.cart-item__details{vertical-align: top}
 #CartDrawer .il-top-row{display:block;margin-bottom:2px}
 #CartDrawer .il-price{font-weight:700}
 #CartDrawer .il-item-title{display:block;margin-bottom:2px;font-weight:700;line-height:1.2}
