@@ -44,7 +44,7 @@
 #CartDrawer .cart-items tbody tr.cart-item{border-bottom:1px solid #e6e6e6}
 #CartDrawer td.cart-item__totals{vertical-align: top}
 #CartDrawer td.cart-item__details{vertical-align: top}
-#CartDrawer .cart__empty-text{text-align:center}
+#CartDrawer .cart__empty-text{text-align:center;color:rgba(var(--color-foreground, 18, 18, 18), 0.7);font-size:1rem;font-weight:400}
 #CartDrawer .drawer__empty-state{display:flex;align-items:center;justify-content:center}
 #CartDrawer .cart-drawer__empty-content{margin-top:0}
 #CartDrawer .il-top-row{display:block;margin-bottom:2px}
