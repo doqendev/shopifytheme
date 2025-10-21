@@ -9,7 +9,7 @@
 #CartDrawer .il-top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
 #CartDrawer .il-price{font-weight:700}
 #CartDrawer .il-item-title{display:block;margin-bottom:2px;font-weight:700;line-height:1.2}
-#CartDrawer .il-icons-row{display:flex;gap:12px;align-items:center;margin-top:6px}
+#CartDrawer .il-icons-row{display:flex;gap:12px;align-items:center;margin-top:0}
 #CartDrawer .il-variant-small{font-size:13px;color:#666;margin-top:4px}
 /* Hide all default Shopify price displays - we show .il-price instead */
 #CartDrawer .il-item-details > .product-option,
@@ -22,7 +22,6 @@
 #CartDrawer .il-item-details .cart-item__final-price,
 #CartDrawer .il-item-details .price{display:none !important}
 #CartDrawer .cart-item__quantity{display:none !important}
-#CartDrawer .il-item-details .il-icons-row{display:flex;gap:12px;align-items:center;margin-top:6px}
 
 /* Hide total column header + cells */
 #CartDrawer-ColumnTotal, #CartDrawer td.cart-item__totals { display:none !important }
@@ -347,15 +346,11 @@
 #CartDrawer .cart-item__details{ width:auto !important; max-width:none !important }
 #CartDrawer .cart-item__details > *{ max-width:none !important }
 
-#CartDrawer .il-item-details{ display:grid; grid-template-columns: minmax(0,1fr) auto; column-gap:12px; padding-right:0 }
+#CartDrawer .il-item-details{ display:grid; grid-template-columns: minmax(0,1fr) auto; column-gap:12px; padding-right:0; align-items:center }
 #CartDrawer .il-top-row{ display:contents }
 #CartDrawer .il-price{ grid-column:1 }
-#CartDrawer .il-item-details .il-icons-row{display:flex;gap:12px;align-items:center;margin-top:6px}
+#CartDrawer .il-item-details .il-icons-row{display:flex;gap:12px;align-items:center;margin-top:0}
 #CartDrawer .il-item-title, #CartDrawer .il-variant-small, #CartDrawer .il-move-to-favorites{ grid-column:1 / -1 }
-
-
-
-#CartDrawer .il-item-details .il-icons-row{display:flex;gap:12px;align-items:center;margin-top:6px}
 
 /* Reduce left padding between image and details to gain width */
 #CartDrawer .cart-item > td + td { padding-left: 1.2rem !important }

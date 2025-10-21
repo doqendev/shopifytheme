@@ -10,7 +10,9 @@
       "Bash(git pull:*)",
       "Bash(git stash:*)",
       "Bash(cat \"snippets/wishlist-login-modal.liquid\")",
-      "Bash(cat -A \"snippets/wishlist-login-modal.liquid\")"
+      "Bash(cat -A \"snippets/wishlist-login-modal.liquid\")",
+      "Bash(dir /s /b *.liquid)",
+      "Bash(findstr /i \"customer account\")"
     ],
     "deny": [],
     "ask": []
