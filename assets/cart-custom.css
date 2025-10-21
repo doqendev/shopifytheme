@@ -345,10 +345,10 @@
 #CartDrawer .cart-item__details{ width:auto !important; max-width:none !important }
 #CartDrawer .cart-item__details > *{ max-width:none !important }
 
-#CartDrawer .il-item-details{ position:relative; padding-right:80px }
+#CartDrawer .il-item-details{ position:relative; padding-right:0 }
 #CartDrawer .il-top-row{ display:block }
-#CartDrawer .il-price{ font-weight:700 }
-#CartDrawer .il-item-details .il-icons-row{position:absolute;top:0;right:0;display:flex;gap:12px;align-items:center;margin-top:0}
+#CartDrawer .il-price{ font-weight:700; margin-bottom:2px }
+#CartDrawer .il-item-details .il-icons-row{display:flex;gap:12px;align-items:center;margin-top:8px;margin-bottom:4px}
 #CartDrawer .il-item-title, #CartDrawer .il-variant-small, #CartDrawer .il-move-to-favorites{ display:block }
 
 /* Reduce left padding between image and details to gain width */
