@@ -218,17 +218,14 @@ cart-drawer.drawer--wishlist-active #CartDrawer-CartErrors {
 .drawer__wishlist.is-empty {
   align-items: center;
   justify-content: center;
-  margin-top: 35%;
+  margin-top: 0;
 }
 
-.cart-drawer__empty-content {
-  margin-top: 35%;
-}
 
 .wishlist-empty {
   text-align: center;
   color: rgba(var(--color-foreground, 18, 18, 18), 0.7);
-  margin: 2rem 0;
+  margin: 0;
 }
 .wishlist-grid {
   display: grid;
@@ -405,12 +402,13 @@ cart-drawer.drawer--wishlist-active #CartDrawer-CartErrors {
 .drawer__wishlist.is-empty {
   align-items: center;
   justify-content: center;
+  margin-top: 0;
 }
 
 .wishlist-empty {
   text-align: center;
   color: rgba(var(--color-foreground, 18, 18, 18), 0.7);
-  margin: 2rem 0;
+  margin: 0;
 }
 
 
