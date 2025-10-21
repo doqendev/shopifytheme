@@ -1,6 +1,31 @@
 .il-icons-row{display:flex;gap:12px;align-items:center;margin-top:6px}
 .il-icon-btn{background:transparent;border:none;border-radius:0;width:auto;height:auto;padding:0;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:rgb(var(--color-foreground))}
-.il-move-to-favorites{background:none;border:none;color:inherit;padding:0;margin-top:6px;cursor:pointer;font-weight:500;text-align:left;font-family:'Figtree',sans-serif}
+.il-move-to-favorites{background:none;border:none;color:inherit;padding:0;margin-top:6px;cursor:pointer;font-weight:500;text-align:left;font-family:'Figtree',sans-serif;position:relative}
+
+.il-move-to-favorites.is-loading{
+  color:transparent;
+  pointer-events:none;
+}
+
+.il-move-to-favorites.is-loading::before{
+  content:'';
+  position:absolute;
+  left:0;
+  top:50%;
+  transform:translateY(-50%);
+  width:20px;
+  height:20px;
+  background-image:url('chey.png');
+  background-size:contain;
+  background-repeat:no-repeat;
+  background-position:center;
+  animation:rotate-favorites-logo 2s linear infinite;
+}
+
+@keyframes rotate-favorites-logo{
+  from{transform:translateY(-50%) rotate(0deg)}
+  to{transform:translateY(-50%) rotate(360deg)}
+}
 
 /* Compact cart line look in drawer */
 #CartDrawer .cart-items tbody tr.cart-item{border-bottom:1px solid #e6e6e6}
