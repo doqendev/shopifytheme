@@ -347,11 +347,7 @@
 #CartDrawer .cart-item__details > *{ max-width:none !important }
 
 #CartDrawer .il-item-details{ position:relative; padding-right:0 }
-#CartDrawer .il-top-row{ display:block }
-#CartDrawer .il-price{ font-weight:700 !important; color:#000 !important; margin-bottom:2px }
-@media screen and (min-width: 750px) {
-  #CartDrawer .il-price{ font-weight:400 !important }
-}
+#CartDrawer .il-top-row{ display:block; margin-bottom:2px }
 #CartDrawer .il-item-details .il-icons-row{display:flex;gap:12px;align-items:center;margin-top:8px;margin-bottom:8px}
 #CartDrawer .il-item-title, #CartDrawer .il-variant-small, #CartDrawer .il-move-to-favorites{ display:block }
 
