@@ -94,6 +94,61 @@
     };
   }
 
+  function getCardStructureFromTemplate(handle){
+    if (!handle) return null;
+
+    // Search for the wishlist card template element
+    const template = document.querySelector('[data-wishlist-card-template]');
+    if (!template) return null;
+
+    // Get the inner HTML (the rendered card-product)
+    const templateMarkup = template.innerHTML.trim();
+    if (!templateMarkup) return null;
+
+    // Parse the template markup to extract card structure
+    const temp = document.createElement('div');
+    temp.innerHTML = templateMarkup;
+
+    // Find the card wrapper inside the template
+    const wrapper =
+      temp.querySelector('.product-card-wrapper') ||
+      temp.querySelector('.card-wrapper') ||
+      temp.querySelector('.card');
+
+    if (!wrapper) return null;
+
+    // Extract all the same elements as getCardStructureFromPage
+    const card = wrapper.querySelector('.card');
+    const cardInner = wrapper.querySelector('.card__inner');
+    const cardMedia = wrapper.querySelector('.card__media');
+    const mediaInner =
+      cardMedia?.querySelector(
+        '.card__media-inner, .media, .media--transparent, .media--hover-effect, .media--hover-effect-mobile',
+      ) || null;
+    const cardContent = wrapper.querySelector('.card__content');
+    const cardInformation = wrapper.querySelector('.card__information');
+    const cardHeading = wrapper.querySelector('.card__heading');
+    const priceWrapper = wrapper.querySelector('.card-information') || wrapper.querySelector('.price');
+
+    const clone = wrapper.cloneNode(true);
+    const tempContainer = document.createElement('div');
+    tempContainer.appendChild(clone);
+
+    return {
+      cardMarkup: tempContainer.innerHTML,
+      cardWrapperClassName: wrapper.className || '',
+      cardClassName: card?.className || '',
+      cardInnerClassName: cardInner?.className || '',
+      cardInnerStyle: cardInner?.getAttribute('style') || '',
+      cardMediaClassName: cardMedia?.className || '',
+      cardMediaInnerClassName: mediaInner?.className || '',
+      cardContentClassName: cardContent?.className || '',
+      cardInformationClassName: cardInformation?.className || '',
+      cardHeadingClassName: cardHeading?.className || '',
+      cardPriceWrapperClassName: priceWrapper?.className || '',
+    };
+  }
+
   function buildWishlistItemFromCart(host, product, variantId){
     if (!host || !product) return null;
     const variants = Array.isArray(product.variants) ? product.variants : [];
@@ -167,7 +222,14 @@
       wishlistItem.variantId = variant.id;
     }
 
-    const cardInfo = getCardStructureFromPage(product.handle);
+    // Try to get card structure from visible cards on the page (collection pages)
+    let cardInfo = getCardStructureFromPage(product.handle);
+
+    // Fallback: if no visible card found, look for template (product pages)
+    if (!cardInfo) {
+      cardInfo = getCardStructureFromTemplate(product.handle);
+    }
+
     if (cardInfo) {
       if (cardInfo.cardMarkup) wishlistItem.cardMarkup = cardInfo.cardMarkup;
       if (cardInfo.cardWrapperClassName) wishlistItem.cardWrapperClassName = cardInfo.cardWrapperClassName;
