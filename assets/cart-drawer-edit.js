@@ -121,6 +121,7 @@
       candidate.closest('.card');
     if (!wrapper) return null;
     const card = wrapper.querySelector('.card');
+    if (!card) return null;
     const cardInner = wrapper.querySelector('.card__inner');
     const cardMedia = wrapper.querySelector('.card__media');
     const mediaInner =
@@ -174,6 +175,7 @@
 
     // Extract all the same elements as getCardStructureFromPage
     const card = wrapper.querySelector('.card');
+    if (!card) return null;
     const cardInner = wrapper.querySelector('.card__inner');
     const cardMedia = wrapper.querySelector('.card__media');
     const mediaInner =
