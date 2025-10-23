@@ -26,6 +26,24 @@
     return value.trim().toLowerCase();
   };
 
+  const getVariantImageSource = (image) => {
+    if (!image) return '';
+    if (typeof image === 'string') return image;
+    if (typeof image === 'object') {
+      return (
+        image.src ||
+        image.url ||
+        image.currentSrc ||
+        image.original_src ||
+        image.preview_image?.src ||
+        image.preview_image?.url ||
+        image.small_url ||
+        ''
+      );
+    }
+    return '';
+  };
+
   const extractImageFromMarkup = (markup) => {
     if (typeof markup !== 'string' || !markup.trim()) return '';
     const template = document.createElement('template');
@@ -58,7 +76,50 @@
       available: !!variant.available,
       options: Array.isArray(variant.options) ? variant.options.slice() : [],
       price: variant.price,
+      image: getVariantImageSource(variant.image || variant.featured_image),
     }));
+  };
+
+  const normalizeSwatchEntry = (entry) => {
+    if (!entry || typeof entry !== 'object') return null;
+    const value = typeof entry.value === 'string' ? entry.value.trim() : '';
+    const keySource = typeof entry.key === 'string' ? entry.key : value;
+    const key = normalizeOptionValue(keySource);
+    if (!value || !key) return null;
+    const image = getVariantImageSource(entry.image);
+    return { value, key, image };
+  };
+
+  const normalizeWishlistSwatches = (swatches) => {
+    if (!Array.isArray(swatches)) return [];
+    const seen = new Set();
+    return swatches.reduce((accumulator, entry) => {
+      const normalized = normalizeSwatchEntry(entry);
+      if (!normalized) return accumulator;
+      if (seen.has(normalized.key)) return accumulator;
+      seen.add(normalized.key);
+      accumulator.push(normalized);
+      return accumulator;
+    }, []);
+  };
+
+  const deriveSwatchesFromVariants = (variants, colorIndex) => {
+    if (!Array.isArray(variants)) return [];
+    if (typeof colorIndex !== 'number' || colorIndex < 0) return [];
+    const map = new Map();
+    variants.forEach((variant) => {
+      if (!variant || !Array.isArray(variant.options)) return;
+      const colorValue = variant.options[colorIndex];
+      if (!colorValue) return;
+      const key = normalizeOptionValue(colorValue);
+      if (!key || map.has(key)) return;
+      map.set(key, {
+        value: colorValue,
+        key,
+        image: variant.image || '',
+      });
+    });
+    return Array.from(map.values());
   };
 
   const WISHLIST_RATIO_VALUE = '150%';
@@ -133,6 +194,15 @@
       normalizedImage = extractImageFromMarkup(normalizedCardMarkup);
     }
 
+    const normalizedVariants = normalizeVariants(item.variants);
+    let swatches = normalizeWishlistSwatches(item.swatches);
+    if ((!swatches || !swatches.length) && colorIndex >= 0) {
+      swatches = deriveSwatchesFromVariants(normalizedVariants, colorIndex);
+    }
+    if (!colorValue && swatches && swatches.length) {
+      colorValue = swatches[0].value;
+    }
+
     return {
       ...item,
       handle,
@@ -140,7 +210,8 @@
       colorIndex,
       colorValue,
       colorKey,
-      variants: normalizeVariants(item.variants),
+      variants: normalizedVariants,
+      swatches,
       cardInnerStyle: normalizedCardInnerStyle,
       cardMarkup: normalizedCardMarkup,
       image: normalizedImage,
@@ -889,6 +960,42 @@
     return template.content.firstElementChild;
   };
 
+  const createFallbackSwatchAndQuickAddMarkup = (item, quickAddMarkup) => {
+    const swatches = Array.isArray(item?.swatches) ? item.swatches : [];
+    const visibleLimit = 3;
+    const visibleSwatches = swatches.slice(0, visibleLimit);
+    const overflowCount = swatches.length > visibleLimit ? swatches.length - visibleLimit : 0;
+
+    const swatchMarkup = visibleSwatches
+      .map((swatch, index) => {
+        if (!swatch || typeof swatch !== 'object') return '';
+        const hasImage = typeof swatch.image === 'string' && swatch.image.trim().length;
+        const classes = ['swatch'];
+        if (!hasImage) classes.push('swatch--unavailable');
+        if (index === 0) classes.push('active');
+        const attributes = [`class="${classes.join(' ')}"`];
+        if (swatch.value) {
+          attributes.push(`data-color="${escapeHtml(swatch.value)}"`);
+        }
+        if (hasImage) {
+          const imageValue = escapeHtml(swatch.image.trim());
+          attributes.push(`data-variant-image="${imageValue}"`);
+          attributes.push(`style="--swatch--background: url(${imageValue});"`);
+        }
+        return `<span ${attributes.join(' ')}></span>`;
+      })
+      .join('');
+
+    const overflowMarkup =
+      overflowCount > 0 ? `<span class="additional-swatch-count">+${overflowCount}</span>` : '';
+
+    const quickAddContent = quickAddMarkup || '';
+
+    if (!swatchMarkup && !overflowMarkup && !quickAddContent) return '';
+
+    return `<div class="product-card__swatch-indicator">${swatchMarkup}${overflowMarkup}${quickAddContent}</div>`;
+  };
+
   const createFallbackWishlistMarkup = (item) => {
     const imageMarkup = item.image
       ? `<div class="wishlist-card__image-wrapper"><img class="wishlist-card__image" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" loading="lazy"></div>`
@@ -907,12 +1014,13 @@
     const cardInnerStyle = cardInnerStyleValue ? ` style="${escapeHtml(cardInnerStyleValue)}"` : '';
     const cardMediaClassName = escapeHtml(item.cardMediaClassName || 'card__media');
     const mediaInnerClassName = escapeHtml(item.cardMediaInnerClassName || 'media media--transparent media--hover-effect');
-    const cardContentClassName = escapeHtml(item.cardContentClassName || 'card__content');
-    const cardInformationClassName = escapeHtml(item.cardInformationClassName || 'card__information');
-    const cardHeadingClassName = escapeHtml(item.cardHeadingClassName || 'card__heading');
-    const priceWrapperClassName = escapeHtml(item.cardPriceWrapperClassName || 'card-information');
+      const cardContentClassName = escapeHtml(item.cardContentClassName || 'card__content');
+      const cardInformationClassName = escapeHtml(item.cardInformationClassName || 'card__information');
+      const cardHeadingClassName = escapeHtml(item.cardHeadingClassName || 'card__heading');
+      const priceWrapperClassName = escapeHtml(item.cardPriceWrapperClassName || 'card-information');
 
     const quickAddMarkup = createQuickAddMarkup(item);
+    const swatchAndQuickAddMarkup = createFallbackSwatchAndQuickAddMarkup(item, quickAddMarkup);
 
     return `
       <div class="${cardWrapperClassName}">
@@ -944,8 +1052,8 @@
               <div class="${priceWrapperClassName}">
                 ${priceMarkup}
               </div>
+              ${swatchAndQuickAddMarkup}
             </div>
-            ${quickAddMarkup}
           </div>
         </div>
       </div>`;

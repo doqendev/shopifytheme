@@ -66,6 +66,33 @@
     return product.options.map((_, index) => variant['option' + (index + 1)]);
   }
 
+  function buildWishlistSwatches(product, rawVariants, mappedVariants, colorIndex){
+    if (!product || !Array.isArray(rawVariants) || !Array.isArray(mappedVariants)) return [];
+    if (typeof colorIndex !== 'number' || colorIndex < 0) return [];
+    const swatchMap = new Map();
+    for (let index = 0; index < rawVariants.length; index += 1){
+      const rawVariant = rawVariants[index];
+      const mappedVariant = mappedVariants[index];
+      if (!mappedVariant || !Array.isArray(mappedVariant.options)) continue;
+      const colorValue = mappedVariant.options[colorIndex];
+      if (!colorValue) continue;
+      const key = normalizeOptionValue(colorValue);
+      if (!key || swatchMap.has(key)) continue;
+      const variantImageData =
+        rawVariant && typeof rawVariant === 'object' && rawVariant.featured_image
+          ? getMediaSource(rawVariant.featured_image)
+          : rawVariant && typeof rawVariant === 'object' && rawVariant.image
+          ? getMediaSource(rawVariant.image)
+          : '';
+      swatchMap.set(key, {
+        key,
+        value: colorValue,
+        image: variantImageData,
+      });
+    }
+    return Array.from(swatchMap.values());
+  }
+
   function getProductUrlForWishlist(product, host){
     const link = qs('.il-cart-line__title', host);
     if (link && link.getAttribute('href')) return link.getAttribute('href');
@@ -232,12 +259,19 @@
         return typeof value === 'string' ? value : String(value);
       });
       const available = entry.available;
+      const variantImage =
+        entry && typeof entry === 'object' && entry.featured_image
+          ? getMediaSource(entry.featured_image)
+          : entry && typeof entry === 'object' && entry.image
+          ? getMediaSource(entry.image)
+          : '';
       return {
         id: entry.id,
         title: entry.title,
         available: available === undefined ? true : Boolean(available),
         options: variantOptions,
         price: entry.price,
+        image: variantImage,
       };
     });
 
@@ -272,6 +306,10 @@
         wishlistItem.colorKey = normalizedColor;
         wishlistItem.selectedColor = colorValue;
         wishlistItem.color = colorValue;
+      }
+      const swatches = buildWishlistSwatches(product, variants, mappedVariants, colorIndex);
+      if (swatches.length) {
+        wishlistItem.swatches = swatches;
       }
     }
 
