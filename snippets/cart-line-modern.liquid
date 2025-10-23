@@ -1,21 +1,33 @@
 {%- liquid
   assign item = item | default: line_item
   assign index = index | default: forloop.index
+
+  # Get the best available image with proper fallbacks
+  assign line_image = item.image
+  unless line_image
+    assign line_image = item.variant.image
+  endunless
+  unless line_image
+    assign line_image = item.variant.featured_image
+  endunless
+  unless line_image
+    assign line_image = item.product.featured_image
+  endunless
 -%}
 <div class="il-cart-line"
      data-line-key="{{ item.key }}"
      data-line-index="{{ index }}"
      data-variant-id="{{ item.variant.id }}"
      data-qty="{{ item.quantity }}"
-     data-product-image="{% if item.image %}{{ item.image | image_url: width: 533 }}{% endif %}"
+     data-product-image="{% if line_image %}{{ line_image | image_url: width: 533 }}{% endif %}"
      data-product='{{ item.product | json | escape }}'
      data-properties='{{ item.properties | json | escape }}'>
 
   <a href="{{ item.url }}" class="il-cart-line__image" aria-label="{{ item.product.title }}">
-    {%- if item.image -%}
-      <img src="{{ item.image | image_url: width: 360 }}"
+    {%- if line_image -%}
+      <img src="{{ line_image | image_url: width: 360 }}"
            width="180" height="180"
-           alt="{{ item.image.alt | escape }}" loading="lazy">
+           alt="{{ line_image.alt | default: item.product.title | escape }}" loading="lazy">
     {%- endif -%}
   </a>
 
