@@ -15,6 +15,45 @@
     return typeof value === 'string' ? value.trim().toLowerCase() : '';
   }
 
+  function getMediaSource(entry){
+    if (!entry) return '';
+    if (typeof entry === 'string') return entry;
+    if (typeof entry === 'object'){
+      if (entry.preview_image) {
+        const preview = getMediaSource(entry.preview_image);
+        if (preview) return preview;
+      }
+      return (
+        entry.currentSrc ||
+        entry.src ||
+        entry.url ||
+        entry.original_src ||
+        entry.image ||
+        entry.small_url ||
+        ''
+      );
+    }
+    return '';
+  }
+
+  function extractImageFromMarkup(markup){
+    if (typeof markup !== 'string' || !markup.trim()) return '';
+    const template = document.createElement('template');
+    template.innerHTML = markup.trim();
+    const img =
+      template.content.querySelector('img') ||
+      template.content.querySelector('[data-src], [data-srcset]');
+    if (!img) return '';
+    return (
+      img.currentSrc ||
+      img.src ||
+      img.getAttribute('src') ||
+      img.getAttribute('data-srcset') ||
+      img.getAttribute('data-src') ||
+      ''
+    );
+  }
+
 
   function findOptionIndexByPattern(product, pattern){
     if (!product || !Array.isArray(product.options)) return -1;
@@ -39,18 +78,34 @@
   function getProductImageForWishlist(product, host){
     if (host){
       const img = qs('.il-cart-line__image img', host);
-      if (img) return img.currentSrc || img.src || '';
+      if (img) {
+        const hostImage =
+          img.currentSrc ||
+          img.src ||
+          img.getAttribute('src') ||
+          img.getAttribute('data-srcset') ||
+          img.getAttribute('data-src') ||
+          '';
+        if (hostImage) return hostImage;
+      }
     }
-    const featured = product && product.featured_image;
-    if (featured){
-      if (typeof featured === 'string') return featured;
-      if (typeof featured === 'object') return featured.src || featured.url || '';
-    }
-    const images = product && product.images;
-    if (Array.isArray(images) && images.length){
-      const first = images[0];
-      if (typeof first === 'string') return first;
-      if (first && typeof first === 'object') return first.src || first.url || '';
+
+    if (product){
+      const featuredMedia =
+        product.featured_media ||
+        product.featured_image ||
+        product.image ||
+        (Array.isArray(product.media) ? product.media.find(entry => entry && entry.media_type === 'image') : null);
+      const featuredSource = getMediaSource(featuredMedia);
+      if (featuredSource) return featuredSource;
+
+      const images = product.images;
+      if (Array.isArray(images)){
+        for (let index = 0; index < images.length; index += 1){
+          const candidate = getMediaSource(images[index]);
+          if (candidate) return candidate;
+        }
+      }
     }
     return '';
   }
@@ -225,27 +280,35 @@
     // Try to get card structure from visible cards on the page (collection pages)
     let cardInfo = getCardStructureFromPage(product.handle);
 
-    // Fallback: if no visible card found, look for template (product pages)
-    if (!cardInfo) {
-      cardInfo = getCardStructureFromTemplate(product.handle);
+      // Fallback: if no visible card found, look for template (product pages)
+      if (!cardInfo) {
+        cardInfo = getCardStructureFromTemplate(product.handle);
+      }
+
+      if (!wishlistItem.image && cardInfo && cardInfo.cardMarkup) {
+        const markupImage = extractImageFromMarkup(cardInfo.cardMarkup);
+        if (markupImage) {
+          wishlistItem.image = markupImage;
+        }
+      }
+
+      if (cardInfo) {
+        if (cardInfo.cardMarkup) wishlistItem.cardMarkup = cardInfo.cardMarkup;
+        if (cardInfo.cardWrapperClassName) wishlistItem.cardWrapperClassName = cardInfo.cardWrapperClassName;
+        if (cardInfo.cardClassName) wishlistItem.cardClassName = cardInfo.cardClassName;
+        if (cardInfo.cardInnerClassName) wishlistItem.cardInnerClassName = cardInfo.cardInnerClassName;
+        if (cardInfo.cardInnerStyle) wishlistItem.cardInnerStyle = cardInfo.cardInnerStyle;
+        if (cardInfo.cardMediaClassName) wishlistItem.cardMediaClassName = cardInfo.cardMediaClassName;
+        if (cardInfo.cardMediaInnerClassName) wishlistItem.cardMediaInnerClassName = cardInfo.cardMediaInnerClassName;
+        if (cardInfo.cardContentClassName) wishlistItem.cardContentClassName = cardInfo.cardContentClassName;
+        if (cardInfo.cardInformationClassName) wishlistItem.cardInformationClassName = cardInfo.cardInformationClassName;
+        if (cardInfo.cardHeadingClassName) wishlistItem.cardHeadingClassName = cardInfo.cardHeadingClassName;
+        if (cardInfo.cardPriceWrapperClassName) wishlistItem.cardPriceWrapperClassName = cardInfo.cardPriceWrapperClassName;
+      }
+
+      return wishlistItem;
     }
 
-    if (cardInfo) {
-      if (cardInfo.cardMarkup) wishlistItem.cardMarkup = cardInfo.cardMarkup;
-      if (cardInfo.cardWrapperClassName) wishlistItem.cardWrapperClassName = cardInfo.cardWrapperClassName;
-      if (cardInfo.cardClassName) wishlistItem.cardClassName = cardInfo.cardClassName;
-      if (cardInfo.cardInnerClassName) wishlistItem.cardInnerClassName = cardInfo.cardInnerClassName;
-      if (cardInfo.cardInnerStyle) wishlistItem.cardInnerStyle = cardInfo.cardInnerStyle;
-      if (cardInfo.cardMediaClassName) wishlistItem.cardMediaClassName = cardInfo.cardMediaClassName;
-      if (cardInfo.cardMediaInnerClassName) wishlistItem.cardMediaInnerClassName = cardInfo.cardMediaInnerClassName;
-      if (cardInfo.cardContentClassName) wishlistItem.cardContentClassName = cardInfo.cardContentClassName;
-      if (cardInfo.cardInformationClassName) wishlistItem.cardInformationClassName = cardInfo.cardInformationClassName;
-      if (cardInfo.cardHeadingClassName) wishlistItem.cardHeadingClassName = cardInfo.cardHeadingClassName;
-      if (cardInfo.cardPriceWrapperClassName) wishlistItem.cardPriceWrapperClassName = cardInfo.cardPriceWrapperClassName;
-    }
-
-    return wishlistItem;
-  }
   function pushWishlistItem(item){
     if (!item) return false;
     if (window.themeWishlist && typeof window.themeWishlist.addItem === 'function'){
