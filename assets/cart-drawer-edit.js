@@ -370,10 +370,22 @@
   }
 
   function buildWishlistItemFromCart(host, product, variantId){
-    if (!host || !product) return null;
+    console.group('🔍 buildWishlistItemFromCart DEBUG');
+    console.log('host element:', host);
+    console.log('product data:', product);
+    console.log('variantId:', variantId);
+
+    if (!host || !product) {
+      console.error('❌ Missing host or product!');
+      console.groupEnd();
+      return null;
+    }
+
     const variants = Array.isArray(product.variants) ? product.variants : [];
     const numericVariantId = Number(variantId) || 0;
     const variant = variants.find((entry) => Number(entry.id) === numericVariantId) || variants[0] || null;
+    console.log('variant found:', variant);
+
     const variantImageData =
       variant && typeof variant === 'object' && variant.featured_image
         ? (typeof variant.featured_image === 'string'
@@ -382,6 +394,8 @@
         : variant && typeof variant === 'object' && variant.image
         ? (typeof variant.image === 'string' ? variant.image : variant.image.src || variant.image.url || '')
         : '';
+    console.log('variantImageData:', variantImageData);
+
     const titleNode = qs('.il-cart-line__title', host);
     const priceNode = qs('.il-cart-line__price', host);
     const colorIndex = findOptionIndexByPattern(product, COLOR_LABEL_PATTERN);
@@ -413,23 +427,32 @@
 
     // Extract image from multiple sources with proper priority
     let imageSource = '';
+    console.log('\n📸 IMAGE EXTRACTION PROCESS:');
 
     // Priority 1: Variant image (most specific)
     if (variantImageData) {
       imageSource = variantImageData;
+      console.log('✅ Priority 1 - variantImageData:', imageSource);
+    } else {
+      console.log('❌ Priority 1 - variantImageData: EMPTY');
     }
 
     // Priority 2: Host element's data-product-image attribute
     if (!imageSource && host) {
       const hostImageAttr = host.getAttribute && host.getAttribute('data-product-image');
+      console.log('🔍 Priority 2 - data-product-image attribute:', hostImageAttr);
       if (hostImageAttr && hostImageAttr.trim()) {
         imageSource = hostImageAttr.trim();
+        console.log('✅ Priority 2 - Using data-product-image:', imageSource);
+      } else {
+        console.log('❌ Priority 2 - data-product-image: EMPTY or WHITESPACE');
       }
     }
 
     // Priority 3: Cart line image element
     if (!imageSource && host) {
       const img = qs('.il-cart-line__image img', host);
+      console.log('🔍 Priority 3 - img element found:', img);
       if (img) {
         imageSource =
           img.currentSrc ||
@@ -438,13 +461,33 @@
           img.getAttribute('data-srcset') ||
           img.getAttribute('data-src') ||
           '';
+        console.log('✅ Priority 3 - img sources:', {
+          currentSrc: img.currentSrc,
+          src: img.src,
+          'getAttribute(src)': img.getAttribute('src'),
+          'data-srcset': img.getAttribute('data-srcset'),
+          'data-src': img.getAttribute('data-src'),
+          finalImageSource: imageSource
+        });
+      } else {
+        console.log('❌ Priority 3 - NO IMG ELEMENT FOUND IN DOM');
       }
     }
 
     // Priority 4: Product data fallback
     if (!imageSource) {
+      console.log('🔍 Priority 4 - Checking product data...');
+      console.log('Product has featured_media:', !!product.featured_media);
+      console.log('Product has featured_image:', !!product.featured_image);
+      console.log('Product has image:', !!product.image);
+      console.log('Product has media array:', Array.isArray(product.media), product.media?.length);
+      console.log('Product has images array:', Array.isArray(product.images), product.images?.length);
+
       imageSource = getProductImageForWishlist(product, host);
+      console.log('✅ Priority 4 - getProductImageForWishlist result:', imageSource);
     }
+
+    console.log('\n🎯 FINAL IMAGE SOURCE:', imageSource || 'NONE - IMAGE WILL BE MISSING!');
 
     const wishlistItem = {
       handle: product.handle,
@@ -547,6 +590,11 @@
     if (!wishlistItem.cardInnerStyle) {
       wishlistItem.cardInnerStyle = '--ratio-percent: 150%;';
     }
+
+    console.log('\n✨ FINAL WISHLIST ITEM:', wishlistItem);
+    console.log('Final item.image value:', wishlistItem.image);
+    console.log('Has cardMarkup:', !!wishlistItem.cardMarkup);
+    console.groupEnd();
 
     return wishlistItem;
   }
@@ -979,14 +1027,29 @@
           if (!host) return;
           ev.preventDefault();
 
+          console.group('🔥 MOVE TO WISHLIST CLICKED');
+          console.log('Host element:', host);
+          console.log('Host attributes:', {
+            'data-line-key': host.getAttribute('data-line-key'),
+            'data-variant-id': host.getAttribute('data-variant-id'),
+            'data-product-image': host.getAttribute('data-product-image'),
+            'data-product': host.getAttribute('data-product'),
+            'data-qty': host.getAttribute('data-qty')
+          });
+
           // Add loading overlay to cart item
           const cartItem = host.closest('.cart-item');
           if(cartItem) cartItem.classList.add('is-moving-to-wishlist');
 
           const prod = parseJSONAttr(host, 'data-product', {});
+          console.log('Parsed product data:', prod);
+
           const variantIdAttr = host.getAttribute('data-variant-id') || '';
           const key = host.getAttribute('data-line-key');
           const wishlistItem = buildWishlistItemFromCart(host, prod, variantIdAttr);
+
+          console.log('Result from buildWishlistItemFromCart:', wishlistItem);
+          console.groupEnd();
           let addedToWishlist = false;
           moveBtn.disabled = true;
           try{
