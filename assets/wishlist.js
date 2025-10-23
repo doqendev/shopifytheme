@@ -200,7 +200,7 @@
       typeof item.cardMarkup === 'string' ? normalizeWishlistCardMarkup(item.cardMarkup) : '';
     let normalizedImage = '';
     if (typeof item.image === 'string' && item.image.trim().length) {
-      normalizedImage = item.image.trim();
+      normalizedImage = normalizeImageUrl(item.image.trim());
     } else if (normalizedCardMarkup) {
       normalizedImage = extractImageFromMarkup(normalizedCardMarkup);
     }
