@@ -232,9 +232,12 @@
   }
 
   function getProductImageForWishlist(product, host){
+    // Priority 1: Check host element's data-product-image attribute (from cart line)
     if (host){
       const hostImageAttr = host.getAttribute && host.getAttribute('data-product-image');
       if (hostImageAttr && hostImageAttr.trim()) return hostImageAttr.trim();
+
+      // Priority 2: Extract from cart line image element
       const img = qs('.il-cart-line__image img', host);
       if (img) {
         const hostImage =
@@ -248,6 +251,7 @@
       }
     }
 
+    // Priority 3: Extract from product data (featured media)
     if (product){
       const featuredMedia =
         product.featured_media ||
@@ -257,6 +261,7 @@
       const featuredSource = getMediaSource(featuredMedia);
       if (featuredSource) return featuredSource;
 
+      // Priority 4: Extract from product images array
       const images = product.images;
       if (Array.isArray(images)){
         for (let index = 0; index < images.length; index += 1){
@@ -405,7 +410,42 @@
     });
 
     const primaryVariant = mappedVariants.find((entry) => Number(entry.id) === numericVariantId) || mappedVariants[0] || null;
-    const imageSource = variantImageData || getProductImageForWishlist(product, host);
+
+    // Extract image from multiple sources with proper priority
+    let imageSource = '';
+
+    // Priority 1: Variant image (most specific)
+    if (variantImageData) {
+      imageSource = variantImageData;
+    }
+
+    // Priority 2: Host element's data-product-image attribute
+    if (!imageSource && host) {
+      const hostImageAttr = host.getAttribute && host.getAttribute('data-product-image');
+      if (hostImageAttr && hostImageAttr.trim()) {
+        imageSource = hostImageAttr.trim();
+      }
+    }
+
+    // Priority 3: Cart line image element
+    if (!imageSource && host) {
+      const img = qs('.il-cart-line__image img', host);
+      if (img) {
+        imageSource =
+          img.currentSrc ||
+          img.src ||
+          img.getAttribute('src') ||
+          img.getAttribute('data-srcset') ||
+          img.getAttribute('data-src') ||
+          '';
+      }
+    }
+
+    // Priority 4: Product data fallback
+    if (!imageSource) {
+      imageSource = getProductImageForWishlist(product, host);
+    }
+
     const wishlistItem = {
       handle: product.handle,
       title: (product.title || (titleNode ? titleNode.textContent || '' : '')).trim(),
@@ -460,11 +500,17 @@
         cardInfo = getCardStructureFromTemplate(product.handle);
       }
 
+      // Extract image from card markup only if wishlistItem.image is still empty
       if (!wishlistItem.image && cardInfo && cardInfo.cardMarkup) {
         const markupImage = extractImageFromMarkup(cardInfo.cardMarkup);
         if (markupImage) {
           wishlistItem.image = markupImage;
         }
+      }
+
+      // Final safety check: ensure image is preserved from imageSource
+      if (!wishlistItem.image && imageSource) {
+        wishlistItem.image = imageSource;
       }
 
     if (cardInfo) {

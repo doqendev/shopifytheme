@@ -12,7 +12,8 @@
       "Bash(cat \"snippets/wishlist-login-modal.liquid\")",
       "Bash(cat -A \"snippets/wishlist-login-modal.liquid\")",
       "Bash(dir /s /b *.liquid)",
-      "Bash(findstr /i \"customer account\")"
+      "Bash(findstr /i \"customer account\")",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []
