@@ -77,6 +77,8 @@
 
   function getProductImageForWishlist(product, host){
     if (host){
+      const hostImageAttr = host.getAttribute && host.getAttribute('data-product-image');
+      if (hostImageAttr && hostImageAttr.trim()) return hostImageAttr.trim();
       const img = qs('.il-cart-line__image img', host);
       if (img) {
         const hostImage =

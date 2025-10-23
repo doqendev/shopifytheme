@@ -7,6 +7,7 @@
      data-line-index="{{ index }}"
      data-variant-id="{{ item.variant.id }}"
      data-qty="{{ item.quantity }}"
+     data-product-image="{% if item.image %}{{ item.image | image_url: width: 533 }}{% endif %}"
      data-product='{{ item.product | json | escape }}'
      data-properties='{{ item.properties | json | escape }}'>
 
