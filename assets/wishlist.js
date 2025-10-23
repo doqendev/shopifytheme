@@ -1080,6 +1080,13 @@
       }
       if (candidate) {
         element = candidate.cloneNode(true);
+        const hasMedia =
+          element?.querySelector('.card__media img, .card__media picture, .wishlist-card__image-wrapper img') != null ||
+          element?.querySelector('.media img') != null;
+        const hasContent = element?.querySelector('.card__content') != null;
+        if (!hasMedia || !hasContent) {
+          element = null;
+        }
       }
     }
 
