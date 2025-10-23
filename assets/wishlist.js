@@ -44,6 +44,16 @@
     return '';
   };
 
+  const normalizeImageUrl = (url) => {
+    if (!url || typeof url !== 'string') return '';
+    const trimmed = url.trim();
+    // Fix protocol-relative URLs (//domain.com/image.jpg -> https://domain.com/image.jpg)
+    if (trimmed.startsWith('//')) {
+      return 'https:' + trimmed;
+    }
+    return trimmed;
+  };
+
   const extractImageFromMarkup = (markup) => {
     if (typeof markup !== 'string' || !markup.trim()) return '';
     const template = document.createElement('template');
@@ -52,7 +62,7 @@
       template.content.querySelector('img') ||
       template.content.querySelector('[data-src], [data-srcset], [srcset]');
     if (!img) return '';
-    return (
+    const imageUrl = (
       img.currentSrc ||
       img.src ||
       img.getAttribute('src') ||
@@ -61,6 +71,7 @@
       img.getAttribute('srcset') ||
       ''
     );
+    return normalizeImageUrl(imageUrl);
   };
 
   const buildWishlistKey = (handle, colorKey = '') => `${handle || ''}::${normalizeOptionValue(colorKey)}`;
@@ -1148,13 +1159,14 @@
     imageLink.style.width = '100%';
     imageLink.style.height = '100%';
     const storedImage = item?.image || '';
-    const fallbackImage =
+    const fallbackImage = normalizeImageUrl(
       storedImage ||
       existingImage?.currentSrc ||
       existingImage?.getAttribute('src') ||
       existingImage?.dataset?.src ||
       cardElement.dataset?.productImage ||
-      '';
+      ''
+    );
     const image = existingImage ? existingImage.cloneNode(false) : document.createElement('img');
     image.classList.add('wishlist-card__image');
     image.removeAttribute('style');
