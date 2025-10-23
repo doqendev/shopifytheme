@@ -200,9 +200,16 @@
       typeof item.cardMarkup === 'string' ? normalizeWishlistCardMarkup(item.cardMarkup) : '';
     let normalizedImage = '';
     if (typeof item.image === 'string' && item.image.trim().length) {
-      normalizedImage = normalizeImageUrl(item.image.trim());
+      const rawImage = item.image.trim();
+      normalizedImage = normalizeImageUrl(rawImage);
+      console.log('🖼️ WISHLIST IMAGE NORMALIZATION:', {
+        raw: rawImage,
+        normalized: normalizedImage,
+        changed: rawImage !== normalizedImage
+      });
     } else if (normalizedCardMarkup) {
       normalizedImage = extractImageFromMarkup(normalizedCardMarkup);
+      console.log('🖼️ WISHLIST IMAGE FROM MARKUP:', normalizedImage);
     }
 
     const normalizedVariants = normalizeVariants(item.variants);
@@ -1167,6 +1174,11 @@
       cardElement.dataset?.productImage ||
       ''
     );
+    console.log('🎨 RENDERING WISHLIST IMAGE:', {
+      storedImage,
+      fallbackImage,
+      willDisplay: !!fallbackImage
+    });
     const image = existingImage ? existingImage.cloneNode(false) : document.createElement('img');
     image.classList.add('wishlist-card__image');
     image.removeAttribute('style');
@@ -1182,9 +1194,11 @@
         image.dataset.src = fallbackImage;
         image.dataset.srcset = fallbackImage;
       }
+      console.log('✅ Image src set to:', image.src);
     } else {
       image.removeAttribute('srcset');
       image.removeAttribute('sizes');
+      console.log('❌ NO IMAGE TO DISPLAY!');
     }
 
     if (!image.hasAttribute('loading')) {
