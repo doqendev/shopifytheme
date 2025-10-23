@@ -26,6 +26,25 @@
     return value.trim().toLowerCase();
   };
 
+  const extractImageFromMarkup = (markup) => {
+    if (typeof markup !== 'string' || !markup.trim()) return '';
+    const template = document.createElement('template');
+    template.innerHTML = markup.trim();
+    const img =
+      template.content.querySelector('img') ||
+      template.content.querySelector('[data-src], [data-srcset], [srcset]');
+    if (!img) return '';
+    return (
+      img.currentSrc ||
+      img.src ||
+      img.getAttribute('src') ||
+      img.getAttribute('data-srcset') ||
+      img.getAttribute('data-src') ||
+      img.getAttribute('srcset') ||
+      ''
+    );
+  };
+
   const buildWishlistKey = (handle, colorKey = '') => `${handle || ''}::${normalizeOptionValue(colorKey)}`;
 
   const COLOR_LABEL_PATTERN = /(\bcolor\b|\bcolour\b|\bcor\b)/i;
@@ -107,6 +126,12 @@
     const normalizedCardInnerStyle = ensureWishlistRatioStyle(item.cardInnerStyle);
     const normalizedCardMarkup =
       typeof item.cardMarkup === 'string' ? normalizeWishlistCardMarkup(item.cardMarkup) : '';
+    let normalizedImage = '';
+    if (typeof item.image === 'string' && item.image.trim().length) {
+      normalizedImage = item.image.trim();
+    } else if (normalizedCardMarkup) {
+      normalizedImage = extractImageFromMarkup(normalizedCardMarkup);
+    }
 
     return {
       ...item,
@@ -118,6 +143,7 @@
       variants: normalizeVariants(item.variants),
       cardInnerStyle: normalizedCardInnerStyle,
       cardMarkup: normalizedCardMarkup,
+      image: normalizedImage,
     };
   };
 
