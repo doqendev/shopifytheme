@@ -159,6 +159,7 @@
 
     const template = document.createElement('template');
     template.innerHTML = trimmed;
+    template.content?.querySelectorAll?.('style, script')?.forEach?.((element) => element.remove());
 
     const cardInners = template.content?.querySelectorAll?.('.card__inner');
     if (cardInners && cardInners.length) {
@@ -1484,6 +1485,7 @@
     if (!cardElement || !item) return null;
 
     cardElement = cardElement.cloneNode(true);
+    cardElement.querySelectorAll('script, style').forEach((node) => node.remove());
     cardElement.classList.add('wishlist-card');
     cardElement.dataset.wishlistItem = 'true';
     cardElement.dataset.handle = item.handle;

@@ -509,7 +509,7 @@
     </div>
 
     <div data-wishlist-card-template style="display: none;">
-      {% render 'card-product', card_product: product, skip_styles: true %}
+      {% render 'card-product', card_product: product, skip_styles: true, include_card_product_script: false %}
     </div>
 
     <!-- Price -->
@@ -944,4 +944,3 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
-

@@ -106,6 +106,52 @@
   overflow: visible;
 }
 
+[data-wishlist-item] .swiper-container {
+  width: 100%;
+  overflow: hidden;
+  pointer-events: auto; /* Ensure pointer events are allowed */
+  touch-action: auto; /* Let the browser decide (default behavior) */
+}
+
+[data-wishlist-item] .swiper-wrapper {
+  display: flex;
+  transition-property: transform;
+  z-index: 10;
+  position: relative;
+}
+
+[data-wishlist-item] .swiper-slide {
+  width: 100%;
+}
+
+[data-wishlist-item] .swiper-pagination-bullet {
+  display: none;
+}
+
+[data-wishlist-item] .card__content {
+  width: 100%;
+}
+
+[data-wishlist-item] .title-cheyenne {
+  font-family: "Figtree", Arial, Helvetica, sans-serif;
+  display: inline-block;
+  color: black;
+  width: 95%;
+  text-decoration: none !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 5%;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+[data-wishlist-item] .underline-links-hover:hover .title-cheyenne,
+[data-wishlist-item] .card-wrapper:hover .title-cheyenne {
+  text-decoration: none !important;
+}
+
 @media (max-width: 749px) {
   #sticky-product-bar .sticky-bar-wishlist {
     position: absolute;

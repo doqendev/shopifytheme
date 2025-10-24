@@ -289,42 +289,48 @@
 
   function getCardStructureFromPage(handle){
     if (!handle) return null;
-    const nodes = Array.from(document.querySelectorAll(`[data-product-handle='${handle}']`));
-    const candidate = nodes.find((node) => !node.closest('[data-wishlist-item]')) || nodes[0];
-    if (!candidate) return null;
-    const wrapper =
-      candidate.closest('.product-card-wrapper') ||
-      candidate.closest('.card-wrapper') ||
-      candidate.closest('.card');
-    if (!wrapper) return null;
-    const card = wrapper.querySelector('.card');
-    if (!card) return null;
-    const cardInner = wrapper.querySelector('.card__inner');
-    const cardMedia = wrapper.querySelector('.card__media');
-    const mediaInner =
-      cardMedia?.querySelector(
-        '.card__media-inner, .media, .media--transparent, .media--hover-effect, .media--hover-effect-mobile',
-      ) || null;
-    const cardContent = wrapper.querySelector('.card__content');
-    const cardInformation = wrapper.querySelector('.card__information');
-    const cardHeading = wrapper.querySelector('.card__heading');
-    const priceWrapper = wrapper.querySelector('.card-information') || wrapper.querySelector('.price');
-    const clone = wrapper.cloneNode(true);
-    const temp = document.createElement('div');
-    temp.appendChild(clone);
-    return {
-      cardMarkup: temp.innerHTML,
-      cardWrapperClassName: wrapper.className || '',
-      cardClassName: card?.className || '',
-      cardInnerClassName: cardInner?.className || '',
-      cardInnerStyle: cardInner?.getAttribute('style') || '',
-      cardMediaClassName: cardMedia?.className || '',
-      cardMediaInnerClassName: mediaInner?.className || '',
-      cardContentClassName: cardContent?.className || '',
-      cardInformationClassName: cardInformation?.className || '',
-      cardHeadingClassName: cardHeading?.className || '',
-      cardPriceWrapperClassName: priceWrapper?.className || '',
-    };
+    const nodes = Array.from(document.querySelectorAll(`[data-product-handle='${handle}']`)).filter(
+      (node) => !node.closest('[data-wishlist-item]'),
+    );
+    for (const candidate of nodes) {
+      const wrapper =
+        candidate.closest('.product-card-wrapper') ||
+        candidate.closest('.card-wrapper') ||
+        candidate.closest('.card');
+      if (!wrapper) continue;
+      const card = wrapper.querySelector('.card');
+      if (!card) continue;
+      if (card.closest('[data-wishlist-card-template]')) continue;
+      const cardInner = wrapper.querySelector('.card__inner');
+      const cardMedia = wrapper.querySelector('.card__media');
+      if (!cardInner || !cardMedia) continue;
+      const mediaInner =
+        cardMedia?.querySelector(
+          '.card__media-inner, .media, .media--transparent, .media--hover-effect, .media--hover-effect-mobile',
+        ) || null;
+      const cardContent = wrapper.querySelector('.card__content');
+      const cardInformation = wrapper.querySelector('.card__information');
+      const cardHeading = wrapper.querySelector('.card__heading');
+      const priceWrapper = wrapper.querySelector('.card-information') || wrapper.querySelector('.price');
+      const clone = wrapper.cloneNode(true);
+      clone.querySelectorAll('style, script').forEach((element) => element.remove());
+      const temp = document.createElement('div');
+      temp.appendChild(clone);
+      return {
+        cardMarkup: temp.innerHTML,
+        cardWrapperClassName: wrapper.className || '',
+        cardClassName: card?.className || '',
+        cardInnerClassName: cardInner?.className || '',
+        cardInnerStyle: cardInner?.getAttribute('style') || '',
+        cardMediaClassName: cardMedia?.className || '',
+        cardMediaInnerClassName: mediaInner?.className || '',
+        cardContentClassName: cardContent?.className || '',
+        cardInformationClassName: cardInformation?.className || '',
+        cardHeadingClassName: cardHeading?.className || '',
+        cardPriceWrapperClassName: priceWrapper?.className || '',
+      };
+    }
+    return null;
   }
 
   function getCardStructureFromTemplate(handle){
@@ -379,6 +385,7 @@
       const priceWrapper = wrapper.querySelector('.card-information') || wrapper.querySelector('.price');
 
       const clone = wrapper.cloneNode(true);
+      clone.querySelectorAll('style, script').forEach((element) => element.remove());
       const container = document.createElement('div');
       container.appendChild(clone);
 

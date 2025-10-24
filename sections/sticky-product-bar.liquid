@@ -607,7 +607,7 @@
       >
         {%- comment -%} Hidden card structure for wishlist functionality - render actual card-product {%- endcomment -%}
         <div class="sticky-bar-hidden-card" data-wishlist-card-template style="display: none !important; position: absolute; pointer-events: none; opacity: 0; height: 0; overflow: hidden;">
-          {%- render 'card-product', card_product: product, media_aspect_ratio: 'adapt', show_vendor: false, show_rating: false, skip_styles: true -%}
+          {%- render 'card-product', card_product: product, media_aspect_ratio: 'adapt', show_vendor: false, show_rating: false, skip_styles: true, include_card_product_script: false -%}
         </div>
         <div class="title-and-swatches">
           <div class="product-title">

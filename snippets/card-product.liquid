@@ -8,6 +8,10 @@
   inject this data at the card level, it will be blank.
 {% endcomment %}
 
+{%- liquid
+  assign include_card_product_script = include_card_product_script | default: true
+-%}
+
 <style>
 
 .product-card { position: relative; }
@@ -369,6 +373,7 @@
     Wrap the Swiper initialization in a function so it can be re-run
     after the product grid is updated via filtering.
   {%- endcomment -%}
+  {% if include_card_product_script %}
   <script>
     function initializeProductCardSwipers() {
       // Ensure Swiper library is loaded
@@ -428,17 +433,75 @@
             return Shopify.formatMoney(cents, moneyFormat);
           }
         } catch (error) {
-          console.warn('Money formatting failed', error);
+          // Gracefully fall back to a localized fixed-point format when Shopify helpers fail.
         }
-        var amount = typeof cents === 'number' ? cents / 100 : parseFloat(cents) / 100;
-        if (Number.isNaN(amount)) return '';
-        return amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '€';
+      var amount = typeof cents === 'number' ? cents / 100 : parseFloat(cents) / 100;
+      if (Number.isNaN(amount)) return '';
+      var fallbackCurrency = (Shopify && Shopify.currency && Shopify.currency.active) || 'EUR';
+      var currencyFormatter;
+      try {
+        currencyFormatter = new Intl.NumberFormat(undefined, {
+          style: 'currency',
+          currency: fallbackCurrency,
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
+        return currencyFormatter.format(amount);
+      } catch (formatError) {
+        var fallbackSymbol = (Shopify && Shopify.currency && Shopify.currency.symbol) || '';
+        var formattedAmount = amount.toFixed(2);
+        return fallbackSymbol ? fallbackSymbol + formattedAmount : formattedAmount + ' ' + fallbackCurrency;
+      }
+    }
+
+      function normalizeOptionValue(value) {
+        if (value == null) return '';
+        return String(value).trim().toLowerCase();
+      }
+
+      function findVariantBySelections(variants, selections) {
+        if (!Array.isArray(variants)) return null;
+        var normalizedSelections = {};
+        Object.keys(selections || {}).forEach(function(key) {
+          var normalizedValue = normalizeOptionValue(selections[key]);
+          if (normalizedValue) {
+            normalizedSelections[key] = normalizedValue;
+          }
+        });
+        var selectionKeys = Object.keys(normalizedSelections);
+        if (!selectionKeys.length) {
+          return variants[0] || null;
+        }
+        for (var variantIndex = 0; variantIndex < variants.length; variantIndex += 1) {
+          var variant = variants[variantIndex];
+          if (!variant || !Array.isArray(variant.options)) continue;
+          var allMatch = true;
+          for (var keyIndex = 0; keyIndex < selectionKeys.length; keyIndex += 1) {
+            var key = selectionKeys[keyIndex];
+            var optionIndex = parseInt(key, 10);
+            if (Number.isNaN(optionIndex) || optionIndex < 0 || optionIndex >= variant.options.length) {
+              allMatch = false;
+              break;
+            }
+            var variantValue = normalizeOptionValue(variant.options[optionIndex] || '');
+            if (variantValue !== normalizedSelections[key]) {
+              allMatch = false;
+              break;
+            }
+          }
+          if (allMatch) {
+            return variant;
+          }
+        }
+        return null;
       }
 
       function parseVariants(card) {
         if (!card) return [];
         try {
-          return JSON.parse(card.dataset.variants || '[]') || [];
+          var raw = card.dataset.variants || '[]';
+          var decoded = raw.replace(/&quot;/g, '"');
+          return JSON.parse(decoded) || [];
         } catch (error) {
           console.warn('Unable to parse variants for card', card, error);
           return [];
@@ -446,26 +509,40 @@
       }
 
       function findVariantForCard(card) {
+        if (!card) return null;
+
         var variants = parseVariants(card);
         if (!variants.length) return null;
 
         var colorIndex = parseInt(card.dataset.colorIndex || '-1', 10);
-        var selectedColor = null;
-        var activeSwatch = card.querySelector('.swatch.active');
-        if (activeSwatch) {
-          selectedColor = (activeSwatch.dataset.color || '').toLowerCase();
-        }
+        var sizeIndex = parseInt(card.dataset.sizeIndex || '-1', 10);
 
-        if (selectedColor && colorIndex !== -1) {
-          for (var i = 0; i < variants.length; i++) {
-            var optionValue = (variants[i].options && variants[i].options[colorIndex] ? variants[i].options[colorIndex] : '').toLowerCase();
-            if (optionValue === selectedColor) {
-              return variants[i];
-            }
+        var selections = {};
+
+        if (colorIndex >= 0) {
+          var selectedColor = normalizeOptionValue(card.dataset.selectedColor || '');
+          var activeSwatch = card.querySelector('.swatch.active');
+          if (!selectedColor && activeSwatch) {
+            selectedColor = normalizeOptionValue(activeSwatch.dataset.color || activeSwatch.dataset.value || '');
+          }
+          if (selectedColor) {
+            selections[colorIndex] = selectedColor;
           }
         }
 
-        return variants[0];
+        if (sizeIndex >= 0) {
+          var selectedSize = normalizeOptionValue(card.dataset.selectedSize || '');
+          var activeSizeButton = card.querySelector('.product-card-plus .size-option.active');
+          if (!selectedSize && activeSizeButton) {
+            selectedSize = normalizeOptionValue(activeSizeButton.dataset.size || activeSizeButton.textContent || '');
+          }
+          if (selectedSize) {
+            selections[sizeIndex] = selectedSize;
+          }
+        }
+
+        var matchedVariant = findVariantBySelections(variants, selections);
+        return matchedVariant || variants[0];
       }
 
       function updateSaleAndSoldOutBadges(priceElement, variant) {
@@ -813,21 +890,30 @@
             var sizeVal = this.dataset.size;
             var vid = null;
             if (variants.length && sizeIndex !== -1) {
-              var selectedColor = null;
-              var activeSwatch = card ? card.querySelector('.swatch.active') : null;
-              if (activeSwatch) {
-                selectedColor = activeSwatch.dataset.color;
-              }
-              for (var i = 0; i < variants.length; i++) {
-                var v = variants[i];
-                var sizeMatch = v.options[sizeIndex] == sizeVal;
-                var colorMatch = true;
-                if (selectedColor && colorIndex !== -1) {
-                  colorMatch = v.options[colorIndex] == selectedColor;
+              var selectionMap = {};
+              if (colorIndex !== -1) {
+                var storedColor = card ? normalizeOptionValue(card.dataset.selectedColor || '') : '';
+                var activeSwatch = card ? card.querySelector('.swatch.active') : null;
+                if (!storedColor && activeSwatch) {
+                  storedColor = normalizeOptionValue(activeSwatch.dataset.color || activeSwatch.dataset.value || '');
                 }
-                if (sizeMatch && colorMatch) {
-                  vid = v.id;
-                  break;
+                if (storedColor) {
+                  selectionMap[colorIndex] = storedColor;
+                }
+              }
+              selectionMap[sizeIndex] = sizeVal;
+              var matchedVariantForSize = findVariantBySelections(variants, selectionMap);
+              if (matchedVariantForSize) {
+                vid = matchedVariantForSize.id;
+                if (card) {
+                  var matchedSizeValue =
+                    matchedVariantForSize.options && matchedVariantForSize.options.length > sizeIndex
+                      ? matchedVariantForSize.options[sizeIndex]
+                      : sizeVal;
+                  card.dataset.selectedSize = matchedSizeValue;
+                  if (colorIndex !== -1 && matchedVariantForSize.options && matchedVariantForSize.options.length > colorIndex) {
+                    card.dataset.selectedColor = matchedVariantForSize.options[colorIndex];
+                  }
                 }
               }
             }
@@ -889,6 +975,7 @@
       }, { passive: true });
     });
   </script>
+  {% endif %}
 
 {% else %}
   {%- liquid
