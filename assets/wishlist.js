@@ -483,7 +483,7 @@
 
   const addToWishlist = (product) => {
     const normalized = normalizeWishlistItem(product);
-    if (!normalized) return;
+    if (!normalized) return false;
     let wishlist = loadWishlist();
     const key = getWishlistItemKey(normalized);
     const fallbackKey = buildWishlistKey(normalized.handle, '');
@@ -493,12 +493,15 @@
     }
 
     const existingIndex = wishlist.findIndex((item) => getWishlistItemKey(item) === key);
+    let created = false;
     if (existingIndex >= 0) {
       wishlist[existingIndex] = normalized;
     } else {
       wishlist.push(normalized);
+      created = true;
     }
     saveWishlist(wishlist);
+    return created;
   };
 
   const removeFromWishlist = (handleOrItem, colorKey = '') => {
@@ -528,7 +531,8 @@
 
   window.themeWishlist = window.themeWishlist || {};
   window.themeWishlist.addItem = (item) => {
-    if (item) addToWishlist(item);
+    if (!item) return false;
+    return addToWishlist(item);
   };
   window.themeWishlist.addItems = (items) => {
     if (!Array.isArray(items)) return;
@@ -1924,4 +1928,3 @@
     init();
   }
 })();
-

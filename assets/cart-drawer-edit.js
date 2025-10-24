@@ -10,6 +10,7 @@
   function money(cents){ try { return new Intl.NumberFormat(undefined, {style:'currency', currency: Shopify?.currency?.active}).format(cents/100); } catch(e){ return (cents/100).toFixed(2); } }
   const COLOR_LABEL_PATTERN = /(\bcolor\b|\bcolour\b|\bcor\b|\bfarbe\b)/i;
   const SIZE_LABEL_PATTERN = /(\bsize\b|\btamanho\b|\btalla\b|\btaille\b)/i;
+  const WISHLIST_STORAGE_KEY = 'theme-wishlist-cache';
 
   function normalizeOptionValue(value){
     return typeof value === 'string' ? value.trim().toLowerCase() : '';
@@ -223,7 +224,7 @@
   }
 
   function getProductUrlForWishlist(product, host){
-    const link = qs('.il-cart-line__title', host);
+    const link = qs('.il-item-title, .cart-item__name, .il-cart-line__title', host);
     if (link && link.getAttribute('href')) return link.getAttribute('href');
     if (product && typeof product.url === 'string' && product.url.trim()) return product.url;
     if (product && typeof product.online_store_url === 'string' && product.online_store_url.trim()) return product.online_store_url;
@@ -238,7 +239,7 @@
       if (hostImageAttr && hostImageAttr.trim()) return hostImageAttr.trim();
 
       // Priority 2: Extract from cart line image element
-      const img = qs('.il-cart-line__image img', host);
+      const img = qs('.cart-item__image, .il-cart-line__image img', host);
       if (img) {
         const hostImage =
           img.currentSrc ||
@@ -396,8 +397,8 @@
         : '';
     console.log('variantImageData:', variantImageData);
 
-    const titleNode = qs('.il-cart-line__title', host);
-    const priceNode = qs('.il-cart-line__price', host);
+    const titleNode = qs('.il-item-title, .cart-item__name, .il-cart-line__title', host);
+    const priceNode = qs('.il-price, .cart-item__price, .il-cart-line__price', host);
     const colorIndex = findOptionIndexByPattern(product, COLOR_LABEL_PATTERN);
     const sizeIndex = findOptionIndexByPattern(product, SIZE_LABEL_PATTERN);
 
@@ -451,7 +452,7 @@
 
     // Priority 3: Cart line image element
     if (!imageSource && host) {
-      const img = qs('.il-cart-line__image img', host);
+      const img = qs('.cart-item__image, .il-cart-line__image img', host);
       console.log('🔍 Priority 3 - img element found:', img);
       if (img) {
         imageSource =
@@ -601,12 +602,19 @@
 
   function pushWishlistItem(item){
     if (!item) return false;
-    if (window.themeWishlist && typeof window.themeWishlist.addItem === 'function'){
-      window.themeWishlist.addItem(item);
-      return true;
+    const wishlistApi = window.themeWishlist && typeof window.themeWishlist.addItem === 'function';
+    if (wishlistApi){
+      return Boolean(window.themeWishlist.addItem(item));
     }
+
+    const key = buildWishlistKey(item.handle, item.colorKey || item.selectedColor || item.color);
+    const beforeKeys = getStoredWishlistKeys();
     document.dispatchEvent(new CustomEvent('theme:wishlist:add', { detail: { item } }));
-    return true;
+    if (!key) return false;
+    const afterKeys = getStoredWishlistKeys();
+    const beforeHas = beforeKeys.includes(key);
+    const afterHas = afterKeys.includes(key);
+    return !beforeHas && afterHas;
   }
 
   function removeWishlistItem(item){
@@ -1092,3 +1100,20 @@
     observeDrawer();
   }
 })();
+  function buildWishlistKey(handle, colorKey){
+    const normalizedHandle = typeof handle === 'string' ? handle.trim() : '';
+    const normalizedColor = normalizeOptionValue(colorKey);
+    return `${normalizedHandle}::${normalizedColor}`;
+  }
+
+  function getStoredWishlistKeys(){
+    try {
+      const raw = localStorage.getItem(WISHLIST_STORAGE_KEY);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return [];
+      return parsed.map((entry) => buildWishlistKey(entry?.handle, entry?.colorKey));
+    } catch(_) {
+      return [];
+    }
+  }
