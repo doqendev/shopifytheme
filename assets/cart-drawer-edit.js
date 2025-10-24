@@ -1,9 +1,22 @@
 (function(){
   const qs = (s, r=document) => r.querySelector(s);
   const qsa = (s, r=document) => Array.from(r.querySelectorAll(s));
+  const HTML_DECODER = document.createElement('textarea');
+
+  function decodeHtml(value){
+    if (typeof value !== 'string') return '';
+    HTML_DECODER.innerHTML = value;
+    return HTML_DECODER.value;
+  }
 
   function parseJSONAttr(el, name, fallback) {
-    try { return JSON.parse(el.getAttribute(name) || ''); } catch(e){ return fallback; }
+    try {
+      const raw = el.getAttribute(name);
+      if (!raw) return fallback;
+      return JSON.parse(decodeHtml(raw));
+    } catch(e){
+      return fallback;
+    }
   }
 
   function uniq(arr){ return [...new Set(arr)]; }
@@ -317,57 +330,86 @@
   function getCardStructureFromTemplate(handle){
     if (!handle) return null;
 
-    // Search for the wishlist card template element
-    const template = document.querySelector('[data-wishlist-card-template]');
-    if (!template) return null;
+    const templates = Array.from(document.querySelectorAll('[data-wishlist-card-template]'));
+    if (!templates.length) return null;
 
-    // Get the inner HTML (the rendered card-product)
-    const templateMarkup = template.innerHTML.trim();
-    if (!templateMarkup) return null;
+    const normalizedHandle = String(handle).trim().toLowerCase();
 
-    // Parse the template markup to extract card structure
-    const temp = document.createElement('div');
-    temp.innerHTML = templateMarkup;
+    const parseTemplate = (templateEl, requireHandleMatch) => {
+      if (!templateEl) return null;
+      const markup = templateEl.innerHTML && templateEl.innerHTML.trim();
+      if (!markup) return null;
 
-    // Find the card wrapper inside the template
-    const wrapper =
-      temp.querySelector('.product-card-wrapper') ||
-      temp.querySelector('.card-wrapper') ||
-      temp.querySelector('.card');
+      const temp = document.createElement('div');
+      temp.innerHTML = markup;
 
-    if (!wrapper) return null;
+      const wrappers = Array.from(
+        temp.querySelectorAll('.product-card-wrapper, .card-wrapper, .card'),
+      );
+      if (!wrappers.length) return null;
 
-    // Extract all the same elements as getCardStructureFromPage
-    const card = wrapper.querySelector('.card');
-    if (!card) return null;
-    const cardInner = wrapper.querySelector('.card__inner');
-    const cardMedia = wrapper.querySelector('.card__media');
-    const mediaInner =
-      cardMedia?.querySelector(
-        '.card__media-inner, .media, .media--transparent, .media--hover-effect, .media--hover-effect-mobile',
-      ) || null;
-    const cardContent = wrapper.querySelector('.card__content');
-    const cardInformation = wrapper.querySelector('.card__information');
-    const cardHeading = wrapper.querySelector('.card__heading');
-    const priceWrapper = wrapper.querySelector('.card-information') || wrapper.querySelector('.price');
+      let wrapper = wrappers.find((candidate) => {
+        const candidateHandle = candidate.dataset?.productHandle || candidate.getAttribute?.('data-product-handle');
+        return candidateHandle && candidateHandle.trim().toLowerCase() === normalizedHandle;
+      });
 
-    const clone = wrapper.cloneNode(true);
-    const tempContainer = document.createElement('div');
-    tempContainer.appendChild(clone);
+      if (requireHandleMatch && !wrapper) {
+        return null;
+      }
 
-    return {
-      cardMarkup: tempContainer.innerHTML,
-      cardWrapperClassName: wrapper.className || '',
-      cardClassName: card?.className || '',
-      cardInnerClassName: cardInner?.className || '',
-      cardInnerStyle: cardInner?.getAttribute('style') || '',
-      cardMediaClassName: cardMedia?.className || '',
-      cardMediaInnerClassName: mediaInner?.className || '',
-      cardContentClassName: cardContent?.className || '',
-      cardInformationClassName: cardInformation?.className || '',
-      cardHeadingClassName: cardHeading?.className || '',
-      cardPriceWrapperClassName: priceWrapper?.className || '',
+      if (!wrapper) {
+        wrapper = wrappers.find((candidate) => candidate.matches?.('.product-card-wrapper, .card-wrapper'));
+      }
+      if (!wrapper) {
+        wrapper = wrappers[0];
+      }
+      if (!wrapper) return null;
+
+      const card = wrapper.querySelector('.card');
+      if (!card) return null;
+      const cardInner = wrapper.querySelector('.card__inner');
+      const cardMedia = wrapper.querySelector('.card__media');
+      const mediaInner =
+        cardMedia?.querySelector(
+          '.card__media-inner, .media, .media--transparent, .media--hover-effect, .media--hover-effect-mobile',
+        ) || null;
+      const cardContent = wrapper.querySelector('.card__content');
+      const cardInformation = wrapper.querySelector('.card__information');
+      const cardHeading = wrapper.querySelector('.card__heading');
+      const priceWrapper = wrapper.querySelector('.card-information') || wrapper.querySelector('.price');
+
+      const clone = wrapper.cloneNode(true);
+      const container = document.createElement('div');
+      container.appendChild(clone);
+
+      return {
+        cardMarkup: container.innerHTML,
+        cardWrapperClassName: wrapper.className || '',
+        cardClassName: card?.className || '',
+        cardInnerClassName: cardInner?.className || '',
+        cardInnerStyle: cardInner?.getAttribute('style') || '',
+        cardMediaClassName: cardMedia?.className || '',
+        cardMediaInnerClassName: mediaInner?.className || '',
+        cardContentClassName: cardContent?.className || '',
+        cardInformationClassName: cardInformation?.className || '',
+        cardHeadingClassName: cardHeading?.className || '',
+        cardPriceWrapperClassName: priceWrapper?.className || '',
+      };
     };
+
+    // Prefer templates whose markup matches the requested handle exactly
+    for (const template of templates) {
+      const parsed = parseTemplate(template, true);
+      if (parsed) return parsed;
+    }
+
+    // Fallback: return the first template that yields a valid card structure
+    for (const template of templates) {
+      const parsed = parseTemplate(template, false);
+      if (parsed) return parsed;
+    }
+
+    return null;
   }
 
   function buildWishlistItemFromCart(host, product, variantId){
