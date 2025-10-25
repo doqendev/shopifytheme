@@ -2079,7 +2079,7 @@ input[type='checkbox'] {
   right: 0;
   bottom: 0;
   background: rgb(var(--color-background));
-  z-index: 4;
+  z-index: 80; /* Elevate modal above sticky product bar */
   display: flex;
   justify-content: center;
   align-items: center;
