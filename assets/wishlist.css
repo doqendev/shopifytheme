@@ -812,6 +812,11 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
   text-align: left;
 }
 
+/* Force show recommendations in wishlist empty state */
+.wishlist-empty .cart-drawer__collection {
+  display: block !important;
+}
+
 .cart-recommendations-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
