@@ -101,7 +101,7 @@
             <div class="drawer__empty-state-wrapper">
               <div class="cart-drawer__empty-content">
                 <h2 class="cart__empty-heading">O teu cesto está vazio</h2>
-                <p class="cart__empty-subtitle">Porque não o estreias com uma das nossas sugestões?</p>
+                <p class="cart__empty-subtitle">Vê as sugestões em baixo que temos para ti</p>
 
                 {%- if shop.customer_accounts_enabled and customer == null -%}
                   <p class="cart__login-title h3">{{ 'sections.cart.login.title' | t }}</p>
@@ -672,7 +672,7 @@
         <div class="wishlist-empty drawer__empty-state-wrapper" data-wishlist-empty>
           <div class="cart-drawer__empty-content">
             <h2 class="cart__empty-heading">A tua lista de desejos está vazia</h2>
-            <p class="cart__empty-subtitle">Porque não o estreias com uma das nossas sugestões?</p>
+            <p class="cart__empty-subtitle">Vê as sugestões em baixo que temos para ti</p>
           </div>
           {%- if settings.cart_drawer_collection != blank -%}
             <div class="cart-drawer__collection">
