@@ -781,9 +781,11 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
   flex-direction: column;
   height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 0;
   margin: 0;
   width: 100%;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Empty State Content Styling */
@@ -807,9 +809,10 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
 .cart-drawer__collection {
   padding: 1.5rem 0.5rem 2rem;
   margin: 0 !important;
-  flex: 1;
-  overflow-y: auto;
+  flex: 1 1 auto;
+  overflow-y: visible;
   text-align: left;
+  min-height: 0;
 }
 
 /* Force show recommendations in wishlist empty state */
@@ -883,11 +886,12 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
   }
 
   .cart-drawer__collection {
-    padding: 1rem 0.375rem 1.5rem;
+    padding: 1rem 0.375rem 4rem;
   }
 
   .cart-recommendations-grid {
     gap: 0.25rem;
+    padding-bottom: 2rem;
   }
 
   .cart-recommendation-card__info {
@@ -904,6 +908,35 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
 
   .cart__empty-heading {
     font-size: 1.125rem;
+  }
+
+  .drawer__empty-state-wrapper {
+    padding-bottom: 2rem;
+  }
+
+  /* Ensure wishlist empty state is scrollable on mobile */
+  .wishlist-empty {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    max-height: 100%;
+  }
+
+  /* Ensure drawer has proper scrolling on mobile */
+  cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlist.is-empty {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Add safe area padding on mobile */
+  .drawer__empty-state-wrapper {
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Ensure cart empty state drawer has proper overflow on mobile */
+  #CartDrawer .drawer__empty-state:not([hidden]) {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    max-height: 100vh;
   }
 }
 
