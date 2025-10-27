@@ -100,14 +100,8 @@
           <div class="drawer__empty-state"{% unless cart == empty %} hidden{% endunless %}>
             <div class="cart-drawer__warnings center{% if settings.cart_drawer_collection != blank %} cart-drawer__warnings--has-collection{% endif %}">
               <div class="cart-drawer__empty-content">
-                <h2 class="cart__empty-text">{{ 'sections.cart.empty' | t }}</h2>
-                <a
-                  href="#"
-                  class="button"
-                  onclick="event.preventDefault(); const drawer=document.querySelector('header-drawer'); const details=drawer?.querySelector('details'); if(details&&!details.hasAttribute('open')) drawer.querySelector('summary')?.click(); document.querySelector('cart-drawer')?.close();"
-                >
-                  {{ 'general.continue_shopping' | t }}
-                </a>
+                <h2 class="cart__empty-heading">O teu cesto está vazio</h2>
+                <p class="cart__empty-subtitle">Porque não o estreias com uma das nossas sugestões?</p>
 
                 {%- if shop.customer_accounts_enabled and customer == null -%}
                   <p class="cart__login-title h3">{{ 'sections.cart.login.title' | t }}</p>
@@ -119,6 +113,7 @@
             </div>
             {%- if settings.cart_drawer_collection != blank -%}
               <div class="cart-drawer__collection">
+                <h3 class="cart-drawer__recommendations-title">Recomendado para ti</h3>
                 {% render 'card-collection', card_collection: settings.cart_drawer_collection, columns: 1 %}
               </div>
             {%- endif -%}
@@ -649,7 +644,42 @@
       <div id="CartDrawer-Wishlist" class="drawer__wishlist is-empty" data-wishlist-container>
         <div class="wishlist-grid" data-wishlist-grid hidden></div>
         <div class="wishlist-empty" data-wishlist-empty>
-          <p class="cart__empty-text">{{ 'general.wishlist_empty' | t | default: 'Your wishlist is empty.' }}</p>
+          <div class="wishlist-empty__content">
+            <h2 class="wishlist__empty-heading">A tua lista de desejos está vazia</h2>
+            <p class="wishlist__empty-subtitle">Porque não o estreias com uma das nossas sugestões?</p>
+          </div>
+          {%- if settings.cart_drawer_collection != blank -%}
+            <div class="wishlist-drawer__collection">
+              <h3 class="wishlist-drawer__recommendations-title">Recomendado para ti</h3>
+              <div class="wishlist-recommendations-grid">
+                {%- assign collection = collections[settings.cart_drawer_collection] -%}
+                {%- if collection and collection.products.size > 0 -%}
+                  {%- for product in collection.products limit: 6 -%}
+                    <div class="wishlist-recommendation-card">
+                      <a href="{{ product.url }}" class="wishlist-recommendation-card__link">
+                        {%- if product.featured_image -%}
+                          <div class="wishlist-recommendation-card__image-wrapper">
+                            <img
+                              src="{{ product.featured_image | image_url: width: 300 }}"
+                              alt="{{ product.featured_image.alt | escape }}"
+                              class="wishlist-recommendation-card__image"
+                              loading="lazy"
+                              width="150"
+                              height="{{ 150 | divided_by: product.featured_image.aspect_ratio | ceil }}"
+                            >
+                          </div>
+                        {%- endif -%}
+                        <div class="wishlist-recommendation-card__info">
+                          <h4 class="wishlist-recommendation-card__title">{{ product.title | truncate: 20 }}</h4>
+                          <p class="wishlist-recommendation-card__price">{{ product.price | money }}</p>
+                        </div>
+                      </a>
+                    </div>
+                  {%- endfor -%}
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endif -%}
         </div>
       </div>
     </div>
