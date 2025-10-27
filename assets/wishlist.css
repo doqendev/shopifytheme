@@ -938,6 +938,35 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
     -webkit-overflow-scrolling: touch;
     max-height: 100vh;
   }
+
+  /* Fix footer being cut off by phone UI */
+  #CartDrawer .drawer__footer {
+    padding-bottom: max(6rem, calc(4rem + env(safe-area-inset-bottom, 0px))) !important;
+    position: relative !important;
+  }
+
+  #CartDrawer .cart__ctas {
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* Adjust drawer inner height on mobile to account for device UI */
+  #CartDrawer .drawer__inner {
+    height: 100dvh;
+    max-height: 100dvh;
+    max-height: -webkit-fill-available;
+  }
+
+  /* Ensure panels have proper height constraints */
+  #CartDrawer .drawer__panels {
+    max-height: 100%;
+    min-height: 0;
+  }
+
+  /* Make sure cart items area is scrollable */
+  #CartDrawer cart-drawer-items {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 
