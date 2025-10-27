@@ -766,6 +766,7 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
   justify-content: unset !important;
   height: 100%;
   overflow-y: auto;
+  padding: 0 !important;
 }
 
 /* Empty State Wrapper */
@@ -774,6 +775,9 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
   flex-direction: column;
   height: 100%;
   overflow-y: auto;
+  padding: 0;
+  margin: 0;
+  width: 100%;
 }
 
 /* Empty State Content Styling */
