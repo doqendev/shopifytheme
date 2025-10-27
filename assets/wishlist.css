@@ -282,6 +282,10 @@ cart-drawer.drawer--wishlist-active #CartDrawer-CartErrors {
   align-self: stretch;
 }
 
+.wishlist-empty[hidden] {
+  display: none !important;
+}
+
 .cart__empty-heading {
   font-size: 1.375rem;
   font-weight: 600;
@@ -489,6 +493,10 @@ cart-drawer.drawer--wishlist-active #CartDrawer-CartErrors {
   overflow-y: auto;
   width: 100%;
   align-self: stretch;
+}
+
+.wishlist-empty[hidden] {
+  display: none !important;
 }
 
 .cart__empty-heading {
