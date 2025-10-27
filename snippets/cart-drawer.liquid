@@ -102,13 +102,6 @@
               <div class="cart-drawer__empty-content">
                 <h2 class="cart__empty-heading">O teu cesto está vazio</h2>
                 <p class="cart__empty-subtitle">Vê as sugestões em baixo que temos para ti</p>
-
-                {%- if shop.customer_accounts_enabled and customer == null -%}
-                  <p class="cart__login-title h3">{{ 'sections.cart.login.title' | t }}</p>
-                  <p class="cart__login-paragraph">
-                    {{ 'sections.cart.login.paragraph_html' | t: link: routes.account_login_url }}
-                  </p>
-                {%- endif -%}
               </div>
               {%- if settings.cart_drawer_collection != blank -%}
                 <div class="cart-drawer__collection">
