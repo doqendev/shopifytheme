@@ -109,7 +109,7 @@
 
   .wishlist-empty {
     text-align: center;
-    padding: 4rem 2rem;
+    padding: 4rem 2rem 2rem;
   }
 
   .wishlist-empty p {
@@ -121,6 +121,92 @@
   .wishlist-empty .button {
     margin-top: 1rem;
   }
+
+  .wishlist-recommendations {
+    margin-top: 4rem;
+    padding: 0 2rem;
+  }
+
+  .wishlist-recommendations__title {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    color: rgb(var(--color-foreground));
+  }
+
+  .wishlist-recommendations__grid {
+    display: grid;
+    gap: 0.6rem;
+    margin-bottom: 2rem;
+  }
+
+  @media screen and (max-width: 749px) {
+    .wishlist-recommendations__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .wishlist-recommendations__grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  /* Sort controls */
+  .wishlist-sort {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1.5rem 0 2rem;
+    padding: 0 1rem;
+    flex-wrap: wrap;
+  }
+
+  .wishlist-sort__label {
+    font-size: 0.875rem;
+    color: rgba(var(--color-foreground), 0.75);
+    margin-right: 0.5rem;
+  }
+
+  .wishlist-sort__button {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    background: transparent;
+    border: 1px solid rgba(var(--color-foreground), 0.2);
+    border-radius: 0.25rem;
+    color: rgb(var(--color-foreground));
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .wishlist-sort__button:hover {
+    border-color: rgb(var(--color-foreground));
+    background: rgba(var(--color-foreground), 0.05);
+  }
+
+  .wishlist-sort__button.active {
+    background: rgb(var(--color-foreground));
+    color: rgb(var(--color-background));
+    border-color: rgb(var(--color-foreground));
+  }
+
+  @media screen and (max-width: 749px) {
+    .wishlist-sort {
+      gap: 0.375rem;
+    }
+
+    .wishlist-sort__button {
+      padding: 0.375rem 0.75rem;
+      font-size: 0.8125rem;
+    }
+
+    .wishlist-sort__label {
+      width: 100%;
+      text-align: center;
+      margin: 0 0 0.5rem 0;
+    }
+  }
 {%- endstyle -%}
 
 <div class="section-{{ section.id }}-padding gradient color-{{ section.settings.color_scheme }}">
@@ -130,6 +216,26 @@
   </div>
 
   <div class="product-grid-container{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}" data-wishlist-container>
+    <!-- Sort Controls -->
+    <div class="wishlist-sort" data-wishlist-sort-controls>
+      <span class="wishlist-sort__label">{{ 'general.sort_by' | t | default: 'Ordenar por:' }}</span>
+      <button type="button" class="wishlist-sort__button active" data-wishlist-sort="newest" aria-pressed="true">
+        {{ 'general.sort_newest' | t | default: 'Mais recente' }}
+      </button>
+      <button type="button" class="wishlist-sort__button" data-wishlist-sort="oldest" aria-pressed="false">
+        {{ 'general.sort_oldest' | t | default: 'Mais antigo' }}
+      </button>
+      <button type="button" class="wishlist-sort__button" data-wishlist-sort="price-asc" aria-pressed="false">
+        {{ 'general.sort_price_asc' | t | default: 'Preço: Baixo-Alto' }}
+      </button>
+      <button type="button" class="wishlist-sort__button" data-wishlist-sort="price-desc" aria-pressed="false">
+        {{ 'general.sort_price_desc' | t | default: 'Preço: Alto-Baixo' }}
+      </button>
+      <button type="button" class="wishlist-sort__button" data-wishlist-sort="availability" aria-pressed="false">
+        {{ 'general.sort_availability' | t | default: 'Disponibilidade' }}
+      </button>
+    </div>
+
     <ul id="wishlist-product-grid" class="grid product-grid" data-wishlist-grid role="list"></ul>
 
     <div class="wishlist-empty" data-wishlist-empty>
@@ -137,6 +243,30 @@
       <a href="{{ routes.all_products_collection_url }}" class="button">
         {{ 'general.continue_shopping' | t | default: 'Continuar a comprar' }}
       </a>
+
+      {%- if section.settings.show_recommendations and section.settings.recommendations_collection != blank -%}
+        {%- assign recommendations = collections[section.settings.recommendations_collection] -%}
+        {%- if recommendations.products.size > 0 -%}
+          <div class="wishlist-recommendations">
+            <h2 class="wishlist-recommendations__title">
+              {{ section.settings.recommendations_heading | default: 'Pode gostar de' }}
+            </h2>
+            <div class="wishlist-recommendations__grid">
+              {%- for product in recommendations.products limit: section.settings.recommendations_limit -%}
+                <div class="product-card-wrapper">
+                  {% render 'card-product',
+                    card_product: product,
+                    media_aspect_ratio: 'portrait',
+                    show_secondary_image: true,
+                    show_vendor: false,
+                    show_rating: false
+                  %}
+                </div>
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endif -%}
     </div>
   </div>
 </div>
@@ -164,6 +294,37 @@
       "id": "color_scheme",
       "label": "Color scheme",
       "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Empty state recommendations"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_recommendations",
+      "label": "Show product recommendations when wishlist is empty",
+      "default": true
+    },
+    {
+      "type": "collection",
+      "id": "recommendations_collection",
+      "label": "Collection for recommendations",
+      "info": "Select a collection to show when wishlist is empty (e.g., Featured Products, New Arrivals)"
+    },
+    {
+      "type": "text",
+      "id": "recommendations_heading",
+      "label": "Recommendations heading",
+      "default": "Pode gostar de"
+    },
+    {
+      "type": "range",
+      "id": "recommendations_limit",
+      "min": 4,
+      "max": 12,
+      "step": 4,
+      "label": "Number of products to show",
+      "default": 8
     },
     {
       "type": "header",

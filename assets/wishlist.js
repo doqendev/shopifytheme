@@ -12,6 +12,9 @@
   let toastTimeout = null;
   let undoTimeout = null;
   let undoData = null;
+  let currentSortOption = 'newest'; // newest, oldest, price-asc, price-desc, availability
+  const MAX_WISHLIST_ITEMS = 100; // Maximum items to prevent storage issues
+  const STORAGE_WARNING_THRESHOLD = 80; // Warn at 80% capacity
 
   const decodeHtml = (value) => {
     if (typeof value !== 'string') return '';
@@ -335,6 +338,8 @@
       cardInnerStyle: normalizedCardInnerStyle,
       cardMarkup: normalizedCardMarkup,
       image: normalizedImage,
+      addedAt: item.addedAt || Date.now(), // Track when item was added
+      originalPrice: item.originalPrice || item.price, // Track original price for comparison
     };
   };
 
@@ -613,6 +618,31 @@
     return match;
   };
 
+  // Check if wishlist is approaching limits
+  const checkWishlistLimits = (items) => {
+    const itemCount = items.length;
+
+    // Hard limit check
+    if (itemCount >= MAX_WISHLIST_ITEMS) {
+      showToast(`Limite de favoritos atingido (${MAX_WISHLIST_ITEMS} itens). Remova alguns para adicionar mais.`, {
+        type: 'error',
+        duration: 5000,
+      });
+      return false;
+    }
+
+    // Warning threshold check
+    if (itemCount >= STORAGE_WARNING_THRESHOLD && itemCount % 10 === 0) {
+      const remaining = MAX_WISHLIST_ITEMS - itemCount;
+      showToast(`${remaining} espaços restantes na sua lista de favoritos.`, {
+        type: 'info',
+        duration: 4000,
+      });
+    }
+
+    return true;
+  };
+
   const addToWishlist = (product, showToastNotification = true) => {
     const normalized = normalizeWishlistItem(product);
     if (!normalized) return false;
@@ -629,6 +659,10 @@
     if (existingIndex >= 0) {
       wishlist[existingIndex] = normalized;
     } else {
+      // Check limits before adding new item
+      if (!checkWishlistLimits(wishlist)) {
+        return false;
+      }
       wishlist.push(normalized);
       created = true;
     }
@@ -1673,6 +1707,42 @@
     }
   };
 
+  // Add price change badge if price has changed
+  const addPriceChangeBadge = (cardElement, item) => {
+    if (!cardElement || !item) return;
+
+    const currentPrice = parseFloat(item.price) || 0;
+    const originalPrice = parseFloat(item.originalPrice) || currentPrice;
+
+    // Only show badge if price has changed
+    if (currentPrice === originalPrice || originalPrice === 0) return;
+
+    const priceChange = currentPrice - originalPrice;
+    const isDecrease = priceChange < 0;
+    const percentChange = Math.abs((priceChange / originalPrice) * 100).toFixed(0);
+
+    // Find the card badge container (usually card__badge)
+    let badgeContainer = cardElement.querySelector('.card__badge');
+
+    if (!badgeContainer) {
+      // If no badge container exists, create one
+      const mediaWrapper = cardElement.querySelector('.card__media, .card__inner, .media');
+      if (mediaWrapper) {
+        badgeContainer = document.createElement('div');
+        badgeContainer.className = 'card__badge';
+        mediaWrapper.appendChild(badgeContainer);
+      }
+    }
+
+    if (badgeContainer) {
+      const badge = document.createElement('span');
+      badge.className = `badge badge--bottom-left wishlist-price-change ${isDecrease ? 'wishlist-price-decrease' : 'wishlist-price-increase'}`;
+      badge.textContent = `${isDecrease ? '' : '+'}${percentChange}%`;
+      badge.setAttribute('title', isDecrease ? 'Preço desceu' : 'Preço subiu');
+      badgeContainer.appendChild(badge);
+    }
+  };
+
   const prepareWishlistCard = (cardElement, item) => {
     if (!cardElement || !item) return null;
 
@@ -1732,6 +1802,7 @@
     ensureWishlistQuickAdd(cardElement, item);
     ensureWishlistCardSwatch(cardElement, item);
     updateWishlistSizeButtons(cardElement, item);
+    addPriceChangeBadge(cardElement, item);
 
     return cardElement;
   };
@@ -1755,16 +1826,88 @@
       });
   };
 
+  // Sort wishlist items based on current sort option
+  const sortWishlistItems = (items) => {
+    if (!Array.isArray(items) || !items.length) return items;
+
+    const sorted = [...items]; // Create a copy to avoid mutating original
+
+    switch (currentSortOption) {
+      case 'oldest':
+        // Oldest first (reverse order - items added earlier appear first)
+        sorted.reverse();
+        break;
+
+      case 'price-asc':
+        // Price: Low to High
+        sorted.sort((a, b) => {
+          const priceA = parseFloat(a.price) || 0;
+          const priceB = parseFloat(b.price) || 0;
+          return priceA - priceB;
+        });
+        break;
+
+      case 'price-desc':
+        // Price: High to Low
+        sorted.sort((a, b) => {
+          const priceA = parseFloat(a.price) || 0;
+          const priceB = parseFloat(b.price) || 0;
+          return priceB - priceA;
+        });
+        break;
+
+      case 'availability':
+        // Available items first, then sold out
+        sorted.sort((a, b) => {
+          const availableA = a.available ? 1 : 0;
+          const availableB = b.available ? 1 : 0;
+          return availableB - availableA;
+        });
+        break;
+
+      case 'newest':
+      default:
+        // Newest first (default - items added recently appear first)
+        // No sorting needed, items are already in newest-first order
+        break;
+    }
+
+    return sorted;
+  };
+
+  // Update sort option and re-render
+  const setSortOption = (option) => {
+    currentSortOption = option;
+    renderWishlist();
+
+    // Update active state on sort buttons
+    document.querySelectorAll('[data-wishlist-sort]').forEach((button) => {
+      if (button.dataset.wishlistSort === option) {
+        button.classList.add('active');
+        button.setAttribute('aria-pressed', 'true');
+      } else {
+        button.classList.remove('active');
+        button.setAttribute('aria-pressed', 'false');
+      }
+    });
+  };
+
   const renderWishlist = () => {
     const containers = document.querySelectorAll(WISHLIST_CONTAINER_SELECTOR);
     if (!containers.length) return;
-    const items = loadWishlist();
+    let items = loadWishlist();
+
+    // Apply sorting if items exist
+    if (items.length) {
+      items = sortWishlistItems(items);
+    }
 
     closeAllWishlistQuickAdds();
 
     containers.forEach((container) => {
       const grid = container.querySelector(WISHLIST_GRID_SELECTOR);
       const emptyState = container.querySelector('[data-wishlist-empty]');
+      const sortControls = container.querySelector('[data-wishlist-sort-controls]');
       if (!grid || !emptyState) return;
 
       grid.innerHTML = '';
@@ -1773,12 +1916,14 @@
         container.classList.add('is-empty');
         grid.hidden = true;
         emptyState.hidden = false;
+        if (sortControls) sortControls.hidden = true;
         return;
       }
 
       container.classList.remove('is-empty');
       grid.hidden = false;
       emptyState.hidden = true;
+      if (sortControls) sortControls.hidden = false;
 
       items.forEach((item) => {
         const cardElement = createWishlistCard(item);
@@ -2141,6 +2286,49 @@
     observer.observe(document.body, { childList: true, subtree: true });
   };
 
+  // Register sort button listeners
+  const registerSortListeners = () => {
+    document.querySelectorAll('[data-wishlist-sort]').forEach((button) => {
+      if (button.dataset.sortBound) return;
+      button.dataset.sortBound = 'true';
+
+      button.addEventListener('click', () => {
+        const sortOption = button.dataset.wishlistSort;
+        if (sortOption) {
+          setSortOption(sortOption);
+        }
+      });
+
+      // Set initial active state
+      if (button.dataset.wishlistSort === currentSortOption) {
+        button.classList.add('active');
+        button.setAttribute('aria-pressed', 'true');
+      }
+    });
+  };
+
+  // Cross-tab synchronization using storage events
+  const handleStorageChange = (event) => {
+    // Only respond to changes to our wishlist storage key
+    if (event.key !== STORAGE_KEY) return;
+
+    // Skip if the change originated from this tab
+    if (event.storageArea !== localStorage) return;
+
+    // Clear the cache so loadWishlist() fetches fresh data
+    cachedWishlist = null;
+
+    // Re-render wishlist and sync all hearts across the page
+    renderWishlist();
+    syncHearts();
+
+    // Update drawer labels if drawer is open
+    const drawer = getDrawer();
+    if (drawer) {
+      updateDrawerLabels(drawer, getActiveDrawerTab(drawer));
+    }
+  };
+
   const init = () => {
     const drawer = getDrawer();
     const labelSource = drawer?.querySelector('[data-cart-title][data-wishlist]');
@@ -2183,6 +2371,10 @@
     initDrawerTabs();
     registerWishlistContainerListeners();
     registerSwatchSyncListener();
+    registerSortListeners();
+
+    // Listen for storage changes from other tabs
+    window.addEventListener('storage', handleStorageChange);
 
     document.addEventListener('shopify:section:load', onSectionLoad);
     observeDomMutations();

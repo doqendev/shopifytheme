@@ -1127,6 +1127,25 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
 }
 
 /* Reduced Motion Support */
+/* Price Change Badges */
+.wishlist-price-change {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  display: inline-block;
+}
+
+.wishlist-price-decrease {
+  background-color: #10b981;
+  color: #ffffff;
+}
+
+.wishlist-price-increase {
+  background-color: #ef4444;
+  color: #ffffff;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .wishlist-toast {
     transition: opacity 0.15s ease;
