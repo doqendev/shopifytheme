@@ -565,6 +565,7 @@
 
   const saveWishlist = (items) => {
     cachedWishlist = normalizeWishlistItems(items);
+
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(cachedWishlist));
     } catch (error) {
@@ -576,8 +577,6 @@
       // Specific error messages
       if (error.name === 'QuotaExceededError') {
         errorMessage = window.wishlistStrings?.storageFull || 'Lista de favoritos cheia. Remova alguns itens.';
-      } else if (error.message && error.message.includes('private')) {
-        errorMessage = window.wishlistStrings?.storageDisabled || 'Favoritos não disponíveis em modo privado';
       }
 
       showToast(errorMessage, {
