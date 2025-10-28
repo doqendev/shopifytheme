@@ -2058,19 +2058,19 @@
     const closeLabel = drawer?.querySelector('.drawer__close')?.getAttribute('aria-label');
 
     window.wishlistStrings = {
-      add: 'Add to wishlist',
-      remove: 'Remove from wishlist',
-      addToCart: 'Add to cart',
-      sizeLabel: 'Select a size',
-      soldOut: 'Sold out',
-      close: 'Close',
-      wishlist: 'Wishlist',
-      lowStock: 'Low stock',
-      undo: 'Undo',
-      addedToWishlist: 'Added to wishlist',
-      removedFromWishlist: 'Removed from wishlist',
-      addedToCart: 'Added to cart',
-      addToCartError: 'Unable to add to cart',
+      add: 'Adicionar aos favoritos',
+      remove: 'Remover dos favoritos',
+      addToCart: 'Adicionar ao carrinho',
+      sizeLabel: 'Selecione um tamanho',
+      soldOut: 'Esgotado',
+      close: 'Fechar',
+      wishlist: 'Favoritos',
+      lowStock: 'Pouco stock',
+      undo: 'Desfazer',
+      addedToWishlist: 'Adicionado aos favoritos',
+      removedFromWishlist: 'Removido dos favoritos',
+      addedToCart: 'Adicionado ao carrinho',
+      addToCartError: 'Não foi possível adicionar ao carrinho',
       ...window.wishlistStrings,
     };
 
