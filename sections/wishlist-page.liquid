@@ -240,9 +240,6 @@
 
     <div class="wishlist-empty" data-wishlist-empty>
       <p>{{ 'general.wishlist_empty' | t | default: 'A sua lista de favoritos está vazia.' }}</p>
-      <a href="{{ routes.all_products_collection_url }}" class="button">
-        {{ 'general.continue_shopping' | t | default: 'Continuar a comprar' }}
-      </a>
 
       {%- if section.settings.show_recommendations and section.settings.recommendations_collection != blank -%}
         {%- assign recommendations = collections[section.settings.recommendations_collection] -%}
