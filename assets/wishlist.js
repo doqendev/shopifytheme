@@ -1900,16 +1900,35 @@
     currentSortOption = option;
     renderWishlist();
 
-    // Update active state on sort buttons
+    // Update active state on sort pills (using is-active class like collection pages)
     document.querySelectorAll('[data-wishlist-sort]').forEach((button) => {
       if (button.dataset.wishlistSort === option) {
-        button.classList.add('active');
-        button.setAttribute('aria-pressed', 'true');
+        button.classList.add('is-active');
       } else {
-        button.classList.remove('active');
-        button.setAttribute('aria-pressed', 'false');
+        button.classList.remove('is-active');
       }
     });
+
+    // Close the drawer after selection
+    const drawer = document.getElementById('wishlist-sort-drawer');
+    if (drawer) {
+      drawer.classList.remove('active');
+    }
+  };
+
+  // Open/close sort drawer
+  const toggleSortDrawer = () => {
+    const drawer = document.getElementById('wishlist-sort-drawer');
+    if (drawer) {
+      drawer.classList.toggle('active');
+    }
+  };
+
+  const closeSortDrawer = () => {
+    const drawer = document.getElementById('wishlist-sort-drawer');
+    if (drawer) {
+      drawer.classList.remove('active');
+    }
   };
 
   const renderWishlist = () => {
@@ -1927,23 +1946,25 @@
     containers.forEach((container) => {
       const grid = container.querySelector(WISHLIST_GRID_SELECTOR);
       const emptyState = container.querySelector('[data-wishlist-empty]');
-      const sortControls = container.querySelector('[data-wishlist-sort-controls]');
       if (!grid || !emptyState) return;
 
       grid.innerHTML = '';
+
+      // Also hide/show the FILTROS button
+      const gridControls = document.querySelector('[data-wishlist-controls]');
 
       if (!items.length) {
         container.classList.add('is-empty');
         grid.hidden = true;
         emptyState.hidden = false;
-        if (sortControls) sortControls.hidden = true;
+        if (gridControls) gridControls.hidden = true;
         return;
       }
 
       container.classList.remove('is-empty');
       grid.hidden = false;
       emptyState.hidden = true;
-      if (sortControls) sortControls.hidden = false;
+      if (gridControls) gridControls.hidden = false;
 
       items.forEach((item) => {
         const cardElement = createWishlistCard(item);
@@ -2308,6 +2329,7 @@
 
   // Register sort button listeners
   const registerSortListeners = () => {
+    // Register sort pill clicks
     document.querySelectorAll('[data-wishlist-sort]').forEach((button) => {
       if (button.dataset.sortBound) return;
       button.dataset.sortBound = 'true';
@@ -2321,10 +2343,34 @@
 
       // Set initial active state
       if (button.dataset.wishlistSort === currentSortOption) {
-        button.classList.add('active');
-        button.setAttribute('aria-pressed', 'true');
+        button.classList.add('is-active');
       }
     });
+
+    // Register FILTROS button click
+    const toggleButton = document.getElementById('wishlist-facets-toggle-button');
+    if (toggleButton && !toggleButton.dataset.drawerBound) {
+      toggleButton.dataset.drawerBound = 'true';
+      toggleButton.addEventListener('click', toggleSortDrawer);
+    }
+
+    // Register drawer close button
+    const closeButton = document.getElementById('wishlist-sort-drawer-close');
+    if (closeButton && !closeButton.dataset.closeBound) {
+      closeButton.dataset.closeBound = 'true';
+      closeButton.addEventListener('click', closeSortDrawer);
+    }
+
+    // Register clicking outside drawer to close
+    const drawer = document.getElementById('wishlist-sort-drawer');
+    if (drawer && !drawer.dataset.overlayBound) {
+      drawer.dataset.overlayBound = 'true';
+      drawer.addEventListener('click', (e) => {
+        if (e.target === drawer) {
+          closeSortDrawer();
+        }
+      });
+    }
   };
 
   // Cross-tab synchronization using storage events
