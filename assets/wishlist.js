@@ -547,9 +547,23 @@
       if (Array.isArray(parsed)) {
         cachedWishlist = normalizeWishlistItems(parsed);
         return cachedWishlist.slice();
+      } else {
+        console.error('Invalid wishlist data format');
+        // Clear corrupted data
+        localStorage.removeItem(STORAGE_KEY);
       }
     } catch (error) {
-      console.warn('Unable to read wishlist from storage', error);
+      console.error('Unable to read wishlist from storage', error);
+
+      // Handle corrupted data
+      if (error instanceof SyntaxError) {
+        console.warn('Corrupted wishlist data, clearing...');
+        try {
+          localStorage.removeItem(STORAGE_KEY);
+        } catch (clearError) {
+          console.error('Unable to clear corrupted data', clearError);
+        }
+      }
     }
 
     cachedWishlist = [];
@@ -561,10 +575,28 @@
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(cachedWishlist));
     } catch (error) {
-      console.warn('Unable to persist wishlist', error);
+      console.error('Unable to persist wishlist', error);
+
+      // Show user-facing error
+      let errorMessage = window.wishlistStrings?.storageError || 'Não foi possível guardar os favoritos';
+
+      // Specific error messages
+      if (error.name === 'QuotaExceededError') {
+        errorMessage = window.wishlistStrings?.storageFull || 'Lista de favoritos cheia. Remova alguns itens.';
+      } else if (error.message && error.message.includes('private')) {
+        errorMessage = window.wishlistStrings?.storageDisabled || 'Favoritos não disponíveis em modo privado';
+      }
+
+      showToast(errorMessage, {
+        type: 'error',
+        duration: 5000,
+      });
+
+      return false;
     }
     renderWishlist();
     syncHearts();
+    return true;
   };
 
   const findWishlistItem = (handleOrItem, colorKey = '') => {
@@ -1844,12 +1876,25 @@
         });
       })
       .catch((error) => {
-        console.error(error);
-        // Show error toast
-        const errorMessage = window.wishlistStrings?.addToCartError || `Unable to add ${productName} to cart`;
+        console.error('Cart add error:', error);
+
+        // Determine specific error message
+        let errorMessage = window.wishlistStrings?.addToCartError || 'Não foi possível adicionar ao carrinho';
+
+        if (error.message) {
+          // Check for specific error types
+          if (error.message.includes('sold out') || error.message.includes('esgotado')) {
+            errorMessage = window.wishlistStrings?.productSoldOut || `${productName} está esgotado`;
+          } else if (error.message.includes('inventory') || error.message.includes('stock')) {
+            errorMessage = window.wishlistStrings?.insufficientStock || 'Stock insuficiente';
+          } else if (error.message.includes('network') || error.name === 'TypeError') {
+            errorMessage = window.wishlistStrings?.networkError || 'Erro de conexão. Tente novamente.';
+          }
+        }
+
         showToast(errorMessage, {
           type: 'error',
-          duration: 4000,
+          duration: 5000,
         });
       })
       .finally(() => {
@@ -2094,6 +2139,12 @@
       removedFromWishlist: 'Removido dos favoritos',
       addedToCart: 'Adicionado ao carrinho',
       addToCartError: 'Não foi possível adicionar ao carrinho',
+      productSoldOut: 'Produto esgotado',
+      insufficientStock: 'Stock insuficiente',
+      networkError: 'Erro de conexão. Tente novamente.',
+      storageError: 'Não foi possível guardar os favoritos',
+      storageFull: 'Lista de favoritos cheia. Remova alguns itens.',
+      storageDisabled: 'Favoritos não disponíveis em modo privado',
       ...window.wishlistStrings,
     };
 
