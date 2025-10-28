@@ -70,6 +70,7 @@
     flex-grow: 1;
   }
 
+  /* Default grid layout */
   @media screen and (max-width: 749px) {
     #wishlist-product-grid {
       grid-template-columns: repeat(2, 1fr);
@@ -79,6 +80,60 @@
   @media screen and (min-width: 750px) {
     #wishlist-product-grid {
       grid-template-columns: repeat(6, 1fr);
+    }
+  }
+
+  /* Layout options for mobile */
+  @media (max-width: 749px) {
+    #wishlist-product-grid.one-col {
+      grid-template-columns: 1fr !important;
+    }
+    #wishlist-product-grid.two-col {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+    #wishlist-product-grid.three-col {
+      grid-template-columns: repeat(3, 1fr) !important;
+    }
+  }
+
+  /* Layout options for desktop */
+  @media (min-width: 750px) {
+    #wishlist-product-grid.one-col {
+      grid-template-columns: repeat(280, 1fr) !important;
+    }
+    #wishlist-product-grid.one-col > * {
+      max-width: none;
+    }
+
+    /* Mosaic pattern for one-col layout */
+    #wishlist-product-grid.one-col > *:nth-child(7n + 1) {
+      grid-column: 113 / span 56;
+    }
+    #wishlist-product-grid.one-col > *:nth-child(7n + 2) {
+      grid-column: 85 / span 37;
+    }
+    #wishlist-product-grid.one-col > *:nth-child(7n + 3) {
+      grid-column: 122 / span 37;
+    }
+    #wishlist-product-grid.one-col > *:nth-child(7n + 4) {
+      grid-column: 159 / span 37;
+    }
+    #wishlist-product-grid.one-col > *:nth-child(7n + 5) {
+      grid-column: 113 / span 56;
+    }
+    #wishlist-product-grid.one-col > *:nth-child(7n + 6) {
+      grid-column: 99 / span 42;
+    }
+    #wishlist-product-grid.one-col > *:nth-child(7n + 7) {
+      grid-column: 141 / span 42;
+    }
+
+    #wishlist-product-grid.two-col {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    #wishlist-product-grid.three-col {
+      grid-template-columns: repeat(6, 1fr) !important;
     }
   }
 
@@ -152,13 +207,61 @@
     }
   }
 
-  /* Wishlist Filter Button - Match collection page style */
+  /* Wishlist Grid Controls - Match collection page style */
   .wishlist-grid-controls {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     padding: 0 1rem;
     margin: 1.5rem 0 2rem;
+  }
+
+  /* Layout options styling - match collection page */
+  .wishlist-layout-options {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .wishlist-layout-option-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+  }
+
+  .wishlist-layout-option-button:hover {
+    opacity: 0.7;
+  }
+
+  .wishlist-layout-option-button.active {
+    opacity: 1;
+  }
+
+  .wishlist-layout-option-button .grid-icon {
+    width: 24px;
+    height: 24px;
+    display: block;
+  }
+
+  .wishlist-layout-option-button .grid-icon--full {
+    display: none;
+  }
+
+  .wishlist-layout-option-button .grid-icon--empty {
+    display: block;
+  }
+
+  .wishlist-layout-option-button.active .grid-icon--full {
+    display: block;
+  }
+
+  .wishlist-layout-option-button.active .grid-icon--empty {
+    display: none;
   }
 
   .wishlist-facets-toggle-container {
@@ -302,8 +405,37 @@
     <h1 class="collection-title">{{ section.settings.heading | default: page.title | escape }}</h1>
   </div>
 
-  <!-- Grid Controls: FILTROS button -->
+  <!-- Grid Controls: Layout options and FILTROS button -->
   <div class="wishlist-grid-controls" data-wishlist-controls>
+    <div class="wishlist-layout-options">
+      <!-- One Column Button -->
+      <button type="button" id="wishlist-layout-one-col" class="wishlist-layout-option-button">
+        <span class="grid-icon grid-icon--full">
+          {{ 'grid_1_thinner_active.svg' | inline_asset_content }}
+        </span>
+        <span class="grid-icon grid-icon--empty">
+          {{ 'grid_1_thinner.svg' | inline_asset_content }}
+        </span>
+      </button>
+      <!-- Two Column Button -->
+      <button type="button" id="wishlist-layout-two-col" class="wishlist-layout-option-button active">
+        <span class="grid-icon grid-icon--full">
+          {{ 'grid_2_thinner_active.svg' | inline_asset_content }}
+        </span>
+        <span class="grid-icon grid-icon--empty">
+          {{ 'grid_2_thinner.svg' | inline_asset_content }}
+        </span>
+      </button>
+      <!-- Three Column (6 grid) Button -->
+      <button type="button" id="wishlist-layout-three-col" class="wishlist-layout-option-button">
+        <span class="grid-icon grid-icon--full">
+          {{ 'grid_4_thinner_active.svg' | inline_asset_content }}
+        </span>
+        <span class="grid-icon grid-icon--empty">
+          {{ 'grid_4_thinner.svg' | inline_asset_content }}
+        </span>
+      </button>
+    </div>
     <div class="wishlist-facets-toggle-container">
       <button type="button" id="wishlist-facets-toggle-button" class="wishlist-facets-toggle-button">
         <span class="facets-icon">FILTROS</span>

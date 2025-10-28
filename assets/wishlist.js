@@ -2327,6 +2327,62 @@
     observer.observe(document.body, { childList: true, subtree: true });
   };
 
+  // Handle wishlist grid layout switching
+  const setWishlistLayout = (layout) => {
+    const grid = document.getElementById('wishlist-product-grid');
+    if (!grid) return;
+
+    // Remove all layout classes
+    grid.classList.remove('one-col', 'two-col', 'three-col');
+
+    // Add new layout class
+    grid.classList.add(layout);
+
+    // Update button active states
+    document.querySelectorAll('.wishlist-layout-option-button').forEach((btn) => {
+      btn.classList.remove('active');
+    });
+
+    const activeButton = document.getElementById(`wishlist-layout-${layout}`);
+    if (activeButton) {
+      activeButton.classList.add('active');
+    }
+
+    // Save preference to localStorage
+    try {
+      localStorage.setItem('wishlist-layout-preference', layout);
+    } catch (error) {
+      // Silent fail if localStorage unavailable
+    }
+  };
+
+  // Register layout button listeners
+  const registerLayoutListeners = () => {
+    const layoutButtons = [
+      { id: 'wishlist-layout-one-col', layout: 'one-col' },
+      { id: 'wishlist-layout-two-col', layout: 'two-col' },
+      { id: 'wishlist-layout-three-col', layout: 'three-col' },
+    ];
+
+    layoutButtons.forEach(({ id, layout }) => {
+      const button = document.getElementById(id);
+      if (button && !button.dataset.layoutBound) {
+        button.dataset.layoutBound = 'true';
+        button.addEventListener('click', () => setWishlistLayout(layout));
+      }
+    });
+
+    // Load saved layout preference
+    try {
+      const savedLayout = localStorage.getItem('wishlist-layout-preference');
+      if (savedLayout && ['one-col', 'two-col', 'three-col'].includes(savedLayout)) {
+        setWishlistLayout(savedLayout);
+      }
+    } catch (error) {
+      // Use default (two-col) if can't read localStorage
+    }
+  };
+
   // Register sort button listeners
   const registerSortListeners = () => {
     // Register sort pill clicks
@@ -2438,6 +2494,7 @@
     registerWishlistContainerListeners();
     registerSwatchSyncListener();
     registerSortListeners();
+    registerLayoutListeners();
 
     // Listen for storage changes from other tabs
     window.addEventListener('storage', handleStorageChange);
