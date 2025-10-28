@@ -9,6 +9,9 @@
 
   let cachedWishlist = null;
   const htmlDecoder = document.createElement('textarea');
+  let toastTimeout = null;
+  let undoTimeout = null;
+  let undoData = null;
 
   const decodeHtml = (value) => {
     if (typeof value !== 'string') return '';
@@ -24,6 +27,110 @@
   const normalizeOptionValue = (value) => {
     if (typeof value !== 'string') return '';
     return value.trim().toLowerCase();
+  };
+
+  // Toast Notification System
+  const createToastContainer = () => {
+    let container = document.querySelector('.wishlist-toast-container');
+    if (!container) {
+      container = document.createElement('div');
+      container.className = 'wishlist-toast-container';
+      container.setAttribute('aria-live', 'polite');
+      container.setAttribute('aria-atomic', 'true');
+      document.body.appendChild(container);
+    }
+    return container;
+  };
+
+  const showToast = (message, options = {}) => {
+    const {
+      type = 'success',
+      duration = 3000,
+      showUndo = false,
+      onUndo = null,
+    } = options;
+
+    // Clear any existing toasts
+    const container = createToastContainer();
+    container.innerHTML = '';
+
+    // Clear existing timeouts
+    if (toastTimeout) clearTimeout(toastTimeout);
+    if (undoTimeout) clearTimeout(undoTimeout);
+
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `wishlist-toast wishlist-toast--${type}`;
+    toast.setAttribute('role', 'status');
+
+    // Create message
+    const messageSpan = document.createElement('span');
+    messageSpan.className = 'wishlist-toast__message';
+    messageSpan.textContent = message;
+    toast.appendChild(messageSpan);
+
+    // Add undo button if needed
+    if (showUndo && onUndo) {
+      const undoButton = document.createElement('button');
+      undoButton.type = 'button';
+      undoButton.className = 'wishlist-toast__undo';
+      undoButton.textContent = window.wishlistStrings?.undo || 'Undo';
+      undoButton.addEventListener('click', () => {
+        onUndo();
+        hideToast();
+      });
+      toast.appendChild(undoButton);
+    }
+
+    // Add close button
+    const closeButton = document.createElement('button');
+    closeButton.type = 'button';
+    closeButton.className = 'wishlist-toast__close';
+    closeButton.setAttribute('aria-label', window.wishlistStrings?.close || 'Close');
+    closeButton.innerHTML = '&times;';
+    closeButton.addEventListener('click', hideToast);
+    toast.appendChild(closeButton);
+
+    // Append to container
+    container.appendChild(toast);
+
+    // Trigger animation
+    requestAnimationFrame(() => {
+      toast.classList.add('wishlist-toast--visible');
+    });
+
+    // Auto-hide after duration
+    toastTimeout = setTimeout(() => {
+      hideToast();
+    }, duration);
+  };
+
+  const hideToast = () => {
+    const container = document.querySelector('.wishlist-toast-container');
+    if (!container) return;
+
+    const toast = container.querySelector('.wishlist-toast');
+    if (!toast) return;
+
+    toast.classList.remove('wishlist-toast--visible');
+
+    // Remove from DOM after animation
+    setTimeout(() => {
+      if (container.contains(toast)) {
+        container.removeChild(toast);
+      }
+    }, 300);
+
+    // Clear timeouts
+    if (toastTimeout) {
+      clearTimeout(toastTimeout);
+      toastTimeout = null;
+    }
+    if (undoTimeout) {
+      clearTimeout(undoTimeout);
+      undoTimeout = null;
+    }
+    undoData = null;
   };
 
   const getVariantImageSource = (image) => {
@@ -482,7 +589,7 @@
     return match;
   };
 
-  const addToWishlist = (product) => {
+  const addToWishlist = (product, showToastNotification = true) => {
     const normalized = normalizeWishlistItem(product);
     if (!normalized) return false;
     let wishlist = loadWishlist();
@@ -502,18 +609,57 @@
       created = true;
     }
     saveWishlist(wishlist);
+
+    // Show toast notification if requested
+    if (showToastNotification && created) {
+      const productName = normalized.title || 'Item';
+      const message = window.wishlistStrings?.addedToWishlist || `${productName} added to wishlist`;
+
+      showToast(message, {
+        type: 'success',
+        duration: 3000,
+        showUndo: true,
+        onUndo: () => {
+          removeFromWishlist(normalized, normalized.colorKey);
+          const undoMessage = window.wishlistStrings?.removedFromWishlist || `${productName} removed from wishlist`;
+          showToast(undoMessage, { type: 'info', duration: 2000 });
+        }
+      });
+    }
+
     return created;
   };
 
-  const removeFromWishlist = (handleOrItem, colorKey = '') => {
+  const removeFromWishlist = (handleOrItem, colorKey = '', showToastNotification = true) => {
     const normalized =
       typeof handleOrItem === 'object' ? normalizeWishlistItem(handleOrItem) : null;
     const handle = normalized ? normalized.handle : handleOrItem;
     if (!handle) return;
 
     const key = normalized ? getWishlistItemKey(normalized) : buildWishlistKey(handle, colorKey);
+
+    // Store the item being removed for undo
+    const removedItem = loadWishlist().find((item) => getWishlistItemKey(item) === key);
+
     const wishlist = loadWishlist().filter((item) => getWishlistItemKey(item) !== key);
     saveWishlist(wishlist);
+
+    // Show toast notification if requested
+    if (showToastNotification && removedItem) {
+      const productName = removedItem.title || 'Item';
+      const message = window.wishlistStrings?.removedFromWishlist || `${productName} removed from wishlist`;
+
+      showToast(message, {
+        type: 'info',
+        duration: 3000,
+        showUndo: true,
+        onUndo: () => {
+          addToWishlist(removedItem, false);
+          const undoMessage = window.wishlistStrings?.addedToWishlist || `${productName} added back to wishlist`;
+          showToast(undoMessage, { type: 'success', duration: 2000 });
+        }
+      });
+    }
   };
 
   const normalizeExternalWishlistItems = (payload) => {
@@ -1666,6 +1812,8 @@
   const addVariantToCart = (variantId, card) => {
     if (!variantId || !window.routes?.cart_add_url) return Promise.resolve();
 
+    const productName = card?.dataset?.productTitle || 'Item';
+
     const body = JSON.stringify({
       items: [{ id: variantId, quantity: 1 }],
       sections: ['cart-drawer', 'cart-icon-bubble'],
@@ -1678,16 +1826,31 @@
         if (data.status && data.status !== 200) {
           throw new Error(data.description || 'Unable to add to cart');
         }
+        return data;
       })
       .then(() => {
         if (card?.dataset.handle) {
-          removeFromWishlist(card.dataset.handle, card.dataset.colorKey || '');
+          removeFromWishlist(card.dataset.handle, card.dataset.colorKey || '', false);
         }
       })
       .then(() => refreshCartDrawer())
       .then(() => setActiveDrawerTab(TAB_CART))
+      .then(() => {
+        // Show success toast
+        const message = window.wishlistStrings?.addedToCart || `${productName} added to cart`;
+        showToast(message, {
+          type: 'success',
+          duration: 3000,
+        });
+      })
       .catch((error) => {
         console.error(error);
+        // Show error toast
+        const errorMessage = window.wishlistStrings?.addToCartError || `Unable to add ${productName} to cart`;
+        showToast(errorMessage, {
+          type: 'error',
+          duration: 4000,
+        });
       })
       .finally(() => {
         closeAllWishlistQuickAdds();
@@ -1903,6 +2066,11 @@
       close: 'Close',
       wishlist: 'Wishlist',
       lowStock: 'Low stock',
+      undo: 'Undo',
+      addedToWishlist: 'Added to wishlist',
+      removedFromWishlist: 'Removed from wishlist',
+      addedToCart: 'Added to cart',
+      addToCartError: 'Unable to add to cart',
       ...window.wishlistStrings,
     };
 
