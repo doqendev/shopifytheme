@@ -968,12 +968,23 @@
 
       button.classList.toggle('is-active', active);
       button.setAttribute('aria-pressed', active ? 'true' : 'false');
-      button.setAttribute(
-        'aria-label',
-        active
-          ? window.wishlistStrings?.remove || 'Remove from wishlist'
-          : window.wishlistStrings?.add || 'Add to wishlist',
-      );
+
+      // Get product name for better screen reader context
+      const productTitle = card?.dataset?.productTitle || '';
+      const addLabel = window.wishlistStrings?.add || 'Adicionar aos favoritos';
+      const removeLabel = window.wishlistStrings?.remove || 'Remover dos favoritos';
+
+      // Include product name if available
+      let ariaLabel;
+      if (productTitle) {
+        ariaLabel = active
+          ? `${removeLabel}: ${productTitle}`
+          : `${addLabel}: ${productTitle}`;
+      } else {
+        ariaLabel = active ? removeLabel : addLabel;
+      }
+
+      button.setAttribute('aria-label', ariaLabel);
     });
   };
 
@@ -1114,18 +1125,29 @@
     return sizes;
   };
 
-  const createSizeButtonsMarkup = (item) =>
-    getUniqueSizesForItem(item)
+  const createSizeButtonsMarkup = (item) => {
+    const productName = item?.title || '';
+    const addToCartLabel = window.wishlistStrings?.addToCart || 'Adicionar ao carrinho';
+
+    return getUniqueSizesForItem(item)
       .map(
-        (size) => `
-          <button type="button" class="size-option" data-size="${escapeHtml(size)}">
-            <span class="size-option__label">${escapeHtml(size)}</span>
-            <span class="size-option__low-stock hidden">${escapeHtml(
-              window.wishlistStrings?.lowStock || 'Low stock',
-            )}</span>
-          </button>`,
+        (size) => {
+          // Create accessible label with product name and size
+          const ariaLabel = productName
+            ? `${addToCartLabel}: ${productName}, tamanho ${size}`
+            : `${addToCartLabel}, tamanho ${size}`;
+
+          return `
+            <button type="button" class="size-option" data-size="${escapeHtml(size)}" aria-label="${escapeHtml(ariaLabel)}">
+              <span class="size-option__label">${escapeHtml(size)}</span>
+              <span class="size-option__low-stock hidden">${escapeHtml(
+                window.wishlistStrings?.lowStock || 'Pouco stock',
+              )}</span>
+            </button>`;
+        }
       )
       .join('');
+  };
 
   const createQuickAddMarkup = (item) => {
     if (!item || typeof item.sizeIndex !== 'number' || item.sizeIndex < 0) return '';
@@ -1133,11 +1155,18 @@
     const sizeButtonsMarkup = createSizeButtonsMarkup(item);
     if (!sizeButtonsMarkup) return '';
 
+    // Create accessible label for plus button with product name
+    const productName = item?.title || '';
+    const addToCartLabel = window.wishlistStrings?.addToCart || 'Adicionar ao carrinho';
+    const selectSizeLabel = window.wishlistStrings?.sizeLabel || 'Selecione um tamanho';
+
+    const plusAriaLabel = productName
+      ? `${selectSizeLabel}: ${productName}`
+      : selectSizeLabel;
+
     return `
       <div class="product-card-plus">
-        <button type="button" class="plus-icon" aria-label="${escapeHtml(
-          window.wishlistStrings?.addToCart || 'Add to cart',
-        )}">
+        <button type="button" class="plus-icon" aria-label="${escapeHtml(plusAriaLabel)}" aria-expanded="false">
           +
         </button>
         <div class="size-options" tabindex="-1">
@@ -1732,7 +1761,14 @@
   const closeAllWishlistQuickAdds = () => {
     document
       .querySelectorAll(`${WISHLIST_CONTAINER_SELECTOR} .product-card-plus.active`)
-      .forEach((plus) => plus.classList.remove('active'));
+      .forEach((plus) => {
+        plus.classList.remove('active');
+        // Update aria-expanded for accessibility
+        const plusIcon = plus.querySelector('.plus-icon');
+        if (plusIcon) {
+          plusIcon.setAttribute('aria-expanded', 'false');
+        }
+      });
   };
 
   const renderWishlist = () => {
@@ -1930,11 +1966,13 @@
 
     if (plus.classList.contains('active')) {
       plus.classList.remove('active');
+      plusIcon.setAttribute('aria-expanded', 'false');
       return;
     }
 
     closeAllWishlistQuickAdds();
     plus.classList.add('active');
+    plusIcon.setAttribute('aria-expanded', 'true');
     const sizeOptions = plus.querySelector('.size-options');
     sizeOptions?.focus?.();
   };
