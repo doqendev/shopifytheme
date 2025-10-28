@@ -1901,12 +1901,35 @@
     const variantId = Number.parseInt(button.dataset.variantId || '', 10);
     if (!variantId) return;
 
-    button.disabled = true;
+    // Save original button content
+    const originalContent = button.innerHTML;
 
-    addVariantToCart(variantId, card).finally(() => {
-      if (!card.isConnected) return;
-      button.disabled = false;
-    });
+    // Add loading state
+    button.disabled = true;
+    button.classList.add('size-option--loading');
+    button.innerHTML = `
+      <span class="size-option__spinner"></span>
+      <span class="size-option__label">${button.dataset.size || ''}</span>
+    `;
+
+    addVariantToCart(variantId, card)
+      .then(() => {
+        // Success - button will be removed when card is removed from wishlist
+      })
+      .catch(() => {
+        // On error, restore button
+        if (!card.isConnected) return;
+        button.disabled = false;
+        button.classList.remove('size-option--loading');
+        button.innerHTML = originalContent;
+      })
+      .finally(() => {
+        // Final cleanup if card still exists
+        if (card.isConnected && button.isConnected) {
+          button.disabled = false;
+          button.classList.remove('size-option--loading');
+        }
+      });
   };
 
   const handleWishlistClicks = (event) => {
