@@ -1841,8 +1841,18 @@
       case 'price-asc':
         // Price: Low to High
         sorted.sort((a, b) => {
-          const priceA = parseFloat(a.price) || 0;
-          const priceB = parseFloat(b.price) || 0;
+          // Try multiple price fields and clean the string
+          let priceA = a.price || a.price_min || a.minPrice || 0;
+          let priceB = b.price || b.price_min || b.minPrice || 0;
+
+          // Remove currency symbols, spaces, and convert to number
+          if (typeof priceA === 'string') {
+            priceA = parseFloat(priceA.replace(/[^\d.,]/g, '').replace(',', '.')) || 0;
+          }
+          if (typeof priceB === 'string') {
+            priceB = parseFloat(priceB.replace(/[^\d.,]/g, '').replace(',', '.')) || 0;
+          }
+
           return priceA - priceB;
         });
         break;
@@ -1850,8 +1860,18 @@
       case 'price-desc':
         // Price: High to Low
         sorted.sort((a, b) => {
-          const priceA = parseFloat(a.price) || 0;
-          const priceB = parseFloat(b.price) || 0;
+          // Try multiple price fields and clean the string
+          let priceA = a.price || a.price_min || a.minPrice || 0;
+          let priceB = b.price || b.price_min || b.minPrice || 0;
+
+          // Remove currency symbols, spaces, and convert to number
+          if (typeof priceA === 'string') {
+            priceA = parseFloat(priceA.replace(/[^\d.,]/g, '').replace(',', '.')) || 0;
+          }
+          if (typeof priceB === 'string') {
+            priceB = parseFloat(priceB.replace(/[^\d.,]/g, '').replace(',', '.')) || 0;
+          }
+
           return priceB - priceA;
         });
         break;
