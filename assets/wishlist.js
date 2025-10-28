@@ -1895,25 +1895,63 @@
     return sorted;
   };
 
+  // Show loading overlay
+  const showWishlistLoading = () => {
+    const overlay = document.getElementById('wishlist-loading-overlay');
+    const grid = document.getElementById('wishlist-product-grid');
+
+    if (overlay) {
+      overlay.classList.add('active');
+    }
+    if (grid) {
+      grid.classList.add('wishlist-grid-loading');
+    }
+  };
+
+  // Hide loading overlay
+  const hideWishlistLoading = () => {
+    const overlay = document.getElementById('wishlist-loading-overlay');
+    const grid = document.getElementById('wishlist-product-grid');
+
+    if (overlay) {
+      overlay.classList.remove('active');
+    }
+    if (grid) {
+      grid.classList.remove('wishlist-grid-loading');
+    }
+  };
+
   // Update sort option and re-render
   const setSortOption = (option) => {
     currentSortOption = option;
-    renderWishlist();
 
-    // Update active state on sort pills (using is-active class like collection pages)
-    document.querySelectorAll('[data-wishlist-sort]').forEach((button) => {
-      if (button.dataset.wishlistSort === option) {
-        button.classList.add('is-active');
-      } else {
-        button.classList.remove('is-active');
+    // Show loading state
+    showWishlistLoading();
+
+    // Use setTimeout to allow loading UI to render before heavy operation
+    setTimeout(() => {
+      renderWishlist();
+
+      // Update active state on sort pills (using is-active class like collection pages)
+      document.querySelectorAll('[data-wishlist-sort]').forEach((button) => {
+        if (button.dataset.wishlistSort === option) {
+          button.classList.add('is-active');
+        } else {
+          button.classList.remove('is-active');
+        }
+      });
+
+      // Close the drawer after selection
+      const drawer = document.getElementById('wishlist-sort-drawer');
+      if (drawer) {
+        drawer.classList.remove('active');
       }
-    });
 
-    // Close the drawer after selection
-    const drawer = document.getElementById('wishlist-sort-drawer');
-    if (drawer) {
-      drawer.classList.remove('active');
-    }
+      // Hide loading state after a brief moment
+      setTimeout(() => {
+        hideWishlistLoading();
+      }, 200);
+    }, 50);
   };
 
   // Open/close sort drawer
@@ -2332,28 +2370,39 @@
     const grid = document.getElementById('wishlist-product-grid');
     if (!grid) return;
 
-    // Remove all layout classes
-    grid.classList.remove('one-col', 'two-col', 'three-col');
+    // Show loading state
+    showWishlistLoading();
 
-    // Add new layout class
-    grid.classList.add(layout);
+    // Use setTimeout to allow loading UI to render
+    setTimeout(() => {
+      // Remove all layout classes
+      grid.classList.remove('one-col', 'two-col', 'three-col');
 
-    // Update button active states
-    document.querySelectorAll('.wishlist-layout-option-button').forEach((btn) => {
-      btn.classList.remove('active');
-    });
+      // Add new layout class
+      grid.classList.add(layout);
 
-    const activeButton = document.getElementById(`wishlist-layout-${layout}`);
-    if (activeButton) {
-      activeButton.classList.add('active');
-    }
+      // Update button active states
+      document.querySelectorAll('.wishlist-layout-option-button').forEach((btn) => {
+        btn.classList.remove('active');
+      });
 
-    // Save preference to localStorage
-    try {
-      localStorage.setItem('wishlist-layout-preference', layout);
-    } catch (error) {
-      // Silent fail if localStorage unavailable
-    }
+      const activeButton = document.getElementById(`wishlist-layout-${layout}`);
+      if (activeButton) {
+        activeButton.classList.add('active');
+      }
+
+      // Save preference to localStorage
+      try {
+        localStorage.setItem('wishlist-layout-preference', layout);
+      } catch (error) {
+        // Silent fail if localStorage unavailable
+      }
+
+      // Hide loading state
+      setTimeout(() => {
+        hideWishlistLoading();
+      }, 150);
+    }, 50);
   };
 
   // Register layout button listeners
