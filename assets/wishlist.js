@@ -51,7 +51,7 @@
   };
 
   // Fetch wishlist from server (for logged-in users)
-  const fetchServerWishlist = async () => {
+  const fetchServerWishlist = async (retryCount = 0) => {
     if (!window.customerId) return null;
 
     try {
@@ -71,11 +71,27 @@
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        // Got HTML instead of JSON - likely cold start
+        if (retryCount < 2) {
+          console.log(`Server warming up, retrying in 3 seconds... (attempt ${retryCount + 1}/2)`);
+          await new Promise(resolve => setTimeout(resolve, 3000));
+          return fetchServerWishlist(retryCount + 1);
+        }
+        throw new Error('Server returned non-JSON response');
+      }
+
       const data = await response.json();
       updateSyncStatus('synced', 'Sincronizado');
       return data.wishlist || [];
     } catch (error) {
       console.error('Failed to fetch server wishlist:', error);
+      if (retryCount < 2) {
+        console.log(`Retrying... (attempt ${retryCount + 1}/2)`);
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        return fetchServerWishlist(retryCount + 1);
+      }
       updateSyncStatus('error', 'Erro de sincronização');
       return null;
     }
@@ -279,12 +295,29 @@
           // Merge local and server wishlists
           const merged = mergeWishlists(localItems, serverItems);
 
-          // Save merged list locally and to server
-          saveWishlist(merged);
+          // Check if merged result differs from server
+          const serverKeys = new Set(serverItems.map(item => getWishlistItemKey(item)));
+          const mergedKeys = new Set(merged.map(item => getWishlistItemKey(item)));
 
-          // Only sync to server if we have new local items
-          if (merged.length > serverItems.length) {
+          const hasChanges = merged.length !== serverItems.length ||
+                           ![...mergedKeys].every(key => serverKeys.has(key));
+
+          // Save merged list locally (without triggering another sync)
+          cachedWishlist = normalizeWishlistItems(merged);
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(cachedWishlist));
+          } catch (error) {
+            console.error('Unable to save merged wishlist:', error);
+          }
+          renderWishlist();
+          syncHearts();
+
+          // Sync to server if there are any changes
+          if (hasChanges) {
+            console.log('Syncing merged wishlist to server...');
             await saveServerWishlist(merged);
+          } else {
+            updateSyncStatus('synced', 'Sincronizado');
           }
         } else {
           // Server fetch failed, use local only
