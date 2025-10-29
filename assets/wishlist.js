@@ -81,12 +81,30 @@
     }
   };
 
+  // Strip unnecessary data from wishlist items before sending to server
+  const stripWishlistData = (items) => {
+    return items.map(item => ({
+      handle: item.handle,
+      title: item.title,
+      url: item.url,
+      image: item.image,
+      price: item.price,
+      colorKey: item.colorKey,
+      colorValue: item.colorValue,
+      addedAt: item.addedAt,
+      // Don't send: cardMarkup, variants, swatches, etc.
+    }));
+  };
+
   // Save wishlist to server (for logged-in users)
   const saveServerWishlist = async (items) => {
     if (!window.customerId) return false;
 
     try {
       updateSyncStatus('syncing', 'A guardar...');
+
+      // Strip heavy data before sending
+      const lightweightItems = stripWishlistData(items);
 
       const response = await fetch('/apps/wishlist/proxy/api/wishlist/save', {
         method: 'POST',
@@ -95,7 +113,7 @@
         },
         body: JSON.stringify({
           customerId: window.customerId,
-          wishlist: items,
+          wishlist: lightweightItems,
         }),
       });
 
