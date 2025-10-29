@@ -319,6 +319,10 @@
           } else {
             updateSyncStatus('synced', 'Sincronizado');
           }
+
+          // Force heart sync after server load completes
+          console.log('Re-syncing hearts after server load...');
+          setTimeout(() => syncHearts(), 100);
         } else {
           // Server fetch failed, use local only
           updateSyncStatus('synced', 'Local');
