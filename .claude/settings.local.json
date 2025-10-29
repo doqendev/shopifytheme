@@ -14,7 +14,8 @@
       "Bash(dir /s /b *.liquid)",
       "Bash(findstr /i \"customer account\")",
       "Bash(cat:*)",
-      "Read(//c/Users/Utilizador/Desktop/**)"
+      "Read(//c/Users/Utilizador/Desktop/**)",
+      "Read(//c/Users/Utilizador/Downloads/**)"
     ],
     "deny": [],
     "ask": []

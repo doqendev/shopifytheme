@@ -13,8 +13,10 @@
   let undoTimeout = null;
   let undoData = null;
   let currentSortOption = 'newest'; // newest, oldest, price-asc, price-desc, availability
-  const MAX_WISHLIST_ITEMS = 100; // Maximum items to prevent storage issues
-  const STORAGE_WARNING_THRESHOLD = 80; // Warn at 80% capacity
+  const MAX_WISHLIST_ITEMS = 50; // Maximum items allowed in wishlist
+  const STORAGE_WARNING_THRESHOLD = 40; // Warn at 40 items (80% capacity)
+  let syncDebounceTimer = null;
+  let isSyncing = false;
 
   const decodeHtml = (value) => {
     if (typeof value !== 'string') return '';
@@ -30,6 +32,251 @@
   const normalizeOptionValue = (value) => {
     if (typeof value !== 'string') return '';
     return value.trim().toLowerCase();
+  };
+
+  // ============================================================================
+  // Account Sync System (Backend API Integration)
+  // ============================================================================
+
+  // Update sync status indicator
+  const updateSyncStatus = (status, text) => {
+    const statusEl = document.getElementById('wishlist-sync-status');
+    if (!statusEl) return;
+
+    statusEl.setAttribute('data-status', status);
+    const textEl = statusEl.querySelector('.wishlist-sync-status__text');
+    if (textEl) {
+      textEl.textContent = text || 'Local';
+    }
+  };
+
+  // Fetch wishlist from server (for logged-in users)
+  const fetchServerWishlist = async () => {
+    if (!window.customerId) return null;
+
+    try {
+      updateSyncStatus('syncing', 'A sincronizar...');
+
+      const response = await fetch(
+        `/apps/wishlist/proxy/api/wishlist/get?customerId=${window.customerId}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      updateSyncStatus('synced', 'Sincronizado');
+      return data.wishlist || [];
+    } catch (error) {
+      console.error('Failed to fetch server wishlist:', error);
+      updateSyncStatus('error', 'Erro de sincronização');
+      return null;
+    }
+  };
+
+  // Save wishlist to server (for logged-in users)
+  const saveServerWishlist = async (items) => {
+    if (!window.customerId) return false;
+
+    try {
+      updateSyncStatus('syncing', 'A guardar...');
+
+      const response = await fetch('/apps/wishlist/proxy/api/wishlist/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          customerId: window.customerId,
+          wishlist: items,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.success) {
+        updateSyncStatus('synced', 'Sincronizado');
+        return true;
+      } else {
+        throw new Error(data.error || 'Failed to save wishlist');
+      }
+    } catch (error) {
+      console.error('Failed to save server wishlist:', error);
+      updateSyncStatus('error', 'Erro ao guardar');
+      return false;
+    }
+  };
+
+  // Merge local and server wishlists intelligently
+  const mergeWishlists = (localItems, serverItems) => {
+    const itemMap = new Map();
+
+    // Add server items first (they're the source of truth)
+    serverItems.forEach(item => {
+      const key = getWishlistItemKey(item);
+      itemMap.set(key, item);
+    });
+
+    // Add local items that don't exist on server (newer additions)
+    localItems.forEach(item => {
+      const key = getWishlistItemKey(item);
+      if (!itemMap.has(key)) {
+        itemMap.set(key, item);
+      }
+    });
+
+    return Array.from(itemMap.values()).slice(0, MAX_WISHLIST_ITEMS);
+  };
+
+  // Debounced sync to server (prevents excessive API calls)
+  let syncTimeout = null;
+  const debouncedSyncToServer = () => {
+    if (!window.customerId) return;
+
+    clearTimeout(syncTimeout);
+    syncTimeout = setTimeout(async () => {
+      const items = loadWishlist();
+      await saveServerWishlist(items);
+    }, 2000); // 2 second delay
+  };
+
+  // Export wishlist to shareable URL (for guests or manual sharing)
+  const exportWishlistToURL = () => {
+    const items = loadWishlist();
+    if (!items.length) {
+      showToast('A lista de favoritos está vazia', { type: 'info', duration: 3000 });
+      return;
+    }
+
+    // Create minimal data structure (only essential fields)
+    const minimalData = items.map(item => ({
+      h: item.handle, // handle
+      t: item.title, // title
+      p: item.price, // price
+      c: item.colorKey, // colorKey
+      i: item.image, // image
+    }));
+
+    // Compress and encode
+    const jsonString = JSON.stringify(minimalData);
+    const encoded = btoa(jsonString);
+
+    // Create shareable URL
+    const shareURL = `${window.location.origin}${window.location.pathname}?wishlist=${encoded}`;
+
+    // Copy to clipboard
+    navigator.clipboard.writeText(shareURL).then(() => {
+      showToast('Link copiado! Partilhe para sincronizar noutro dispositivo.', {
+        type: 'success',
+        duration: 5000,
+      });
+    }).catch(() => {
+      // Fallback: show URL in toast
+      showToast('URL: ' + shareURL, { type: 'info', duration: 10000 });
+    });
+  };
+
+  // Import wishlist from URL parameter
+  const importWishlistFromURL = () => {
+    const params = new URLSearchParams(window.location.search);
+    const encoded = params.get('wishlist');
+
+    if (!encoded) return false;
+
+    try {
+      // Decode and parse
+      const jsonString = atob(encoded);
+      const minimalData = JSON.parse(jsonString);
+
+      // Expand to full items
+      const importedItems = minimalData.map(item => ({
+        handle: item.h,
+        title: item.t,
+        price: item.p,
+        colorKey: item.c || '',
+        image: item.i,
+        addedAt: Date.now(),
+      }));
+
+      // Merge with existing wishlist
+      const currentItems = loadWishlist();
+      const itemMap = new Map();
+
+      // Add current items
+      currentItems.forEach(item => {
+        const key = getWishlistItemKey(item);
+        itemMap.set(key, item);
+      });
+
+      // Add imported items (don't override existing)
+      importedItems.forEach(item => {
+        const key = `${item.handle}:${item.colorKey}`;
+        if (!itemMap.has(key)) {
+          itemMap.set(key, item);
+        }
+      });
+
+      const merged = Array.from(itemMap.values()).slice(0, MAX_WISHLIST_ITEMS);
+
+      // Save and update UI
+      saveWishlist(merged);
+
+      // Clean URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+
+      showToast(`${importedItems.length} itens importados para favoritos!`, {
+        type: 'success',
+        duration: 4000,
+      });
+
+      return true;
+    } catch (error) {
+      console.error('Failed to import wishlist:', error);
+      return false;
+    }
+  };
+
+  // Initialize account sync for logged-in users
+  const initAccountSync = async () => {
+    // Check for wishlist import from URL first (works for all users)
+    const importedFromURL = importWishlistFromURL();
+
+    // For logged-in users, sync with server
+    if (window.customerId) {
+      try {
+        const localItems = loadWishlist();
+        const serverItems = await fetchServerWishlist();
+
+        if (serverItems !== null) {
+          // Merge local and server wishlists
+          const merged = mergeWishlists(localItems, serverItems);
+
+          // Save merged list locally and to server
+          saveWishlist(merged);
+
+          // Only sync to server if we have new local items
+          if (merged.length > serverItems.length) {
+            await saveServerWishlist(merged);
+          }
+        } else {
+          // Server fetch failed, use local only
+          updateSyncStatus('synced', 'Local');
+        }
+      } catch (error) {
+        console.error('Account sync error:', error);
+        updateSyncStatus('error', 'Erro de sincronização');
+      }
+    }
   };
 
   // Toast Notification System
@@ -593,6 +840,10 @@
     }
     renderWishlist();
     syncHearts();
+
+    // Trigger debounced sync for logged-in users
+    debouncedSyncToServer();
+
     return true;
   };
 
@@ -2559,6 +2810,16 @@
     registerSwatchSyncListener();
     registerSortListeners();
     registerLayoutListeners();
+
+    // Register share button for all users
+    const shareButton = document.getElementById('wishlist-share-button');
+    if (shareButton && !shareButton.dataset.shareBound) {
+      shareButton.dataset.shareBound = 'true';
+      shareButton.addEventListener('click', exportWishlistToURL);
+    }
+
+    // Initialize account sync and check for URL imports (for all users)
+    initAccountSync();
 
     // Listen for storage changes from other tabs
     window.addEventListener('storage', handleStorageChange);
