@@ -631,12 +631,27 @@
       return false;
     }
 
-    // Warning threshold check
-    if (itemCount >= STORAGE_WARNING_THRESHOLD && itemCount % 10 === 0) {
+    // Warning threshold check - show at 40, 45, 48, 49 items
+    if (itemCount === STORAGE_WARNING_THRESHOLD) {
       const remaining = MAX_WISHLIST_ITEMS - itemCount;
-      showToast(`${remaining} espaços restantes na sua lista de favoritos.`, {
+      showToast(`Tem ${remaining} espaços restantes na sua lista de favoritos.`, {
         type: 'info',
         duration: 4000,
+      });
+    } else if (itemCount === 45) {
+      showToast(`Apenas 5 espaços restantes nos favoritos.`, {
+        type: 'info',
+        duration: 4000,
+      });
+    } else if (itemCount === 48) {
+      showToast(`Últimos 2 espaços disponíveis nos favoritos.`, {
+        type: 'info',
+        duration: 4500,
+      });
+    } else if (itemCount === 49) {
+      showToast(`Último espaço disponível nos favoritos!`, {
+        type: 'info',
+        duration: 5000,
       });
     }
 
