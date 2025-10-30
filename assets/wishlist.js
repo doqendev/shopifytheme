@@ -593,21 +593,44 @@
     }));
   };
 
-  const normalizeSwatchEntry = (entry) => {
+  const normalizeSwatchEntry = (entry, card = null) => {
     if (!entry || typeof entry !== 'object') return null;
     const value = typeof entry.value === 'string' ? entry.value.trim() : '';
     const keySource = typeof entry.key === 'string' ? entry.key : value;
     const key = normalizeOptionValue(keySource);
     if (!value || !key) return null;
-    const image = getVariantImageSource(entry.image);
+    let image = getVariantImageSource(entry.image);
+
+    // If no image and we have a card, try to extract from DOM
+    if (!image && card instanceof HTMLElement) {
+      const swatches = card.querySelectorAll('.swatch');
+      for (const swatch of swatches) {
+        const swatchColor = swatch.dataset?.color;
+        if (normalizeOptionValue(swatchColor) === key) {
+          // Try to get image from CSS custom property or background
+          const style = window.getComputedStyle(swatch);
+          const bgValue = style.getPropertyValue('--swatch--background') ||
+                         style.backgroundImage;
+
+          // Extract URL from url(...) format
+          const urlMatch = bgValue?.match(/url\(['"]?([^'")]+)['"]?\)/);
+          if (urlMatch && urlMatch[1]) {
+            image = urlMatch[1];
+            console.log(`  ✨ Extracted swatch image from DOM for "${value}": ${image}`);
+            break;
+          }
+        }
+      }
+    }
+
     return { value, key, image };
   };
 
-  const normalizeWishlistSwatches = (swatches) => {
+  const normalizeWishlistSwatches = (swatches, card = null) => {
     if (!Array.isArray(swatches)) return [];
     const seen = new Set();
     return swatches.reduce((accumulator, entry) => {
-      const normalized = normalizeSwatchEntry(entry);
+      const normalized = normalizeSwatchEntry(entry, card);
       if (!normalized) return accumulator;
       if (seen.has(normalized.key)) return accumulator;
       seen.add(normalized.key);
@@ -694,7 +717,7 @@
     return template.innerHTML;
   };
 
-  const normalizeWishlistItem = (item) => {
+  const normalizeWishlistItem = (item, card = null) => {
     if (!item || typeof item !== 'object') return null;
 
     const handle = item.handle;
@@ -729,7 +752,7 @@
 
     console.log(`📥 RAW swatches from page for ${item.handle}:`, item.swatches);
 
-    let swatches = normalizeWishlistSwatches(item.swatches);
+    let swatches = normalizeWishlistSwatches(item.swatches, card);
 
     console.log(`🎨 Normalizing ${item.handle || 'item'}:`, {
       hasItemSwatches: !!item.swatches,
