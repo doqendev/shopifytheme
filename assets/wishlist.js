@@ -370,6 +370,56 @@
     }
   };
 
+  // Enrich wishlist items with cardMarkup from products currently on the page
+  const enrichWishlistFromPage = (items) => {
+    console.log('🔍 Enriching wishlist items from page...');
+
+    const enrichedItems = items.map(item => {
+      // If item already has cardMarkup, no need to enrich
+      if (item.cardMarkup && item.cardMarkup.trim()) {
+        console.log(`  ✓ ${item.title}: Already has cardMarkup`);
+        return item;
+      }
+
+      // Search for matching product card on the page
+      const cards = document.querySelectorAll('[data-product-handle]');
+      for (const card of cards) {
+        if (card.dataset.productHandle === item.handle) {
+          console.log(`  ✨ ${item.title}: Found on page! Enriching with full data...`);
+
+          // Get full product data from the card
+          const fullProduct = getProductFromCard(card);
+          if (fullProduct && fullProduct.cardMarkup) {
+            // Merge: keep server data but add cardMarkup and other rich data
+            return {
+              ...item,
+              cardMarkup: fullProduct.cardMarkup,
+              // Also update other visual data from page
+              cardWrapperClassName: fullProduct.cardWrapperClassName,
+              cardClassName: fullProduct.cardClassName,
+              cardInnerClassName: fullProduct.cardInnerClassName,
+              cardInnerStyle: fullProduct.cardInnerStyle,
+              cardMediaClassName: fullProduct.cardMediaClassName,
+              cardMediaInnerClassName: fullProduct.cardMediaInnerClassName,
+              cardContentClassName: fullProduct.cardContentClassName,
+              cardInformationClassName: fullProduct.cardInformationClassName,
+              cardHeadingClassName: fullProduct.cardHeadingClassName,
+              cardPriceWrapperClassName: fullProduct.cardPriceWrapperClassName,
+            };
+          }
+        }
+      }
+
+      console.log(`  → ${item.title}: Not on page, using fallback rendering`);
+      return item;
+    });
+
+    const enrichedCount = enrichedItems.filter(i => i.cardMarkup && i.cardMarkup.trim()).length;
+    console.log(`✅ Enriched ${enrichedCount}/${items.length} items from page`);
+
+    return enrichedItems;
+  };
+
   // Initialize account sync for logged-in users
   const initAccountSync = async () => {
     console.log('🔄 initAccountSync called');
@@ -396,6 +446,9 @@
           console.log(`✨ After merge: ${merged.length} items total`);
           console.log('Merged items:', merged.map(i => i.title));
 
+          // Enrich merged items with cardMarkup from products on current page
+          const enriched = enrichWishlistFromPage(merged);
+
           // Check if merged result differs from server
           const serverKeys = new Set(serverItems.map(item => getWishlistItemKey(item)));
           const mergedKeys = new Set(merged.map(item => getWishlistItemKey(item)));
@@ -403,8 +456,8 @@
           const hasChanges = merged.length !== serverItems.length ||
                            ![...mergedKeys].every(key => serverKeys.has(key));
 
-          // Save merged list locally (without triggering another sync)
-          cachedWishlist = normalizeWishlistItems(merged);
+          // Save enriched list locally (without triggering another sync)
+          cachedWishlist = normalizeWishlistItems(enriched);
           try {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(cachedWishlist));
           } catch (error) {
