@@ -96,6 +96,14 @@
           sizeIndex: item.sizeIndex,
           colorIndex: item.colorIndex,
         });
+
+        // Log actual swatch data from server
+        if (item.swatches) {
+          console.log(`  Server swatches:`, item.swatches);
+          item.swatches.forEach((s, i) => {
+            console.log(`    Server Swatch ${i}: value="${s.value}", key="${s.key}", image="${s.image}"`);
+          });
+        }
       });
 
       updateSyncStatus('synced', 'Sincronizado');
@@ -1376,11 +1384,21 @@
     swatchElements.forEach((swatch) => {
       const value = swatch.dataset?.color;
       if (value) {
-        const variantImage = swatch.dataset?.variantImage || '';
+        // Get the swatch visual (color chip/pattern), not the variant product image
+        const style = window.getComputedStyle(swatch);
+        const bgValue = style.getPropertyValue('--swatch--background') || style.backgroundImage;
+
+        // Extract URL from url(...) format for the swatch color/pattern
+        let swatchImage = '';
+        const urlMatch = bgValue?.match(/url\(['"]?([^'")]+)['"]?\)/);
+        if (urlMatch && urlMatch[1]) {
+          swatchImage = urlMatch[1];
+        }
+
         swatches.push({
           value,
           key: normalizeOptionValue(value),
-          image: variantImage
+          image: swatchImage  // Swatch color/pattern image, not variant image
         });
       }
     });
