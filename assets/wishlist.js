@@ -1642,7 +1642,8 @@
         console.log(`  Swatch ${index}:`, {
           value: swatch.value,
           hasImage,
-          image: swatch.image?.substring(0, 50) + '...'
+          image: swatch.image,  // Show full URL
+          fullSwatchObject: swatch  // Show entire swatch object
         });
 
         const classes = ['swatch'];
