@@ -726,6 +726,9 @@
     }
 
     const normalizedVariants = normalizeVariants(item.variants);
+
+    console.log(`📥 RAW swatches from page for ${item.handle}:`, item.swatches);
+
     let swatches = normalizeWishlistSwatches(item.swatches);
 
     console.log(`🎨 Normalizing ${item.handle || 'item'}:`, {
