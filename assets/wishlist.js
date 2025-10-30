@@ -117,6 +117,9 @@
     return items.map(item => {
       // Log original item swatches before stripping
       console.log(`📤 Original ${item.title} swatches before stripping:`, item.swatches);
+      item.swatches?.forEach((s, i) => {
+        console.log(`  Swatch ${i}: value="${s.value}", key="${s.key}", image="${s.image}"`);
+      });
 
       const stripped = {
         handle: item.handle,
