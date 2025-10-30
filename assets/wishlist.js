@@ -1793,8 +1793,8 @@
    * This eliminates the need to store full HTML markup
    */
   const buildProductCard = (item) => {
-    // Calculate ratio for aspect ratio
-    const ratio = 1; // Default ratio, can be adjusted if aspect ratio data available
+    // Calculate ratio for aspect ratio (2:3 portrait = 0.667)
+    const ratio = 2 / 3; // Portrait ratio matching theme's product cards
     const ratioPercent = (1 / ratio * 100).toFixed(2);
 
     // Prepare data attributes
