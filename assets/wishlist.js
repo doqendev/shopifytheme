@@ -129,15 +129,8 @@
         url: item.url,
         image: item.image,
         price: item.price,
-        compareAtPrice: item.compareAtPrice || item.compare_at_price, // For sale badges
-        colorKey: item.colorKey,
-        colorValue: item.colorValue,
         addedAt: item.addedAt,
-        sizeIndex: item.sizeIndex,
-        colorIndex: item.colorIndex,
-        variants: item.variants, // Needed for size options/quick add
-        swatches: item.swatches, // Needed for color display (with RGB colors)
-        // NOTE: We no longer store cardMarkup - it's built client-side via buildProductCard()
+        // Simplified: only essential data needed for display
       };
 
       console.log(`💾 Saving ${item.title} (${(JSON.stringify(stripped).length / 1024).toFixed(1)}KB)`);
@@ -1367,62 +1360,7 @@
       card.dataset.productImage ||
       '';
 
-    // Collect swatches from the card
-    const swatches = [];
-    const swatchElements = card.querySelectorAll('.swatch');
-
-    console.log(`🔍 Collecting swatches for ${handle}:`, {
-      cardElement: card,
-      swatchElementsFound: swatchElements.length,
-      isMobile: window.innerWidth < 750
-    });
-
-    swatchElements.forEach((swatch, idx) => {
-      const value = swatch.dataset?.color;
-      if (value) {
-        // Get the swatch visual (color or pattern image)
-        const style = window.getComputedStyle(swatch);
-        const bgValue = style.getPropertyValue('--swatch--background') || style.backgroundImage;
-        const bgColor = style.backgroundColor;
-
-        // Try to extract image URL first
-        let swatchImage = '';
-        const urlMatch = bgValue?.match(/url\(['"]?([^'")]+)['"]?\)/);
-        if (urlMatch && urlMatch[1]) {
-          swatchImage = urlMatch[1];
-        }
-
-        // If no image, store the background color
-        let swatchColor = '';
-        if (!swatchImage && bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
-          swatchColor = bgColor;
-        }
-
-        console.log(`  Swatch ${idx}: value="${value}", image="${swatchImage}", color="${swatchColor}"`);
-
-        swatches.push({
-          value,
-          key: normalizeOptionValue(value),
-          image: swatchImage,  // Image URL if pattern-based
-          color: swatchColor   // Color value if solid color
-        });
-      } else {
-        console.log(`  Swatch ${idx}: SKIPPED (no data-color attribute)`);
-      }
-    });
-
-    console.log(`✅ Collected ${swatches.length} swatches from card for ${handle}`);
-    console.log(`📊 colorIndex from card: ${normalizedColorIndex}`);
-
-    // Extract compare_at_price if available (for sale badges)
-    let compareAtPrice = '';
-    const priceElement = card.querySelector('.price');
-    if (priceElement) {
-      const compareElement = priceElement.querySelector('.price-item--regular s, .price__sale .price-item--regular');
-      if (compareElement) {
-        compareAtPrice = compareElement.textContent.trim();
-      }
-    }
+    // Note: Swatches and variants not collected for simplified wishlist display
 
     return {
       handle,
@@ -1430,21 +1368,6 @@
       url: card.dataset.productUrl || '',
       image: productImage,
       price: card.dataset.productPrice || '',
-      compareAtPrice, // For sale badges
-      sizeIndex: Number.isNaN(sizeIndex) ? -1 : sizeIndex,
-      colorIndex: normalizedColorIndex,
-      colorValue: selectedColor,
-      colorKey,
-      swatches,
-      variants: variants.map((variant) => ({
-        id: variant.id,
-        title: variant.title,
-        available: variant.available,
-        options: variant.options,
-        price: variant.price,
-        compare_at_price: variant.compare_at_price,
-        inventory_quantity: variant.inventory_quantity || 0,
-      })),
       _card: card,  // Store card reference for normalization
     };
   };
@@ -1809,143 +1732,23 @@
     const ratio = 2 / 3; // Portrait ratio matching theme's product cards
     const ratioPercent = (1 / ratio * 100).toFixed(2);
 
-    // Prepare data attributes
-    const variants = Array.isArray(item.variants) ? item.variants : [];
-    const variantsJSON = JSON.stringify(variants).replace(/"/g, '&quot;');
-
-    // Build variant inventory map
-    const inventoryMap = {};
-    variants.forEach(v => {
-      if (v.id) inventoryMap[v.id] = v.inventory_quantity || 0;
-    });
-    const inventoryJSON = JSON.stringify(inventoryMap).replace(/"/g, '&quot;');
-
-    // Extract color and size data
-    const colorIndex = typeof item.colorIndex === 'number' ? item.colorIndex : -1;
-    const sizeIndex = typeof item.sizeIndex === 'number' ? item.sizeIndex : -1;
-
-    // Build swatches HTML
-    const swatches = Array.isArray(item.swatches) ? item.swatches : [];
-    const visibleSwatches = swatches.slice(0, 3);
-    const additionalSwatchCount = Math.max(0, swatches.length - 3);
-
-    console.log(`🎨 Building swatches for ${item.title}:`, {
-      swatchCount: swatches.length,
-      colorIndex: colorIndex,
-      swatches: swatches,
-      willRender: swatches.length > 0 && colorIndex >= 0
-    });
-
-    let swatchesHTML = '';
-    if (swatches.length > 0 && colorIndex >= 0) {
-      const swatchItems = visibleSwatches.map((swatch, index) => {
-        const hasImage = typeof swatch.image === 'string' && swatch.image.trim();
-        const hasColor = typeof swatch.color === 'string' && swatch.color.trim();
-
-        let swatchStyle = '';
-        if (hasImage) {
-          swatchStyle = `--swatch--background: url(${escapeHtml(swatch.image)});`;
-        } else if (hasColor) {
-          swatchStyle = `--swatch--background: ${escapeHtml(swatch.color)};`;
-        }
-
-        const variantImage = swatch.image || '';
-        const dataAttrs = [
-          swatch.value ? `data-color="${escapeHtml(swatch.value)}"` : '',
-          variantImage ? `data-variant-image="${escapeHtml(variantImage)}"` : ''
-        ].filter(Boolean).join(' ');
-
-        const classes = ['swatch'];
-        if (!hasImage && !hasColor) classes.push('swatch--unavailable');
-        if (index === 0) classes.push('active');
-
-        return `<span class="${classes.join(' ')}" ${swatchStyle ? `style="${swatchStyle}"` : ''} ${dataAttrs}></span>`;
-      }).join('');
-
-      const overflowHTML = additionalSwatchCount > 0
-        ? `<span class="additional-swatch-count">+${additionalSwatchCount}</span>`
-        : '';
-
-      swatchesHTML = swatchItems + overflowHTML;
-    }
-
-    // Build size options if sizes exist
-    let quickAddHTML = '';
-    if (sizeIndex >= 0 && variants.length > 0) {
-      // Extract all unique sizes
-      const allSizes = [];
-      const availableSizes = [];
-      variants.forEach(v => {
-        if (v.options && v.options[sizeIndex]) {
-          const size = v.options[sizeIndex];
-          if (!allSizes.includes(size)) allSizes.push(size);
-          if (v.available && !availableSizes.includes(size)) availableSizes.push(size);
-        }
-      });
-
-      const sizeButtons = allSizes.map(size => {
-        const isAvailable = availableSizes.includes(size);
-        const classes = ['size-option'];
-        if (!isAvailable) classes.push('sold-out');
-
-        return `<button type="button" class="${classes.join(' ')}" data-size="${escapeHtml(size)}" ${!isAvailable ? 'disabled="disabled"' : ''}>
-          <span class="size-option__label">${escapeHtml(size)}</span>
-          <span class="size-option__low-stock hidden">Poucas unidades</span>
-        </button>`;
-      }).join('');
-
-      quickAddHTML = `
-        <div class="product-card-plus">
-          <button type="button" class="plus-icon" aria-label="Add to cart" tabindex="0">
-            <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="icon icon-plus" fill="none" viewBox="0 0 10 10">
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M1 4.51a.5.5 0 000 1h3.5l.01 3.5a.5.5 0 001-.01V5.5l3.5-.01a.5.5 0 00-.01-1H5.5L5.49.99a.5.5 0 00-1 .01v3.5l-3.5.01H1z" fill="currentColor"></path>
-            </svg>
-          </button>
-          <div class="size-options" tabindex="-1">
-            <div class="size-options-header size-options-header--mobile-only">
-              <span class="size-options-title">Seleciona o tamanho</span>
-              <a href="/pages/guia-de-tamanhos" class="size-guide-link">Guia de tamanhos</a>
-            </div>
-            <div class="overlay-sizes">
-              ${sizeButtons}
-            </div>
-          </div>
-        </div>`;
-    }
-
-    // Build price HTML matching theme's price component
-    const compareAtPrice = item.compareAtPrice || item.compare_at_price;
-    const isOnSale = compareAtPrice && compareAtPrice > item.price;
-
+    // Build simple price HTML
     let priceHTML = '';
     if (item.price) {
       priceHTML = `
-        <div class="price ${isOnSale ? 'price--on-sale' : ''}" style="--card-badge-font-size: 1.2rem;">
+        <div class="price">
           <div class="price__container">
             <div class="price__regular">
               <span class="price-item price-item--regular">${escapeHtml(item.price)}</span>
             </div>
-            ${isOnSale ? `
-              <div class="price__sale">
-                <span class="price-item price-item--sale">${escapeHtml(item.price)}</span>
-                <s class="price-item price-item--regular">${escapeHtml(compareAtPrice)}</s>
-              </div>` : ''}
           </div>
         </div>`;
     }
 
-    // Build complete card HTML
+    // Build simple card HTML - just image, title, price
     return `
       <div class="card-wrapper product-card-wrapper product-card underline-links-hover"
-           data-product-handle="${escapeHtml(item.handle)}"
-           data-variants='${variantsJSON}'
-           data-variant-inventory='${inventoryJSON}'
-           data-color-index="${colorIndex}"
-           data-size-index="${sizeIndex}"
-           data-product-title="${escapeHtml(item.title)}"
-           data-product-url="${escapeHtml(item.url)}"
-           data-product-image="${escapeHtml(item.image || '')}"
-           data-product-price="${escapeHtml(item.price || '')}">
+           data-product-handle="${escapeHtml(item.handle)}">
         <div class="card card--standard card--media" style="--ratio-percent: ${ratioPercent}%;">
           <button class="wishlist-toggle is-active" type="button" aria-pressed="true" aria-label="Remove from wishlist">
             <svg class="wishlist-toggle__icon" viewBox="0 0 24 24" role="presentation" focusable="false">
@@ -1973,18 +1776,10 @@
           <div class="card__content">
             <div class="card__information">
               <div class="card-information">
-                <div class="price-and-swatch">
-                  ${swatches.length > 0 ? `
-                    <div class="product-card__swatch-indicator">
-                      ${swatchesHTML}
-                      ${quickAddHTML}
-                    </div>
-                  ` : ''}
-                  <a href="${escapeHtml(item.url)}" class="title-cheyenne">
-                    ${escapeHtml(item.title)}
-                  </a>
-                  ${priceHTML}
-                </div>
+                <a href="${escapeHtml(item.url)}" class="title-cheyenne">
+                  ${escapeHtml(item.title)}
+                </a>
+                ${priceHTML}
               </div>
             </div>
           </div>
@@ -2001,21 +1796,12 @@
   const createWishlistCardElement = (item) => {
     if (!item) return null;
 
-    console.log(`🔧 Building card for ${item.title}`);
-    console.log(`  - Variants: ${item.variants?.length || 0}, Swatches: ${item.swatches?.length || 0}`);
-    console.log(`  - colorIndex: ${item.colorIndex}, sizeIndex: ${item.sizeIndex}`);
+    console.log(`🔧 Building simplified card for ${item.title}`);
 
     const template = document.createElement('template');
     const cardMarkup = buildProductCard(item);
     template.innerHTML = cardMarkup;
     const element = template.content.firstElementChild || null;
-
-    if (element) {
-      const swatchCount = element.querySelectorAll('.swatch').length;
-      const hasPlusIcon = element.querySelector('.plus-icon') !== null;
-      console.log(`  - Rendered swatches: ${swatchCount}`);
-      console.log(`  - Rendered plus icon: ${hasPlusIcon}`);
-    }
 
     if (!element) return null;
 
