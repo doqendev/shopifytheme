@@ -155,17 +155,32 @@
   const mergeWishlists = (localItems, serverItems) => {
     const itemMap = new Map();
 
+    // Get current time for comparison
+    const now = Date.now();
+    const RECENT_ADD_THRESHOLD = 10000; // 10 seconds - items added in the last 10 seconds are considered "recent"
+
     // Add server items first (they're the source of truth)
     serverItems.forEach(item => {
       const key = getWishlistItemKey(item);
       itemMap.set(key, item);
     });
 
-    // Add local items that don't exist on server (newer additions)
+    // Only add local items that were added very recently (to catch items added just before sync)
+    // This prevents re-adding items that were removed on other devices
     localItems.forEach(item => {
       const key = getWishlistItemKey(item);
       if (!itemMap.has(key)) {
-        itemMap.set(key, item);
+        // Only add if the item was added recently (within last 10 seconds)
+        // This catches legitimate new additions while avoiding stale data
+        const itemAddedAt = item.addedAt || 0;
+        const isRecentlyAdded = (now - itemAddedAt) < RECENT_ADD_THRESHOLD;
+
+        if (isRecentlyAdded) {
+          console.log(`Merging recently added local item: ${item.title} (added ${now - itemAddedAt}ms ago)`);
+          itemMap.set(key, item);
+        } else {
+          console.log(`Skipping stale local item: ${item.title} (added ${now - itemAddedAt}ms ago)`);
+        }
       }
     });
 
@@ -292,8 +307,11 @@
         const serverItems = await fetchServerWishlist();
 
         if (serverItems !== null) {
+          console.log(`Account sync: Local has ${localItems.length} items, Server has ${serverItems.length} items`);
+
           // Merge local and server wishlists
           const merged = mergeWishlists(localItems, serverItems);
+          console.log(`After merge: ${merged.length} items total`);
 
           // Check if merged result differs from server
           const serverKeys = new Set(serverItems.map(item => getWishlistItemKey(item)));
