@@ -115,6 +115,9 @@
   // Strip unnecessary data from wishlist items before sending to server
   const stripWishlistData = (items) => {
     return items.map(item => {
+      // Log original item swatches before stripping
+      console.log(`📤 Original ${item.title} swatches before stripping:`, item.swatches);
+
       const stripped = {
         handle: item.handle,
         title: item.title,
@@ -133,13 +136,15 @@
       };
 
       // Log what we're sending to help debug
-      console.log(`Saving ${item.title} to server:`, {
+      console.log(`💾 Saving ${item.title} to server:`, {
         hasVariants: !!stripped.variants,
         variantCount: stripped.variants?.length || 0,
         hasSwatches: !!stripped.swatches,
         swatchCount: stripped.swatches?.length || 0,
         sizeIndex: stripped.sizeIndex,
         colorIndex: stripped.colorIndex,
+        swatchesData: stripped.swatches,  // Show actual swatch data
+        variantsData: stripped.variants?.slice(0, 2),  // Show first 2 variants
       });
 
       return stripped;
