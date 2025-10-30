@@ -711,78 +711,25 @@
   };
 
   const normalizeWishlistItem = (item, card = null) => {
+    // Simplified: only normalize essential fields
     if (!item || typeof item !== 'object') return null;
 
     const handle = item.handle;
     if (!handle) return null;
 
-    const sizeIndex = normalizeNumber(item.sizeIndex, -1);
-    const colorIndex = normalizeNumber(item.colorIndex ?? item.colourIndex, -1);
-
-    let colorValue = '';
-    if (typeof item.colorValue === 'string' && item.colorValue.trim().length) {
-      colorValue = item.colorValue;
-    } else if (typeof item.selectedColor === 'string' && item.selectedColor.trim().length) {
-      colorValue = item.selectedColor;
-    } else if (typeof item.color === 'string' && item.color.trim().length) {
-      colorValue = item.color;
-    }
-
-    const colorKey = colorIndex >= 0 ? normalizeOptionValue(item.colorKey ?? colorValue) : '';
-
-    const normalizedCardInnerStyle = ensureWishlistRatioStyle(item.cardInnerStyle);
-    const normalizedCardMarkup =
-      typeof item.cardMarkup === 'string' ? normalizeWishlistCardMarkup(item.cardMarkup) : '';
     let normalizedImage = '';
     if (typeof item.image === 'string' && item.image.trim().length) {
       const rawImage = item.image.trim();
       normalizedImage = normalizeImageUrl(rawImage);
-    } else if (normalizedCardMarkup) {
-      normalizedImage = extractImageFromMarkup(normalizedCardMarkup);
-    }
-
-    const normalizedVariants = normalizeVariants(item.variants);
-
-    console.log(`📥 RAW swatches from page for ${item.handle}:`, item.swatches);
-
-    let swatches = normalizeWishlistSwatches(item.swatches, card);
-
-    console.log(`🎨 Normalizing ${item.handle || 'item'}:`, {
-      hasItemSwatches: !!item.swatches,
-      itemSwatchCount: item.swatches?.length || 0,
-      normalizedSwatchCount: swatches.length,
-      hasVariants: !!normalizedVariants,
-      variantCount: normalizedVariants.length,
-      colorIndex,
-      firstVariantImage: normalizedVariants[0]?.image
-    });
-
-    if ((!swatches || !swatches.length) && colorIndex >= 0) {
-      console.log(`  → Deriving swatches from variants (no item.swatches)`);
-      swatches = deriveSwatchesFromVariants(normalizedVariants, colorIndex);
-      console.log(`  → Derived swatches:`, swatches);
-    } else if (swatches.length) {
-      console.log(`  → Using normalized item.swatches:`, swatches);
-    }
-
-    if (!colorValue && swatches && swatches.length) {
-      colorValue = swatches[0].value;
     }
 
     return {
-      ...item,
       handle,
-      sizeIndex,
-      colorIndex,
-      colorValue,
-      colorKey,
-      variants: normalizedVariants,
-      swatches,
-      cardInnerStyle: normalizedCardInnerStyle,
-      cardMarkup: normalizedCardMarkup,
+      title: item.title || '',
+      url: item.url || '',
       image: normalizedImage,
-      addedAt: item.addedAt || Date.now(), // Track when item was added
-      originalPrice: item.originalPrice || item.price, // Track original price for comparison
+      price: item.price || '',
+      addedAt: item.addedAt || Date.now(),
     };
   };
 
@@ -798,8 +745,9 @@
   };
 
   const getWishlistItemKey = (item) => {
-    if (!item) return buildWishlistKey('', '');
-    return buildWishlistKey(item.handle, item.colorKey);
+    // Simplified: only use handle (no color tracking)
+    if (!item) return '';
+    return item.handle || '';
   };
 
   const ensureDefaultCardSwatch = (card) => {
@@ -1044,25 +992,14 @@
   };
 
   const findWishlistItem = (handleOrItem, colorKey = '') => {
+    // Simplified: only match by handle (colorKey parameter ignored)
     const targetItem =
       typeof handleOrItem === 'object' ? normalizeWishlistItem(handleOrItem) : null;
     const handle = targetItem ? targetItem.handle : handleOrItem;
     if (!handle) return undefined;
 
-    const normalizedColorKey = targetItem ? targetItem.colorKey : normalizeOptionValue(colorKey);
-    const targetKey = targetItem
-      ? getWishlistItemKey(targetItem)
-      : buildWishlistKey(handle, normalizedColorKey);
-
     const wishlist = loadWishlist();
-    let match = wishlist.find((item) => getWishlistItemKey(item) === targetKey);
-
-    if (!match && normalizedColorKey) {
-      const fallbackKey = buildWishlistKey(handle, '');
-      match = wishlist.find((item) => getWishlistItemKey(item) === fallbackKey);
-    }
-
-    return match;
+    return wishlist.find((item) => item.handle === handle);
   };
 
   // Check if wishlist is approaching limits
@@ -1380,7 +1317,7 @@
     const product = getProductFromCard(card);
     if (!product) return;
 
-    const existingItem = findWishlistItem(product.handle, product.colorKey);
+    const existingItem = findWishlistItem(product.handle);
     if (existingItem) {
       removeFromWishlist(existingItem);
     } else {
@@ -1398,42 +1335,13 @@
 
   const syncHearts = () => {
     const wishlistItems = loadWishlist();
-    const wishlistKeys = new Set(wishlistItems.map((item) => getWishlistItemKey(item)));
+    // Create set of product handles (simplified - no color tracking)
+    const wishlistHandles = new Set(wishlistItems.map((item) => item.handle).filter(Boolean));
 
     document.querySelectorAll(HEART_SELECTOR).forEach((button) => {
       const card = getCardFromHeart(button);
       const handle = card?.dataset?.productHandle;
-      let active = false;
-      let pickerColorKey = '';
-
-      if (card && handle) {
-        const colorIndexValue = Number.parseInt(card.dataset?.colorIndex ?? '', 10);
-        const tracksColor = !Number.isNaN(colorIndexValue) && colorIndexValue >= 0;
-
-        if (tracksColor) {
-          pickerColorKey = syncCardSelectedColorFromPicker(card);
-        }
-
-        const colorKey = pickerColorKey || getCardSelectedColorKey(card);
-        const exactKey = buildWishlistKey(handle, colorKey);
-        active = wishlistKeys.has(exactKey);
-
-        if (!active && colorKey && !tracksColor) {
-          active = wishlistKeys.has(buildWishlistKey(handle, ''));
-        }
-
-        if (!active && tracksColor) {
-          const storedColorKeys = wishlistItems
-            .filter((item) => item.handle === handle)
-            .map((item) => item.colorKey)
-            .filter(Boolean);
-
-          const comparisonKey = pickerColorKey || colorKey;
-          if (comparisonKey && storedColorKeys.includes(comparisonKey)) {
-            active = true;
-          }
-        }
-      }
+      const active = handle && wishlistHandles.has(handle);
 
       button.classList.toggle('is-active', active);
       button.setAttribute('aria-pressed', active ? 'true' : 'false');
