@@ -101,7 +101,7 @@
         if (item.swatches) {
           console.log(`  Server swatches:`, item.swatches);
           item.swatches.forEach((s, i) => {
-            console.log(`    Server Swatch ${i}: value="${s.value}", key="${s.key}", image="${s.image}"`);
+            console.log(`    Server Swatch ${i}: value="${s.value}", key="${s.key}", image="${s.image}", color="${s.color}"`);
           });
         }
       });
@@ -126,7 +126,7 @@
       // Log original item swatches before stripping
       console.log(`📤 Original ${item.title} swatches before stripping:`, item.swatches);
       item.swatches?.forEach((s, i) => {
-        console.log(`  Swatch ${i}: value="${s.value}", key="${s.key}", image="${s.image}"`);
+        console.log(`  Swatch ${i}: value="${s.value}", key="${s.key}", image="${s.image}", color="${s.color}"`);
       });
 
       const stripped = {
@@ -611,30 +611,34 @@
     const key = normalizeOptionValue(keySource);
     if (!value || !key) return null;
     let image = getVariantImageSource(entry.image);
+    let color = typeof entry.color === 'string' ? entry.color.trim() : '';
 
-    // If no image and we have a card, try to extract from DOM
-    if (!image && card instanceof HTMLElement) {
+    // If no image/color and we have a card, try to extract from DOM
+    if (!image && !color && card instanceof HTMLElement) {
       const swatches = card.querySelectorAll('.swatch');
       for (const swatch of swatches) {
         const swatchColor = swatch.dataset?.color;
         if (normalizeOptionValue(swatchColor) === key) {
-          // Try to get image from CSS custom property or background
+          // Try to get image or color from CSS
           const style = window.getComputedStyle(swatch);
-          const bgValue = style.getPropertyValue('--swatch--background') ||
-                         style.backgroundImage;
+          const bgValue = style.getPropertyValue('--swatch--background') || style.backgroundImage;
+          const bgColor = style.backgroundColor;
 
           // Extract URL from url(...) format
           const urlMatch = bgValue?.match(/url\(['"]?([^'")]+)['"]?\)/);
           if (urlMatch && urlMatch[1]) {
             image = urlMatch[1];
             console.log(`  ✨ Extracted swatch image from DOM for "${value}": ${image}`);
-            break;
+          } else if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
+            color = bgColor;
+            console.log(`  ✨ Extracted swatch color from DOM for "${value}": ${color}`);
           }
+          break;
         }
       }
     }
 
-    return { value, key, image };
+    return { value, key, image, color };
   };
 
   const normalizeWishlistSwatches = (swatches, card = null) => {
@@ -1384,21 +1388,29 @@
     swatchElements.forEach((swatch) => {
       const value = swatch.dataset?.color;
       if (value) {
-        // Get the swatch visual (color chip/pattern), not the variant product image
+        // Get the swatch visual (color or pattern image)
         const style = window.getComputedStyle(swatch);
         const bgValue = style.getPropertyValue('--swatch--background') || style.backgroundImage;
+        const bgColor = style.backgroundColor;
 
-        // Extract URL from url(...) format for the swatch color/pattern
+        // Try to extract image URL first
         let swatchImage = '';
         const urlMatch = bgValue?.match(/url\(['"]?([^'")]+)['"]?\)/);
         if (urlMatch && urlMatch[1]) {
           swatchImage = urlMatch[1];
         }
 
+        // If no image, store the background color
+        let swatchColor = '';
+        if (!swatchImage && bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
+          swatchColor = bgColor;
+        }
+
         swatches.push({
           value,
           key: normalizeOptionValue(value),
-          image: swatchImage  // Swatch color/pattern image, not variant image
+          image: swatchImage,  // Image URL if pattern-based
+          color: swatchColor   // Color value if solid color
         });
       }
     });
@@ -1741,26 +1753,40 @@
       .map((swatch, index) => {
         if (!swatch || typeof swatch !== 'object') return '';
         const hasImage = typeof swatch.image === 'string' && swatch.image.trim().length;
+        const hasColor = typeof swatch.color === 'string' && swatch.color.trim().length;
 
         console.log(`  Swatch ${index}:`, {
           value: swatch.value,
           hasImage,
-          image: swatch.image,  // Show full URL
-          fullSwatchObject: swatch  // Show entire swatch object
+          hasColor,
+          image: swatch.image,
+          color: swatch.color,
+          fullSwatchObject: swatch
         });
 
         const classes = ['swatch'];
-        if (!hasImage) classes.push('swatch--unavailable');
+        if (!hasImage && !hasColor) classes.push('swatch--unavailable');
         if (index === 0) classes.push('active');
         const attributes = [`class="${classes.join(' ')}"`];
+
         if (swatch.value) {
           attributes.push(`data-color="${escapeHtml(swatch.value)}"`);
         }
+
+        // Build style attribute
+        let styleValue = '';
         if (hasImage) {
           const imageValue = escapeHtml(swatch.image.trim());
           attributes.push(`data-variant-image="${imageValue}"`);
-          attributes.push(`style="--swatch--background: url(${imageValue});"`);
+          styleValue = `--swatch--background: url(${imageValue});`;
+        } else if (hasColor) {
+          styleValue = `background-color: ${escapeHtml(swatch.color)};`;
         }
+
+        if (styleValue) {
+          attributes.push(`style="${styleValue}"`);
+        }
+
         return `<span ${attributes.join(' ')}></span>`;
       })
       .join('');
