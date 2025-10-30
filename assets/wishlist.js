@@ -154,24 +154,42 @@
   // Merge local and server wishlists intelligently
   const mergeWishlists = (localItems, serverItems) => {
     const itemMap = new Map();
+    const localMap = new Map();
 
     // Get current time for comparison
     const now = Date.now();
     const RECENT_ADD_THRESHOLD = 10000; // 10 seconds - items added in the last 10 seconds are considered "recent"
 
-    // Add server items first (they're the source of truth)
-    serverItems.forEach(item => {
+    // Build a map of local items for easy lookup
+    localItems.forEach(item => {
       const key = getWishlistItemKey(item);
-      itemMap.set(key, item);
+      localMap.set(key, item);
     });
 
-    // Only add local items that were added very recently (to catch items added just before sync)
-    // This prevents re-adding items that were removed on other devices
+    // Process server items (they're the source of truth for what should exist)
+    serverItems.forEach(item => {
+      const key = getWishlistItemKey(item);
+
+      // If we have this item locally, prefer the local version (has full data)
+      if (localMap.has(key)) {
+        const localItem = localMap.get(key);
+        console.log(`Merging ${item.title}: using local version (has full data)`);
+        itemMap.set(key, localItem);
+      } else {
+        // Item exists on server but not locally (added on another device)
+        // Use the server version, but it won't have full variant/swatch data
+        console.log(`Merging ${item.title}: using server version (added on another device)`);
+        itemMap.set(key, item);
+      }
+    });
+
+    // Add local items that were added very recently and don't exist on server yet
+    // This catches items added just before sync completed
     localItems.forEach(item => {
       const key = getWishlistItemKey(item);
       if (!itemMap.has(key)) {
         // Only add if the item was added recently (within last 10 seconds)
-        // This catches legitimate new additions while avoiding stale data
+        // This prevents re-adding items that were removed on other devices
         const itemAddedAt = item.addedAt || 0;
         const isRecentlyAdded = (now - itemAddedAt) < RECENT_ADD_THRESHOLD;
 
@@ -179,7 +197,7 @@
           console.log(`Merging recently added local item: ${item.title} (added ${now - itemAddedAt}ms ago)`);
           itemMap.set(key, item);
         } else {
-          console.log(`Skipping stale local item: ${item.title} (added ${now - itemAddedAt}ms ago)`);
+          console.log(`Skipping stale local item: ${item.title} (added ${now - itemAddedAt}ms ago, not on server)`);
         }
       }
     });
