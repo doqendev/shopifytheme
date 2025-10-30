@@ -1370,7 +1370,14 @@
     // Collect swatches from the card
     const swatches = [];
     const swatchElements = card.querySelectorAll('.swatch');
-    swatchElements.forEach((swatch) => {
+
+    console.log(`🔍 Collecting swatches for ${handle}:`, {
+      cardElement: card,
+      swatchElementsFound: swatchElements.length,
+      isMobile: window.innerWidth < 750
+    });
+
+    swatchElements.forEach((swatch, idx) => {
       const value = swatch.dataset?.color;
       if (value) {
         // Get the swatch visual (color or pattern image)
@@ -1391,16 +1398,21 @@
           swatchColor = bgColor;
         }
 
+        console.log(`  Swatch ${idx}: value="${value}", image="${swatchImage}", color="${swatchColor}"`);
+
         swatches.push({
           value,
           key: normalizeOptionValue(value),
           image: swatchImage,  // Image URL if pattern-based
           color: swatchColor   // Color value if solid color
         });
+      } else {
+        console.log(`  Swatch ${idx}: SKIPPED (no data-color attribute)`);
       }
     });
 
-    console.log(`🔍 Collected ${swatches.length} swatches from card for ${handle}:`, swatches);
+    console.log(`✅ Collected ${swatches.length} swatches from card for ${handle}`);
+    console.log(`📊 colorIndex from card: ${normalizedColorIndex}`);
 
     // Extract compare_at_price if available (for sale badges)
     let compareAtPrice = '';
@@ -1816,6 +1828,13 @@
     const swatches = Array.isArray(item.swatches) ? item.swatches : [];
     const visibleSwatches = swatches.slice(0, 3);
     const additionalSwatchCount = Math.max(0, swatches.length - 3);
+
+    console.log(`🎨 Building swatches for ${item.title}:`, {
+      swatchCount: swatches.length,
+      colorIndex: colorIndex,
+      swatches: swatches,
+      willRender: swatches.length > 0 && colorIndex >= 0
+    });
 
     let swatchesHTML = '';
     if (swatches.length > 0 && colorIndex >= 0) {
