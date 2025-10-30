@@ -711,9 +711,25 @@
 
     const normalizedVariants = normalizeVariants(item.variants);
     let swatches = normalizeWishlistSwatches(item.swatches);
+
+    console.log(`🎨 Normalizing ${item.handle || 'item'}:`, {
+      hasItemSwatches: !!item.swatches,
+      itemSwatchCount: item.swatches?.length || 0,
+      normalizedSwatchCount: swatches.length,
+      hasVariants: !!normalizedVariants,
+      variantCount: normalizedVariants.length,
+      colorIndex,
+      firstVariantImage: normalizedVariants[0]?.image
+    });
+
     if ((!swatches || !swatches.length) && colorIndex >= 0) {
+      console.log(`  → Deriving swatches from variants (no item.swatches)`);
       swatches = deriveSwatchesFromVariants(normalizedVariants, colorIndex);
+      console.log(`  → Derived swatches:`, swatches);
+    } else if (swatches.length) {
+      console.log(`  → Using normalized item.swatches:`, swatches);
     }
+
     if (!colorValue && swatches && swatches.length) {
       colorValue = swatches[0].value;
     }
