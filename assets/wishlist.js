@@ -1726,6 +1726,7 @@
     let element = null;
 
     if (item.cardMarkup) {
+      console.log(`📦 ${item.title}: Using stored cardMarkup`);
       const template = document.createElement('template');
       template.innerHTML = item.cardMarkup.trim();
       let candidate = template.content?.querySelector?.('.product-card-wrapper, .card-wrapper');
@@ -1753,9 +1754,22 @@
     }
 
     if (!element) {
+      console.log(`🔧 ${item.title}: Using fallback rendering (no cardMarkup)`);
+      console.log(`  - Has variants: ${!!item.variants}, count: ${item.variants?.length || 0}`);
+      console.log(`  - Has swatches: ${!!item.swatches}, count: ${item.swatches?.length || 0}`);
+      console.log(`  - sizeIndex: ${item.sizeIndex}, colorIndex: ${item.colorIndex}`);
+
       const template = document.createElement('template');
-      template.innerHTML = createFallbackWishlistMarkup(item);
+      const fallbackMarkup = createFallbackWishlistMarkup(item);
+      template.innerHTML = fallbackMarkup;
       element = template.content.firstElementChild || null;
+
+      if (element) {
+        const swatchCount = element.querySelectorAll('.swatch').length;
+        const hasPlusIcon = element.querySelector('.plus-icon') !== null;
+        console.log(`  - Rendered swatches: ${swatchCount}`);
+        console.log(`  - Rendered plus icon: ${hasPlusIcon}`);
+      }
     }
 
     if (!element) return null;
@@ -1883,12 +1897,20 @@
 
   const ensureWishlistCardSwatch = (cardElement, item) => {
     if (!cardElement) return;
+
+    console.log(`🎨 ensureWishlistCardSwatch for ${item.title}`);
+
     const overflowBadge = cardElement.querySelector('.additional-swatch-count');
     if (overflowBadge) {
       overflowBadge.remove();
     }
     const swatches = cardElement.querySelectorAll('.swatch');
-    if (!swatches.length) return;
+    console.log(`  - Found ${swatches.length} swatch elements in DOM`);
+
+    if (!swatches.length) {
+      console.log(`  - ⚠️ No swatches found, cannot enhance`);
+      return;
+    }
 
     if (!item?.colorKey) {
       const active = cardElement.querySelector('.swatch.active');
@@ -2014,10 +2036,16 @@
   const ensureWishlistQuickAdd = (cardElement, item) => {
     if (!cardElement) return;
 
+    console.log(`➕ ensureWishlistQuickAdd for ${item.title}`);
+    console.log(`  - sizeIndex: ${item.sizeIndex}, colorIndex: ${item.colorIndex}`);
+
     const quickAddContainer = cardElement.querySelector('.card__content') || cardElement;
     let quickAdd = cardElement.querySelector('.product-card-plus');
 
+    console.log(`  - Existing quickAdd element: ${!!quickAdd}`);
+
     if (typeof item?.sizeIndex !== 'number' || item.sizeIndex < 0) {
+      console.log(`  - ⚠️ No sizeIndex, removing quick add`);
       if (quickAdd) {
         quickAdd.remove();
       }
@@ -2025,7 +2053,10 @@
     }
 
     const sizeButtonsMarkup = createSizeButtonsMarkup(item);
+    console.log(`  - Size buttons markup created: ${!!sizeButtonsMarkup}`);
+
     if (!sizeButtonsMarkup) {
+      console.log(`  - ⚠️ No size buttons, removing quick add`);
       if (quickAdd) {
         quickAdd.remove();
       }
