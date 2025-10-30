@@ -83,8 +83,23 @@
       }
 
       const data = await response.json();
+      const wishlist = data.wishlist || [];
+
+      // Log what we received from server
+      console.log(`Fetched ${wishlist.length} items from server`);
+      wishlist.forEach(item => {
+        console.log(`Received ${item.title}:`, {
+          hasVariants: !!item.variants,
+          variantCount: item.variants?.length || 0,
+          hasSwatches: !!item.swatches,
+          swatchCount: item.swatches?.length || 0,
+          sizeIndex: item.sizeIndex,
+          colorIndex: item.colorIndex,
+        });
+      });
+
       updateSyncStatus('synced', 'Sincronizado');
-      return data.wishlist || [];
+      return wishlist;
     } catch (error) {
       console.error('Failed to fetch server wishlist:', error);
       if (retryCount < 2) {
@@ -99,17 +114,36 @@
 
   // Strip unnecessary data from wishlist items before sending to server
   const stripWishlistData = (items) => {
-    return items.map(item => ({
-      handle: item.handle,
-      title: item.title,
-      url: item.url,
-      image: item.image,
-      price: item.price,
-      colorKey: item.colorKey,
-      colorValue: item.colorValue,
-      addedAt: item.addedAt,
-      // Don't send: cardMarkup, variants, swatches, etc.
-    }));
+    return items.map(item => {
+      const stripped = {
+        handle: item.handle,
+        title: item.title,
+        url: item.url,
+        image: item.image,
+        price: item.price,
+        colorKey: item.colorKey,
+        colorValue: item.colorValue,
+        addedAt: item.addedAt,
+        // Include essential UI data for cross-device consistency
+        sizeIndex: item.sizeIndex,
+        colorIndex: item.colorIndex,
+        variants: item.variants, // Needed for size options/quick add
+        swatches: item.swatches, // Needed for color display
+        // Still don't send: cardMarkup (too large, can regenerate)
+      };
+
+      // Log what we're sending to help debug
+      console.log(`Saving ${item.title} to server:`, {
+        hasVariants: !!stripped.variants,
+        variantCount: stripped.variants?.length || 0,
+        hasSwatches: !!stripped.swatches,
+        swatchCount: stripped.swatches?.length || 0,
+        sizeIndex: stripped.sizeIndex,
+        colorIndex: stripped.colorIndex,
+      });
+
+      return stripped;
+    });
   };
 
   // Save wishlist to server (for logged-in users)
@@ -139,13 +173,14 @@
 
       const data = await response.json();
       if (data.success) {
+        console.log('✅ Successfully saved to server!');
         updateSyncStatus('synced', 'Sincronizado');
         return true;
       } else {
         throw new Error(data.error || 'Failed to save wishlist');
       }
     } catch (error) {
-      console.error('Failed to save server wishlist:', error);
+      console.error('❌ Failed to save server wishlist:', error);
       updateSyncStatus('error', 'Erro ao guardar');
       return false;
     }
@@ -208,11 +243,17 @@
   // Debounced sync to server (prevents excessive API calls)
   let syncTimeout = null;
   const debouncedSyncToServer = () => {
-    if (!window.customerId) return;
+    if (!window.customerId) {
+      console.log('⏭️ Skipping server sync: user not logged in');
+      return;
+    }
 
+    console.log('⏱️ Debounced sync scheduled (2 seconds)...');
     clearTimeout(syncTimeout);
     syncTimeout = setTimeout(async () => {
+      console.log('🚀 Debounced sync executing now...');
       const items = loadWishlist();
+      console.log('💾 Items to sync:', items.map(i => i.title));
       await saveServerWishlist(items);
     }, 2000); // 2 second delay
   };
@@ -315,21 +356,29 @@
 
   // Initialize account sync for logged-in users
   const initAccountSync = async () => {
+    console.log('🔄 initAccountSync called');
+    console.log('Customer ID:', window.customerId);
+
     // Check for wishlist import from URL first (works for all users)
     const importedFromURL = importWishlistFromURL();
 
     // For logged-in users, sync with server
     if (window.customerId) {
+      console.log('✅ User is logged in, syncing with server...');
       try {
         const localItems = loadWishlist();
+        console.log('📱 Local items:', localItems.map(i => i.title));
+
         const serverItems = await fetchServerWishlist();
+        console.log('☁️ Server items:', serverItems?.map(i => i.title));
 
         if (serverItems !== null) {
           console.log(`Account sync: Local has ${localItems.length} items, Server has ${serverItems.length} items`);
 
           // Merge local and server wishlists
           const merged = mergeWishlists(localItems, serverItems);
-          console.log(`After merge: ${merged.length} items total`);
+          console.log(`✨ After merge: ${merged.length} items total`);
+          console.log('Merged items:', merged.map(i => i.title));
 
           // Check if merged result differs from server
           const serverKeys = new Set(serverItems.map(item => getWishlistItemKey(item)));
