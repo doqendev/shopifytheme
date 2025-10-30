@@ -1113,7 +1113,7 @@
   };
 
   const addToWishlist = (product, showToastNotification = true) => {
-    const normalized = normalizeWishlistItem(product);
+    const normalized = normalizeWishlistItem(product, product._card);
     if (!normalized) return false;
     let wishlist = loadWishlist();
     const key = getWishlistItemKey(normalized);
@@ -1367,6 +1367,23 @@
       card.dataset.productImage ||
       '';
 
+    // Collect swatches from the card
+    const swatches = [];
+    const swatchElements = card.querySelectorAll('.swatch');
+    swatchElements.forEach((swatch) => {
+      const value = swatch.dataset?.color;
+      if (value) {
+        const variantImage = swatch.dataset?.variantImage || '';
+        swatches.push({
+          value,
+          key: normalizeOptionValue(value),
+          image: variantImage
+        });
+      }
+    });
+
+    console.log(`🔍 Collected ${swatches.length} swatches from card for ${handle}:`, swatches);
+
     return {
       handle,
       title: card.dataset.productTitle || '',
@@ -1377,6 +1394,7 @@
       colorIndex: normalizedColorIndex,
       colorValue: selectedColor,
       colorKey,
+      swatches,  // Add swatches to the product object
       variants: variants.map((variant) => ({
         id: variant.id,
         title: variant.title,
@@ -1395,6 +1413,7 @@
       cardHeadingClassName: cardHeading?.className || '',
       cardPriceWrapperClassName: priceWrapper?.className || '',
       cardMarkup,
+      _card: card,  // Store card reference for normalization
     };
   };
 
