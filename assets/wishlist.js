@@ -1561,7 +1561,10 @@
     const productName = item?.title || '';
     const addToCartLabel = window.wishlistStrings?.addToCart || 'Adicionar ao carrinho';
 
-    return getUniqueSizesForItem(item)
+    const sizes = getUniqueSizesForItem(item);
+    console.log(`📏 Creating size buttons for ${item.title}:`, sizes);
+
+    return sizes
       .map(
         (size) => {
           // Create accessible label with product name and size
@@ -1624,6 +1627,9 @@
 
   const createFallbackSwatchAndQuickAddMarkup = (item, quickAddMarkup) => {
     const swatches = Array.isArray(item?.swatches) ? item.swatches : [];
+
+    console.log(`🎨 Creating swatch markup for ${item.title}:`, swatches);
+
     const visibleLimit = 3;
     const visibleSwatches = swatches.slice(0, visibleLimit);
     const overflowCount = swatches.length > visibleLimit ? swatches.length - visibleLimit : 0;
@@ -1632,6 +1638,13 @@
       .map((swatch, index) => {
         if (!swatch || typeof swatch !== 'object') return '';
         const hasImage = typeof swatch.image === 'string' && swatch.image.trim().length;
+
+        console.log(`  Swatch ${index}:`, {
+          value: swatch.value,
+          hasImage,
+          image: swatch.image?.substring(0, 50) + '...'
+        });
+
         const classes = ['swatch'];
         if (!hasImage) classes.push('swatch--unavailable');
         if (index === 0) classes.push('active');
