@@ -620,16 +620,32 @@
     if (!Array.isArray(variants)) return [];
     if (typeof colorIndex !== 'number' || colorIndex < 0) return [];
     const map = new Map();
-    variants.forEach((variant) => {
+    variants.forEach((variant, index) => {
       if (!variant || !Array.isArray(variant.options)) return;
       const colorValue = variant.options[colorIndex];
       if (!colorValue) return;
       const key = normalizeOptionValue(colorValue);
       if (!key || map.has(key)) return;
+
+      // Try multiple image fields
+      const variantImage = variant.image ||
+                          variant.featured_image?.src ||
+                          variant.featured_image ||
+                          '';
+
+      if (index === 0) {
+        console.log(`  🖼️ First variant image sources:`, {
+          'variant.image': variant.image,
+          'variant.featured_image': variant.featured_image,
+          'variant.featured_image?.src': variant.featured_image?.src,
+          finalImage: variantImage
+        });
+      }
+
       map.set(key, {
         value: colorValue,
         key,
-        image: variant.image || '',
+        image: variantImage,
       });
     });
     return Array.from(map.values());
