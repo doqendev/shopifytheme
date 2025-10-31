@@ -4272,5 +4272,5 @@ body.size-drawer-open .page-width {
 }
 
 div.card-wrapper:nth-child > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(1) {
-  line-height: 0;
+  line-height: 0!important;
 }
