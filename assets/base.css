@@ -4270,3 +4270,7 @@ body.size-drawer-open .page-width {
 #shopify-section-template--25444169974084__main > div > a {
   display: none;
 }
+
+div.card-wrapper:nth-child > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(1) {
+  line-height: 0;
+}
