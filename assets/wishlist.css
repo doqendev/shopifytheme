@@ -132,6 +132,16 @@
   width: 100%;
 }
 
+[data-wishlist-item] .card-information {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+[data-wishlist-item] .card-information > * {
+  margin: 0;
+}
+
 [data-wishlist-item] .title-cheyenne {
   font-family: "Figtree", Arial, Helvetica, sans-serif;
   display: inline-block;
