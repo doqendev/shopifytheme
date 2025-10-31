@@ -135,7 +135,7 @@
 [data-wishlist-item] .card-information {
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
+  gap: 0.4rem;
 }
 
 [data-wishlist-item] .card-information > * {
