@@ -16,7 +16,10 @@
       "Bash(cat:*)",
       "Read(//c/Users/Utilizador/Desktop/**)",
       "Read(//c/Users/Utilizador/Downloads/**)",
-      "Bash(copy \"C:\\Users\\Utilizador\\Downloads\\wishlist-backend\\CONVERSATION_SUMMARY.md\" \"C:\\Users\\Utilizador\\Downloads\\theme\\WISHLIST_ACCOUNT_INTEGRATION.md\")"
+      "Bash(copy \"C:\\Users\\Utilizador\\Downloads\\wishlist-backend\\CONVERSATION_SUMMARY.md\" \"C:\\Users\\Utilizador\\Downloads\\theme\\WISHLIST_ACCOUNT_INTEGRATION.md\")",
+      "WebSearch",
+      "Bash(dir /B:*)",
+      "Bash(shopify app generate extension:*)"
     ],
     "deny": [],
     "ask": []
