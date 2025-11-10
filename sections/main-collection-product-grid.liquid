@@ -642,7 +642,14 @@
         sentinel.className = 'collection-infinite-scroll-sentinel';
         sentinel.setAttribute('aria-hidden', 'true');
       }
-      grid.insertAdjacentElement('afterend', sentinel);
+
+      var loader = document.getElementById('collection-infinite-loader');
+      if (loader) {
+        loader.insertAdjacentElement('afterend', sentinel);
+      } else {
+        grid.insertAdjacentElement('afterend', sentinel);
+      }
+
       state.sentinel = sentinel;
       return sentinel;
     }
@@ -754,11 +761,26 @@
       toggleLoader(false);
     }
 
+    function getManualTriggerTarget() {
+      if (state.sentinel && state.sentinel.isConnected) {
+        return state.sentinel;
+      }
+      var loader = document.getElementById('collection-infinite-loader');
+      if (loader) return loader;
+      var grid = getProductGrid();
+      if (grid && grid.lastElementChild) {
+        return grid.lastElementChild;
+      }
+      return null;
+    }
+
     function checkManualTrigger() {
       if (!state.manualTriggerEnabled || !state.nextPageUrl || state.loading) return;
-      var scrollPosition = window.scrollY + window.innerHeight;
-      var threshold = document.documentElement.scrollHeight - 400;
-      if (scrollPosition >= threshold) {
+      var target = getManualTriggerTarget();
+      if (!target) return;
+
+      var rect = target.getBoundingClientRect();
+      if (rect.top <= window.innerHeight + 80) {
         fetchNextPage();
       }
     }
