@@ -299,6 +299,38 @@
   
 </style>
 
+<style>
+  .collection-infinite-loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem 0 2.5rem;
+  }
+  .collection-infinite-loader[hidden] {
+    display: none;
+  }
+  .collection-infinite-loader__img {
+    width: 70px;
+    height: 70px;
+    animation: collection-logo-spin 2s linear infinite;
+  }
+  @keyframes collection-logo-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .collection-infinite-scroll-sentinel {
+    width: 100%;
+    height: 1px;
+  }
+  .pagination.pagination--is-hidden {
+    display: none;
+  }
+</style>
+
 <div class="section-{{ section.id }}-padding gradient color-{{ section.settings.color_scheme }}">
   <!-- Collection Heading -->
   <div class="collection-header page-width">
@@ -436,9 +468,24 @@
                     section_id: section.id
                   %}
                 </li>
-                {% assign skip_card_product_styles = true %}
+              {% assign skip_card_product_styles = true %}
               {% endfor %}
             </ul>
+
+            <div
+              id="collection-infinite-loader"
+              class="collection-infinite-loader"
+              role="status"
+              aria-live="polite"
+              hidden
+            >
+              <img
+                src="{{ 'chey.png' | asset_url }}"
+                alt="Loading more products"
+                class="collection-infinite-loader__img"
+                onerror="this.src='{{ 'cheyenne_cart_thicker.png' | asset_url }}'"
+              >
+            </div>
 
             {% if paginate.pages > 1 %}
               {% render 'pagination', paginate: paginate, anchor: '' %}
@@ -529,6 +576,219 @@
       });
     }
   });
+</script>
+
+<script>
+  (function() {
+    var state = window.__collectionInfiniteScrollState || {
+      observer: null,
+      sentinel: null,
+      nextPageUrl: null,
+      loading: false
+    };
+    window.__collectionInfiniteScrollState = state;
+
+    function getProductGrid() {
+      return document.getElementById('product-grid');
+    }
+
+    function getPaginationElement(root) {
+      var scope = root || document.getElementById('ProductGridContainer');
+      if (!scope) return null;
+      return scope.querySelector('.pagination');
+    }
+
+    function getNextPageUrlFromPagination(paginationElement) {
+      if (!paginationElement) return null;
+      var nextArrow = paginationElement.querySelector('.pagination__item--prev');
+      if (nextArrow && nextArrow.href) {
+        return nextArrow.href;
+      }
+      var relNext = paginationElement.querySelector('a[rel="next"]');
+      if (relNext && relNext.href) {
+        return relNext.href;
+      }
+      return null;
+    }
+
+    function toggleLoader(show) {
+      var loader = document.getElementById('collection-infinite-loader');
+      if (!loader) return;
+      if (show) {
+        loader.removeAttribute('hidden');
+      } else {
+        loader.setAttribute('hidden', 'hidden');
+      }
+    }
+
+    function removeSentinel() {
+      if (!state.sentinel) return;
+      if (state.observer) {
+        state.observer.unobserve(state.sentinel);
+      }
+      if (state.sentinel.parentNode) {
+        state.sentinel.parentNode.removeChild(state.sentinel);
+      }
+      state.sentinel = null;
+    }
+
+    function ensureSentinel(grid) {
+      if (!grid) return null;
+      var sentinel = document.getElementById('collection-infinite-scroll-sentinel');
+      if (!sentinel) {
+        sentinel = document.createElement('div');
+        sentinel.id = 'collection-infinite-scroll-sentinel';
+        sentinel.className = 'collection-infinite-scroll-sentinel';
+        sentinel.setAttribute('aria-hidden', 'true');
+      }
+      grid.insertAdjacentElement('afterend', sentinel);
+      state.sentinel = sentinel;
+      return sentinel;
+    }
+
+    function togglePaginationVisibility(shouldHide) {
+      var pagination = getPaginationElement();
+      if (!pagination) return;
+      if (shouldHide) {
+        pagination.classList.add('pagination--is-hidden');
+      } else {
+        pagination.classList.remove('pagination--is-hidden');
+      }
+    }
+
+    function observerCallback(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          fetchNextPage();
+        }
+      });
+    }
+
+    function setupObserver() {
+      if (!state.observer) {
+        state.observer = new IntersectionObserver(observerCallback, {
+          rootMargin: '400px 0px 200px'
+        });
+      } else {
+        state.observer.disconnect();
+      }
+    }
+
+    function initializeInfiniteScroll() {
+      var grid = getProductGrid();
+      if (!grid) {
+        removeSentinel();
+        return;
+      }
+
+      var paginationElement = getPaginationElement();
+      state.nextPageUrl = getNextPageUrlFromPagination(paginationElement);
+
+      if (!state.nextPageUrl) {
+        togglePaginationVisibility(false);
+        removeSentinel();
+        return;
+      }
+
+      togglePaginationVisibility(true);
+      setupObserver();
+      var sentinel = ensureSentinel(grid);
+      if (state.observer && sentinel) {
+        state.observer.observe(sentinel);
+      }
+    }
+
+    function appendProductsFromDocument(doc) {
+      var newGrid = doc.getElementById('product-grid');
+      var currentGrid = getProductGrid();
+      if (!newGrid || !currentGrid) return;
+
+      Array.prototype.slice.call(newGrid.children).forEach(function(item) {
+        currentGrid.appendChild(item);
+      });
+    }
+
+    function updatePaginationFromDocument(doc) {
+      var incomingWrapper = doc.querySelector('.pagination-wrapper');
+      var collectionWrapper = document.querySelector('#ProductGridContainer .collection');
+      var existingWrapper = collectionWrapper ? collectionWrapper.querySelector('.pagination-wrapper') : null;
+
+      if (incomingWrapper && collectionWrapper) {
+        if (existingWrapper) {
+          existingWrapper.innerHTML = incomingWrapper.innerHTML;
+        } else {
+          collectionWrapper.appendChild(incomingWrapper.cloneNode(true));
+        }
+      } else if (!incomingWrapper && existingWrapper) {
+        existingWrapper.remove();
+      }
+
+      var paginationElement = getPaginationElement();
+      state.nextPageUrl = getNextPageUrlFromPagination(paginationElement);
+
+      if (!state.nextPageUrl) {
+        togglePaginationVisibility(false);
+        removeSentinel();
+        if (state.observer) {
+          state.observer.disconnect();
+        }
+      } else {
+        togglePaginationVisibility(true);
+      }
+    }
+
+    function resetLoadingState() {
+      state.loading = false;
+      toggleLoader(false);
+    }
+
+    function fetchNextPage() {
+      if (!state.nextPageUrl || state.loading) return;
+      state.loading = true;
+      toggleLoader(true);
+
+      fetch(state.nextPageUrl, {
+        credentials: 'same-origin',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      })
+        .then(function(response) {
+          return response.text();
+        })
+        .then(function(html) {
+          var parser = new DOMParser();
+          var doc = parser.parseFromString(html, 'text/html');
+          appendProductsFromDocument(doc);
+          updatePaginationFromDocument(doc);
+
+          if (typeof window.initializeGridOptions === 'function') {
+            window.initializeGridOptions();
+          }
+          if (typeof window.initializeProductCardSwipers === 'function') {
+            window.initializeProductCardSwipers();
+          }
+          resetLoadingState();
+        })
+        .catch(function(error) {
+          console.error('Collection infinite scroll error:', error);
+          resetLoadingState();
+        });
+    }
+
+    window.initializeCollectionInfiniteScroll = function() {
+      resetLoadingState();
+      initializeInfiniteScroll();
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeInfiniteScroll();
+    });
+
+    document.addEventListener('shopify:section:load', function(event) {
+      if (event && event.detail && event.detail.sectionId === '{{ section.id }}') {
+        initializeInfiniteScroll();
+      }
+    });
+  })();
 </script>
 
 {% schema %}

@@ -102,6 +102,9 @@ static renderProductGridContainer(html) {
   if (typeof initializeProductCardSwipers === 'function') {
     initializeProductCardSwipers();
   }
+  if (typeof window.initializeCollectionInfiniteScroll === 'function') {
+    window.initializeCollectionInfiniteScroll();
+  }
 }
 
 
@@ -577,4 +580,3 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ----- End Remove All Button Adjustment -----
-
