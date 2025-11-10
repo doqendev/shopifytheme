@@ -584,7 +584,8 @@
       observer: null,
       sentinel: null,
       nextPageUrl: null,
-      loading: false
+      loading: false,
+      manualTriggerEnabled: false
     };
     window.__collectionInfiniteScrollState = state;
 
@@ -665,6 +666,10 @@
     }
 
     function setupObserver() {
+      if (!('IntersectionObserver' in window)) {
+        enableManualTrigger();
+        return;
+      }
       if (!state.observer) {
         state.observer = new IntersectionObserver(observerCallback, {
           rootMargin: '400px 0px 200px'
@@ -672,6 +677,7 @@
       } else {
         state.observer.disconnect();
       }
+      disableManualTrigger();
     }
 
     function initializeInfiniteScroll() {
@@ -695,6 +701,8 @@
       var sentinel = ensureSentinel(grid);
       if (state.observer && sentinel) {
         state.observer.observe(sentinel);
+      } else if (!state.observer) {
+        enableManualTrigger();
       }
     }
 
@@ -732,14 +740,44 @@
         if (state.observer) {
           state.observer.disconnect();
         }
+        disableManualTrigger();
       } else {
         togglePaginationVisibility(true);
+        if (!state.observer) {
+          enableManualTrigger();
+        }
       }
     }
 
     function resetLoadingState() {
       state.loading = false;
       toggleLoader(false);
+    }
+
+    function checkManualTrigger() {
+      if (!state.manualTriggerEnabled || !state.nextPageUrl || state.loading) return;
+      var scrollPosition = window.scrollY + window.innerHeight;
+      var threshold = document.documentElement.scrollHeight - 400;
+      if (scrollPosition >= threshold) {
+        fetchNextPage();
+      }
+    }
+
+    function enableManualTrigger() {
+      if (state.manualTriggerEnabled) return;
+      state.manualTriggerEnabled = true;
+      window.addEventListener('scroll', checkManualTrigger);
+      window.addEventListener('resize', checkManualTrigger);
+      window.addEventListener('orientationchange', checkManualTrigger);
+      setTimeout(checkManualTrigger, 300);
+    }
+
+    function disableManualTrigger() {
+      if (!state.manualTriggerEnabled) return;
+      state.manualTriggerEnabled = false;
+      window.removeEventListener('scroll', checkManualTrigger);
+      window.removeEventListener('resize', checkManualTrigger);
+      window.removeEventListener('orientationchange', checkManualTrigger);
     }
 
     function fetchNextPage() {
