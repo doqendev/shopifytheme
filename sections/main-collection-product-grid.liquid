@@ -779,9 +779,15 @@
       initializeInfiniteScroll();
     };
 
-    document.addEventListener('DOMContentLoaded', function() {
-      initializeInfiniteScroll();
-    });
+    function runWhenReady(callback) {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', callback);
+      } else {
+        callback();
+      }
+    }
+
+    runWhenReady(initializeInfiniteScroll);
 
     document.addEventListener('shopify:section:load', function(event) {
       if (event && event.detail && event.detail.sectionId === '{{ section.id }}') {
