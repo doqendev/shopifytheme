@@ -489,6 +489,15 @@
               >
             </div>
 
+            <div
+              id="collection-pagination-data"
+              class="visually-hidden"
+              aria-hidden="true"
+              data-next-url="{% if paginate.next %}{{ paginate.next.url }}{% endif %}"
+              data-current-page="{{ paginate.current_page }}"
+              data-total-pages="{{ paginate.pages }}"
+            ></div>
+
             {% if paginate.pages > 1 %}
               {% render 'pagination', paginate: paginate, anchor: '' %}
             {% endif %}
@@ -601,7 +610,19 @@
       return scope.querySelector('.pagination');
     }
 
-    function getNextPageUrlFromPagination(paginationElement) {
+    function getPaginationDataElement(root) {
+      var scope = root || document;
+      if (!scope) return null;
+      return scope.getElementById('collection-pagination-data');
+    }
+
+    function getNextPageUrlFromPagination(paginationElement, paginationDataElement) {
+      if (paginationDataElement && paginationDataElement.dataset) {
+        var dataNext = paginationDataElement.dataset.nextUrl;
+        if (dataNext) {
+          return dataNext;
+        }
+      }
       if (!paginationElement) return null;
       var nextArrow = paginationElement.querySelector('.pagination__item--prev');
       if (nextArrow && nextArrow.href) {
@@ -680,6 +701,31 @@
       }
     }
 
+    function updatePaginationDataFromDocument(doc) {
+      var incomingData = getPaginationDataElement(doc);
+      var existingData = getPaginationDataElement();
+
+      if (!incomingData && !existingData) return;
+
+      if (!existingData && incomingData) {
+        var gridContainer = document.getElementById('ProductGridContainer');
+        if (gridContainer) {
+          gridContainer.appendChild(incomingData.cloneNode(true));
+        }
+        return;
+      }
+
+      if (!existingData) return;
+
+      if (incomingData && incomingData.dataset) {
+        existingData.dataset.nextUrl = incomingData.dataset.nextUrl || '';
+        existingData.dataset.currentPage = incomingData.dataset.currentPage || '';
+        existingData.dataset.totalPages = incomingData.dataset.totalPages || '';
+      } else {
+        existingData.dataset.nextUrl = '';
+      }
+    }
+
     function observerCallback(entries) {
       entries.forEach(function(entry) {
         if (entry.isIntersecting) {
@@ -711,7 +757,8 @@
       }
 
       var paginationElement = getPaginationElement();
-      state.nextPageUrl = getNextPageUrlFromPagination(paginationElement);
+      var paginationDataElement = getPaginationDataElement();
+      state.nextPageUrl = getNextPageUrlFromPagination(paginationElement, paginationDataElement);
 
       if (!state.nextPageUrl) {
         togglePaginationVisibility(false);
@@ -754,8 +801,11 @@
         existingWrapper.remove();
       }
 
+      updatePaginationDataFromDocument(doc);
+
       var paginationElement = getPaginationElement();
-      state.nextPageUrl = getNextPageUrlFromPagination(paginationElement);
+      var paginationDataElement = getPaginationDataElement();
+      state.nextPageUrl = getNextPageUrlFromPagination(paginationElement, paginationDataElement);
 
       if (!state.nextPageUrl) {
         togglePaginationVisibility(false);
