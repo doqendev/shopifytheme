@@ -309,18 +309,15 @@
   .collection-infinite-loader[hidden] {
     display: none;
   }
-  .collection-infinite-loader__img {
-    width: 70px;
-    height: 70px;
-    animation: collection-logo-spin 2s linear infinite;
+  .collection-infinite-loader__spinner {
+    width: 3.5rem;
+    height: 3.5rem;
+    display: inline-flex;
   }
-  @keyframes collection-logo-spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
+
+  .collection-infinite-loader__spinner svg {
+    width: 100%;
+    height: 100%;
   }
   .collection-infinite-scroll-sentinel {
     width: 100%;
@@ -479,12 +476,8 @@
               aria-live="polite"
               hidden
             >
-              <img
-                src="{{ 'chey.png' | asset_url }}"
-                alt="Loading more products"
-                class="collection-infinite-loader__img"
-                onerror="this.src='{{ 'cheyenne_cart_thicker.png' | asset_url }}'"
-              >
+              {%- render 'loading-spinner', class: 'collection-infinite-loader__spinner loading__spinner' -%}
+              <span class="visually-hidden">{{ 'accessibility.loading' | t }}</span>
             </div>
 
             {% if paginate.pages > 1 %}
@@ -612,14 +605,28 @@
       return null;
     }
 
+    function toggleCollectionLoading(show) {
+      var collection = document.querySelector('#ProductGridContainer .collection');
+      if (!collection) return;
+      if (show) {
+        collection.classList.add('loading');
+        collection.setAttribute('aria-busy', 'true');
+      } else {
+        collection.classList.remove('loading');
+        collection.removeAttribute('aria-busy');
+      }
+    }
+
     function toggleLoader(show) {
       var loader = document.getElementById('collection-infinite-loader');
-      if (!loader) return;
-      if (show) {
-        loader.removeAttribute('hidden');
-      } else {
-        loader.setAttribute('hidden', 'hidden');
+      if (loader) {
+        if (show) {
+          loader.removeAttribute('hidden');
+        } else {
+          loader.setAttribute('hidden', 'hidden');
+        }
       }
+      toggleCollectionLoading(show);
     }
 
     function removeSentinel() {
