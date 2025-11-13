@@ -309,15 +309,18 @@
   .collection-infinite-loader[hidden] {
     display: none;
   }
-  .collection-infinite-loader__spinner {
-    width: 3.5rem;
-    height: 3.5rem;
-    display: inline-flex;
+  .collection-infinite-loader__img {
+    width: 70px;
+    height: 70px;
+    animation: collection-logo-spin 2s linear infinite;
   }
-
-  .collection-infinite-loader__spinner svg {
-    width: 100%;
-    height: 100%;
+  @keyframes collection-logo-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
   .collection-infinite-scroll-sentinel {
     width: 100%;
@@ -476,8 +479,14 @@
               aria-live="polite"
               hidden
             >
-              {%- render 'loading-spinner', class: 'collection-infinite-loader__spinner loading__spinner' -%}
-              <span class="visually-hidden">{{ 'accessibility.loading' | t }}</span>
+              <img
+                src="{{ 'chey.png' | asset_url }}"
+                alt="{{ 'accessibility.loading' | t }}"
+                class="collection-infinite-loader__img"
+                onerror="this.src='{{ 'cheyenne_cart_thicker.png' | asset_url }}'"
+                loading="lazy"
+                decoding="async"
+              >
             </div>
 
             {% if paginate.pages > 1 %}
