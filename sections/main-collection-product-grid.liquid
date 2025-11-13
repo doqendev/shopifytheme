@@ -743,7 +743,7 @@
       } else {
         state.observer.disconnect();
       }
-      disableManualTrigger();
+      enableManualTrigger();
     }
 
     function initializeInfiniteScroll() {
@@ -768,9 +768,9 @@
       var sentinel = ensureSentinel(grid);
       if (state.observer && sentinel) {
         state.observer.observe(sentinel);
-      } else if (!state.observer) {
-        enableManualTrigger();
       }
+      enableManualTrigger();
+      checkManualTrigger();
     }
 
     function appendProductsFromDocument(doc) {
@@ -813,9 +813,8 @@
         disableManualTrigger();
       } else {
         togglePaginationVisibility(true);
-        if (!state.observer) {
-          enableManualTrigger();
-        }
+        enableManualTrigger();
+        checkManualTrigger();
       }
     }
 
