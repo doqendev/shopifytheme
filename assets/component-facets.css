@@ -1336,6 +1336,50 @@ input.mobile-facets__checkbox {
   display: none;
 }
 
+/* Facet swatches – mirror product card swatch styling */
+.facets__list .facet__swatch,
+.mobile-facet__swatch {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.facet__swatch .swatch-input__label,
+.mobile-facet__swatch .swatch-input__label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px !important;
+  height: 15px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+}
+
+.facet__swatch .swatch-input__label > .swatch,
+.mobile-facet__swatch .swatch-input__label > .swatch {
+  width: 100% !important;
+  height: 100% !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: var(--swatch--background) !important;
+  background-clip: border-box !important;
+  border-radius: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.facet__swatch .swatch-input__label:hover .swatch,
+.mobile-facet__swatch .swatch-input__label:hover .swatch,
+.facet__swatch .swatch-input__input:checked + .swatch-input__label .swatch,
+.mobile-facet__swatch .swatch-input__input:checked + .swatch-input__label .swatch {
+  border: 3px solid #fff !important;
+  box-shadow: 0 0 0 0.5px #000 !important;
+}
+
 /* Responsive Adjustments */
 @media screen and (max-width: 749px) {
   .price-slider__labels {
