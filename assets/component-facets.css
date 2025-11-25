@@ -1350,8 +1350,8 @@ input.mobile-facets__checkbox {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 16px !important;
-  height: 16px !important;
+  width: 18px !important;
+  height: 18px !important;
   padding: 0 !important;
   margin: 0 !important;
   background: none !important;
@@ -1368,7 +1368,7 @@ input.mobile-facets__checkbox {
   box-shadow: none !important;
   background: var(--swatch--background) !important;
   background-clip: border-box !important;
-  border-radius: 2px !important;
+  border-radius: 0 !important;
   box-sizing: border-box !important;
 }
 
