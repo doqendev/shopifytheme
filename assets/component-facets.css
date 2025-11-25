@@ -1341,7 +1341,7 @@ input.mobile-facets__checkbox {
 .mobile-facet__swatch {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
