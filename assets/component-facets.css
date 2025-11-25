@@ -1341,7 +1341,7 @@ input.mobile-facets__checkbox {
 .mobile-facet__swatch {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
@@ -1350,8 +1350,8 @@ input.mobile-facets__checkbox {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 15px !important;
-  height: 15px !important;
+  width: 16px !important;
+  height: 16px !important;
   padding: 0 !important;
   margin: 0 !important;
   background: none !important;
@@ -1364,11 +1364,11 @@ input.mobile-facets__checkbox {
 .mobile-facet__swatch .swatch-input__label > .swatch {
   width: 100% !important;
   height: 100% !important;
-  border: none !important;
+  border: 1px solid rgba(0, 0, 0, 0.2) !important;
   box-shadow: none !important;
   background: var(--swatch--background) !important;
   background-clip: border-box !important;
-  border-radius: 0 !important;
+  border-radius: 2px !important;
   box-sizing: border-box !important;
 }
 
@@ -1376,8 +1376,8 @@ input.mobile-facets__checkbox {
 .mobile-facet__swatch .swatch-input__label:hover .swatch,
 .facet__swatch .swatch-input__input:checked + .swatch-input__label .swatch,
 .mobile-facet__swatch .swatch-input__input:checked + .swatch-input__label .swatch {
-  border: 3px solid #fff !important;
-  box-shadow: 0 0 0 0.5px #000 !important;
+  border: 2px solid #fff !important;
+  box-shadow: 0 0 0 1px #000 !important;
 }
 
 /* Responsive Adjustments */
