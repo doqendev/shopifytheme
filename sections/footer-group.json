@@ -11,53 +11,6 @@
   "name": "t:sections.footer.name",
   "type": "footer",
   "sections": {
-    "blocks_P9VELJ": {
-      "type": "_blocks",
-      "blocks": {
-        "ai_gen_block_330e561_eDR3Gg": {
-          "type": "ai_gen_block_330e561",
-          "settings": {
-            "desktop_behavior": "always_open",
-            "background_color": "#ffffff",
-            "header_text_color": "#121212",
-            "header_hover_color": "#666666",
-            "content_text_color": "#666666",
-            "link_color": "#121212",
-            "link_hover_color": "#666666",
-            "divider_color": "#e5e5e5",
-            "divider_thickness": 1,
-            "border_radius": 0,
-            "padding": 20,
-            "item_padding": 16,
-            "header_font_size": 16,
-            "header_font_weight": "600",
-            "content_font_size": 14,
-            "icon_size": 20,
-            "section_1_enabled": true,
-            "section_1_title": "Customer service",
-            "section_1_content": "<ul><li><a href=\"#\">Contact us</a></li><li><a href=\"#\">Shipping info</a></li><li><a href=\"#\">Returns</a></li><li><a href=\"#\">Size guide</a></li></ul>",
-            "section_2_enabled": true,
-            "section_2_title": "Company",
-            "section_2_content": "<ul><li><a href=\"#\">About us</a></li><li><a href=\"#\">Careers</a></li><li><a href=\"#\">Press</a></li><li><a href=\"#\">Sustainability</a></li></ul>",
-            "section_3_enabled": true,
-            "section_3_title": "Legal",
-            "section_3_content": "<ul><li><a href=\"#\">Privacy policy</a></li><li><a href=\"#\">Terms of service</a></li><li><a href=\"#\">Cookie policy</a></li><li><a href=\"#\">Accessibility</a></li></ul>",
-            "section_4_enabled": false,
-            "section_4_title": "",
-            "section_4_content": "",
-            "section_5_enabled": false,
-            "section_5_title": "",
-            "section_5_content": ""
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "ai_gen_block_330e561_eDR3Gg"
-      ],
-      "name": "Footer accordion",
-      "settings": {}
-    },
     "footers_MJGUrj": {
       "type": "FOOTERS",
       "custom_css": [],
@@ -84,7 +37,6 @@
   },
   "order": [
     "footers_MJGUrj",
-    "blocks_P9VELJ",
     "footer"
   ]
 }
