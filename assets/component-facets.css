@@ -1320,6 +1320,7 @@ input.mobile-facets__checkbox {
 /* Dynamic Price Labels Styling */
 .price-slider__labels {
   display: flex;
+  justify-content: space-between;
   margin-top: 10px; /* Adjusts spacing above the slider */
   margin-bottom: 10px; /* Adjusts spacing below the labels */
   font-size: 14px; /* Sets font size for labels */
@@ -1332,7 +1333,7 @@ input.mobile-facets__checkbox {
 }
 
 .price-slider__range {
-  margin: 0 5px; /* Adds spacing around the hyphen */
+  display: none;
 }
 
 /* Responsive Adjustments */
