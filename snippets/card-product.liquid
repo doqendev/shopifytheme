@@ -16,7 +16,7 @@
 
 .product-card { position: relative; }
 
-  
+
   .card__content {
     width: 100%;
   }
@@ -49,6 +49,12 @@
     gap: 6px;
     flex-wrap: wrap;
     margin-top: 10px; /* consistent breathing room below media */
+    padding-top: 4px; /* guard spacing against DOM swaps */
+  }
+
+  /* Ensure price/swatch block keeps its spacing even after re-render */
+  .price-and-swatch {
+    margin-top: 10px;
   }
 
   /* Keep media steady: full-height swiper with contained images */
