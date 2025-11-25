@@ -18,6 +18,8 @@
 {% if current_max == blank %}
   {% assign current_max = filter.range_max %}
 {% endif %}
+{% assign min_for_slider = filter.range_min | default: 0 %}
+{% assign max_for_slider = filter.range_max %}
 
 <!-- Slider Container with ARIA Attributes for Accessibility -->
 <div
@@ -25,12 +27,12 @@
   class="price-slider"
   role="slider"
   aria-labelledby="{{ id_prefix }}PriceRangeSliderLabel"
-  aria-valuemin="{{ filter.range_min | money_without_currency }}"
-  aria-valuemax="{{ filter.range_max | money_without_currency }}"
-  aria-valuenow="{{ current_min | money_without_currency }}"
+  aria-valuemin="{{ min_for_slider | money_without_currency }}"
+  aria-valuemax="{{ max_for_slider | money_without_currency }}"
+  aria-valuenow="{{ max_for_slider | money_without_currency }}"
   aria-valuetext="{{ current_min | money_without_currency }} {{ cart.currency.symbol }}"
-  data-min="{{ filter.range_min | money_without_currency }}"
-  data-max="{{ filter.range_max | money_without_currency }}"
+  data-min="{{ min_for_slider | money_without_currency }}"
+  data-max="{{ max_for_slider | money_without_currency }}"
 >
 </div>
 

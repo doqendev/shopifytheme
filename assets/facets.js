@@ -434,10 +434,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Create the slider
     noUiSlider.create(sliderElement, {
-      start: [initialMin, initialMax],
+      start: [0, sliderMax],
       connect: true,
       range: {
-        'min': 0,
+        'min': sliderElement.getAttribute('data-min') ? parsePrice(sliderElement.getAttribute('data-min')) : 0,
         'max': sliderMax,
       },
       step: 1, // whole euro values
