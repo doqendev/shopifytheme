@@ -569,6 +569,7 @@ body.menu-drawer-open .nav-menu-new a.active::after {
   class StickyHeader extends HTMLElement {
     constructor() {
       super();
+      this.shrinkEnabled = {{ request.page_type != 'index' | json }};
     }
 
     connectedCallback() {
@@ -617,6 +618,7 @@ body.menu-drawer-open .nav-menu-new a.active::after {
 
     onScroll() {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const boundary = (this.headerBounds && this.headerBounds.bottom) ? this.headerBounds.bottom : this.header.offsetHeight;
 
       if (this.predictiveSearch && this.predictiveSearch.isOpen) return;
 
@@ -640,6 +642,20 @@ body.menu-drawer-open .nav-menu-new a.active::after {
       } else if (scrollTop <= this.headerBounds.top) {
         this.header.classList.remove('scrolled-past-header');
         requestAnimationFrame(this.reset.bind(this));
+      }
+
+      if (this.shrinkEnabled) {
+        if (scrollTop > 8) {
+          this.header.classList.add('header--shrink');
+        } else {
+          this.header.classList.remove('header--shrink');
+        }
+
+        if (scrollTop > this.currentScrollTop && scrollTop > boundary + 20) {
+          this.header.classList.add('header--slide-up');
+        } else {
+          this.header.classList.remove('header--slide-up');
+        }
       }
 
       this.currentScrollTop = scrollTop;
@@ -678,42 +694,6 @@ body.menu-drawer-open .nav-menu-new a.active::after {
 {% endjavascript %}
 
 {% unless template == 'index' %}
-<script>
-  (function() {
-    var header = document.querySelector('.section-header');
-    if (!header) return;
-
-    var lastScroll = window.pageYOffset || document.documentElement.scrollTop;
-    var ticking = false;
-
-    function handleScroll() {
-      var current = window.pageYOffset || document.documentElement.scrollTop;
-      var scrollingDown = current > lastScroll;
-
-      if (current <= 8) {
-        header.classList.remove('header--shrink');
-      } else {
-        header.classList.add('header--shrink');
-      }
-
-      if (scrollingDown && current > 80) {
-        header.classList.add('header--slide-up');
-      } else {
-        header.classList.remove('header--slide-up');
-      }
-
-      lastScroll = current;
-      ticking = false;
-    }
-
-    window.addEventListener('scroll', function() {
-      if (!ticking) {
-        window.requestAnimationFrame(handleScroll);
-        ticking = true;
-      }
-    }, { passive: true });
-  })();
-</script>
 {% endunless %}
 
 <script type="application/ld+json">
