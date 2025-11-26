@@ -60,11 +60,11 @@
   }
   @media screen and (min-width: 750px) {
     #product-grid {
-      grid-template-columns: repeat(4, minmax(240px, 1fr)); /* Four-up with comfortable minimum width */
-      column-gap: 2rem;
+      grid-template-columns: repeat(4, minmax(280px, 1fr)); /* Four-up with larger cards */
+      column-gap: 1.6rem;
       row-gap: 2rem;
-      padding-left: 2rem;
-      padding-right: 2rem; /* Soft inset on the outermost columns */
+      padding-left: 1.6rem;
+      padding-right: 1.6rem; /* Soft inset on the outermost columns */
     }
   }
 </style>
@@ -103,11 +103,11 @@
   }
   @media screen and (min-width: 750px) {
     #product-grid {
-      grid-template-columns: repeat(4, minmax(240px, 1fr));
-      column-gap: 2rem;
+      grid-template-columns: repeat(4, minmax(280px, 1fr));
+      column-gap: 1.6rem;
       row-gap: 2rem;
-      padding-left: 2rem;
-      padding-right: 2rem;
+      padding-left: 1.6rem;
+      padding-right: 1.6rem;
     }
     #product-grid .grid__item {
       display: flex;
@@ -174,11 +174,11 @@
       grid-column: 141 / span 35; /* Second item in 8-section row */
     }
     .product-grid.two-col {
-      grid-template-columns: repeat(4, minmax(240px, 1fr)) !important;
-      column-gap: 2rem;
+      grid-template-columns: repeat(4, minmax(280px, 1fr)) !important;
+      column-gap: 1.6rem;
       row-gap: 2rem;
-      padding-left: 2rem;
-      padding-right: 2rem;
+      padding-left: 1.6rem;
+      padding-right: 1.6rem;
     }
     .product-grid.three-col {
       grid-template-columns: repeat(8, 1fr) !important;
