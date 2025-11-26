@@ -46,7 +46,7 @@
   /* Match collection page grid styling */
   #wishlist-product-grid {
     display: grid;
-    gap: 0.6rem;
+    gap: 1.2rem;
     margin-block-start: 0px;
     margin-top: 2rem;
     list-style: none;
@@ -79,10 +79,11 @@
 
   @media screen and (min-width: 750px) {
     #wishlist-product-grid {
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1.6rem;
-      padding-left: 1.6rem;
-      padding-right: 1.6rem;
+      grid-template-columns: repeat(4, minmax(240px, 1fr));
+      column-gap: 2rem;
+      row-gap: 2rem;
+      padding-left: 2rem;
+      padding-right: 2rem;
     }
   }
 
@@ -132,7 +133,11 @@
     }
 
     #wishlist-product-grid.two-col {
-      grid-template-columns: repeat(4, 1fr) !important;
+      grid-template-columns: repeat(4, minmax(240px, 1fr)) !important;
+      column-gap: 2rem;
+      row-gap: 2rem;
+      padding-left: 2rem;
+      padding-right: 2rem;
     }
 
     #wishlist-product-grid.three-col {

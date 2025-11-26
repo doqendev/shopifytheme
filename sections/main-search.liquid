@@ -123,7 +123,7 @@
   .product-grid.two-col,
   .product-grid.three-col {
     display: grid !important;
-    gap: 0.6rem !important;
+    gap: 1.2rem !important;
   }
 
   @media (max-width: 749px) {
@@ -159,9 +159,10 @@
     .product-grid.one-col,
     .product-grid.two-col,
     .product-grid.three-col {
-      gap: 1.6rem !important;
-      padding-left: 1.6rem;
-      padding-right: 1.6rem;
+      column-gap: 2rem !important;
+      row-gap: 2rem !important;
+      padding-left: 2rem;
+      padding-right: 2rem;
     }
 
     .product-grid.one-col {
@@ -202,7 +203,7 @@
     }
 
     .product-grid.two-col {
-      grid-template-columns: repeat(4, 1fr) !important;
+      grid-template-columns: repeat(4, minmax(240px, 1fr)) !important;
     }
 
     .product-grid.two-col .grid__item {

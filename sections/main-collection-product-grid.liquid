@@ -37,7 +37,7 @@
   /* Existing grid styles */
   #product-grid {
     display: grid;
-    gap: 0.6rem;
+    gap: 1.2rem;
     margin-block-start: 0px;
   }
   #product-grid .grid__item {
@@ -60,10 +60,11 @@
   }
   @media screen and (min-width: 750px) {
     #product-grid {
-      grid-template-columns: repeat(4, 1fr); /* Four products per row on desktop */
-      gap: 1.6rem;
-      padding-left: 1.6rem;
-      padding-right: 1.6rem;
+      grid-template-columns: repeat(4, minmax(240px, 1fr)); /* Four-up with comfortable minimum width */
+      column-gap: 2rem;
+      row-gap: 2rem;
+      padding-left: 2rem;
+      padding-right: 2rem; /* Soft inset on the outermost columns */
     }
   }
 </style>
@@ -102,10 +103,11 @@
   }
   @media screen and (min-width: 750px) {
     #product-grid {
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1.6rem;
-      padding-left: 1.6rem;
-      padding-right: 1.6rem;
+      grid-template-columns: repeat(4, minmax(240px, 1fr));
+      column-gap: 2rem;
+      row-gap: 2rem;
+      padding-left: 2rem;
+      padding-right: 2rem;
     }
     #product-grid .grid__item {
       display: flex;
@@ -172,7 +174,11 @@
       grid-column: 141 / span 35; /* Second item in 8-section row */
     }
     .product-grid.two-col {
-      grid-template-columns: repeat(4, 1fr) !important;
+      grid-template-columns: repeat(4, minmax(240px, 1fr)) !important;
+      column-gap: 2rem;
+      row-gap: 2rem;
+      padding-left: 2rem;
+      padding-right: 2rem;
     }
     .product-grid.three-col {
       grid-template-columns: repeat(8, 1fr) !important;
