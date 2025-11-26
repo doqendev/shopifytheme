@@ -119,12 +119,14 @@
     display: inline-block;
   }
 
-  .product-grid.one-col,
+.product-grid.one-col,
   .product-grid.two-col,
   .product-grid.three-col {
     display: grid !important;
     gap: 1.2rem !important;
-  }
+    width: 100% !important;
+  max-width: 100% !important;
+}
 
   @media (max-width: 749px) {
     .product-grid.one-col {
