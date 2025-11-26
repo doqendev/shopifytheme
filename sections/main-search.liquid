@@ -156,6 +156,14 @@
   }
 
   @media (min-width: 750px) {
+    .product-grid.one-col,
+    .product-grid.two-col,
+    .product-grid.three-col {
+      gap: 1.6rem !important;
+      padding-left: 1.6rem;
+      padding-right: 1.6rem;
+    }
+
     .product-grid.one-col {
       grid-template-columns: repeat(280, 1fr) !important;
     }
@@ -194,7 +202,7 @@
     }
 
     .product-grid.two-col {
-      grid-template-columns: repeat(6, 1fr) !important;
+      grid-template-columns: repeat(4, 1fr) !important;
     }
 
     .product-grid.two-col .grid__item {
@@ -655,7 +663,7 @@
       "min": 1,
       "max": 6,
       "step": 1,
-      "default": 6,
+      "default": 4,
       "label": "t:sections.main-search.settings.columns_desktop.label"
     },
     {

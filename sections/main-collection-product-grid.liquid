@@ -60,7 +60,10 @@
   }
   @media screen and (min-width: 750px) {
     #product-grid {
-      grid-template-columns: repeat(1, 1fr); /* Six products per row on desktop */
+      grid-template-columns: repeat(4, 1fr); /* Four products per row on desktop */
+      gap: 1.6rem;
+      padding-left: 1.6rem;
+      padding-right: 1.6rem;
     }
   }
 </style>
@@ -99,7 +102,10 @@
   }
   @media screen and (min-width: 750px) {
     #product-grid {
-      grid-template-columns: repeat(6, 1fr);
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.6rem;
+      padding-left: 1.6rem;
+      padding-right: 1.6rem;
     }
     #product-grid .grid__item {
       display: flex;
@@ -166,7 +172,7 @@
       grid-column: 141 / span 35; /* Second item in 8-section row */
     }
     .product-grid.two-col {
-      grid-template-columns: repeat(6, 1fr) !important;
+      grid-template-columns: repeat(4, 1fr) !important;
     }
     .product-grid.three-col {
       grid-template-columns: repeat(8, 1fr) !important;
