@@ -1,34 +1,18 @@
 <!doctype html>
 <html class="js" lang="{{ request.locale.iso_code }}">
   <head>
-    
-<script>
-  window.customerId = {{ customer.id | json }};
-  // Derive customerLoggedIn as a boolean from customerId
-  window.customerLoggedIn = !!window.customerId;
-  console.log("customerId:", window.customerId, "customerLoggedIn:", window.customerLoggedIn);
-</script>
-
-
     <script>
-  console.log("Liquid customer.id:", {{ customer.id | json }});
-  console.log("Liquid customer object:", {{ customer | json }});
-  console.log("Liquid customerLoggedIn:", {{ customer != nil | json }});
-</script>
+      window.customerId = {{ customer.id | json }};
+      window.customerLoggedIn = !!window.customerId;
 
-
-    
-
-
-
-
-
-
-
-
-
-
-
+      if (!{{ request.design_mode | json }}) {
+        ['log', 'info', 'debug', 'warn', 'group', 'groupCollapsed', 'groupEnd'].forEach((method) => {
+          if (typeof console !== 'undefined' && console[method]) {
+            console[method] = () => {};
+          }
+        });
+      }
+    </script>
 
 
     <!-- noUiSlider CSS -->

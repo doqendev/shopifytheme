@@ -54,8 +54,8 @@
 
   }
   @media screen and (min-width: 750px) {
-    #product-grid {
-      grid-template-columns: repeat(4, minmax(280px, 1fr)) !important;
+    #product-grid.random-grid {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
       column-gap: 1.6rem;
       row-gap: 2rem;
       padding-left: 1.6rem;
@@ -63,7 +63,7 @@
       padding-inline-start: 1.6rem !important;
       padding-inline-end: 1.6rem !important;
     }
-    #product-grid .grid__item {
+    #product-grid.random-grid .grid__item {
       display: flex;
       flex-direction: column;
       width: 100% !important;
@@ -78,8 +78,6 @@
       font-size: 20px;
       line-height: 18px;
     }
-
-
   }
 
   
@@ -172,7 +170,7 @@
   <div class="section-random-collection-padding gradient color-scheme-1">
     <div class="collection page-width" id="ProductGridContainer">
       <div class="loading-overlay gradient"></div>
-      <ul id="product-grid" class="grid product-grid">
+      <ul id="product-grid" class="grid product-grid random-grid">
         {%- assign skip_card_product_styles = false -%}
         {% assign index = 0 %}
         {% for related_product in first_collection.products limit: 13 %}

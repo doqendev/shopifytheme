@@ -179,16 +179,8 @@
   <!-- Size Drawer (render at the end of buy-buttons) -->
   {%- render 'size-drawer', product: product, section_id: section_id, product_form_id: product_form_id -%}
 
-  <!-- Debug section ID -->
-  <script>
-    console.log('Buy buttons section_id:', '{{ section_id }}');
-    console.log('Button element:', document.getElementById('ChooseSizeButton-{{ section_id }}'));
-    console.log('Drawer element:', document.getElementById('size-drawer-{{ section_id }}'));
-  </script>
-  
   <!-- Load size drawer assets -->
   {{ 'size-drawer.css' | asset_url | stylesheet_tag }}
   <script src="{{ 'size-drawer.js' | asset_url }}" defer="defer"></script>
 </div>
-
 

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>New Product Setup Checklist</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #0f172a;
+      --muted: #475569;
+      --border: #cbd5e1;
+      --accent: #0ea5e9;
+      --bg: #f8fafc;
+    }
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      margin: 0 auto;
+      max-width: 900px;
+      padding: 32px 28px 48px;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.55;
+    }
+    h1, h2, h3 {
+      margin: 0 0 12px;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+    h1 { font-size: 28px; }
+    h2 { font-size: 20px; margin-top: 24px; }
+    h3 { font-size: 16px; margin-top: 16px; }
+    p { margin: 8px 0 10px; color: var(--muted); }
+    ul, ol { margin: 8px 0 10px 22px; }
+    li { margin: 4px 0; }
+    code { font-family: Consolas, "Courier New", monospace; padding: 1px 4px; background: #e2e8f0; border-radius: 4px; }
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 18px;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+      margin-top: 14px;
+    }
+    .pill {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--muted);
+      background: #fff;
+      margin-right: 6px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      text-align: left;
+      font-size: 14px;
+    }
+    th { background: #f1f5f9; }
+    .muted { color: var(--muted); }
+    .section-note { font-size: 13px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <h1>New Product Setup Checklist</h1>
+  <p>This theme uses a custom product flow (size drawer, sticky bar, desktop layout). Follow these steps before publishing a new product.</p>
+
+  <div class="card">
+    <h2>1) Choose the product template</h2>
+    <ul>
+      <li>Use the template <code>product.new-product</code> (type <code>new-product</code>; file: <code>templates/product.new-product.json</code>).</li>
+      <li>Legacy layouts: <code>product</code> (main-product) and <code>product.cheyenne-product</code> exist but do not carry the size drawer/sticky bar experience.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>2) Variants: sizes (required)</h2>
+    <ul>
+      <li>Add an option named exactly <code>Size</code> or <code>Tamanho</code> on the product.</li>
+      <li>Even one-size items need a single Size value so the size drawer can render and submit.</li>
+      <li>Keep inventory tracking on variants to power availability and “low stock” states.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>3) Variants: colors (for swatches)</h2>
+    <ul>
+      <li>Add an option named <code>Color</code> or <code>Cor</code> to render color dots on cards/PDP and sticky bar.</li>
+      <li>Assign a featured image per color variant for correct image swaps.</li>
+      <li>If you use Shopify native color swatches, set swatch values for each color in Admin.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>4) Size chart tag (drives the in-page guide)</h2>
+    <p>The size chart shown on the PDP is picked by product tag. Add one of the tags below:</p>
+    <table>
+      <tr><th>Tag to add</th><th>Guide loaded</th></tr>
+      <tr><td>camisola, camisolas, t-shirt, tshirt, tops, bodies, blusa, camisa (any)</td><td>Tops guide</td></tr>
+      <tr><td>saia</td><td>Skirt guide</td></tr>
+      <tr><td>saia-calção</td><td>Skort guide</td></tr>
+      <tr><td>calças, calcas, jeans, calças de ganga</td><td>Pants guide</td></tr>
+      <tr><td>calções, calcasao, calções (any spelling)</td><td>Shorts guide</td></tr>
+      <tr><td><em>No matching tag</em></td><td>Generic “no specific table” message</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>5) Collections (for “You may also like” grid)</h2>
+    <ul>
+      <li>The related grid uses the first collection the product belongs to.</li>
+      <li>Ensure each product is assigned to at least one collection with other items you want to feature.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>6) Optional: reviews block</h2>
+    <ul>
+      <li>If you enable the rating block, it reads <code>product.metafields.reviews.rating</code> and <code>product.metafields.reviews.rating_count</code>.</li>
+      <li>Confirm your reviews app writes to those metafields; otherwise hide/disable the block.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>7) Size guide page link</h2>
+    <ul>
+      <li>The drawer’s “Guia de tamanhos” link points to <code>/pages/guia-de-tamanhos</code>.</li>
+      <li>Keep that page published and updated.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>8) Quick publish checklist</h2>
+    <div class="grid">
+      <div>
+        <p><span class="pill">Template</span> Set template to <code>product.new-product</code>.</p>
+        <p><span class="pill">Sizes</span> Size/Tamanho option exists; values entered; inventory tracked.</p>
+        <p><span class="pill">Colors</span> Color/Cor option exists; variant images assigned.</p>
+      </div>
+      <div>
+        <p><span class="pill">Size chart tag</span> One of the required tags added (see table).</p>
+        <p><span class="pill">Collections</span> At least one collection chosen for related grid.</p>
+        <p><span class="pill">Reviews</span> Rating metafields available or block disabled.</p>
+        <p><span class="pill">Guide page</span> <code>/pages/guia-de-tamanhos</code> published.</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="section-note">To export as PDF: open this file in a browser and use Print → Save as PDF.</p>
+</body>
+</html>
