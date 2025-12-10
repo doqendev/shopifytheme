@@ -52,16 +52,31 @@
   }
 
   /* Left column: Thumbnails + a scrollable container for big images */
-  .desktop-product-media {
-    display: flex; /* Two side-by-side blocks: thumbnails & big images container */
-    gap: 10px;
-  }
+.desktop-product-media {
+  display: flex; /* Two side-by-side blocks: thumbnails & big images container */
+  gap: 10px;
+}
 
-  /* Thumbnails: single column; all thumbnails are visible */
-  .desktop-product-media .thumbnail-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+.desktop-related-products {
+  max-width: 1200px;
+  margin: 60px auto 40px;
+  padding: 0 20px;
+}
+.desktop-related-products #product-grid.random-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) !important;
+  gap: 16px !important;
+}
+.desktop-related-products #product-grid.random-grid .grid__item {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Thumbnails: single column; all thumbnails are visible */
+.desktop-product-media .thumbnail-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
     display: flex;
     flex-direction: column; /* one column */
     gap: 10px;
