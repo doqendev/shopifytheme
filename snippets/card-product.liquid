@@ -43,10 +43,10 @@
     height: 2.5rem;
     flex-shrink: 0;
     border-radius: 0%;
-    position: static;
-    top: auto;
-    right: auto;
-    left: auto;
+    position: static !important;
+    inset: auto !important;
+    margin: 0;
+    flex: 0 0 2.5rem;
   }
 
   .wishlist-toggle--mobile-inline .wishlist-toggle__icon {
@@ -86,6 +86,17 @@
     align-items: center;
     gap: 6px;
     margin-left: auto;
+    justify-content: flex-end;
+    flex-shrink: 0;
+    position: static;
+  }
+
+  .product-card-plus .wishlist-toggle--mobile-inline,
+  .product-card-plus .plus-icon {
+    position: static !important;
+    inset: auto !important;
+    margin: 0;
+    flex-shrink: 0;
   }
 
   .card__content {
