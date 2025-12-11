@@ -212,14 +212,39 @@
     margin-top: 30px;
   }
 
+.drawer-content .accordion-button {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 1rem;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: auto;
+}
+
+.drawer-content .accordion-button::after {
+  content: "+";
+  font-size: 20px;
+  font-weight: 300;
+  margin-left: auto;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.drawer-content .accordion-button[aria-expanded="true"]::after {
+  content: "−"; /* Using minus sign character for better appearance */
+}
+
 .drawer-content .accordion-content {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.3s ease;
-}
-
-.drawer-content .accordion-button,
-.drawer-content .accordion-content {
   pointer-events: auto;
 }
 

@@ -355,14 +355,14 @@
   }
   .accordion-button::after {
     content: "+";
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 20px;
+    font-weight: 300;
     margin-left: auto;
-    transition: transform 0.2s ease;
+    transition: all 0.2s ease;
+    line-height: 1;
   }
   .accordion-button[aria-expanded="true"]::after {
-    content: "-";
-    transform: rotate(180deg);
+    content: "−"; /* Using minus sign character for better appearance */
   }
   .accordion-content {
     max-height: 0;

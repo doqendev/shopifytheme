@@ -755,8 +755,26 @@
         .mobile-extras .product-sku { margin-left: 16px; margin-right: 16px; }
         .mobile-extras .drawer-description { color: #333; font-size: 14px; line-height: 1.5; margin-top: 2rem; margin-bottom: 4rem; }
         .mobile-extras details { border-top: 1px solid rgba(0,0,0,0.08); }
-        .mobile-extras details > summary { list-style: none; padding: 12px 0; cursor: pointer; }
+        .mobile-extras details > summary {
+          list-style: none;
+          padding: 12px 0;
+          cursor: pointer;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
         .mobile-extras details > summary::-webkit-details-marker { display: none; }
+        .mobile-extras details > summary::after {
+          content: "+";
+          font-size: 20px;
+          font-weight: 300;
+          margin-left: auto;
+          transition: all 0.2s ease;
+          line-height: 1;
+        }
+        .mobile-extras details[open] > summary::after {
+          content: "−";
+        }
       }
       @media screen and (min-width: 750px) { .mobile-extras { display: none; } }
     </style>
