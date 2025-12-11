@@ -550,53 +550,87 @@
 
     <!-- Accordion -->
     <div class="product-info-accordion">
+      {%- liquid
+        # Composition content with fallback chain
+        assign composition_content = product.metafields.custom.accordion_composition
+        if composition_content == blank
+          assign composition_content = settings.default_accordion_composition
+        endif
+        if composition_content == blank
+          assign composition_content = '100% Algodão. Lavar à máquina a 30°C.'
+        endif
+
+        # Shipping content with fallback chain
+        assign shipping_content = product.metafields.custom.accordion_shipping
+        if shipping_content == blank
+          assign shipping_content = settings.default_accordion_shipping
+        endif
+        if shipping_content == blank
+          assign shipping_content = 'Entrega em 2-3 dias úteis. Trocas e devoluções até 30 dias.'
+        endif
+
+        # Availability content with fallback chain
+        assign availability_content = product.metafields.custom.accordion_availability
+        if availability_content == blank
+          assign availability_content = settings.default_accordion_availability
+        endif
+        if availability_content == blank
+          assign availability_content = 'Disponível em todas as lojas da região.'
+        endif
+
+        # Check if share should be shown
+        assign show_share = product.metafields.custom.accordion_share_enabled
+        if show_share == blank
+          assign show_share = settings.default_accordion_show_share
+          if show_share == blank
+            assign show_share = true
+          endif
+        endif
+      -%}
+
+      {%- # Composition accordion -%}
       <div class="accordion-item">
         <button class="accordion-button" aria-expanded="false">
           Composição e cuidados
         </button>
         <div class="accordion-content">
-          <p>
-            <!-- Coloque aqui a composição do produto e informações de cuidados. -->
-            Exemplo: 100% Algodão. Lavar à máquina a 30°C.
-          </p>
+          <p>{{ composition_content | newline_to_br }}</p>
         </div>
       </div>
 
+      {%- # Shipping accordion -%}
       <div class="accordion-item">
         <button class="accordion-button" aria-expanded="false">
           Envios, trocas e devoluções
         </button>
         <div class="accordion-content">
-          <p>
-            <!-- Detalhes sobre envios, prazos, trocas e devoluções. -->
-            Exemplo: Entrega em 2-3 dias úteis. Trocas e devoluções até 30 dias.
-          </p>
+          <p>{{ shipping_content | newline_to_br }}</p>
         </div>
       </div>
 
+      {%- # Availability accordion -%}
       <div class="accordion-item">
         <button class="accordion-button" aria-expanded="false">
           Disponibilidade na loja
         </button>
         <div class="accordion-content">
-          <p>
-            <!-- Informações sobre disponibilidade em lojas físicas, se aplicável. -->
-            Exemplo: Disponível em todas as lojas da região.
-          </p>
+          <p>{{ availability_content | newline_to_br }}</p>
         </div>
       </div>
 
-      <div class="accordion-item">
-        <button class="accordion-button" aria-expanded="false">
-          Partilhar
-        </button>
-        <div class="accordion-content">
-          <p>
-            <!-- Ícones de redes sociais ou links de compartilhamento. -->
-            <a href="#">Facebook</a> | <a href="#">Instagram</a> | <a href="#">Twitter</a>
-          </p>
+      {%- # Share accordion -%}
+      {% if show_share %}
+        <div class="accordion-item">
+          <button class="accordion-button" aria-expanded="false">
+            Partilhar
+          </button>
+          <div class="accordion-content">
+            <p>
+              <a href="#">Facebook</a> | <a href="#">Instagram</a> | <a href="#">Twitter</a>
+            </p>
+          </div>
         </div>
-      </div>
+      {% endif %}
     </div>
   </div>
 </div>

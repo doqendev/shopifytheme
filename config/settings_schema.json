@@ -1465,5 +1465,45 @@
         "default": "scheme-1"
       }
     ]
+  },
+  {
+    "name": "Product Accordion Defaults",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Default content for product accordions"
+      },
+      {
+        "type": "paragraph",
+        "content": "These defaults are used when products don't have custom accordion content set."
+      },
+      {
+        "type": "textarea",
+        "id": "default_accordion_composition",
+        "label": "Composition & Care",
+        "default": "100% Algodão. Lavar à máquina a 30°C.",
+        "info": "Default product composition and care instructions"
+      },
+      {
+        "type": "textarea",
+        "id": "default_accordion_shipping",
+        "label": "Shipping & Returns",
+        "default": "Entrega em 2-3 dias úteis. Trocas e devoluções até 30 dias.",
+        "info": "Default shipping and returns policy"
+      },
+      {
+        "type": "textarea",
+        "id": "default_accordion_availability",
+        "label": "Store Availability",
+        "default": "Disponível em todas as lojas da região.",
+        "info": "Default store availability message"
+      },
+      {
+        "type": "checkbox",
+        "id": "default_accordion_show_share",
+        "label": "Show share section by default",
+        "default": true
+      }
+    ]
   }
 ]

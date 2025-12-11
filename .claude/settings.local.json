@@ -19,7 +19,16 @@
       "Bash(copy \"C:\\Users\\Utilizador\\Downloads\\wishlist-backend\\CONVERSATION_SUMMARY.md\" \"C:\\Users\\Utilizador\\Downloads\\theme\\WISHLIST_ACCOUNT_INTEGRATION.md\")",
       "WebSearch",
       "Bash(dir /B:*)",
-      "Bash(shopify app generate extension:*)"
+      "Bash(shopify app generate extension:*)",
+      "Bash(npx playwright test:*)",
+      "Bash(set PRODUCT_HANDLE=sweatshirt-basica-com-capuz-copy)",
+      "Bash(set:*)",
+      "Bash($env:PRODUCT_HANDLE=\"sweatshirt-basica-com-capuz-copy\")",
+      "Bash($env:STORE_PASSWORD=\"123\")",
+      "Bash($env:BASE_URL=\"https://cheyenne.pt\")",
+      "Bash(PRODUCT_HANDLE=\"sweatshirt-basica-com-capuz-copy\" STORE_PASSWORD=\"123\" BASE_URL=\"https://cheyenne.pt\" npx playwright test:*)",
+      "Bash(shopify theme dev:*)",
+      "Bash(shopify theme push:*)"
     ],
     "deny": [],
     "ask": []
