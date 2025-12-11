@@ -46,16 +46,16 @@
   }
 
   .wishlist-toggle--mobile-inline .wishlist-toggle__icon {
-    width: 14px;
-    height: 14px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
+    width: 12px;
+    height: 12px;
+    fill: currentColor;
+    stroke: none;
   }
 
-  .wishlist-toggle--mobile-inline[aria-pressed="true"] .wishlist-toggle__icon {
-    fill: currentColor;
+  .wishlist-toggle--mobile-inline[aria-pressed="false"] .wishlist-toggle__icon {
+    fill: none;
     stroke: currentColor;
+    stroke-width: 1.2;
   }
 
   @media screen and (min-width: 1160px) {
@@ -68,7 +68,7 @@
   .product-card-plus {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
     margin-left: auto;
   }
 
