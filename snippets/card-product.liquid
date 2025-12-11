@@ -42,19 +42,27 @@
     width: 2.5rem;
     height: 2.5rem;
     flex-shrink: 0;
+    border-radius: 0%;
   }
 
   .wishlist-toggle--mobile-inline .wishlist-toggle__icon {
-    width: 18px;
-    height: 18px;
+    width: 14px;
+    height: 14px;
     fill: none;
     stroke: currentColor;
-    stroke-width: 1.5;
+    stroke-width: 2;
   }
 
   .wishlist-toggle--mobile-inline[aria-pressed="true"] .wishlist-toggle__icon {
     fill: currentColor;
     stroke: currentColor;
+  }
+
+  @media screen and (min-width: 1160px) {
+    .wishlist-toggle--mobile-inline {
+      width: 2.5rem;
+      height: 2.5rem;
+    }
   }
 
   .product-card-plus {
