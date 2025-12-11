@@ -42,7 +42,7 @@
     width: 2.75rem;
     height: 2.75rem;
     flex-shrink: 0;
-    border-radius: 0%;
+    border-radius: 50%;
     position: static !important;
     inset: auto !important;
     margin: 0;
@@ -53,25 +53,25 @@
     width: 16px !important;
     height: 16px !important;
     fill: currentColor !important;
-    stroke: none !important;
+    stroke: currentColor !important;
   }
 
   .wishlist-toggle--mobile-inline .wishlist-toggle__icon path {
     fill: currentColor !important;
-    stroke: none !important;
-    stroke-width: 0 !important;
+    stroke: currentColor !important;
+    stroke-width: 1.4 !important;
   }
 
   .wishlist-toggle--mobile-inline[aria-pressed="false"] .wishlist-toggle__icon {
     fill: none !important;
     stroke: currentColor !important;
-    stroke-width: 1.2 !important;
+    stroke-width: 1.6 !important;
   }
 
   .wishlist-toggle--mobile-inline[aria-pressed="false"] .wishlist-toggle__icon path {
     fill: none !important;
     stroke: currentColor !important;
-    stroke-width: 1.2 !important;
+    stroke-width: 1.6 !important;
   }
 
   @media screen and (min-width: 1160px) {
@@ -84,7 +84,7 @@
   .product-card-plus {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     margin-left: auto;
     justify-content: flex-end;
     flex-shrink: 0;
@@ -103,6 +103,7 @@
     align-items: center;
     justify-content: center;
     background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
   }
 
   .product-card-plus .plus-icon svg {
