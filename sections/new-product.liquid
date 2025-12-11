@@ -769,38 +769,82 @@
         {% render 'size-chart-new' %}
       </div>
       <div class="product-info-accordion">
+        {%- liquid
+          # Composition content with fallback chain
+          assign composition_content = product.metafields.custom.accordion_composition.value
+          if composition_content == blank
+            assign composition_content = product.metafields.custom.accordion_composition
+          endif
+          if composition_content == blank
+            assign composition_content = settings.default_accordion_composition
+          endif
+          if composition_content == blank
+            assign composition_content = 'Exemplo: 100% Algodão. Lavar à máquina a 30ºC.'
+          endif
+
+          # Shipping content with fallback chain
+          assign shipping_content = product.metafields.custom.accordion_shipping.value
+          if shipping_content == blank
+            assign shipping_content = product.metafields.custom.accordion_shipping
+          endif
+          if shipping_content == blank
+            assign shipping_content = settings.default_accordion_shipping
+          endif
+          if shipping_content == blank
+            assign shipping_content = '<h3>Métodos de envio</h3><ul><li>Recolha na loja <strong>GRÁTIS</strong>.</li><li>Envio para o ponto de entrega <strong>3,99 €</strong></li><li>Envio normal <strong>4,99 €</strong></li><li>Envio normal (Açores e Madeira) <strong>29,99 €</strong></li></ul><h3>Trocas e devoluções</h3><p>Podes devolver um artigo até 30 dias após receberes o e-mail de confirmação de envio da tua encomenda.</p>'
+          endif
+
+          # Availability content with fallback chain
+          assign availability_content = product.metafields.custom.accordion_availability.value
+          if availability_content == blank
+            assign availability_content = product.metafields.custom.accordion_availability
+          endif
+          if availability_content == blank
+            assign availability_content = settings.default_accordion_availability
+          endif
+          if availability_content == blank
+            assign availability_content = 'Exemplo: Disponível em todas as lojas da região.'
+          endif
+
+          # Check if share should be shown
+          assign show_share = product.metafields.custom.accordion_share_enabled.value
+          if show_share == blank
+            assign show_share = product.metafields.custom.accordion_share_enabled
+          endif
+          if show_share == blank
+            assign show_share = settings.default_accordion_show_share
+            if show_share == blank
+              assign show_share = true
+            endif
+          endif
+        -%}
+
         <details>
           <summary class="h5">Composição e cuidados</summary>
           <div class="rte" style="padding-bottom: 12px;">
-            <p>Exemplo: 100% Algodão. Lavar à máquina a 30ºC.</p>
+            {{ composition_content | newline_to_br }}
           </div>
         </details>
         <details>
           <summary class="h5">Envios, trocas e devoluções</summary>
           <div class="rte" style="padding-bottom: 12px;">
-            <h3>Métodos de envio</h3>
-            <ul>
-              <li>Recolha na loja <strong>GRÁTIS</strong>.</li>
-              <li>Envio para o ponto de entrega <strong>3,99 €</strong></li>
-              <li>Envio normal <strong>4,99 €</strong></li>
-              <li>Envio normal (Açores e Madeira) <strong>29,99 €</strong></li>
-            </ul>
-            <h3>Trocas e devoluções</h3>
-            <p>Podes devolver um artigo até 30 dias após receberes o e-mail de confirmação de envio da tua encomenda.</p>
+            {{ shipping_content }}
           </div>
         </details>
         <details>
           <summary class="h5">Disponibilidade na loja</summary>
           <div class="rte" style="padding-bottom: 12px;">
-            <p>Exemplo: Disponível em todas as lojas da região.</p>
+            {{ availability_content | newline_to_br }}
           </div>
         </details>
-        <details>
-          <summary class="h5">Partilhar</summary>
-          <div class="rte" style="padding-bottom: 12px;">
-            <p><a href="#">Facebook</a> | <a href="#">Instagram</a> | <a href="#">Twitter</a></p>
-          </div>
-        </details>
+        {% if show_share %}
+          <details>
+            <summary class="h5">Partilhar</summary>
+            <div class="rte" style="padding-bottom: 12px;">
+              <p><a href="#">Facebook</a> | <a href="#">Instagram</a> | <a href="#">Twitter</a></p>
+            </div>
+          </details>
+        {% endif %}
       </div>
       <div class="mobile-related-products" style="margin: 0 0 1.5rem;">
         <h2 class="also" style="margin-bottom: 1em;">Talvez lhe possa interessar</h2>
