@@ -841,15 +841,18 @@
           <details>
             <summary class="h5">Partilhar</summary>
             <div class="rte" style="padding-bottom: 12px;">
-              <p style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
-                <a href="https://www.facebook.com/sharer/sharer.php?u={{ product.url | url_encode }}" target="_blank" rel="noopener noreferrer" style="text-decoration: underline;">Facebook</a>
-                <span>|</span>
-                <a href="https://twitter.com/intent/tweet?url={{ product.url | url_encode }}&text={{ product.title | url_encode }}" target="_blank" rel="noopener noreferrer" style="text-decoration: underline;">Twitter</a>
+              <p style="display: flex; gap: 1.2rem; align-items: center; flex-wrap: wrap;">
+                <a href="https://www.facebook.com/sharer/sharer.php?u={{ product.url | url_encode }}" target="_blank" rel="noopener noreferrer" aria-label="Partilhar no Facebook" style="display: inline-flex; width: 20px; height: 20px; color: currentColor;">
+                  {{ 'icon-facebook.svg' | asset_url | img_tag: '', 'width: 20px; height: 20px;' }}
+                </a>
+                <a href="https://twitter.com/intent/tweet?url={{ product.url | url_encode }}&text={{ product.title | url_encode }}" target="_blank" rel="noopener noreferrer" aria-label="Partilhar no Twitter" style="display: inline-flex; width: 20px; height: 20px; color: currentColor;">
+                  {{ 'icon-twitter.svg' | asset_url | img_tag: '', 'width: 20px; height: 20px;' }}
+                </a>
                 {% if settings.social_instagram_link != blank %}
-                  <span>|</span>
-                  <a href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener noreferrer" style="text-decoration: underline;">Instagram</a>
+                  <a href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener noreferrer" aria-label="Ver no Instagram" style="display: inline-flex; width: 20px; height: 20px; color: currentColor;">
+                    {{ 'icon-instagram.svg' | asset_url | img_tag: '', 'width: 20px; height: 20px;' }}
+                  </a>
                 {% endif %}
-                <span>|</span>
                 <button onclick="navigator.clipboard.writeText('{{ shop.url }}{{ product.url }}'); this.textContent='Copiado!'; setTimeout(() => this.textContent='Copiar link', 2000);" style="background: none; border: none; text-decoration: underline; cursor: pointer; padding: 0; font-size: inherit; color: inherit;">Copiar link</button>
               </p>
             </div>

@@ -28,7 +28,8 @@
       "Bash($env:BASE_URL=\"https://cheyenne.pt\")",
       "Bash(PRODUCT_HANDLE=\"sweatshirt-basica-com-capuz-copy\" STORE_PASSWORD=\"123\" BASE_URL=\"https://cheyenne.pt\" npx playwright test:*)",
       "Bash(shopify theme dev:*)",
-      "Bash(shopify theme push:*)"
+      "Bash(shopify theme push:*)",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []
