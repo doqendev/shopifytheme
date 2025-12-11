@@ -66,11 +66,17 @@
     flex-direction: column; /* one column */
     gap: 10px;
     width: 80px; /* thumbnail column width */
+    flex-shrink: 0; /* Prevent thumbnails from shrinking */
   }
   .desktop-product-media .thumbnail-list li {
     cursor: pointer;
     opacity: 0.6;
     transition: opacity 0.2s;
+    box-sizing: border-box; /* Include border in width calculation */
+    width: 80px; /* Fixed width for each thumbnail */
+    height: 80px; /* Fixed height to maintain square aspect */
+    overflow: hidden; /* Prevent overflow */
+    border: 1px solid transparent; /* Placeholder border to prevent layout shift */
   }
   .desktop-product-media .thumbnail-list li:hover {
     opacity: 0.8;
@@ -81,9 +87,9 @@
   }
   .desktop-product-media .thumbnail-list li img {
     width: 100%;
-    height: auto;
+    height: 100%;
     display: block;
-    object-fit: contain;
+    object-fit: cover; /* Cover the square container */
   }
 
   /* Scrollable container for big images (independent scroll) */
