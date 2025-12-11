@@ -16,6 +16,52 @@
 
 .product-card { position: relative; }
 
+  /* Hide original wishlist heart on mobile, show on desktop */
+  .wishlist-toggle:not(.wishlist-toggle--mobile-inline) {
+    display: none; /* Hide on mobile by default */
+  }
+
+  @media screen and (min-width: 750px) {
+    .wishlist-toggle:not(.wishlist-toggle--mobile-inline) {
+      display: block; /* Show on desktop */
+    }
+    .wishlist-toggle--mobile-inline {
+      display: none !important; /* Hide inline version on desktop */
+    }
+  }
+
+  /* Mobile inline wishlist heart styling */
+  .wishlist-toggle--mobile-inline {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+  }
+
+  .wishlist-toggle--mobile-inline .wishlist-toggle__icon {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+  }
+
+  .wishlist-toggle--mobile-inline[aria-pressed="true"] .wishlist-toggle__icon {
+    fill: currentColor;
+    stroke: currentColor;
+  }
+
+  .product-card-plus {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
 
   .card__content {
     width: 100%;
@@ -351,6 +397,16 @@
                     {% endif %}
                     {% if size_option_index != -1 %}
                       <div class="product-card-plus">
+                        <button
+                          class="wishlist-toggle wishlist-toggle--mobile-inline"
+                          type="button"
+                          aria-pressed="false"
+                          aria-label="{{ 'general.add_to_wishlist' | t | default: 'Add to wishlist' }}"
+                        >
+                          <svg class="wishlist-toggle__icon" viewBox="0 0 24 24" role="presentation" focusable="false">
+                            <path d="M12 21.35 10.55 20.03C6.2 15.99 3 12.99 3 9.31 3 6.28 5.42 4 8.4 4A5.2 5.2 0 0 1 12 5.86 5.2 5.2 0 0 1 15.6 4C18.58 4 21 6.28 21 9.31c0 3.68-3.2 6.68-7.55 10.72z" />
+                          </svg>
+                        </button>
                         <button type="button" class="plus-icon" aria-label="{{ 'products.product.add_to_cart' | t }}" tabindex="0">
                           {{ 'icon-plus.svg' | inline_asset_content }}
                         </button>

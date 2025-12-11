@@ -233,12 +233,13 @@
   font-size: 20px;
   font-weight: 300;
   margin-left: auto;
-  transition: all 0.2s ease;
+  transition: transform 0.3s ease;
   line-height: 1;
 }
 
 .drawer-content .accordion-button[aria-expanded="true"]::after {
   content: "−"; /* Using minus sign character for better appearance */
+  transform: rotate(180deg);
 }
 
 .drawer-content .accordion-content {

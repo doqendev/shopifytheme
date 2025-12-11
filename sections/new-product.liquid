@@ -769,11 +769,12 @@
           font-size: 20px;
           font-weight: 300;
           margin-left: auto;
-          transition: all 0.2s ease;
+          transition: transform 0.3s ease;
           line-height: 1;
         }
         .mobile-extras details[open] > summary::after {
           content: "−";
+          transform: rotate(180deg);
         }
       }
       @media screen and (min-width: 750px) { .mobile-extras { display: none; } }
