@@ -275,6 +275,14 @@
 #wishlist-product-grid.three-col .product-card-plus {
   display: flex !important;
 }
+/* Ensure size drawer has proper width in Grid 3 */
+.product-grid.three-col .product-card-plus .size-options.size-options--desktop {
+  min-width: 200px !important;
+  width: auto !important;
+}
+.product-grid.three-col .product-card-plus .size-options.size-options--desktop .overlay-sizes {
+  min-width: 180px !important;
+}
 </style>
 
 {%- unless skip_styles -%}
