@@ -168,6 +168,41 @@
       grid-template-columns: repeat(8, 1fr) !important;
     }
   }
+
+  /* Grid transition animations */
+  .product-grid {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .product-grid.grid-transitioning .card-wrapper {
+    animation: zoomTransition 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes zoomTransition {
+    0% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.7;
+      transform: scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Stagger animation for each card */
+  .product-grid.grid-transitioning .card-wrapper:nth-child(1) { animation-delay: 0ms; }
+  .product-grid.grid-transitioning .card-wrapper:nth-child(2) { animation-delay: 20ms; }
+  .product-grid.grid-transitioning .card-wrapper:nth-child(3) { animation-delay: 40ms; }
+  .product-grid.grid-transitioning .card-wrapper:nth-child(4) { animation-delay: 60ms; }
+  .product-grid.grid-transitioning .card-wrapper:nth-child(5) { animation-delay: 80ms; }
+  .product-grid.grid-transitioning .card-wrapper:nth-child(6) { animation-delay: 100ms; }
+  .product-grid.grid-transitioning .card-wrapper:nth-child(7) { animation-delay: 120ms; }
+  .product-grid.grid-transitioning .card-wrapper:nth-child(8) { animation-delay: 140ms; }
+
   .grid-controls {
     display: flex;
     justify-content: space-between;
@@ -593,22 +628,36 @@
     }
 
     btnOneCol.addEventListener('click', function() {
-      grid.classList.remove('two-col', 'three-col');
-      grid.classList.add('one-col');
+      animateGridTransition(grid, 'one-col', ['two-col', 'three-col']);
       setActive(btnOneCol);
     });
 
     btnTwoCol.addEventListener('click', function() {
-      grid.classList.remove('one-col', 'three-col');
-      grid.classList.add('two-col');
+      animateGridTransition(grid, 'two-col', ['one-col', 'three-col']);
       setActive(btnTwoCol);
     });
 
     btnThreeCol.addEventListener('click', function() {
-      grid.classList.remove('one-col', 'two-col');
-      grid.classList.add('three-col');
+      animateGridTransition(grid, 'three-col', ['one-col', 'two-col']);
       setActive(btnThreeCol);
     });
+
+    // Animate grid transitions with zoom effect
+    function animateGridTransition(grid, newClass, removeClasses) {
+      // Add transitioning class to trigger animation
+      grid.classList.add('grid-transitioning');
+
+      // Change grid layout
+      removeClasses.forEach(function(cls) {
+        grid.classList.remove(cls);
+      });
+      grid.classList.add(newClass);
+
+      // Remove transitioning class after animation completes
+      setTimeout(function() {
+        grid.classList.remove('grid-transitioning');
+      }, 400);
+    }
 
     // Apply the layout corresponding to the active button without triggering a click
     if (btnOneCol.classList.contains('active')) {
