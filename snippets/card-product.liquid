@@ -112,6 +112,38 @@
     height: 16px;
   }
 
+  /* Keep drawer logic intact but visually move the plus onto the image */
+  .product-card-plus .plus-icon {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
+    border: 0;
+  }
+
+  .plus-icon--overlay {
+    position: absolute;
+    left: 0.65rem;
+    bottom: 0.65rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    z-index: 5;
+  }
+
+  .plus-icon--overlay svg {
+    width: 16px;
+    height: 16px;
+  }
+
   .card__content {
     width: 100%;
   }
@@ -372,6 +404,17 @@
     <div class="swiper-pagination"></div>
   </div>
 {% endif %}
+
+      {% if size_option_index != -1 %}
+        <button
+          type="button"
+          class="plus-icon plus-icon--overlay"
+          aria-label="{{ 'products.product.add_to_cart' | t }}"
+          tabindex="0"
+        >
+          {{ 'icon-plus.svg' | inline_asset_content }}
+        </button>
+      {% endif %}
 
       </div>
 
@@ -988,6 +1031,17 @@
           sizeIndex = parseInt(card.dataset.sizeIndex || '-1', 10);
         }
         if (!plusIcon || !sizeOptions) return;
+
+        var overlayPlus = card ? card.querySelector('.plus-icon--overlay') : null;
+        if (overlayPlus && plusIcon) {
+          ['click', 'keydown'].forEach(function(evtName) {
+            overlayPlus.addEventListener(evtName, function(ev) {
+              if (evtName === 'keydown' && ev.key !== 'Enter' && ev.key !== ' ') return;
+              ev.preventDefault();
+              plusIcon.click();
+            });
+          });
+        }
 
         plusIcon.addEventListener('click', function(ev) {
           ev.stopPropagation();
