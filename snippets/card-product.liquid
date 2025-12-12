@@ -1054,6 +1054,7 @@
             overlayPlus.addEventListener(evtName, function(ev) {
               if (evtName === 'keydown' && ev.key !== 'Enter' && ev.key !== ' ') return;
               ev.preventDefault();
+              ev.stopPropagation();
               plusIcon.click();
             });
           });
