@@ -250,6 +250,29 @@
     display: none !important;
   }
 }
+
+/* Preserve quick-add in 3-col image-only layout */
+.product-grid.three-col .card__content {
+  display: block !important;
+  height: auto !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.product-grid.three-col .card__information,
+.product-grid.three-col .card-information,
+.product-grid.three-col .price-and-swatch,
+.product-grid.three-col .title-cheyenne,
+.product-grid.three-col .additional-swatch-count,
+.product-grid.three-col .product-card__swatch-indicator > *:not(.product-card-plus) {
+  display: none !important;
+}
+.product-grid.three-col .product-card__swatch-indicator {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.product-grid.three-col .product-card-plus {
+  display: flex !important;
+}
 </style>
 
 {%- unless skip_styles -%}
