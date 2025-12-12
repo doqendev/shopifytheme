@@ -1142,6 +1142,7 @@
         });
       });
 
+      // Close drawer on outside click and prevent other actions from firing
       document.addEventListener('click', function(ev) {
         var openPlus = document.querySelector('.product-card-plus.active');
         if (!openPlus) return;
@@ -1150,9 +1151,11 @@
         var clickedInsidePlus = ev.target.closest('.product-card-plus');
         var clickedSwatchSameCard = ev.target.closest('.swatch') && ev.target.closest('.product-card-wrapper') === card;
         if (!clickedInsidePlus && !clickedSwatchSameCard) {
+          ev.preventDefault();
+          ev.stopPropagation();
           closeAllPlus();
         }
-      });
+      }, true);
 
       // Swatch click handling - works for all product cards (collections, recommended products, etc.)
       document.addEventListener('click', function(e) {
