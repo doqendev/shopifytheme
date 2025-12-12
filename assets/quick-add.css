@@ -449,13 +449,4 @@ quick-add-bulk .quantity__input {
   .product-card-plus { right: 10px; bottom: 10px; }
 }
 
-/* Grid 3 fix: Show product-card-plus but let card-product.liquid handle hiding other content */
-.product-grid.three-col .product-card-plus {
-  display: flex !important;
-}
-/* Keep card__content visible so product-card-plus inside it can be shown */
-.product-grid.three-col .card__content {
-  display: block !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
+/* Grid 3: Images only - no quick add (handled in card-product.liquid) */

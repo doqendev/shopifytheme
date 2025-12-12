@@ -251,41 +251,17 @@
   }
 }
 
-/* Preserve quick-add in 3-col image-only layout */
-.product-grid.three-col .card__content {
-  display: block !important;
-  height: auto !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
+/* Grid 3: Hide all product info including quick add - images only */
+.product-grid.three-col .card__content,
 .product-grid.three-col .card__information,
 .product-grid.three-col .card-information,
 .product-grid.three-col .price-and-swatch,
 .product-grid.three-col .title-cheyenne,
 .product-grid.three-col .additional-swatch-count,
-.product-grid.three-col .product-card__swatch-indicator > *:not(.product-card-plus) {
-  display: none !important;
-}
-.product-grid.three-col .product-card__swatch-indicator {
-  margin: 0 !important;
-  padding: 0 !important;
-}
+.product-grid.three-col .product-card__swatch-indicator,
 .product-grid.three-col .product-card-plus,
-#product-grid.three-col .product-card-plus,
-#wishlist-product-grid.three-col .product-card-plus {
-  display: flex !important;
-}
-/* Ensure size drawer has proper width in Grid 3 */
-.product-grid.three-col .product-card-plus .size-options.size-options--desktop {
-  min-width: 200px !important;
-  width: max-content !important;
-}
-.product-grid.three-col .product-card-plus .size-options.size-options--desktop .overlay-sizes {
-  width: 100% !important;
-  min-width: 180px !important;
-}
-.product-grid.three-col .product-card-plus .size-options.size-options--desktop .size-option {
-  min-width: 180px !important;
+.product-grid.three-col .plus-icon--overlay {
+  display: none !important;
 }
 </style>
 
