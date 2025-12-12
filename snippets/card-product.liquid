@@ -144,18 +144,10 @@
     cursor: pointer;
   }
 
-  .plus-icon--overlay svg {
-    width: 12px !important;
-    height: 12px !important;
-    color: #333;
-  }
-
-  .plus-icon--overlay svg path {
-    fill: none !important;
-    stroke: currentColor !important;
-    stroke-width: 0.5 !important;
-    stroke-linecap: round;
-    stroke-linejoin: round;
+  .plus-icon--overlay img {
+    width: 12px;
+    height: 12px;
+    display: block;
   }
 
   .plus-icon--overlay:hover {
@@ -437,7 +429,7 @@
           aria-label="{{ 'products.product.add_to_cart' | t }}"
           tabindex="0"
         >
-          {{ 'icon-plus.svg' | inline_asset_content }}
+          <img src="{{ 'plus.png' | asset_url }}" alt="" aria-hidden="true" loading="lazy">
         </button>
       {% endif %}
 
