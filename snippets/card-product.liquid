@@ -85,8 +85,8 @@
 
   .product-card-plus {
     position: absolute !important;
-    left: 0.65rem;
-    bottom: 0.65rem;
+    left: 0.65rem !important;
+    bottom: 0.65rem !important;
     margin: 0 !important;
     display: inline-flex;
     align-items: center;
@@ -377,32 +377,32 @@
     </div>
 
     <div class="swiper-pagination"></div>
-
-    {% if size_option_index != -1 %}
-      <div class="product-card-plus">
-        <button type="button" class="plus-icon" aria-label="{{ 'products.product.add_to_cart' | t }}" tabindex="0">
-          {{ 'icon-plus.svg' | inline_asset_content }}
-        </button>
-        <div class="size-options" tabindex="-1">
-          <div class="size-options-header size-options-header--mobile-only">
-            <span class="size-options-title">Seleciona o tamanho</span>
-            <a href="/pages/guia-de-tamanhos" class="size-guide-link">
-              Guia de tamanhos
-            </a>
-          </div>
-          <div class="overlay-sizes">
-            {% for size in all_sizes %}
-              <button type="button" class="size-option{% unless available_sizes contains size %} sold-out{% endunless %}" data-size="{{ size }}" {% unless available_sizes contains size %}disabled="disabled"{% endunless %}>
-                <span class="size-option__label">{{ size }}</span>
-                <span class="size-option__low-stock hidden">Poucas unidades</span>
-              </button>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-    {% endif %}
   </div>
 {% endif %}
+
+      {% if size_option_index != -1 %}
+        <div class="product-card-plus">
+          <button type="button" class="plus-icon" aria-label="{{ 'products.product.add_to_cart' | t }}" tabindex="0">
+            {{ 'icon-plus.svg' | inline_asset_content }}
+          </button>
+          <div class="size-options" tabindex="-1">
+            <div class="size-options-header size-options-header--mobile-only">
+              <span class="size-options-title">Seleciona o tamanho</span>
+              <a href="/pages/guia-de-tamanhos" class="size-guide-link">
+                Guia de tamanhos
+              </a>
+            </div>
+            <div class="overlay-sizes">
+              {% for size in all_sizes %}
+                <button type="button" class="size-option{% unless available_sizes contains size %} sold-out{% endunless %}" data-size="{{ size }}" {% unless available_sizes contains size %}disabled="disabled"{% endunless %}>
+                  <span class="size-option__label">{{ size }}</span>
+                  <span class="size-option__low-stock hidden">Poucas unidades</span>
+                </button>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
 
       </div>
 
