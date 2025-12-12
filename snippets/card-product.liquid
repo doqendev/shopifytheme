@@ -631,10 +631,9 @@
       });
     }
 
-    // Initialize Swiper on page load
-    document.addEventListener('DOMContentLoaded', function() {
-      initializeProductCardSwipers();
-
+    // Function to initialize quick add listeners for product cards
+    // This can be called multiple times safely (e.g., after infinite scroll loads new products)
+    window.initializeQuickAddListeners = function() {
       var plusEls = document.querySelectorAll('.product-card-plus');
       var productCards = document.querySelectorAll('.product-card-wrapper');
 
@@ -1200,6 +1199,12 @@
         if (!window.matchMedia('(min-width: 990px)').matches) return;
         closeAllPlus();
       }, { passive: true });
+    };
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeProductCardSwipers();
+      window.initializeQuickAddListeners();
     });
   </script>
   {% endif %}

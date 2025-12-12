@@ -1034,6 +1034,9 @@
           if (typeof window.initializeProductCardSwipers === 'function') {
             window.initializeProductCardSwipers();
           }
+          if (typeof window.initializeQuickAddListeners === 'function') {
+            window.initializeQuickAddListeners();
+          }
           resetLoadingState();
         })
         .catch(function(error) {

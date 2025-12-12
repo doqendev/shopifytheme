@@ -102,6 +102,9 @@ static renderProductGridContainer(html) {
   if (typeof initializeProductCardSwipers === 'function') {
     initializeProductCardSwipers();
   }
+  if (typeof window.initializeQuickAddListeners === 'function') {
+    window.initializeQuickAddListeners();
+  }
   if (typeof window.initializeCollectionInfiniteScroll === 'function') {
     window.initializeCollectionInfiniteScroll();
   }
