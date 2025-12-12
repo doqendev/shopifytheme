@@ -17,7 +17,7 @@ test.describe('Collection Grid Quick Add', () => {
 
   test('Grid 1 (one-col) - quick add opens size drawer', async ({ page }) => {
     // Switch to Grid 1
-    await page.locator('.grid-control-btn').nth(0).click();
+    await page.locator('#layout-one-col').click();
     await page.waitForTimeout(500);
 
     // Verify grid is active
@@ -39,7 +39,7 @@ test.describe('Collection Grid Quick Add', () => {
 
   test('Grid 2 (two-col) - quick add opens size drawer', async ({ page }) => {
     // Grid 2 is default, but let's click it to be sure
-    await page.locator('.grid-control-btn').nth(1).click();
+    await page.locator('#layout-two-col').click();
     await page.waitForTimeout(500);
 
     // Verify grid is active
@@ -61,7 +61,7 @@ test.describe('Collection Grid Quick Add', () => {
 
   test('Grid 3 (three-col) - quick add opens size drawer', async ({ page }) => {
     // Switch to Grid 3 (images only)
-    await page.locator('.grid-control-btn').nth(2).click();
+    await page.locator('#layout-three-col').click();
     await page.waitForTimeout(500);
 
     // Verify grid is active
@@ -130,7 +130,7 @@ test.describe('Collection Grid Quick Add', () => {
 
   test('Grid 3 (three-col) - debug click event handlers', async ({ page }) => {
     // Switch to Grid 3
-    await page.locator('.grid-control-btn').nth(2).click();
+    await page.locator('#layout-three-col').click();
     await page.waitForTimeout(500);
 
     const firstProduct = page.locator('.card-wrapper').first();
@@ -177,7 +177,7 @@ test.describe('Collection Grid Quick Add', () => {
 
   test('Grid 3 (three-col) - test with screenshot and trace', async ({ page }) => {
     // Switch to Grid 3
-    await page.locator('.grid-control-btn').nth(2).click();
+    await page.locator('#layout-three-col').click();
     await page.waitForTimeout(500);
 
     // Take screenshot before click

@@ -31,7 +31,9 @@
       "Bash(shopify theme push:*)",
       "Bash(ls:*)",
       "Bash(dir:*)",
-      "Bash(npx playwright show-report)"
+      "Bash(npx playwright show-report)",
+      "Bash(BASE_URL=\"https://cheyenne.pt\" STORE_PASSWORD=\"123\" npx playwright test:*)",
+      "Bash(BASE_URL=\"https://cheyenne.pt\" STORE_PASSWORD=\"123\" COLLECTION_HANDLE=\"novidades\" npx playwright test:*)"
     ],
     "deny": [],
     "ask": []
