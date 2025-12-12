@@ -134,14 +134,30 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.92);
     border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
     z-index: 5;
+    transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+    cursor: pointer;
   }
 
   .plus-icon--overlay svg {
     width: 16px;
     height: 16px;
+    color: #111;
+  }
+
+  .plus-icon--overlay:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+    background: #fff;
+  }
+
+  .plus-icon--overlay:active {
+    transform: translateY(0);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14);
   }
 
   .card__content {
