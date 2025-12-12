@@ -15,6 +15,7 @@
 <style>
 
 .product-card { position: relative; }
+.product-card .card__inner { position: relative; }
 
   /* Hide original wishlist heart on mobile, show on desktop */
   .wishlist-toggle:not(.wishlist-toggle--mobile-inline) {
@@ -82,23 +83,23 @@
   }
 
   .product-card-plus {
-    display: flex;
+    position: absolute;
+    left: 0.75rem;
+    bottom: 0.75rem;
+    display: inline-flex;
     align-items: center;
-    gap: 0;
-    margin-left: auto;
-    justify-content: flex-end;
-    flex-shrink: 0;
-    position: static;
+    justify-content: center;
+    z-index: 5;
   }
 
-  .product-card-plus .wishlist-toggle--mobile-inline,
+  .wishlist-toggle--mobile-inline,
   .product-card-plus .plus-icon {
     position: static !important;
     inset: auto !important;
     margin: 0;
     flex-shrink: 0;
-    width: 2.25rem;
-    height: 2.25rem;
+    width: 2.5rem;
+    height: 2.5rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -106,13 +107,13 @@
     border-radius: 50%;
   }
 
-  .product-card-plus .wishlist-toggle--mobile-inline + .plus-icon {
-    margin-left: -0.35rem; /* tuck buttons tighter together */
-  }
-
   .product-card-plus .plus-icon svg {
     width: 16px;
     height: 16px;
+  }
+
+  .wishlist-toggle--mobile-inline.wishlist-inline-right {
+    margin-left: auto;
   }
 
   .card__content {
@@ -376,6 +377,30 @@
   </div>
 {% endif %}
 
+      {% if size_option_index != -1 %}
+        <div class="product-card-plus">
+          <button type="button" class="plus-icon" aria-label="{{ 'products.product.add_to_cart' | t }}" tabindex="0">
+            {{ 'icon-plus.svg' | inline_asset_content }}
+          </button>
+          <div class="size-options" tabindex="-1">
+            <div class="size-options-header size-options-header--mobile-only">
+              <span class="size-options-title">Seleciona o tamanho</span>
+              <a href="/pages/guia-de-tamanhos" class="size-guide-link">
+                Guia de tamanhos
+              </a>
+            </div>
+            <div class="overlay-sizes">
+              {% for size in all_sizes %}
+                <button type="button" class="size-option{% unless available_sizes contains size %} sold-out{% endunless %}" data-size="{{ size }}" {% unless available_sizes contains size %}disabled="disabled"{% endunless %}>
+                  <span class="size-option__label">{{ size }}</span>
+                  <span class="size-option__low-stock hidden">Poucas unidades</span>
+                </button>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
       </div>
 
       <div class="card__content">
@@ -447,39 +472,16 @@
                     {% if additional_swatch_count > 0 %}
                       <span class="additional-swatch-count">+{{ additional_swatch_count }}</span>
                     {% endif %}
-                    {% if size_option_index != -1 %}
-                      <div class="product-card-plus">
-                        <button
-                          class="wishlist-toggle wishlist-toggle--mobile-inline"
-                          type="button"
-                          aria-pressed="false"
-                          aria-label="{{ 'general.add_to_wishlist' | t | default: 'Add to wishlist' }}"
-                        >
-                          <svg class="wishlist-toggle__icon" viewBox="0 0 24 24" role="presentation" focusable="false">
-                            <path d="M12 21.35 10.55 20.03C6.2 15.99 3 12.99 3 9.31 3 6.28 5.42 4 8.4 4A5.2 5.2 0 0 1 12 5.86 5.2 5.2 0 0 1 15.6 4C18.58 4 21 6.28 21 9.31c0 3.68-3.2 6.68-7.55 10.72z" />
-                          </svg>
-                        </button>
-                        <button type="button" class="plus-icon" aria-label="{{ 'products.product.add_to_cart' | t }}" tabindex="0">
-                          {{ 'icon-plus.svg' | inline_asset_content }}
-                        </button>
-                        <div class="size-options" tabindex="-1">
-                          <div class="size-options-header size-options-header--mobile-only">
-                            <span class="size-options-title">Seleciona o tamanho</span>
-                            <a href="/pages/guia-de-tamanhos" class="size-guide-link">
-                              Guia de tamanhos
-                            </a>
-                          </div>
-                          <div class="overlay-sizes">
-                            {% for size in all_sizes %}
-                              <button type="button" class="size-option{% unless available_sizes contains size %} sold-out{% endunless %}" data-size="{{ size }}" {% unless available_sizes contains size %}disabled="disabled"{% endunless %}>
-                                <span class="size-option__label">{{ size }}</span>
-                                <span class="size-option__low-stock hidden">Poucas unidades</span>
-                              </button>
-                            {% endfor %}
-                          </div>
-                        </div>
-                      </div>
-                    {% endif %}
+                    <button
+                      class="wishlist-toggle wishlist-toggle--mobile-inline wishlist-inline-right"
+                      type="button"
+                      aria-pressed="false"
+                      aria-label="{{ 'general.add_to_wishlist' | t | default: 'Add to wishlist' }}"
+                    >
+                      <svg class="wishlist-toggle__icon" viewBox="0 0 24 24" role="presentation" focusable="false">
+                        <path d="M12 21.35 10.55 20.03C6.2 15.99 3 12.99 3 9.31 3 6.28 5.42 4 8.4 4A5.2 5.2 0 0 1 12 5.86 5.2 5.2 0 0 1 15.6 4C18.58 4 21 6.28 21 9.31c0 3.68-3.2 6.68-7.55 10.72z" />
+                      </svg>
+                    </button>
                   </div>
                 {% endif %}
               {% endfor %}
