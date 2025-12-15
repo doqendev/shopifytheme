@@ -9,52 +9,18 @@
 {% endcomment %}
 
 {%- liquid
-  assign show_pills = true
   assign product_type_filter = collection.filters | where: 'param_name', 'filter.p.product_type' | first
 
-  if product_type_filter == nil
-    assign show_pills = false
-  endif
-
   assign raw_pills = nil
-
   if collection.metafields.custom.quick_filter_pills and collection.metafields.custom.quick_filter_pills.value != blank
     assign raw_pills = collection.metafields.custom.quick_filter_pills.value
   endif
 
-  if raw_pills == nil or raw_pills == empty
+  if (raw_pills == nil or raw_pills == empty) and product_type_filter
     assign raw_pills = product_type_filter.values | map: 'label'
   endif
 
-  assign pills = '' | split: ',' 
-
-  for pill in raw_pills
-    if pill == blank
-      continue
-    endif
-
-    assign pill_label = pill.label | default: pill | strip
-    assign pill_value = pill.value | default: pill_label | strip
-
-    assign match = nil
-    for option in product_type_filter.values
-      assign option_label_down = option.label | downcase
-      assign option_value_down = option.value | downcase
-      assign target_down = pill_value | downcase
-      if option_label_down == target_down or option_value_down == target_down
-        assign match = option
-        break
-      endif
-    endfor
-
-    if match
-      assign pills = pills | push: match
-    endif
-  endfor
-
-  if pills == empty
-    assign show_pills = false
-  endif
+  assign show_pills = raw_pills != nil and raw_pills != empty
 -%}
 
 {% if show_pills %}
@@ -105,19 +71,41 @@
   </style>
 
   <div class="collection-pills" role="list">
-    {%- for pill in pills limit: 12 -%}
-      {%- assign href = pill.url_to_add -%}
-      {%- assign active = pill.active -%}
-      {%- if active -%}
-        {%- assign href = pill.url_to_remove -%}
+    {%- for pill in raw_pills limit: 12 -%}
+      {%- assign pill_label = pill.label | default: pill | strip -%}
+      {%- assign pill_value = pill.value | default: pill_label | strip -%}
+
+      {%- assign href = collection.url | append: '?filter.p.product_type=' | append: pill_value | url_encode -%}
+      {%- assign active = false -%}
+
+      {%- if product_type_filter and product_type_filter.values -%}
+        {%- assign match = nil -%}
+        {%- for option in product_type_filter.values -%}
+          {%- assign option_label_down = option.label | downcase -%}
+          {%- assign option_value_down = option.value | downcase -%}
+          {%- assign target_down = pill_value | downcase -%}
+          {%- if option_label_down == target_down or option_value_down == target_down -%}
+            {%- assign match = option -%}
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- if match -%}
+          {%- assign href = match.url_to_add -%}
+          {%- assign active = match.active -%}
+          {%- if active -%}
+            {%- assign href = match.url_to_remove -%}
+          {%- endif -%}
+        {%- endif -%}
       {%- endif -%}
+
       <a
         class="collection-pills__pill{% if active %} is-active{% endif %}"
         href="{{ href }}"
         role="listitem"
         aria-pressed="{{ active | default: false }}"
       >
-        {{ pill.label | escape }}
+        {{ pill_label | escape }}
       </a>
     {%- endfor -%}
   </div>
