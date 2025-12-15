@@ -169,13 +169,17 @@
     }
   }
 
-  /* Grid transition animations - FLIP technique handles card animations via JS */
+  /* Pure CSS Grid transition - browser handles animation natively */
   .product-grid {
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: grid-template-columns 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                gap 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                padding 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Ensure smooth rendering during transitions */
+  /* Smooth card animations during grid changes */
   .card-wrapper {
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
   }
@@ -649,29 +653,13 @@
       setActive(btnThreeCol);
     });
 
-    // Animate grid transitions with smooth crossfade
+    // Pure CSS Grid transition - browser handles animation natively
     function animateGridTransition(grid, newClass, removeClasses) {
-      // Simple, smooth crossfade between grid states
-      grid.style.opacity = '0';
-      grid.style.transition = 'opacity 0.15s ease-out';
-
-      setTimeout(function() {
-        // Change layout while invisible
-        removeClasses.forEach(function(cls) {
-          grid.classList.remove(cls);
-        });
-        grid.classList.add(newClass);
-
-        // Fade back in
-        grid.style.opacity = '1';
-        grid.style.transition = 'opacity 0.2s ease-in';
-
-        // Clean up
-        setTimeout(function() {
-          grid.style.opacity = '';
-          grid.style.transition = '';
-        }, 200);
-      }, 150);
+      // Simply change the classes - CSS handles all animation
+      removeClasses.forEach(function(cls) {
+        grid.classList.remove(cls);
+      });
+      grid.classList.add(newClass);
     }
 
     // Apply the layout corresponding to the active button without triggering a click
