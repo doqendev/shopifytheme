@@ -67,9 +67,14 @@
   assign pill_items = pill_joined | split: '||'
 
   assign results_url = collection.url | default: '/collections/all'
+
+  assign show_filter_bar = false
+  if show_pills or has_any_active_filters
+    assign show_filter_bar = true
+  endif
 -%}
 
-{% if show_pills %}
+{% if show_filter_bar %}
   <style>
     /* Unified filter bar container */
     .collection-pills-wrapper {
@@ -83,6 +88,8 @@
       gap: 0.625rem;
       align-items: center;
       flex-wrap: wrap;
+      padding-left: 25px;
+      padding-right: 25px;
     }
 
     /* Product type pills (always visible) */
@@ -179,6 +186,8 @@
       }
       .collection-pills {
         gap: 0.5rem;
+        padding-left: 20px;
+        padding-right: 20px;
       }
       .collection-pills__pill,
       .collection-pills__chip {
@@ -200,8 +209,9 @@
 
   <div class="collection-pills-wrapper page-width">
     <div class="collection-pills" role="list">
-      {%- comment -%} Product type pills (always visible) {%- endcomment -%}
-      {%- for pill_value in pill_items limit: 12 -%}
+      {%- comment -%} Product type pills (always visible when configured) {%- endcomment -%}
+      {%- if show_pills -%}
+        {%- for pill_value in pill_items limit: 12 -%}
         {%- assign pill_label = pill_value -%}
         {%- assign href = collection.url | append: '?filter.p.product_type=' | append: pill_value | url_encode -%}
         {%- assign active = false -%}
@@ -227,15 +237,16 @@
           {%- endif -%}
         {%- endif -%}
 
-        <a
-          class="collection-pills__pill{% if active %} is-active{% endif %}"
-          href="{{ href }}"
-          role="listitem"
-          aria-pressed="{{ active | default: false }}"
-        >
-          {{ pill_label | escape }}
-        </a>
-      {%- endfor -%}
+          <a
+            class="collection-pills__pill{% if active %} is-active{% endif %}"
+            href="{{ href }}"
+            role="listitem"
+            aria-pressed="{{ active | default: false }}"
+          >
+            {{ pill_label | escape }}
+          </a>
+        {%- endfor -%}
+      {%- endif -%}
 
       {%- comment -%} Divider + Active filter chips from other filter types {%- endcomment -%}
       {%- assign has_other_active = false -%}
@@ -255,7 +266,9 @@
       {%- endfor -%}
 
       {%- if has_other_active -%}
-        <div class="collection-pills__divider"></div>
+        {%- if show_pills -%}
+          <div class="collection-pills__divider"></div>
+        {%- endif -%}
 
         {%- for filter in collection.filters -%}
           {%- if filter.param_name != 'filter.p.product_type' -%}
