@@ -702,24 +702,26 @@
         card.style.transition = 'none';
       });
 
-      // Double RAF to ensure browser has painted the inverted state
-      requestAnimationFrame(function() {
-        requestAnimationFrame(function() {
-          // PLAY: Animate to final state
-          cards.forEach(function(card) {
-            card.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
-            card.style.transform = '';
-          });
+      // CRITICAL: Force browser reflow to ensure inverted transform is committed
+      // This prevents flickering by ensuring browser paints the inverted state before animating
+      grid.offsetHeight;
 
-          // Clean up inline styles after animation completes
-          setTimeout(function() {
-            cards.forEach(function(card) {
-              card.style.transition = '';
-              card.style.transformOrigin = '';
-              card.style.willChange = '';
-            });
-          }, 500);
+      // PLAY: Animate to final state
+      // Use single RAF - reflow above ensures transform is committed
+      requestAnimationFrame(function() {
+        cards.forEach(function(card) {
+          card.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+          card.style.transform = '';
         });
+
+        // Clean up inline styles after animation completes
+        setTimeout(function() {
+          cards.forEach(function(card) {
+            card.style.transition = '';
+            card.style.transformOrigin = '';
+            card.style.willChange = '';
+          });
+        }, 500);
       });
     }
 
