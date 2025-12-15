@@ -26,7 +26,7 @@
     assign raw_pills = product_type_filter.values | map: 'label'
   endif
 
-  assign pills = '' | split: ',' # normalized pills we will iterate
+  assign pills = '' | split: ',' 
 
   for pill in raw_pills
     if pill == blank
@@ -36,7 +36,6 @@
     assign pill_label = pill.label | default: pill | strip
     assign pill_value = pill.value | default: pill_label | strip
 
-    # Find matching product type option (case-insensitive match on label/value)
     assign match = nil
     for option in product_type_filter.values
       assign option_label_down = option.label | downcase
