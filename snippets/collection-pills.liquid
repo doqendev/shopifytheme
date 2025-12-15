@@ -22,24 +22,28 @@
     endif
   endif
 
-  assign pill_items = '' | split: ','
-  for pill in raw_pills
-    assign base_label = pill.label | default: pill | strip
-    assign base_value = pill.value | default: base_label | strip
-    assign parts = base_value | split: ','
-    for part in parts
-      assign val = part | strip
-      if val == '' 
-        continue
-      endif
-      assign pill_items = pill_items | push: val
+  assign pill_joined = ''
+  if raw_pills
+    for pill in raw_pills
+      assign base_label = pill.label | default: pill | strip
+      assign base_value = pill.value | default: base_label | strip
+      assign parts = base_value | split: ','
+      for part in parts
+        assign val = part | strip
+        if val == ''
+          continue
+        endif
+        if pill_joined == ''
+          assign pill_joined = val
+        else
+          assign pill_joined = pill_joined | append: '||' | append: val
+        endif
+      endfor
     endfor
-  endfor
-
-  assign show_pills = false
-  if pill_items != nil and pill_items != empty
-    assign show_pills = true
   endif
+
+  assign show_pills = pill_joined != ''
+  assign pill_items = pill_joined | split: '||'
 -%}
 
 {% if show_pills %}
