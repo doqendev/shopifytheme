@@ -1,20 +1,31 @@
-## Collection Product-Type Pills
+## Collection Unified Filter Bar
 
 ### Overview
-Custom filter pills that appear below the collection heading, allowing quick filtering by product type. The pills use the theme's color scheme variables for consistent styling across different color schemes.
+A unified filter bar that appears below the collection heading, combining:
+- **Product type pills** (always visible, toggleable)
+- **Active filter chips** from all other filters (color, size, price, etc.)
+- **Clear all button** when any filters are active
 
-### Features
-- **Custom pill configuration** per collection via metafield
-- **Automatic fallback** to available Product type filter values
-- **Smart active state** with toggle behavior
-- **Clean integration** that hides duplicate native filter chips
-- **Responsive design** with mobile-optimized sizing and spacing
+This creates a cohesive filtering experience where users can see and manage all filters in one place, eliminating the messy fragmentation between pills and native Search & Discovery filter displays.
 
-### Behavior
-- Clicking a pill **toggles** the corresponding Product type filter
-- Other active filters and sort options are **preserved**
-- The native "Product type" filter chip is **automatically hidden** to prevent duplicate UI
-- "Remover tudo" (clear all) button is **conditionally hidden** when Product type is the only active filter
+### Key Features
+
+**Product Type Pills:**
+- Always visible (from metafield or fallback to filter values)
+- Toggleable on/off behavior
+- Distinctive styling (solid fill when active)
+
+**Active Filter Chips:**
+- Automatically appear when other filters are selected
+- Removable via X icon
+- Visually distinct from product type pills (lighter styling)
+- Support all filter types: color, size, price ranges, etc.
+
+**Unified Experience:**
+- Single location for all active filters
+- Native duplicate filter displays are hidden
+- Clean, organized visual hierarchy
+- Responsive design for all screen sizes
 
 ### Setup Steps
 
@@ -39,14 +50,43 @@ For each collection where you want custom pills:
 #### 3. Verify filter availability
 Ensure the **Product type** filter is enabled in **Search & Discovery** settings so filter URLs resolve correctly.
 
+### How It Works
+
+**Visual Layout:**
+```
+[Product Type Pill] [Product Type Pill] [Product Type Pill] | [Color: Red ×] [Size: M ×] [Clear all]
+```
+
+**Interaction Flow:**
+1. User sees product type pills immediately upon landing on collection page
+2. User clicks a product type pill → it toggles on/off, filters products
+3. User opens filter drawer and selects a color → color chip appears next to pills
+4. User can remove individual filters by clicking X on chips or pill
+5. User can clear all filters at once with "Clear all" button
+
+**Filter Integration:**
+- Product type pills remain persistent (always visible)
+- Other active filters dynamically appear as removable chips
+- All filters work together seamlessly with Search & Discovery
+- Native duplicate filter displays are hidden automatically
+
 ### Implementation Details
 
 **Files modified:**
-- `snippets/collection-pills.liquid` — Main component with rendering logic, styling, and filter integration
-- `sections/main-collection-product-grid.liquid:426` — Includes the pills snippet below the collection header
+- `snippets/collection-pills.liquid` — Unified filter bar component with pills + chips rendering
+- `sections/main-collection-product-grid.liquid:426` — Includes the filter bar below collection header
 
-**Styling approach:**
-- Uses theme color scheme variables (`--color-foreground`, `--color-background`)
-- Wrapped in `page-width` class for proper alignment with page content
-- Mobile-responsive with adjusted spacing and font sizes
-- Smooth transitions and hover states for better UX
+**Technical approach:**
+- Product type pills rendered from metafield or filter values (always visible)
+- Iterates through `collection.filters` to find active filters (excluding product_type)
+- Renders active filter chips with remove URLs from Shopify's filter API
+- Hides native `.active-facets` displays to prevent duplication
+- Uses theme color variables for consistent theming
+- Fully responsive with mobile-optimized spacing
+
+**Styling:**
+- Product type pills: Solid border, fills on active state
+- Active filter chips: Light background, subtle border, with X icon
+- Visual divider separates pills from chips
+- Clear all button: Underlined text link
+- Smooth transitions and hover states throughout

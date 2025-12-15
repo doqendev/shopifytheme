@@ -1,40 +1,32 @@
 {% comment %}
   collection-pills.liquid
-  Quick product-type pills for collection pages.
+  Unified filter bar: product-type pills + active filter chips.
 
-  Data source:
-    - Preferred: collection.metafields.custom.quick_filter_pills (list)
-      * Accepts list of strings or list items with a `label`/`value` property.
-    - Fallback: first available product type filter values (if metafield empty).
+  Product type pills:
+    - Always visible (from metafield or fallback to filter values)
+    - Toggleable on/off
+
+  Active filter chips:
+    - Shows active filters from OTHER types (color, size, price, etc.)
+    - Removable X button
+    - Displayed in the same unified bar
 {% endcomment %}
 
 {%- liquid
   assign product_type_filter = collection.filters | where: 'param_name', 'filter.p.product_type' | first
 
-  assign active_product_type = false
-  if product_type_filter and product_type_filter.active_values and product_type_filter.active_values.size > 0
-    assign active_product_type = true
-  endif
-
-  assign active_other_filters = false
+  assign has_any_active_filters = false
   if collection.filters
     for f in collection.filters
-      if f.param_name != 'filter.p.product_type'
-        if f.active_values and f.active_values.size > 0
-          assign active_other_filters = true
-        endif
-        if f.type == 'price_range'
-          if f.min_value.value != null or f.max_value.value != null
-            assign active_other_filters = true
-          endif
+      if f.active_values and f.active_values.size > 0
+        assign has_any_active_filters = true
+      endif
+      if f.type == 'price_range'
+        if f.min_value.value != null or f.max_value.value != null
+          assign has_any_active_filters = true
         endif
       endif
     endfor
-  endif
-
-  assign hide_clear_all = false
-  if active_product_type and active_other_filters == false
-    assign hide_clear_all = true
   endif
 
   assign raw_pills = nil
@@ -73,19 +65,26 @@
     assign show_pills = true
   endif
   assign pill_items = pill_joined | split: '||'
+
+  assign results_url = collection.url | default: '/collections/all'
 -%}
 
 {% if show_pills %}
   <style>
+    /* Unified filter bar container */
     .collection-pills-wrapper {
       margin-bottom: 2rem;
     }
+
+    /* Main filter bar with pills + chips */
     .collection-pills {
       display: flex;
       gap: 0.625rem;
       align-items: center;
       flex-wrap: wrap;
     }
+
+    /* Product type pills (always visible) */
     .collection-pills__pill {
       display: inline-flex;
       align-items: center;
@@ -116,6 +115,62 @@
     .collection-pills__pill.is-active:hover {
       opacity: 0.9;
     }
+
+    /* Active filter chips (other filters) */
+    .collection-pills__chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.625rem 1rem;
+      border-radius: 999px;
+      border: 1px solid rgba(var(--color-foreground), 0.2);
+      background: rgba(var(--color-foreground), 0.04);
+      color: rgb(var(--color-foreground));
+      font-size: 0.875rem;
+      font-weight: 400;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+    .collection-pills__chip:hover {
+      background: rgba(var(--color-foreground), 0.08);
+      border-color: rgba(var(--color-foreground), 0.3);
+    }
+    .collection-pills__chip-remove {
+      display: inline-flex;
+      width: 14px;
+      height: 14px;
+      opacity: 0.6;
+    }
+    .collection-pills__chip:hover .collection-pills__chip-remove {
+      opacity: 1;
+    }
+
+    /* Divider between pills and chips */
+    .collection-pills__divider {
+      width: 1px;
+      height: 24px;
+      background: rgba(var(--color-foreground), 0.12);
+      margin: 0 0.25rem;
+    }
+
+    /* Clear all button */
+    .collection-pills__clear-all {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.625rem 1rem;
+      color: rgb(var(--color-foreground));
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      white-space: nowrap;
+      transition: opacity 0.2s ease;
+    }
+    .collection-pills__clear-all:hover {
+      opacity: 0.7;
+    }
+
     @media (max-width: 749px) {
       .collection-pills-wrapper {
         margin-bottom: 1.5rem;
@@ -123,67 +178,116 @@
       .collection-pills {
         gap: 0.5rem;
       }
-      .collection-pills__pill {
+      .collection-pills__pill,
+      .collection-pills__chip {
         padding: 0.5rem 0.875rem;
         font-size: 0.8125rem;
       }
+      .collection-pills__divider {
+        height: 20px;
+      }
     }
-    /* Hide built-in active facet chip for product_type so only custom pills show */
-    .active-facets__button[data-filter-param="filter.p.product_type"] {
+
+    /* Hide all native active filter displays (we show them in unified bar) */
+    .active-facets,
+    .active-facets-desktop,
+    .active-facets-mobile {
       display: none !important;
     }
   </style>
 
-  {% if hide_clear_all %}
-    <style>
-      /* Hide clear-all link when the only active filter is product_type (desktop + mobile) */
-      .active-facets__button-remove.underlined-link {
-        display: none !important;
-      }
-      .mobile-facets__clear.underlined-link {
-        display: none !important;
-      }
-    </style>
-  {% endif %}
-
   <div class="collection-pills-wrapper page-width">
     <div class="collection-pills" role="list">
+      {%- comment -%} Product type pills (always visible) {%- endcomment -%}
       {%- for pill_value in pill_items limit: 12 -%}
-      {%- assign pill_label = pill_value -%}
+        {%- assign pill_label = pill_value -%}
+        {%- assign href = collection.url | append: '?filter.p.product_type=' | append: pill_value | url_encode -%}
+        {%- assign active = false -%}
 
-      {%- assign href = collection.url | append: '?filter.p.product_type=' | append: pill_value | url_encode -%}
-      {%- assign active = false -%}
+        {%- if product_type_filter and product_type_filter.values -%}
+          {%- assign match = nil -%}
+          {%- for option in product_type_filter.values -%}
+            {%- assign option_label_down = option.label | downcase -%}
+            {%- assign option_value_down = option.value | downcase -%}
+            {%- assign target_down = pill_value | downcase -%}
+            {%- if option_label_down == target_down or option_value_down == target_down -%}
+              {%- assign match = option -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
 
-      {%- if product_type_filter and product_type_filter.values -%}
-        {%- assign match = nil -%}
-        {%- for option in product_type_filter.values -%}
-          {%- assign option_label_down = option.label | downcase -%}
-          {%- assign option_value_down = option.value | downcase -%}
-          {%- assign target_down = pill_value | downcase -%}
-          {%- if option_label_down == target_down or option_value_down == target_down -%}
-            {%- assign match = option -%}
-            {%- break -%}
-          {%- endif -%}
-        {%- endfor -%}
-
-        {%- if match -%}
-          {%- assign href = match.url_to_add -%}
-          {%- assign active = match.active -%}
-          {%- if active -%}
-            {%- assign href = match.url_to_remove -%}
+          {%- if match -%}
+            {%- assign href = match.url_to_add -%}
+            {%- assign active = match.active -%}
+            {%- if active -%}
+              {%- assign href = match.url_to_remove -%}
+            {%- endif -%}
           {%- endif -%}
         {%- endif -%}
+
+        <a
+          class="collection-pills__pill{% if active %} is-active{% endif %}"
+          href="{{ href }}"
+          role="listitem"
+          aria-pressed="{{ active | default: false }}"
+        >
+          {{ pill_label | escape }}
+        </a>
+      {%- endfor -%}
+
+      {%- comment -%} Divider + Active filter chips from other filter types {%- endcomment -%}
+      {%- assign has_other_active = false -%}
+      {%- for filter in collection.filters -%}
+        {%- if filter.param_name != 'filter.p.product_type' -%}
+          {%- if filter.active_values.size > 0 -%}
+            {%- assign has_other_active = true -%}
+            {%- break -%}
+          {%- endif -%}
+          {%- if filter.type == 'price_range' -%}
+            {%- if filter.min_value.value != null or filter.max_value.value != null -%}
+              {%- assign has_other_active = true -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- if has_other_active -%}
+        <div class="collection-pills__divider"></div>
+
+        {%- for filter in collection.filters -%}
+          {%- if filter.param_name != 'filter.p.product_type' -%}
+            {%- for value in filter.active_values -%}
+              <a href="{{ value.url_to_remove }}" class="collection-pills__chip">
+                {{ filter.label | escape }}: {{ value.label | escape }}
+                <span class="collection-pills__chip-remove">
+                  {{- 'icon-close-small.svg' | inline_asset_content -}}
+                </span>
+              </a>
+            {%- endfor -%}
+
+            {%- if filter.type == 'price_range' -%}
+              {%- assign min = filter.min_value.value -%}
+              {%- assign max = filter.max_value.value -%}
+              {%- if min != null or max != null -%}
+                <a href="{{ filter.url_to_remove }}" class="collection-pills__chip">
+                  {{ min | default: 0 | money }} - {{ max | default: filter.range_max | money }}
+                  <span class="collection-pills__chip-remove">
+                    {{- 'icon-close-small.svg' | inline_asset_content -}}
+                  </span>
+                </a>
+              {%- endif -%}
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
       {%- endif -%}
 
-      <a
-        class="collection-pills__pill{% if active %} is-active{% endif %}"
-        href="{{ href }}"
-        role="listitem"
-        aria-pressed="{{ active | default: false }}"
-      >
-        {{ pill_label | escape }}
-      </a>
-      {%- endfor -%}
+      {%- comment -%} Clear all button (when any filters active) {%- endcomment -%}
+      {%- if has_any_active_filters -%}
+        <a href="{{ results_url }}" class="collection-pills__clear-all">
+          {{ 'products.facets.clear_all' | t | default: 'Clear all' }}
+        </a>
+      {%- endif -%}
     </div>
   </div>
 {% endif %}
