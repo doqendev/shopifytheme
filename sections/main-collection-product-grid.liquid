@@ -1140,24 +1140,20 @@
         .then(function(html) {
           var parser = new DOMParser();
           var doc = parser.parseFromString(html, 'text/html');
+          removePlaceholders();
+          appendProductsFromDocument(doc);
+          updatePaginationFromDocument(doc);
 
-          // Add delay to make loading animation visible (for testing/demo purposes)
-          setTimeout(function() {
-            removePlaceholders();
-            appendProductsFromDocument(doc);
-            updatePaginationFromDocument(doc);
-
-            if (typeof window.initializeGridOptions === 'function') {
-              window.initializeGridOptions();
-            }
-            if (typeof window.initializeProductCardSwipers === 'function') {
-              window.initializeProductCardSwipers();
-            }
-            if (typeof window.initializeQuickAddListeners === 'function') {
-              window.initializeQuickAddListeners();
-            }
-            resetLoadingState();
-          }, 1500); // 1.5 second delay to see the loading animation
+          if (typeof window.initializeGridOptions === 'function') {
+            window.initializeGridOptions();
+          }
+          if (typeof window.initializeProductCardSwipers === 'function') {
+            window.initializeProductCardSwipers();
+          }
+          if (typeof window.initializeQuickAddListeners === 'function') {
+            window.initializeQuickAddListeners();
+          }
+          resetLoadingState();
         })
         .catch(function(error) {
           console.error('Collection infinite scroll error:', error);

@@ -72,27 +72,27 @@
       margin-bottom: 1.75rem;
     }
 
-    /* Pills layout */
+    /* Pills layout - DESKTOP */
     .collection-pills {
       display: flex;
-      gap: 0.625rem;
+      gap: 0.75rem;
       align-items: center;
       flex-wrap: wrap;
       padding-left: 25px;
       padding-right: 25px;
     }
 
-    /* Product type pills */
+    /* Product type pills - DESKTOP (bigger) */
     .collection-pills__pill {
       display: inline-flex;
       align-items: center;
-      gap: 0.375rem;
-      padding: 0.625rem 1.125rem;
+      gap: 0.5rem;
+      padding: 0.875rem 1.5rem;
       border-radius: 999px;
       border: 1px solid rgba(var(--color-foreground), 0.12);
       background: rgb(var(--color-background));
       color: rgb(var(--color-foreground));
-      font-size: 0.875rem;
+      font-size: 1rem;
       font-weight: 500;
       letter-spacing: 0.01em;
       text-decoration: none;
@@ -114,19 +114,31 @@
       opacity: 0.9;
     }
 
+    /* MOBILE - Horizontal slider */
     @media (max-width: 749px) {
       .collection-pills-wrapper {
         margin-top: 1.25rem;
         margin-bottom: 1.5rem;
       }
       .collection-pills {
-        gap: 0.5rem;
+        gap: 0.625rem;
         padding-left: 20px;
         padding-right: 20px;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE/Edge */
+      }
+      .collection-pills::-webkit-scrollbar {
+        display: none; /* Chrome/Safari/Opera */
       }
       .collection-pills__pill {
-        padding: 0.5rem 0.875rem;
-        font-size: 0.8125rem;
+        padding: 0.625rem 1rem;
+        font-size: 0.875rem;
+        scroll-snap-align: start;
+        flex-shrink: 0;
       }
     }
   </style>
