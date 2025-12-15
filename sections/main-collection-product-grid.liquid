@@ -169,39 +169,10 @@
     }
   }
 
-  /* Grid transition animations */
+  /* Grid transition animations - FLIP technique handles card animations via JS */
   .product-grid {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
-
-  .product-grid.grid-transitioning .card-wrapper {
-    animation: zoomTransition 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  @keyframes zoomTransition {
-    0% {
-      opacity: 1;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.7;
-      transform: scale(0.95);
-    }
-    100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-
-  /* Stagger animation for each card */
-  .product-grid.grid-transitioning .card-wrapper:nth-child(1) { animation-delay: 0ms; }
-  .product-grid.grid-transitioning .card-wrapper:nth-child(2) { animation-delay: 20ms; }
-  .product-grid.grid-transitioning .card-wrapper:nth-child(3) { animation-delay: 40ms; }
-  .product-grid.grid-transitioning .card-wrapper:nth-child(4) { animation-delay: 60ms; }
-  .product-grid.grid-transitioning .card-wrapper:nth-child(5) { animation-delay: 80ms; }
-  .product-grid.grid-transitioning .card-wrapper:nth-child(6) { animation-delay: 100ms; }
-  .product-grid.grid-transitioning .card-wrapper:nth-child(7) { animation-delay: 120ms; }
-  .product-grid.grid-transitioning .card-wrapper:nth-child(8) { animation-delay: 140ms; }
 
   .grid-controls {
     display: flex;
@@ -674,19 +645,68 @@
 
     // Animate grid transitions with zoom effect
     function animateGridTransition(grid, newClass, removeClasses) {
-      // Add transitioning class to trigger animation
-      grid.classList.add('grid-transitioning');
+      // FLIP Animation Technique for smooth morphing transitions
+      const cards = Array.from(grid.querySelectorAll('.card-wrapper'));
 
-      // Change grid layout
+      // FIRST: Capture initial positions/sizes of all cards
+      const firstPositions = cards.map(function(card) {
+        return {
+          element: card,
+          rect: card.getBoundingClientRect()
+        };
+      });
+
+      // LAST: Apply new layout (cards jump to final positions instantly)
       removeClasses.forEach(function(cls) {
         grid.classList.remove(cls);
       });
       grid.classList.add(newClass);
 
-      // Remove transitioning class after animation completes
-      setTimeout(function() {
-        grid.classList.remove('grid-transitioning');
-      }, 400);
+      // Force browser reflow to capture final positions
+      grid.offsetHeight;
+
+      const lastPositions = cards.map(function(card) {
+        return {
+          element: card,
+          rect: card.getBoundingClientRect()
+        };
+      });
+
+      // INVERT: Calculate transforms needed to go from first to last position
+      cards.forEach(function(card, index) {
+        const first = firstPositions[index].rect;
+        const last = lastPositions[index].rect;
+
+        // Calculate deltas
+        const deltaX = first.left - last.left;
+        const deltaY = first.top - last.top;
+        const deltaW = first.width / last.width;
+        const deltaH = first.height / last.height;
+
+        // Apply inverted transform (move card back to initial position/size)
+        card.style.transform = 'translate(' + deltaX + 'px, ' + deltaY + 'px) scale(' + deltaW + ', ' + deltaH + ')';
+        card.style.transformOrigin = 'top left';
+        card.style.transition = 'none';
+      });
+
+      // Force reflow
+      grid.offsetHeight;
+
+      // PLAY: Animate to final state
+      requestAnimationFrame(function() {
+        cards.forEach(function(card) {
+          card.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+          card.style.transform = '';
+        });
+
+        // Clean up inline styles after animation completes
+        setTimeout(function() {
+          cards.forEach(function(card) {
+            card.style.transition = '';
+            card.style.transformOrigin = '';
+          });
+        }, 500);
+      });
     }
 
     // Apply the layout corresponding to the active button without triggering a click
