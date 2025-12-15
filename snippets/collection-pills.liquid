@@ -42,7 +42,10 @@
     endfor
   endif
 
-  assign show_pills = pill_joined != ''
+  assign show_pills = false
+  if pill_joined != ''
+    assign show_pills = true
+  endif
   assign pill_items = pill_joined | split: '||'
 -%}
 
