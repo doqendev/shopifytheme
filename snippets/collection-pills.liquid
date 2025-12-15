@@ -94,6 +94,10 @@
         padding-inline: 0.25rem;
       }
     }
+    /* Hide built-in active facet chip for product_type so only custom pills show */
+    .active-facets__button[data-filter-param="filter.p.product_type"] {
+      display: none !important;
+    }
   </style>
 
   <div class="collection-pills" role="list">
