@@ -651,85 +651,77 @@
 
     // Animate grid transitions with zoom effect
     function animateGridTransition(grid, newClass, removeClasses) {
-      // Smooth animation - only scale images, not text
       const cards = Array.from(grid.querySelectorAll('.card-wrapper'));
-
       if (cards.length === 0) return;
 
-      // Get image elements (not text)
-      const images = cards.map(function(card) {
-        return card.querySelector('.card__media, .media, img');
-      }).filter(Boolean);
-
-      // Prepare GPU
-      images.forEach(function(img) {
-        img.style.willChange = 'transform';
-      });
-
-      // Hide grid to prevent any flash
-      grid.style.visibility = 'hidden';
-
-      // FIRST: Capture initial image positions/sizes
-      const firstPositions = images.map(function(img) {
+      // Capture card and image data
+      const cardData = cards.map(function(card) {
+        const img = card.querySelector('.card__media, .media, img');
         return {
-          element: img,
-          rect: img.getBoundingClientRect()
+          card: card,
+          cardRect: card.getBoundingClientRect(),
+          img: img,
+          imgRect: img ? img.getBoundingClientRect() : null
         };
       });
 
-      // Apply new layout classes
-      removeClasses.forEach(function(cls) {
-        grid.classList.remove(cls);
-      });
+      // Apply new layout
+      removeClasses.forEach(function(cls) { grid.classList.remove(cls); });
       grid.classList.add(newClass);
 
-      // Read final positions
-      const lastPositions = images.map(function(img) {
-        return {
-          element: img,
-          rect: img.getBoundingClientRect()
-        };
+      // Capture final positions
+      cardData.forEach(function(data) {
+        data.cardRectFinal = data.card.getBoundingClientRect();
+        if (data.img) {
+          data.imgRectFinal = data.img.getBoundingClientRect();
+        }
       });
 
-      // Apply inverted transforms to images only (no transition yet)
-      images.forEach(function(img, index) {
-        const first = firstPositions[index].rect;
-        const last = lastPositions[index].rect;
+      // Apply inverted transforms IMMEDIATELY (before any paint)
+      cardData.forEach(function(data) {
+        // Card position transform (no scale - prevents layout jump)
+        const cardDeltaX = data.cardRect.left - data.cardRectFinal.left;
+        const cardDeltaY = data.cardRect.top - data.cardRectFinal.top;
 
-        const deltaX = first.left - last.left;
-        const deltaY = first.top - last.top;
-        const scale = first.width / last.width;
+        data.card.style.transform = 'translate(' + cardDeltaX + 'px, ' + cardDeltaY + 'px)';
+        data.card.style.transition = 'none';
 
-        img.style.transform = 'translate(' + deltaX + 'px, ' + deltaY + 'px) scale(' + scale + ')';
-        img.style.transformOrigin = 'top left';
-        img.style.transition = 'none';
+        // Image scale transform (creates the morph effect)
+        if (data.img && data.imgRect && data.imgRectFinal) {
+          const imgScale = data.imgRect.width / data.imgRectFinal.width;
+          data.img.style.transform = 'scale(' + imgScale + ')';
+          data.img.style.transformOrigin = 'top left';
+          data.img.style.transition = 'none';
+        }
       });
 
-      // Force reflow to commit inverted state
+      // Force reflow - commits inverted state
       grid.offsetHeight;
 
-      // Wait for next frame, THEN start animation
+      // Animate to final state
       requestAnimationFrame(function() {
-        // Start the transform animation (but grid still hidden)
-        images.forEach(function(img) {
-          img.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-          img.style.transform = '';
-        });
+        cardData.forEach(function(data) {
+          data.card.style.transition = 'transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
+          data.card.style.transform = '';
 
-        // Wait one more frame, then reveal grid
-        requestAnimationFrame(function() {
-          grid.style.visibility = 'visible';
+          if (data.img) {
+            data.img.style.transition = 'transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
+            data.img.style.transform = '';
+          }
         });
 
         // Clean up
         setTimeout(function() {
-          images.forEach(function(img) {
-            img.style.transition = '';
-            img.style.transformOrigin = '';
-            img.style.willChange = '';
-            img.style.transform = '';
+          cardData.forEach(function(data) {
+            data.card.style.transition = '';
+            data.card.style.transform = '';
+            if (data.img) {
+              data.img.style.transition = '';
+              data.img.style.transform = '';
+              data.img.style.transformOrigin = '';
+            }
           });
-        }, 400);
+        }, 350);
       });
     }
 
