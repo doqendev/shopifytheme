@@ -98,6 +98,13 @@
     .active-facets__button[data-filter-param="filter.p.product_type"] {
       display: none !important;
     }
+    /* Hide clear-all link when the only active filter is product_type (desktop + mobile) */
+    .active-facets__button-remove.underlined-link {
+      display: none !important;
+    }
+    .mobile-facets__clear.underlined-link {
+      display: none !important;
+    }
   </style>
 
   <div class="collection-pills" role="list">
