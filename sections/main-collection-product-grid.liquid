@@ -666,8 +666,8 @@
         img.style.willChange = 'transform';
       });
 
-      // Hide grid briefly to prevent flash
-      grid.style.opacity = '0';
+      // Hide grid to prevent any flash
+      grid.style.visibility = 'hidden';
 
       // FIRST: Capture initial image positions/sizes
       const firstPositions = images.map(function(img) {
@@ -691,7 +691,7 @@
         };
       });
 
-      // Apply inverted transforms to images only
+      // Apply inverted transforms to images only (no transition yet)
       images.forEach(function(img, index) {
         const first = firstPositions[index].rect;
         const last = lastPositions[index].rect;
@@ -705,23 +705,24 @@
         img.style.transition = 'none';
       });
 
-      // Force reflow
+      // Force reflow to commit inverted state
       grid.offsetHeight;
 
-      // Show grid and animate
+      // Wait for next frame, THEN start animation
       requestAnimationFrame(function() {
-        grid.style.opacity = '1';
-        grid.style.transition = 'opacity 0.3s ease';
-
+        // Start the transform animation (but grid still hidden)
         images.forEach(function(img) {
           img.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
           img.style.transform = '';
         });
 
+        // Wait one more frame, then reveal grid
+        requestAnimationFrame(function() {
+          grid.style.visibility = 'visible';
+        });
+
         // Clean up
         setTimeout(function() {
-          grid.style.opacity = '';
-          grid.style.transition = '';
           images.forEach(function(img) {
             img.style.transition = '';
             img.style.transformOrigin = '';
