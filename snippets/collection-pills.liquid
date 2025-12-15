@@ -16,8 +16,10 @@
     assign raw_pills = collection.metafields.custom.quick_filter_pills.value
   endif
 
-  if (raw_pills == nil or raw_pills == empty) and product_type_filter
-    assign raw_pills = product_type_filter.values | map: 'label'
+  if raw_pills == nil or raw_pills == empty
+    if product_type_filter
+      assign raw_pills = product_type_filter.values | map: 'label'
+    endif
   endif
 
   assign show_pills = raw_pills != nil and raw_pills != empty
