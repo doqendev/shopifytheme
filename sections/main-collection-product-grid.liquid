@@ -722,11 +722,18 @@
       var filterGroups = {};
       var urlParams = new URLSearchParams(window.location.search);
 
+      // Debug: Log all parameters
+      console.log('=== FILTROS Count Debug ===');
+      urlParams.forEach(function(value, key) {
+        console.log('Param:', key, '=', value);
+      });
+
       urlParams.forEach(function(value, key) {
         // Only process filter parameters (not sort_by)
         if (key.startsWith('filter.') && key !== 'sort_by') {
           // Skip empty values
           if (!value || value.trim() === '') {
+            console.log('Skipping empty:', key);
             return;
           }
 
@@ -754,13 +761,17 @@
             }
           }
 
+          console.log('Grouping', key, 'as', filterType);
           // Mark this filter group as active
           filterGroups[filterType] = true;
         }
       });
 
+      console.log('Filter groups:', filterGroups);
       // Count unique filter groups
       var count = Object.keys(filterGroups).length;
+      console.log('Total count:', count);
+      console.log('========================');
 
       // Update button text
       var baseText = 'FILTROS';
