@@ -649,80 +649,29 @@
       setActive(btnThreeCol);
     });
 
-    // Animate grid transitions with zoom effect
+    // Animate grid transitions with smooth crossfade
     function animateGridTransition(grid, newClass, removeClasses) {
-      const cards = Array.from(grid.querySelectorAll('.card-wrapper'));
-      if (cards.length === 0) return;
+      // Simple, smooth crossfade between grid states
+      grid.style.opacity = '0';
+      grid.style.transition = 'opacity 0.15s ease-out';
 
-      // Capture card and image data
-      const cardData = cards.map(function(card) {
-        const img = card.querySelector('.card__media, .media, img');
-        return {
-          card: card,
-          cardRect: card.getBoundingClientRect(),
-          img: img,
-          imgRect: img ? img.getBoundingClientRect() : null
-        };
-      });
-
-      // Apply new layout
-      removeClasses.forEach(function(cls) { grid.classList.remove(cls); });
-      grid.classList.add(newClass);
-
-      // Capture final positions
-      cardData.forEach(function(data) {
-        data.cardRectFinal = data.card.getBoundingClientRect();
-        if (data.img) {
-          data.imgRectFinal = data.img.getBoundingClientRect();
-        }
-      });
-
-      // Apply inverted transforms IMMEDIATELY (before any paint)
-      cardData.forEach(function(data) {
-        // Card position transform (no scale - prevents layout jump)
-        const cardDeltaX = data.cardRect.left - data.cardRectFinal.left;
-        const cardDeltaY = data.cardRect.top - data.cardRectFinal.top;
-
-        data.card.style.transform = 'translate(' + cardDeltaX + 'px, ' + cardDeltaY + 'px)';
-        data.card.style.transition = 'none';
-
-        // Image scale transform (creates the morph effect)
-        if (data.img && data.imgRect && data.imgRectFinal) {
-          const imgScale = data.imgRect.width / data.imgRectFinal.width;
-          data.img.style.transform = 'scale(' + imgScale + ')';
-          data.img.style.transformOrigin = 'top left';
-          data.img.style.transition = 'none';
-        }
-      });
-
-      // Force reflow - commits inverted state
-      grid.offsetHeight;
-
-      // Animate to final state
-      requestAnimationFrame(function() {
-        cardData.forEach(function(data) {
-          data.card.style.transition = 'transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
-          data.card.style.transform = '';
-
-          if (data.img) {
-            data.img.style.transition = 'transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
-            data.img.style.transform = '';
-          }
+      setTimeout(function() {
+        // Change layout while invisible
+        removeClasses.forEach(function(cls) {
+          grid.classList.remove(cls);
         });
+        grid.classList.add(newClass);
+
+        // Fade back in
+        grid.style.opacity = '1';
+        grid.style.transition = 'opacity 0.2s ease-in';
 
         // Clean up
         setTimeout(function() {
-          cardData.forEach(function(data) {
-            data.card.style.transition = '';
-            data.card.style.transform = '';
-            if (data.img) {
-              data.img.style.transition = '';
-              data.img.style.transform = '';
-              data.img.style.transformOrigin = '';
-            }
-          });
-        }, 350);
-      });
+          grid.style.opacity = '';
+          grid.style.transition = '';
+        }, 200);
+      }, 150);
     }
 
     // Apply the layout corresponding to the active button without triggering a click
