@@ -16,9 +16,9 @@ This approach keeps the interface clean while providing clear feedback about act
 - Quick access to common product type filtering
 
 **FILTROS Count Indicator:**
-- Shows active filter count in parentheses: "FILTROS (2)"
-- Only counts non-product-type filters (color, size, price, etc.)
-- Automatically updates when filters are added/removed
+- Shows total active filter count in parentheses: "FILTROS (2)"
+- Counts ALL filter types: product type, color, size, price, etc.
+- Automatically updates when filters are added/removed (pills or drawer)
 - Clean, unobtrusive design
 
 **Benefits:**
@@ -62,16 +62,18 @@ Grid Controls: [Layouts] | [FILTROS (2)]
 
 **Interaction Flow:**
 1. User sees product type pills immediately upon landing on collection page
-2. User clicks a product type pill → it toggles on/off, filters products
+2. User clicks "Vestidos" pill → products filter, FILTROS shows "(1)"
 3. User clicks FILTROS button → drawer opens with all available filters
 4. User selects color "Azul" → drawer closes, products filter
-5. FILTROS button now shows "FILTROS (1)" indicating 1 active filter
-6. User can click FILTROS again to manage or remove filters
+5. FILTROS button now shows "FILTROS (2)" (product type + color)
+6. User can click FILTROS again to manage or remove any filters
 
 **Filter Integration:**
 - Product type pills remain persistent (always visible)
+- Product type filters ALSO counted in FILTROS indicator
 - Other filters (color, size, price) managed through FILTROS drawer
-- Count indicator updates automatically
+- Count indicator shows total of ALL active filters (including product type)
+- Count updates automatically for pills or drawer interactions
 - ALL native active filter chips are hidden (not shown outside drawer)
 - Filters only visible via count indicator or inside drawer
 - Clean, minimal UI without any filter chip clutter
@@ -94,12 +96,12 @@ Grid Controls: [Layouts] | [FILTROS (2)]
 *FILTROS Count:*
 - Server-side: Liquid logic calculates initial count on page load
 - Client-side: JavaScript dynamically updates count without page refresh
-- Parses URL parameters to count active filters
-- Excludes product_type filters from count
-- Includes all filter types: color, size, price ranges, etc.
+- Parses URL parameters to count ALL active filters
+- Includes ALL filter types: product type, color, size, price ranges, etc.
 - Price ranges counted as single filter (not separate gte/lte)
+- Excludes only sort_by parameter (not a filter)
 - Count displayed as "(n)" next to FILTROS text
-- Updates automatically when filters are applied via drawer
+- Updates automatically when filters are applied via pills or drawer
 
 **JavaScript (Dynamic Updates):**
 - `updateFiltrosCount()` function parses URL and updates button text

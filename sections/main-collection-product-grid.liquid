@@ -465,16 +465,14 @@
     </div>
     <div class="facets-toggle-container">
       {%- liquid
-        assign other_filter_count = 0
+        assign total_filter_count = 0
         for filter in collection.filters
-          if filter.param_name != 'filter.p.product_type'
-            if filter.active_values.size > 0
-              assign other_filter_count = other_filter_count | plus: filter.active_values.size
-            endif
-            if filter.type == 'price_range'
-              if filter.min_value.value != null or filter.max_value.value != null
-                assign other_filter_count = other_filter_count | plus: 1
-              endif
+          if filter.active_values.size > 0
+            assign total_filter_count = total_filter_count | plus: filter.active_values.size
+          endif
+          if filter.type == 'price_range'
+            if filter.min_value.value != null or filter.max_value.value != null
+              assign total_filter_count = total_filter_count | plus: 1
             endif
           endif
         endfor
@@ -482,8 +480,8 @@
       <button type="button" id="facets-toggle-button" class="facets-toggle-button">
         <span class="facets-icon" style="font-size: 1.1rem !important; letter-spacing: 0 !important; font-family: 'Figtree', Arial, Helvetica, sans-serif !important;">
           FILTROS
-          {%- if other_filter_count > 0 -%}
-            <span class="filtros-count">({{ other_filter_count }})</span>
+          {%- if total_filter_count > 0 -%}
+            <span class="filtros-count">({{ total_filter_count }})</span>
           {%- endif -%}
         </span>
       </button>
@@ -720,14 +718,14 @@
       var facetsIcon = document.querySelector('.facets-icon');
       if (!facetsIcon) return;
 
-      // Count active filters (excluding product_type)
+      // Count all active filters
       var count = 0;
       var urlParams = new URLSearchParams(window.location.search);
       var hasPriceFilter = false;
 
       urlParams.forEach(function(value, key) {
-        // Count all filter params except product_type and sort
-        if (key.startsWith('filter.') && key !== 'filter.p.product_type' && key !== 'sort_by') {
+        // Count all filter params except sort_by
+        if (key.startsWith('filter.') && key !== 'sort_by') {
           // Handle price range as a single filter
           if (key.includes('price.gte') || key.includes('price.lte')) {
             if (!hasPriceFilter) {
