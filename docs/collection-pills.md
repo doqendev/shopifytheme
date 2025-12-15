@@ -64,9 +64,10 @@ Grid Controls: [Layouts] | [FILTROS (2)]
 1. User sees product type pills immediately upon landing on collection page
 2. User clicks "Vestidos" pill → products filter, FILTROS shows "(1)"
 3. User clicks FILTROS button → drawer opens with all available filters
-4. User selects color "Azul" → drawer closes, products filter
-5. FILTROS button now shows "FILTROS (2)" (product type + color)
-6. User can click FILTROS again to manage or remove any filters
+4. User selects color "Azul" → drawer closes, FILTROS shows "(2)"
+5. User opens drawer, selects ANOTHER color "Vermelho" → FILTROS stays "(2)" (all colors = 1 filter type)
+6. User selects size "M" → FILTROS shows "(3)" (product type + color + size)
+7. User can click FILTROS again to manage or remove any filters
 
 **Filter Integration:**
 - Product type pills remain persistent (always visible)
@@ -96,15 +97,23 @@ Grid Controls: [Layouts] | [FILTROS (2)]
 *FILTROS Count:*
 - Server-side: Liquid logic calculates initial count on page load
 - Client-side: JavaScript dynamically updates count without page refresh
-- Parses URL parameters to count ALL active filters
-- Includes ALL filter types: product type, color, size, price ranges, etc.
-- Price ranges counted as single filter (not separate gte/lte)
+- Intelligent grouping: Counts filter TYPES, not individual values
+  - All color selections = 1 filter
+  - All size selections = 1 filter
+  - Product type selection = 1 filter
+  - Price range (min/max) = 1 filter
+- Skips empty or default values
 - Excludes only sort_by parameter (not a filter)
 - Count displayed as "(n)" next to FILTROS text
 - Updates automatically when filters are applied via pills or drawer
 
 **JavaScript (Dynamic Updates):**
-- `updateFiltrosCount()` function parses URL and updates button text
+- `updateFiltrosCount()` function parses URL and groups filters intelligently
+- Groups filters by type using pattern matching:
+  - `filter.v.option.color` → groups all color values
+  - `filter.v.price.gte` + `filter.v.price.lte` → one price filter
+  - `filter.p.product_type` → one product type filter
+- Skips empty values to avoid counting default/unset filters
 - MutationObserver watches product grid for AJAX updates
 - Event listeners for: form submission, popstate, section load
 - Handles all filter application methods (drawer, URL, back button)

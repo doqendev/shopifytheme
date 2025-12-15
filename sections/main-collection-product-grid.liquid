@@ -718,25 +718,49 @@
       var facetsIcon = document.querySelector('.facets-icon');
       if (!facetsIcon) return;
 
-      // Count all active filters
-      var count = 0;
+      // Group filters by their base parameter name
+      var filterGroups = {};
       var urlParams = new URLSearchParams(window.location.search);
-      var hasPriceFilter = false;
 
       urlParams.forEach(function(value, key) {
-        // Count all filter params except sort_by
+        // Only process filter parameters (not sort_by)
         if (key.startsWith('filter.') && key !== 'sort_by') {
-          // Handle price range as a single filter
-          if (key.includes('price.gte') || key.includes('price.lte')) {
-            if (!hasPriceFilter) {
-              hasPriceFilter = true;
-              count++;
-            }
-          } else {
-            count++;
+          // Skip empty values
+          if (!value || value.trim() === '') {
+            return;
           }
+
+          // Extract the filter type (e.g., 'filter.v.option.color' -> 'color')
+          var filterType = key;
+
+          // Group price filters together
+          if (key.includes('price.gte') || key.includes('price.lte')) {
+            filterType = 'filter.v.price';
+          }
+          // Group variant options by their attribute (color, size, etc.)
+          else if (key.match(/filter\.v\.option\./)) {
+            // Extract attribute name after 'filter.v.option.'
+            var parts = key.split('.');
+            if (parts.length >= 4) {
+              filterType = 'filter.v.option.' + parts[3];
+            }
+          }
+          // Group product properties
+          else if (key.match(/filter\.p\./)) {
+            // Keep product filters separate by type
+            var parts = key.split('.');
+            if (parts.length >= 3) {
+              filterType = 'filter.p.' + parts[2];
+            }
+          }
+
+          // Mark this filter group as active
+          filterGroups[filterType] = true;
         }
       });
+
+      // Count unique filter groups
+      var count = Object.keys(filterGroups).length;
 
       // Update button text
       var baseText = 'FILTROS';
