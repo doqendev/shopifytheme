@@ -22,8 +22,22 @@
     endif
   endif
 
+  assign pill_items = '' | split: ','
+  for pill in raw_pills
+    assign base_label = pill.label | default: pill | strip
+    assign base_value = pill.value | default: base_label | strip
+    assign parts = base_value | split: ','
+    for part in parts
+      assign val = part | strip
+      if val == '' 
+        continue
+      endif
+      assign pill_items = pill_items | push: val
+    endfor
+  endfor
+
   assign show_pills = false
-  if raw_pills != nil and raw_pills != empty
+  if pill_items != nil and pill_items != empty
     assign show_pills = true
   endif
 -%}
@@ -76,9 +90,8 @@
   </style>
 
   <div class="collection-pills" role="list">
-    {%- for pill in raw_pills limit: 12 -%}
-      {%- assign pill_label = pill.label | default: pill | strip -%}
-      {%- assign pill_value = pill.value | default: pill_label | strip -%}
+    {%- for pill_value in pill_items limit: 12 -%}
+      {%- assign pill_label = pill_value -%}
 
       {%- assign href = collection.url | append: '?filter.p.product_type=' | append: pill_value | url_encode -%}
       {%- assign active = false -%}
