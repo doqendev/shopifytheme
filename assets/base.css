@@ -3755,7 +3755,7 @@ element.style {
 .card__information {
   width: 100%!important;
   overflow: hidden;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
 }
 
 @media (max-width: 749px) {
