@@ -703,7 +703,7 @@
     var facetsToggleBtn = document.getElementById('facets-toggle-button');
     var facetsDrawerSummary = document.querySelector('menu-drawer details.mobile-facets__disclosure summary.mobile-facets__open-wrapper');
     var facetsWrapper = document.getElementById('main-collection-filters');
-    
+
     if (facetsToggleBtn) {
       facetsToggleBtn.addEventListener('click', function() {
         if (facetsDrawerSummary) {
@@ -714,6 +714,80 @@
         }
       });
     }
+
+    // Function to update FILTROS count dynamically
+    function updateFiltrosCount() {
+      var facetsIcon = document.querySelector('.facets-icon');
+      if (!facetsIcon) return;
+
+      // Count active filters (excluding product_type)
+      var count = 0;
+      var urlParams = new URLSearchParams(window.location.search);
+      var hasPriceFilter = false;
+
+      urlParams.forEach(function(value, key) {
+        // Count all filter params except product_type and sort
+        if (key.startsWith('filter.') && key !== 'filter.p.product_type' && key !== 'sort_by') {
+          // Handle price range as a single filter
+          if (key.includes('price.gte') || key.includes('price.lte')) {
+            if (!hasPriceFilter) {
+              hasPriceFilter = true;
+              count++;
+            }
+          } else {
+            count++;
+          }
+        }
+      });
+
+      // Update button text
+      var baseText = 'FILTROS';
+      var existingCount = facetsIcon.querySelector('.filtros-count');
+
+      if (count > 0) {
+        if (existingCount) {
+          existingCount.textContent = '(' + count + ')';
+        } else {
+          facetsIcon.innerHTML = baseText + ' <span class="filtros-count">(' + count + ')</span>';
+        }
+      } else {
+        if (existingCount) {
+          existingCount.remove();
+        }
+        facetsIcon.innerHTML = baseText;
+      }
+    }
+
+    // Update count on page load
+    updateFiltrosCount();
+
+    // Listen for filter changes (Shopify's AJAX updates)
+    document.addEventListener('shopify:section:load', updateFiltrosCount);
+
+    // Watch for DOM changes in the product grid container (catches AJAX updates)
+    var productGridContainer = document.getElementById('ProductGridContainer');
+    if (productGridContainer) {
+      var observer = new MutationObserver(function(mutations) {
+        updateFiltrosCount();
+      });
+      observer.observe(productGridContainer, {
+        childList: true,
+        subtree: true
+      });
+    }
+
+    // Also listen for facets form submission
+    var facetsForms = document.querySelectorAll('facet-filters-form form');
+    facetsForms.forEach(function(form) {
+      form.addEventListener('submit', function() {
+        setTimeout(updateFiltrosCount, 100);
+      });
+    });
+
+    // Listen for popstate (browser back/forward)
+    window.addEventListener('popstate', function() {
+      setTimeout(updateFiltrosCount, 100);
+    });
   });
 </script>
 

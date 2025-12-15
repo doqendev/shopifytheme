@@ -92,11 +92,21 @@ Grid Controls: [Layouts] | [FILTROS (2)]
 - Hides native product_type filter chips
 
 *FILTROS Count:*
-- Liquid logic calculates active filter count
+- Server-side: Liquid logic calculates initial count on page load
+- Client-side: JavaScript dynamically updates count without page refresh
+- Parses URL parameters to count active filters
 - Excludes product_type filters from count
-- Includes all active_values from other filters
-- Includes price_range filters when set
+- Includes all filter types: color, size, price ranges, etc.
+- Price ranges counted as single filter (not separate gte/lte)
 - Count displayed as "(n)" next to FILTROS text
+- Updates automatically when filters are applied via drawer
+
+**JavaScript (Dynamic Updates):**
+- `updateFiltrosCount()` function parses URL and updates button text
+- MutationObserver watches product grid for AJAX updates
+- Event listeners for: form submission, popstate, section load
+- Handles all filter application methods (drawer, URL, back button)
+- No page refresh needed - updates instantly
 
 **Styling:**
 - Product type pills: Clean design with solid fill on active state
