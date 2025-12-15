@@ -11,6 +11,32 @@
 {%- liquid
   assign product_type_filter = collection.filters | where: 'param_name', 'filter.p.product_type' | first
 
+  assign active_product_type = false
+  if product_type_filter and product_type_filter.active_values and product_type_filter.active_values.size > 0
+    assign active_product_type = true
+  endif
+
+  assign active_other_filters = false
+  if collection.filters
+    for f in collection.filters
+      if f.param_name != 'filter.p.product_type'
+        if f.active_values and f.active_values.size > 0
+          assign active_other_filters = true
+        endif
+        if f.type == 'price_range'
+          if f.min_value.value != null or f.max_value.value != null
+            assign active_other_filters = true
+          endif
+        endif
+      endif
+    endfor
+  endif
+
+  assign hide_clear_all = false
+  if active_product_type and active_other_filters == false
+    assign hide_clear_all = true
+  endif
+
   assign raw_pills = nil
   if collection.metafields.custom.quick_filter_pills and collection.metafields.custom.quick_filter_pills.value != blank
     assign raw_pills = collection.metafields.custom.quick_filter_pills.value
@@ -98,14 +124,19 @@
     .active-facets__button[data-filter-param="filter.p.product_type"] {
       display: none !important;
     }
-    /* Hide clear-all link when the only active filter is product_type (desktop + mobile) */
-    .active-facets__button-remove.underlined-link {
-      display: none !important;
-    }
-    .mobile-facets__clear.underlined-link {
-      display: none !important;
-    }
   </style>
+
+  {% if hide_clear_all %}
+    <style>
+      /* Hide clear-all link when the only active filter is product_type (desktop + mobile) */
+      .active-facets__button-remove.underlined-link {
+        display: none !important;
+      }
+      .mobile-facets__clear.underlined-link {
+        display: none !important;
+      }
+    </style>
+  {% endif %}
 
   <div class="collection-pills" role="list">
     {%- for pill_value in pill_items limit: 12 -%}
