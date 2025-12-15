@@ -22,7 +22,10 @@
     endif
   endif
 
-  assign show_pills = raw_pills != nil and raw_pills != empty
+  assign show_pills = false
+  if raw_pills != nil and raw_pills != empty
+    assign show_pills = true
+  endif
 -%}
 
 {% if show_pills %}
