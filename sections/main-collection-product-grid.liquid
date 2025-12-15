@@ -227,6 +227,13 @@
     background: #000;
     color: #fff;
   }
+  /* Filter count indicator */
+  .filtros-count {
+    display: inline-block;
+    margin-left: 0.25rem;
+    font-weight: 500;
+    opacity: 0.8;
+  }
   /* Grid icon display rules using your custom inline assets */
   /* First, set a fixed size for the inline SVG icons */
   .layout-option-button .grid-icon {
@@ -457,9 +464,27 @@
       </button>
     </div>
     <div class="facets-toggle-container">
+      {%- liquid
+        assign other_filter_count = 0
+        for filter in collection.filters
+          if filter.param_name != 'filter.p.product_type'
+            if filter.active_values.size > 0
+              assign other_filter_count = other_filter_count | plus: filter.active_values.size
+            endif
+            if filter.type == 'price_range'
+              if filter.min_value.value != null or filter.max_value.value != null
+                assign other_filter_count = other_filter_count | plus: 1
+              endif
+            endif
+          endif
+        endfor
+      -%}
       <button type="button" id="facets-toggle-button" class="facets-toggle-button">
         <span class="facets-icon" style="font-size: 1.1rem !important; letter-spacing: 0 !important; font-family: 'Figtree', Arial, Helvetica, sans-serif !important;">
           FILTROS
+          {%- if other_filter_count > 0 -%}
+            <span class="filtros-count">({{ other_filter_count }})</span>
+          {%- endif -%}
         </span>
       </button>
     </div>

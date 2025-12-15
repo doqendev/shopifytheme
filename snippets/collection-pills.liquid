@@ -1,33 +1,20 @@
 {% comment %}
   collection-pills.liquid
-  Unified filter bar: product-type pills + active filter chips.
+  Product-type filter pills for collection pages.
 
   Product type pills:
     - Always visible (from metafield or fallback to filter values)
     - Toggleable on/off
+    - Clean, minimal design
 
-  Active filter chips:
-    - Shows active filters from OTHER types (color, size, price, etc.)
-    - Removable X button
-    - Displayed in the same unified bar
+  Other filters (color, size, etc.):
+    - Managed through FILTROS drawer
+    - Count displayed on FILTROS button
+    - Not shown as chips in this bar
 {% endcomment %}
 
 {%- liquid
   assign product_type_filter = collection.filters | where: 'param_name', 'filter.p.product_type' | first
-
-  assign has_any_active_filters = false
-  if collection.filters
-    for f in collection.filters
-      if f.active_values and f.active_values.size > 0
-        assign has_any_active_filters = true
-      endif
-      if f.type == 'price_range'
-        if f.min_value.value != null or f.max_value.value != null
-          assign has_any_active_filters = true
-        endif
-      endif
-    endfor
-  endif
 
   assign raw_pills = nil
   if collection.metafields.custom.quick_filter_pills and collection.metafields.custom.quick_filter_pills.value != blank
@@ -65,24 +52,17 @@
     assign show_pills = true
   endif
   assign pill_items = pill_joined | split: '||'
-
-  assign results_url = collection.url | default: '/collections/all'
-
-  assign show_filter_bar = false
-  if show_pills or has_any_active_filters
-    assign show_filter_bar = true
-  endif
 -%}
 
-{% if show_filter_bar %}
+{% if show_pills %}
   <style>
-    /* Unified filter bar container */
+    /* Product type pills container */
     .collection-pills-wrapper {
       margin-top: 1.5rem;
       margin-bottom: 1.75rem;
     }
 
-    /* Main filter bar with pills + chips */
+    /* Pills layout */
     .collection-pills {
       display: flex;
       gap: 0.625rem;
@@ -92,7 +72,7 @@
       padding-right: 25px;
     }
 
-    /* Product type pills (always visible) */
+    /* Product type pills */
     .collection-pills__pill {
       display: inline-flex;
       align-items: center;
@@ -124,61 +104,6 @@
       opacity: 0.9;
     }
 
-    /* Active filter chips (other filters) */
-    .collection-pills__chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.625rem 1rem;
-      border-radius: 999px;
-      border: 1px solid rgba(var(--color-foreground), 0.2);
-      background: rgba(var(--color-foreground), 0.04);
-      color: rgb(var(--color-foreground));
-      font-size: 0.875rem;
-      font-weight: 400;
-      text-decoration: none;
-      white-space: nowrap;
-      transition: all 0.2s ease;
-    }
-    .collection-pills__chip:hover {
-      background: rgba(var(--color-foreground), 0.08);
-      border-color: rgba(var(--color-foreground), 0.3);
-    }
-    .collection-pills__chip-remove {
-      display: inline-flex;
-      width: 14px;
-      height: 14px;
-      opacity: 0.6;
-    }
-    .collection-pills__chip:hover .collection-pills__chip-remove {
-      opacity: 1;
-    }
-
-    /* Divider between pills and chips */
-    .collection-pills__divider {
-      width: 1px;
-      height: 24px;
-      background: rgba(var(--color-foreground), 0.12);
-      margin: 0 0.25rem;
-    }
-
-    /* Clear all button */
-    .collection-pills__clear-all {
-      display: inline-flex;
-      align-items: center;
-      padding: 0.625rem 1rem;
-      color: rgb(var(--color-foreground));
-      font-size: 0.875rem;
-      font-weight: 500;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      white-space: nowrap;
-      transition: opacity 0.2s ease;
-    }
-    .collection-pills__clear-all:hover {
-      opacity: 0.7;
-    }
-
     @media (max-width: 749px) {
       .collection-pills-wrapper {
         margin-top: 1.25rem;
@@ -189,29 +114,21 @@
         padding-left: 20px;
         padding-right: 20px;
       }
-      .collection-pills__pill,
-      .collection-pills__chip {
+      .collection-pills__pill {
         padding: 0.5rem 0.875rem;
         font-size: 0.8125rem;
       }
-      .collection-pills__divider {
-        height: 20px;
-      }
     }
 
-    /* Hide all native active filter displays (we show them in unified bar) */
-    .active-facets,
-    .active-facets-desktop,
-    .active-facets-mobile {
+    /* Hide native active filter displays for product_type only */
+    .active-facets__button[data-filter-param="filter.p.product_type"] {
       display: none !important;
     }
   </style>
 
   <div class="collection-pills-wrapper page-width">
     <div class="collection-pills" role="list">
-      {%- comment -%} Product type pills (always visible when configured) {%- endcomment -%}
-      {%- if show_pills -%}
-        {%- for pill_value in pill_items limit: 12 -%}
+      {%- for pill_value in pill_items limit: 12 -%}
         {%- assign pill_label = pill_value -%}
         {%- assign href = collection.url | append: '?filter.p.product_type=' | append: pill_value | url_encode -%}
         {%- assign active = false -%}
@@ -237,72 +154,15 @@
           {%- endif -%}
         {%- endif -%}
 
-          <a
-            class="collection-pills__pill{% if active %} is-active{% endif %}"
-            href="{{ href }}"
-            role="listitem"
-            aria-pressed="{{ active | default: false }}"
-          >
-            {{ pill_label | escape }}
-          </a>
-        {%- endfor -%}
-      {%- endif -%}
-
-      {%- comment -%} Divider + Active filter chips from other filter types {%- endcomment -%}
-      {%- assign has_other_active = false -%}
-      {%- for filter in collection.filters -%}
-        {%- if filter.param_name != 'filter.p.product_type' -%}
-          {%- if filter.active_values.size > 0 -%}
-            {%- assign has_other_active = true -%}
-            {%- break -%}
-          {%- endif -%}
-          {%- if filter.type == 'price_range' -%}
-            {%- if filter.min_value.value != null or filter.max_value.value != null -%}
-              {%- assign has_other_active = true -%}
-              {%- break -%}
-            {%- endif -%}
-          {%- endif -%}
-        {%- endif -%}
-      {%- endfor -%}
-
-      {%- if has_other_active -%}
-        {%- if show_pills -%}
-          <div class="collection-pills__divider"></div>
-        {%- endif -%}
-
-        {%- for filter in collection.filters -%}
-          {%- if filter.param_name != 'filter.p.product_type' -%}
-            {%- for value in filter.active_values -%}
-              <a href="{{ value.url_to_remove }}" class="collection-pills__chip">
-                {{ filter.label | escape }}: {{ value.label | escape }}
-                <span class="collection-pills__chip-remove">
-                  {{- 'icon-close-small.svg' | inline_asset_content -}}
-                </span>
-              </a>
-            {%- endfor -%}
-
-            {%- if filter.type == 'price_range' -%}
-              {%- assign min = filter.min_value.value -%}
-              {%- assign max = filter.max_value.value -%}
-              {%- if min != null or max != null -%}
-                <a href="{{ filter.url_to_remove }}" class="collection-pills__chip">
-                  {{ min | default: 0 | money }} - {{ max | default: filter.range_max | money }}
-                  <span class="collection-pills__chip-remove">
-                    {{- 'icon-close-small.svg' | inline_asset_content -}}
-                  </span>
-                </a>
-              {%- endif -%}
-            {%- endif -%}
-          {%- endif -%}
-        {%- endfor -%}
-      {%- endif -%}
-
-      {%- comment -%} Clear all button (when any filters active) {%- endcomment -%}
-      {%- if has_any_active_filters -%}
-        <a href="{{ results_url }}" class="collection-pills__clear-all">
-          {{ 'products.facets.clear_all' | t | default: 'Clear all' }}
+        <a
+          class="collection-pills__pill{% if active %} is-active{% endif %}"
+          href="{{ href }}"
+          role="listitem"
+          aria-pressed="{{ active | default: false }}"
+        >
+          {{ pill_label | escape }}
         </a>
-      {%- endif -%}
+      {%- endfor -%}
     </div>
   </div>
 {% endif %}

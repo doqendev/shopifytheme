@@ -1,31 +1,31 @@
-## Collection Unified Filter Bar
+## Collection Product-Type Pills
 
 ### Overview
-A unified filter bar that appears below the collection heading, combining:
-- **Product type pills** (always visible, toggleable)
-- **Active filter chips** from all other filters (color, size, price, etc.)
-- **Clear all button** when any filters are active
+A clean, minimal filtering system with two components:
+- **Product type pills** displayed below the collection heading (always visible, toggleable)
+- **FILTROS button** shows a count indicator when other filters are active
 
-This creates a cohesive filtering experience where users can see and manage all filters in one place, eliminating the messy fragmentation between pills and native Search & Discovery filter displays.
+This approach keeps the interface clean while providing clear feedback about active filters without cluttering the UI with multiple filter chips.
 
 ### Key Features
 
 **Product Type Pills:**
-- Always visible (from metafield or fallback to filter values)
+- Always visible below collection title (from metafield or fallback to filter values)
 - Toggleable on/off behavior
-- Distinctive styling (solid fill when active)
+- Clean styling with solid fill when active
+- Quick access to common product type filtering
 
-**Active Filter Chips:**
-- Automatically appear when other filters are selected
-- Removable via X icon
-- Visually distinct from product type pills (lighter styling)
-- Support all filter types: color, size, price ranges, etc.
+**FILTROS Count Indicator:**
+- Shows active filter count in parentheses: "FILTROS (2)"
+- Only counts non-product-type filters (color, size, price, etc.)
+- Automatically updates when filters are added/removed
+- Clean, unobtrusive design
 
-**Unified Experience:**
-- Single location for all active filters
-- Native duplicate filter displays are hidden
-- Clean, organized visual hierarchy
-- Responsive design for all screen sizes
+**Benefits:**
+- Clean, minimal interface
+- No UI clutter from multiple filter chips
+- Clear indication of active filters
+- Seamless integration with Search & Discovery drawer
 
 ### Setup Steps
 
@@ -54,39 +54,52 @@ Ensure the **Product type** filter is enabled in **Search & Discovery** settings
 
 **Visual Layout:**
 ```
-[Product Type Pill] [Product Type Pill] [Product Type Pill] | [Color: Red ×] [Size: M ×] [Clear all]
+Collection Title
+[Vestidos] [Camisolas] [T-shirts]
+
+Grid Controls: [Layouts] | [FILTROS (2)]
 ```
 
 **Interaction Flow:**
 1. User sees product type pills immediately upon landing on collection page
 2. User clicks a product type pill → it toggles on/off, filters products
-3. User opens filter drawer and selects a color → color chip appears next to pills
-4. User can remove individual filters by clicking X on chips or pill
-5. User can clear all filters at once with "Clear all" button
+3. User clicks FILTROS button → drawer opens with all available filters
+4. User selects color "Azul" → drawer closes, products filter
+5. FILTROS button now shows "FILTROS (1)" indicating 1 active filter
+6. User can click FILTROS again to manage or remove filters
 
 **Filter Integration:**
 - Product type pills remain persistent (always visible)
-- Other active filters dynamically appear as removable chips
-- All filters work together seamlessly with Search & Discovery
-- Native duplicate filter displays are hidden automatically
+- Other filters (color, size, price) managed through FILTROS drawer
+- Count indicator updates automatically
+- Native product_type filter chips are hidden to avoid duplication
+- Clean, minimal UI without filter chip clutter
 
 ### Implementation Details
 
 **Files modified:**
-- `snippets/collection-pills.liquid` — Unified filter bar component with pills + chips rendering
-- `sections/main-collection-product-grid.liquid:426` — Includes the filter bar below collection header
+- `snippets/collection-pills.liquid` — Product type pills component
+- `sections/main-collection-product-grid.liquid:426` — Includes pills snippet below collection header
+- `sections/main-collection-product-grid.liquid:460-483` — FILTROS button with count logic
 
 **Technical approach:**
-- Product type pills rendered from metafield or filter values (always visible)
-- Iterates through `collection.filters` to find active filters (excluding product_type)
-- Renders active filter chips with remove URLs from Shopify's filter API
-- Hides native `.active-facets` displays to prevent duplication
-- Uses theme color variables for consistent theming
-- Fully responsive with mobile-optimized spacing
+
+*Pills Component:*
+- Renders product type pills from metafield or filter values
+- Pills always visible when configured
+- Matches against Shopify filter API for toggle URLs
+- Hides native product_type filter chips
+
+*FILTROS Count:*
+- Liquid logic calculates active filter count
+- Excludes product_type filters from count
+- Includes all active_values from other filters
+- Includes price_range filters when set
+- Count displayed as "(n)" next to FILTROS text
 
 **Styling:**
-- Product type pills: Solid border, fills on active state
-- Active filter chips: Light background, subtle border, with X icon
-- Visual divider separates pills from chips
-- Clear all button: Underlined text link
-- Smooth transitions and hover states throughout
+- Product type pills: Clean design with solid fill on active state
+- Pills aligned with collection title (25px desktop, 20px mobile)
+- Count indicator: Subtle, inline display with reduced opacity
+- Responsive spacing and sizing
+- Smooth transitions and hover states
