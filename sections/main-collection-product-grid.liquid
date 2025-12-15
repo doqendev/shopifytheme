@@ -651,21 +651,29 @@
 
     // Animate grid transitions with zoom effect
     function animateGridTransition(grid, newClass, removeClasses) {
-      // Clean FLIP animation with uniform scaling to preserve aspect ratios
+      // Smooth animation - only scale images, not text
       const cards = Array.from(grid.querySelectorAll('.card-wrapper'));
 
       if (cards.length === 0) return;
 
-      // Prepare GPU for animation
-      cards.forEach(function(card) {
-        card.style.willChange = 'transform, opacity';
+      // Get image elements (not text)
+      const images = cards.map(function(card) {
+        return card.querySelector('.card__media, .media, img');
+      }).filter(Boolean);
+
+      // Prepare GPU
+      images.forEach(function(img) {
+        img.style.willChange = 'transform';
       });
 
-      // FIRST: Capture initial positions/sizes of all cards
-      const firstPositions = cards.map(function(card) {
+      // Hide grid briefly to prevent flash
+      grid.style.opacity = '0';
+
+      // FIRST: Capture initial image positions/sizes
+      const firstPositions = images.map(function(img) {
         return {
-          element: card,
-          rect: card.getBoundingClientRect()
+          element: img,
+          rect: img.getBoundingClientRect()
         };
       });
 
@@ -675,50 +683,52 @@
       });
       grid.classList.add(newClass);
 
-      // Immediately read final positions (browser hasn't painted yet)
-      const lastPositions = cards.map(function(card) {
+      // Read final positions
+      const lastPositions = images.map(function(img) {
         return {
-          element: card,
-          rect: card.getBoundingClientRect()
+          element: img,
+          rect: img.getBoundingClientRect()
         };
       });
 
-      // Immediately apply inverted transforms with UNIFORM scaling
-      cards.forEach(function(card, index) {
+      // Apply inverted transforms to images only
+      images.forEach(function(img, index) {
         const first = firstPositions[index].rect;
         const last = lastPositions[index].rect;
 
-        // Calculate position deltas
         const deltaX = first.left - last.left;
         const deltaY = first.top - last.top;
-
-        // Use UNIFORM scale based on width to preserve aspect ratio
         const scale = first.width / last.width;
 
-        // Apply inverted transform with uniform scaling
-        card.style.transform = 'translate(' + deltaX + 'px, ' + deltaY + 'px) scale(' + scale + ')';
-        card.style.transformOrigin = 'top left';
-        card.style.transition = 'none';
+        img.style.transform = 'translate(' + deltaX + 'px, ' + deltaY + 'px) scale(' + scale + ')';
+        img.style.transformOrigin = 'top left';
+        img.style.transition = 'none';
       });
 
-      // Force reflow to commit inverted state
+      // Force reflow
       grid.offsetHeight;
 
-      // Animate to final state
+      // Show grid and animate
       requestAnimationFrame(function() {
-        cards.forEach(function(card) {
-          card.style.transition = 'transform 0.45s cubic-bezier(0.4, 0, 0.2, 1)';
-          card.style.transform = '';
+        grid.style.opacity = '1';
+        grid.style.transition = 'opacity 0.3s ease';
+
+        images.forEach(function(img) {
+          img.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+          img.style.transform = '';
         });
 
-        // Clean up after animation
+        // Clean up
         setTimeout(function() {
-          cards.forEach(function(card) {
-            card.style.transition = '';
-            card.style.transformOrigin = '';
-            card.style.willChange = '';
+          grid.style.opacity = '';
+          grid.style.transition = '';
+          images.forEach(function(img) {
+            img.style.transition = '';
+            img.style.transformOrigin = '';
+            img.style.willChange = '';
+            img.style.transform = '';
           });
-        }, 450);
+        }, 400);
       });
     }
 
