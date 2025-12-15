@@ -721,32 +721,40 @@
       // Group filters by their base parameter name
       var filterGroups = {};
       var urlParams = new URLSearchParams(window.location.search);
-
-      // Debug: Log all parameters
-      console.log('=== FILTROS Count Debug ===');
-      urlParams.forEach(function(value, key) {
-        console.log('Param:', key, '=', value);
-      });
+      var priceMin = null;
+      var priceMax = null;
+      var hasMeaningfulPrice = false;
 
       urlParams.forEach(function(value, key) {
         // Only process filter parameters (not sort_by)
         if (key.startsWith('filter.') && key !== 'sort_by') {
           // Skip empty values
           if (!value || value.trim() === '') {
-            console.log('Skipping empty:', key);
             return;
           }
 
-          // Extract the filter type (e.g., 'filter.v.option.color' -> 'color')
+          // Handle price filters specially - need to check if they're meaningful
+          if (key.includes('price.gte')) {
+            priceMin = parseInt(value) || 0;
+            return; // Don't count yet
+          } else if (key.includes('price.lte')) {
+            priceMax = parseInt(value) || 0;
+            return; // Don't count yet
+          }
+
+          // Extract the filter type
           var filterType = key;
 
-          // Group price filters together
-          if (key.includes('price.gte') || key.includes('price.lte')) {
-            filterType = 'filter.v.price';
+          // Group taxonomy filters (filter.v.t.shopify.*)
+          if (key.match(/filter\.v\.t\.shopify\./)) {
+            // Extract taxonomy attribute (e.g., 'color-pattern', 'size', etc.)
+            var parts = key.split('.');
+            if (parts.length >= 5) {
+              filterType = 'filter.v.t.shopify.' + parts[4];
+            }
           }
           // Group variant options by their attribute (color, size, etc.)
           else if (key.match(/filter\.v\.option\./)) {
-            // Extract attribute name after 'filter.v.option.'
             var parts = key.split('.');
             if (parts.length >= 4) {
               filterType = 'filter.v.option.' + parts[3];
@@ -754,24 +762,28 @@
           }
           // Group product properties
           else if (key.match(/filter\.p\./)) {
-            // Keep product filters separate by type
             var parts = key.split('.');
             if (parts.length >= 3) {
               filterType = 'filter.p.' + parts[2];
             }
           }
 
-          console.log('Grouping', key, 'as', filterType);
           // Mark this filter group as active
           filterGroups[filterType] = true;
         }
       });
 
-      console.log('Filter groups:', filterGroups);
+      // Check if price filter is meaningful (not default/full range)
+      // Only count price if minimum is > 0 OR if there's actually a maximum set
+      if (priceMin !== null && priceMax !== null) {
+        // Count price filter only if min > 0 (user set a minimum)
+        if (priceMin > 0) {
+          filterGroups['filter.v.price'] = true;
+        }
+      }
+
       // Count unique filter groups
       var count = Object.keys(filterGroups).length;
-      console.log('Total count:', count);
-      console.log('========================');
 
       // Update button text
       var baseText = 'FILTROS';

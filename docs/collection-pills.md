@@ -110,9 +110,11 @@ Grid Controls: [Layouts] | [FILTROS (2)]
 **JavaScript (Dynamic Updates):**
 - `updateFiltrosCount()` function parses URL and groups filters intelligently
 - Groups filters by type using pattern matching:
-  - `filter.v.option.color` → groups all color values
-  - `filter.v.price.gte` + `filter.v.price.lte` → one price filter
+  - `filter.v.t.shopify.color-pattern` → taxonomy color filters
+  - `filter.v.option.color` → variant color options
+  - `filter.v.price.gte` + `filter.v.price.lte` → one price filter (only if min > 0)
   - `filter.p.product_type` → one product type filter
+- Smart price handling: Ignores default price ranges (gte=0) to avoid false positives
 - Skips empty values to avoid counting default/unset filters
 - MutationObserver watches product grid for AJAX updates
 - Event listeners for: form submission, popstate, section load
