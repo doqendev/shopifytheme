@@ -72,8 +72,9 @@ Grid Controls: [Layouts] | [FILTROS (2)]
 - Product type pills remain persistent (always visible)
 - Other filters (color, size, price) managed through FILTROS drawer
 - Count indicator updates automatically
-- Native product_type filter chips are hidden to avoid duplication
-- Clean, minimal UI without filter chip clutter
+- ALL native active filter chips are hidden (not shown outside drawer)
+- Filters only visible via count indicator or inside drawer
+- Clean, minimal UI without any filter chip clutter
 
 ### Implementation Details
 
@@ -103,3 +104,4 @@ Grid Controls: [Layouts] | [FILTROS (2)]
 - Count indicator: Subtle, inline display with reduced opacity
 - Responsive spacing and sizing
 - Smooth transitions and hover states
+- All native active filter displays hidden via CSS (displayed only in drawer)

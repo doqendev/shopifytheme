@@ -54,6 +54,16 @@
   assign pill_items = pill_joined | split: '||'
 -%}
 
+<style>
+  /* Hide ALL native active filter displays - only show count on FILTROS button */
+  .active-facets,
+  .active-facets-desktop,
+  .active-facets-mobile,
+  .active-facets-vertical-filter {
+    display: none !important;
+  }
+</style>
+
 {% if show_pills %}
   <style>
     /* Product type pills container */
@@ -118,11 +128,6 @@
         padding: 0.5rem 0.875rem;
         font-size: 0.8125rem;
       }
-    }
-
-    /* Hide native active filter displays for product_type only */
-    .active-facets__button[data-filter-param="filter.p.product_type"] {
-      display: none !important;
     }
   </style>
 
