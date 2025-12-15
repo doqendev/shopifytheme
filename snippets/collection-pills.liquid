@@ -1,0 +1,125 @@
+{% comment %}
+  collection-pills.liquid
+  Quick product-type pills for collection pages.
+
+  Data source:
+    - Preferred: collection.metafields.custom.quick_filter_pills (list)
+      * Accepts list of strings or list items with a `label`/`value` property.
+    - Fallback: first available product type filter values (if metafield empty).
+{% endcomment %}
+
+{%- liquid
+  assign show_pills = true
+  assign product_type_filter = collection.filters | where: 'param_name', 'filter.p.product_type' | first
+
+  if product_type_filter == nil
+    assign show_pills = false
+  endif
+
+  assign raw_pills = nil
+
+  if collection.metafields.custom.quick_filter_pills and collection.metafields.custom.quick_filter_pills.value != blank
+    assign raw_pills = collection.metafields.custom.quick_filter_pills.value
+  endif
+
+  if raw_pills == nil or raw_pills == empty
+    assign raw_pills = product_type_filter.values | map: 'label'
+  endif
+
+  assign pills = '' | split: ',' # normalized pills we will iterate
+
+  for pill in raw_pills
+    if pill == blank
+      continue
+    endif
+
+    assign pill_label = pill.label | default: pill | strip
+    assign pill_value = pill.value | default: pill_label | strip
+
+    # Find matching product type option (case-insensitive match on label/value)
+    assign match = nil
+    for option in product_type_filter.values
+      assign option_label_down = option.label | downcase
+      assign option_value_down = option.value | downcase
+      assign target_down = pill_value | downcase
+      if option_label_down == target_down or option_value_down == target_down
+        assign match = option
+        break
+      endif
+    endfor
+
+    if match
+      assign pills = pills | push: match
+    endif
+  endfor
+
+  if pills == empty
+    assign show_pills = false
+  endif
+-%}
+
+{% if show_pills %}
+  <style>
+    .collection-pills {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+      margin: 0 1.6rem 0.75rem;
+      padding: 0.35rem 0;
+      overflow-x: auto;
+    }
+    .collection-pills__pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.55rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 0, 0, 0.14);
+      background: #fff;
+      color: #111;
+      font-size: 0.9rem;
+      letter-spacing: 0.01em;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: all 0.16s ease;
+    }
+    .collection-pills__pill:hover {
+      border-color: rgba(0, 0, 0, 0.3);
+      transform: translateY(-1px);
+    }
+    .collection-pills__pill.is-active {
+      background: #111;
+      color: #fff;
+      border-color: #111;
+    }
+    .collection-pills__pill.is-active:hover {
+      background: #000;
+      border-color: #000;
+    }
+    @media (max-width: 749px) {
+      .collection-pills {
+        margin-inline: 1.2rem;
+        padding-inline: 0.25rem;
+      }
+    }
+  </style>
+
+  <div class="collection-pills" role="list">
+    {%- for pill in pills limit: 12 -%}
+      {%- assign href = pill.url_to_add -%}
+      {%- assign active = pill.active -%}
+      {%- if active -%}
+        {%- assign href = pill.url_to_remove -%}
+      {%- endif -%}
+      <a
+        class="collection-pills__pill{% if active %} is-active{% endif %}"
+        href="{{ href }}"
+        role="listitem"
+        aria-pressed="{{ active | default: false }}"
+      >
+        {{ pill.label | escape }}
+      </a>
+    {%- endfor -%}
+  </div>
+{% endif %}
