@@ -139,8 +139,6 @@
   grid-row-start: 2;
 
   width: 90%;
-
-  margin-bottom: 8%;
 }
 
 .card:not(.ratio) > .card__content {
