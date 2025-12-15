@@ -63,11 +63,12 @@ Grid Controls: [Layouts] | [FILTROS (2)]
 **Interaction Flow:**
 1. User sees product type pills immediately upon landing on collection page
 2. User clicks "Vestidos" pill → products filter, FILTROS shows "(1)"
-3. User clicks FILTROS button → drawer opens with all available filters
-4. User selects color "Azul" → drawer closes, FILTROS shows "(2)"
-5. User opens drawer, selects ANOTHER color "Vermelho" → FILTROS stays "(2)" (all colors = 1 filter type)
-6. User selects size "M" → FILTROS shows "(3)" (product type + color + size)
-7. User can click FILTROS again to manage or remove any filters
+3. User clicks "Camisolas" pill → FILTROS shows "(2)" (each product type = +1)
+4. User clicks FILTROS button → drawer opens with all available filters
+5. User selects color "Azul" → drawer closes, FILTROS shows "(3)" (2 types + 1 color)
+6. User opens drawer, selects ANOTHER color "Vermelho" → FILTROS stays "(3)" (colors grouped as 1)
+7. User selects size "M" → FILTROS shows "(4)" (2 types + 1 color + 1 size)
+8. User can click FILTROS again to manage or remove any filters
 
 **Filter Integration:**
 - Product type pills remain persistent (always visible)
@@ -97,23 +98,25 @@ Grid Controls: [Layouts] | [FILTROS (2)]
 *FILTROS Count:*
 - Server-side: Liquid logic calculates initial count on page load
 - Client-side: JavaScript dynamically updates count without page refresh
-- Intelligent grouping: Counts filter TYPES, not individual values
-  - All color selections = 1 filter
-  - All size selections = 1 filter
-  - Product type selection = 1 filter
-  - Price range (min/max) = 1 filter
+- Smart counting rules:
+  - **Product type**: Each selection counts separately (Vestidos + Camisolas = 2)
+  - **Other filters**: Grouped by type (Blue + Red color = 1, S + M size = 1)
+  - **Price range**: Counted as 1 only if minimum > 0 (ignores default ranges)
 - Skips empty or default values
 - Excludes only sort_by parameter (not a filter)
 - Count displayed as "(n)" next to FILTROS text
 - Updates automatically when filters are applied via pills or drawer
 
 **JavaScript (Dynamic Updates):**
-- `updateFiltrosCount()` function parses URL and groups filters intelligently
-- Groups filters by type using pattern matching:
-  - `filter.v.t.shopify.color-pattern` → taxonomy color filters
-  - `filter.v.option.color` → variant color options
-  - `filter.v.price.gte` + `filter.v.price.lte` → one price filter (only if min > 0)
-  - `filter.p.product_type` → one product type filter
+- `updateFiltrosCount()` function parses URL and counts filters intelligently
+- Special handling for product_type: Each value counted separately
+  - `filter.p.product_type=Vestidos` → count +1
+  - `filter.p.product_type=Camisolas` → count +1
+  - Total: 2 filters
+- Other filters grouped by type:
+  - `filter.v.t.shopify.color-pattern` → all colors = 1 filter
+  - `filter.v.option.size` → all sizes = 1 filter
+  - `filter.v.price.gte` + `filter.v.price.lte` → 1 filter (only if min > 0)
 - Smart price handling: Ignores default price ranges (gte=0) to avoid false positives
 - Skips empty values to avoid counting default/unset filters
 - MutationObserver watches product grid for AJAX updates
