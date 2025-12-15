@@ -669,15 +669,14 @@
         };
       });
 
-      // LAST: Apply new layout (cards jump to final positions instantly)
+      // Batch all DOM writes together to prevent visual flash
+      // 1. Apply new layout classes
       removeClasses.forEach(function(cls) {
         grid.classList.remove(cls);
       });
       grid.classList.add(newClass);
 
-      // Force browser reflow to capture final positions
-      grid.offsetHeight;
-
+      // 2. Immediately read final positions (browser hasn't painted yet)
       const lastPositions = cards.map(function(card) {
         return {
           element: card,
@@ -685,7 +684,7 @@
         };
       });
 
-      // INVERT: Calculate transforms needed to go from first to last position
+      // 3. Immediately apply inverted transforms (still in same frame - no paint yet)
       cards.forEach(function(card, index) {
         const first = firstPositions[index].rect;
         const last = lastPositions[index].rect;
@@ -702,12 +701,12 @@
         card.style.transition = 'none';
       });
 
-      // CRITICAL: Force browser reflow to ensure inverted transform is committed
-      // This prevents flickering by ensuring browser paints the inverted state before animating
+      // CRITICAL: Force browser reflow to commit the inverted state
+      // Browser will paint cards in their ORIGINAL positions (thanks to inverted transforms)
+      // User never sees the "jumped" state
       grid.offsetHeight;
 
       // PLAY: Animate to final state
-      // Use single RAF - reflow above ensures transform is committed
       requestAnimationFrame(function() {
         cards.forEach(function(card) {
           card.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
