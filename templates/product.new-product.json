@@ -56,6 +56,13 @@
           "disabled": true,
           "settings": {}
         },
+        "size_guide": {
+          "type": "size_guide_accordion",
+          "settings": {
+            "heading": "Guia de tamanhos",
+            "icon": "ruler"
+          }
+        },
         "share": {
           "type": "share",
           "disabled": true,
@@ -72,6 +79,7 @@
         "quantity_selector",
         "buy_buttons",
         "description",
+        "size_guide",
         "share"
       ],
       "settings": {
