@@ -54,7 +54,7 @@
           "type": "size_guide_accordion",
           "settings": {
             "heading": "Guia de tamanhos",
-            "icon": "ruler"
+            "icon": "none"
           }
         },
         "share": {
