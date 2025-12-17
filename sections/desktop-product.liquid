@@ -625,6 +625,17 @@
         </div>
       </div>
 
+      {%- # Size Guide accordion -%}
+      {%- liquid
+        assign _scope_id = section.id | default: product.id
+        assign sg_id = 'sg-' | append: product.id | append: '-' | append: _scope_id
+      -%}
+      <div class="accordion-item">
+        <button class="accordion-button size-guide-trigger" aria-expanded="false" data-sg-open="{{ sg_id }}">
+          Guia de tamanhos
+        </button>
+      </div>
+
       {%- # Share accordion -%}
       {% if show_share %}
         <div class="accordion-item">
@@ -966,6 +977,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
   accordionButtons.forEach((button) => {
     button.addEventListener('click', () => {
+      // Skip size guide accordion - it's handled by the drawer
+      if (button.hasAttribute('data-sg-open')) {
+        return;
+      }
+
       // Toggle the "aria-expanded" attribute
       const expanded = button.getAttribute('aria-expanded') === 'true' || false;
       button.setAttribute('aria-expanded', !expanded);
