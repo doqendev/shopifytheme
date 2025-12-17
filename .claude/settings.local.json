@@ -36,7 +36,9 @@
       "Bash(BASE_URL=\"https://cheyenne.pt\" STORE_PASSWORD=\"123\" COLLECTION_HANDLE=\"novidades\" npx playwright test:*)",
       "Bash(BASE_URL=\"https://cheyenne.pt\" STORE_PASSWORD=\"123\" npx playwright test simple-grid-check.spec.ts --headed)",
       "Bash(BASE_URL=\"https://cheyenne.pt\" npx playwright test:*)",
-      "Skill(frontend-design)"
+      "Skill(frontend-design)",
+      "Bash(BASE_URL=\"https://cheyenne.pt\" STORE_PASSWORD=\"123\" PRODUCT_HANDLE=\"sweatshirt-basica-com-capuz-copy\" npx playwright test:*)",
+      "Bash(findstr:*)"
     ],
     "deny": [],
     "ask": []
