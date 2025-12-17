@@ -56,3 +56,48 @@
 .accordion__content img {
   max-width: 100%;
 }
+
+/* Size guide accordion button styling */
+.accordion--size-guide .accordion__trigger {
+  display: flex;
+  position: relative;
+  line-height: 1;
+  padding: 1.5rem 0;
+  width: 100%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  align-items: center;
+  justify-content: space-between;
+  font-family: inherit;
+}
+
+.accordion--size-guide .accordion__trigger:hover {
+  opacity: 0.8;
+}
+
+.accordion--size-guide .accordion__trigger .summary__title {
+  display: flex;
+  flex: 1;
+}
+
+.accordion--size-guide .accordion__trigger .summary__title + .icon-caret {
+  height: calc(var(--font-heading-scale) * 0.6rem);
+}
+
+.accordion--size-guide .accordion__trigger .svg-wrapper {
+  align-self: center;
+  fill: rgb(var(--color-foreground));
+  height: calc(var(--font-heading-scale) * 2rem);
+  margin-right: calc(var(--font-heading-scale) * 1rem);
+  width: calc(var(--font-heading-scale) * 2rem);
+}
+
+.accordion--size-guide .accordion__trigger .accordion__title {
+  display: inline-block;
+  max-width: calc(100% - 6rem);
+  min-height: 1.6rem;
+  margin: 0;
+  word-break: break-word;
+}

@@ -33,10 +33,6 @@
   {%- endfor -%}
 
   <div id="sg-wrap-{{ sg_id }}" class="sg-wrap">
-    <a href="#{{ sg_id }}" class="sg-link" data-sg-open="{{ sg_id }}" aria-controls="{{ sg_id }}" aria-expanded="false">
-      Guia de tamanhos
-    </a>
-
     <div class="sg-root" id="{{ sg_id }}" hidden role="dialog" aria-modal="true" aria-label="Guia de tamanhos">
       <div class="sg-overlay" data-sg-close></div>
       <aside class="sg-panel" tabindex="-1">
@@ -320,8 +316,10 @@
   if(!wrap) return;
 
   let root   = wrap.querySelector("#{{ sg_id }}");
-  const openEl = wrap.querySelector('[data-sg-open="{{ sg_id }}"]');
-  if(!root || !openEl) return;
+  if(!root) return;
+
+  // Find all triggers for this drawer (accordion buttons, links, etc.)
+  const openTriggers = document.querySelectorAll('[data-sg-open="{{ sg_id }}"]');
 
   /* ---- 1) PORTAL: move the drawer to <body> to escape parent stacking contexts ---- */
   if(!root.hasAttribute('data-sg-portal')){
@@ -341,11 +339,11 @@
     else if(!e.shiftKey && document.activeElement === last){ first.focus(); e.preventDefault(); }
   }
 
-  function openDrawer(e){
+  function openDrawer(e, trigger){
     if(e) e.preventDefault();
     root.hidden = false;
     document.documentElement.style.overflow = 'hidden';
-    openEl.setAttribute('aria-expanded','true');
+    openTriggers.forEach(t => t.setAttribute('aria-expanded','true'));
     panel.focus();
     document.addEventListener('keydown', onKeydown);
     document.addEventListener('keydown', trapFocus);
@@ -355,14 +353,22 @@
   function closeDrawer(){
     root.hidden = true;
     document.documentElement.style.overflow = '';
-    openEl.setAttribute('aria-expanded','false');
-    openEl.focus();
+    openTriggers.forEach(t => {
+      t.setAttribute('aria-expanded','false');
+      // Return focus to the trigger if it's the accordion button
+      if(document.activeElement === panel && t.classList.contains('accordion__trigger')) {
+        t.focus();
+      }
+    });
     document.removeEventListener('keydown', onKeydown);
     document.removeEventListener('keydown', trapFocus);
   }
   function onKeydown(e){ if(e.key === 'Escape') closeDrawer(); }
 
-  openEl.addEventListener('click', openDrawer);
+  // Attach click handlers to all triggers
+  openTriggers.forEach(trigger => {
+    trigger.addEventListener('click', (e) => openDrawer(e, trigger));
+  });
   overlay.addEventListener('click', closeDrawer);
   closeBtns.forEach(b=> b.addEventListener('click', closeDrawer));
 
