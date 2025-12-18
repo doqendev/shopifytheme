@@ -879,15 +879,19 @@
         </details>
         <script>
           (function() {
-            const sizeGuideDetails = document.getElementById('size-guide-details-{{ sg_id }}');
+            const sizeGuideSummary = document.querySelector('#size-guide-details-{{ sg_id }} summary[data-sg-open="{{ sg_id }}"]');
 
-            if (sizeGuideDetails) {
-              // Prevent the details element from opening when clicked
-              // The drawer will open via the existing data-sg-open handler
-              sizeGuideDetails.addEventListener('toggle', function(e) {
-                if (this.hasAttribute('open')) {
-                  this.removeAttribute('open');
-                }
+            if (sizeGuideSummary) {
+              // Prevent the details element from expanding, but allow click to bubble for drawer
+              sizeGuideSummary.addEventListener('click', function(e) {
+                // Don't prevent default or stop propagation - let it bubble to drawer handler
+                // Just close the details if it opens
+                const details = this.closest('details');
+                setTimeout(() => {
+                  if (details && details.hasAttribute('open')) {
+                    details.removeAttribute('open');
+                  }
+                }, 0);
               });
             }
           })();
