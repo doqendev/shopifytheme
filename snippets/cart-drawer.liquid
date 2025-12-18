@@ -62,7 +62,8 @@
             aria-controls="CartDrawer-CartPanel"
             aria-selected="true"
           >
-            {{ cart_tab_title }} ({{ cart.item_count }})
+            <span class="drawer__tab-label">{{ cart_tab_title }}</span>
+            <span class="drawer__tab-count">{{ cart.item_count }}</span>
           </button>
           <button
             type="button"
@@ -75,7 +76,8 @@
             aria-controls="CartDrawer-WishlistPanel"
             aria-selected="false"
           >
-            {{ wishlist_tab_title }} (0)
+            <span class="drawer__tab-label">{{ wishlist_tab_title }}</span>
+            <span class="drawer__tab-count">0</span>
           </button>
         </div>
         <button

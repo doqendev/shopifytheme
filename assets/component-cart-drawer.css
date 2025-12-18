@@ -49,16 +49,136 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
   transform: translateX(0);
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600&family=Manrope:wght@400;500;600;700&display=swap');
+
 .drawer__header {
   position: relative;
-  padding: 1.5rem 0;
+  padding: 0;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  border-bottom: none;
 }
 
 .drawer__heading {
   margin: 0 0 1rem;
+}
+
+/* Tab Navigation Styling */
+.drawer__tabs {
+  display: flex;
+  gap: 0;
+  padding: 2rem 2.5rem 0;
+  position: relative;
+  background: linear-gradient(180deg, #FDFCFB 0%, #FAF9F7 100%);
+}
+
+.drawer__tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 1rem 1.5rem 1.25rem;
+  font-family: 'Crimson Pro', serif;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: #8B8B8B;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.drawer__tab::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #2C2C2C 0%, #1A1A1A 100%);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.drawer__tab::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(44, 44, 44, 0.03) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.drawer__tab:hover {
+  color: #2C2C2C;
+}
+
+.drawer__tab:hover::after {
+  opacity: 1;
+}
+
+.drawer__tab.is-active {
+  color: #1A1A1A;
+  font-weight: 600;
+}
+
+.drawer__tab.is-active::before {
+  transform: scaleX(1);
+}
+
+.drawer__tab.is-active::after {
+  opacity: 0.5;
+}
+
+/* Tab Count Badge */
+.drawer__tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  background: #F5F4F2;
+  border-radius: 11px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #5A5A5A;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
+}
+
+.drawer__tab.is-active .drawer__tab-count {
+  background: #2C2C2C;
+  color: #FFFFFF;
+  border-color: #2C2C2C;
+  transform: scale(1.05);
+}
+
+.drawer__tab:hover .drawer__tab-count {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* Separator line between tabs */
+.drawer__tabs::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 2.5rem;
+  right: 2.5rem;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(229, 229, 224, 0.5) 10%,
+    rgba(229, 229, 224, 0.8) 50%,
+    rgba(229, 229, 224, 0.5) 90%,
+    transparent 100%);
 }
 
 .drawer__close {
@@ -68,16 +188,75 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
   min-height: 3.2rem;
   box-shadow: 0 0 0 0.2rem rgba(var(--color-button), 0);
   position: absolute;
-  top: 10px;
-  right: -10px;
-  color: rgb(var(--color-foreground));
+  top: 2rem;
+  right: 2.5rem;
+  color: #2C2C2C;
   background-color: transparent;
   border: none;
   cursor: pointer;
+  z-index: 10;
+  transition: all 0.25s ease;
+}
+
+.drawer__close:hover {
+  transform: rotate(90deg);
+  color: #1A1A1A;
 }
 
 .cart-drawer__warnings .drawer__close {
   right: 5px;
+}
+
+/* Mobile Responsive Tab Styling */
+@media screen and (max-width: 749px) {
+  .drawer__tabs {
+    padding: 1.5rem 1.5rem 0;
+  }
+
+  .drawer__tab {
+    padding: 0.875rem 1rem 1rem;
+    font-size: 14px;
+    gap: 0.4rem;
+  }
+
+  .drawer__tab-count {
+    min-width: 20px;
+    height: 20px;
+    font-size: 11px;
+  }
+
+  .drawer__close {
+    top: 1.5rem;
+    right: 1.5rem;
+    min-width: 2.8rem;
+    min-height: 2.8rem;
+  }
+
+  .drawer__tabs::after {
+    left: 1.5rem;
+    right: 1.5rem;
+  }
+}
+
+/* Animation for tab switching */
+@keyframes tabFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.drawer__panel {
+  animation: tabFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced drawer background */
+.drawer__inner {
+  background: linear-gradient(180deg, #FDFCFB 0%, #FAF9F7 50%, #F8F7F5 100%);
 }
 
 .drawer__close .svg-wrapper {

@@ -1415,11 +1415,18 @@
     }
 
     drawer.querySelectorAll('[data-tab-target]').forEach((button) => {
-      const baseLabel = button.dataset.baseLabel || button.textContent.trim();
+      const baseLabel = button.dataset.baseLabel || button.querySelector('.drawer__tab-label')?.textContent?.trim() || button.textContent.trim();
       button.dataset.baseLabel = baseLabel;
       const count = button.dataset.tabTarget === TAB_WISHLIST ? wishlistCount : cartCount;
       button.dataset.count = String(count);
-      button.textContent = formatDrawerLabel(baseLabel, count);
+
+      // Update count badge if it exists, otherwise fallback to old format
+      const countBadge = button.querySelector('.drawer__tab-count');
+      if (countBadge) {
+        countBadge.textContent = String(count);
+      } else {
+        button.textContent = formatDrawerLabel(baseLabel, count);
+      }
     });
   };
 
