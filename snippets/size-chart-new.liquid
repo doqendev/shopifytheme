@@ -330,31 +330,56 @@
           <h3 class="sg-guide-title">Selecione o tamanho</h3>
 
           <!-- Size Selector for Body -->
-          {%- case sizechart_key -%}
-            {%- when 'tops' or 'saia' or 'saia-calcao' or 'calcas' or 'calcoes' -%}
-              <div class="sg-size-selector">
-                <div class="sg-size-buttons" role="radiogroup">
+          {%- if has_metafield_body or sizechart_key != '' -%}
+            <div class="sg-size-selector">
+              <div class="sg-size-buttons" role="radiogroup">
+                {%- if has_metafield_body -%}
+                  {%- for size in metafield_body.sizes -%}
+                    <button class="sg-size-btn-body {% if forloop.first %}sg-size-btn-body--active{% endif %}" role="radio" aria-checked="{% if forloop.first %}true{% else %}false{% endif %}" data-size-body="{{ size }}">{{ size }}</button>
+                  {%- endfor -%}
+                {%- else -%}
                   <button class="sg-size-btn-body sg-size-btn-body--active" role="radio" aria-checked="true" data-size-body="S">S</button>
                   <button class="sg-size-btn-body" role="radio" aria-checked="false" data-size-body="M">M</button>
                   <button class="sg-size-btn-body" role="radio" aria-checked="false" data-size-body="L">L</button>
                   <button class="sg-size-btn-body" role="radio" aria-checked="false" data-size-body="XL">XL</button>
                   <button class="sg-size-btn-body" role="radio" aria-checked="false" data-size-body="XXL">XXL</button>
-                </div>
+                {%- endif -%}
               </div>
-          {%- endcase -%}
+            </div>
+          {%- endif -%}
 
           <!-- Body Measurement Table -->
           <div class="sg-table-container">
-            {%- case sizechart_key -%}
-
-              {%- when 'tops' -%}
+            {%- if has_metafield_body -%}
+              {%- comment -%} Use metafield data {%- endcomment -%}
               <div class="sg-measurement-grid">
                 <div class="sg-measurement-row sg-measurement-row--header">
                   <div class="sg-measurement-cell sg-measurement-cell--label">Medida</div>
-                  <div class="sg-measurement-cell" data-size-body="S">S</div>
-                  <div class="sg-measurement-cell" data-size-body="M">M</div>
-                  <div class="sg-measurement-cell" data-size-body="L">L</div>
-                  <div class="sg-measurement-cell" data-size-body="XL">XL</div>
+                  {%- for size in metafield_body.sizes -%}
+                    <div class="sg-measurement-cell" data-size-body="{{ size }}">{{ size }}</div>
+                  {%- endfor -%}
+                </div>
+                {%- for measurement in metafield_body.measurements -%}
+                  <div class="sg-measurement-row">
+                    <div class="sg-measurement-cell sg-measurement-cell--label">{{ measurement.label }}</div>
+                    {%- for value in measurement.values -%}
+                      <div class="sg-measurement-cell" data-size-body="{{ metafield_body.sizes[forloop.index0] }}">{{ value }}</div>
+                    {%- endfor -%}
+                  </div>
+                {%- endfor -%}
+              </div>
+            {%- else -%}
+              {%- comment -%} Use tag-based default data {%- endcomment -%}
+              {%- case sizechart_key -%}
+
+                {%- when 'tops' -%}
+                <div class="sg-measurement-grid">
+                  <div class="sg-measurement-row sg-measurement-row--header">
+                    <div class="sg-measurement-cell sg-measurement-cell--label">Medida</div>
+                    <div class="sg-measurement-cell" data-size-body="S">S</div>
+                    <div class="sg-measurement-cell" data-size-body="M">M</div>
+                    <div class="sg-measurement-cell" data-size-body="L">L</div>
+                    <div class="sg-measurement-cell" data-size-body="XL">XL</div>
                   <div class="sg-measurement-cell" data-size-body="XXL">XXL</div>
                 </div>
                 <div class="sg-measurement-row">
@@ -439,18 +464,32 @@
                 </div>
               </div>
 
-              {%- else -%}
-              <div class="sg-empty">
-                <p>Sem tabela específica para este produto.</p>
-                <p class="sg-empty-hint">Adicione uma tag como: tops, saia, saia-calção, calcas, ou calções.</p>
-              </div>
-            {%- endcase -%}
+                {%- else -%}
+                <div class="sg-empty">
+                  <p>Sem tabela específica para este produto.</p>
+                  <p class="sg-empty-hint">Adicione uma tag como: tops, saia, saia-calção, calcas, ou calções.</p>
+                </div>
+              {%- endcase -%}
+            {%- endif -%}
           </div>
 
           <!-- How to Measure Guide -->
           <h4 class="sg-guide-subtitle">Como medir corretamente</h4>
           <div class="sg-guide-content">
-            {%- case sizechart_key -%}
+            {%- if has_metafield_instructions -%}
+              {%- comment -%} Use metafield instructions {%- endcomment -%}
+              {%- for step in metafield_instructions.steps -%}
+                <div class="sg-guide-item">
+                  <div class="sg-guide-number">{{ forloop.index }}</div>
+                  <div class="sg-guide-text">
+                    <h4>{{ step.title }}</h4>
+                    <p>{{ step.description }}</p>
+                  </div>
+                </div>
+              {%- endfor -%}
+            {%- else -%}
+              {%- comment -%} Use tag-based default instructions {%- endcomment -%}
+              {%- case sizechart_key -%}
               {%- when 'tops' -%}
               <div class="sg-guide-item">
                 <div class="sg-guide-number">1</div>
@@ -506,9 +545,10 @@
                 </div>
               </div>
 
-              {%- else -%}
-              <p class="sg-empty">Adicione tags ao produto para ver o guia de medidas.</p>
-            {%- endcase -%}
+                {%- else -%}
+                <p class="sg-empty">Adicione tags ao produto para ver o guia de medidas.</p>
+              {%- endcase -%}
+            {%- endif -%}
           </div>
         </div>
 
