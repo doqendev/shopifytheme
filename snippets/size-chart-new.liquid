@@ -1043,18 +1043,29 @@
 
 <script>
 (function(){
+  console.log('[SG] Initializing size guide for {{ sg_id }}');
   const wrap = document.getElementById("sg-wrap-{{ sg_id }}");
-  if(!wrap) return;
+  console.log('[SG] Wrap element:', wrap);
+  if(!wrap) {
+    console.error('[SG] Wrap not found!');
+    return;
+  }
 
   let root = wrap.querySelector("#{{ sg_id }}");
-  if(!root) return;
+  console.log('[SG] Root element:', root);
+  if(!root) {
+    console.error('[SG] Root not found!');
+    return;
+  }
 
   const openTriggers = document.querySelectorAll('[data-sg-open="{{ sg_id }}"]');
+  console.log('[SG] Found', openTriggers.length, 'open triggers:', openTriggers);
 
   /* Portal: move drawer to body */
   if(!root.hasAttribute('data-sg-portal')){
     document.body.appendChild(root);
     root.setAttribute('data-sg-portal','true');
+    console.log('[SG] Moved drawer to body');
   }
 
   const panel = root.querySelector('.sg-panel');
@@ -1148,8 +1159,10 @@
 
   /* Open/Close */
   function openDrawer(e, trigger){
+    console.log('[SG] openDrawer called', e, trigger);
     if(e) e.preventDefault();
     root.hidden = false;
+    console.log('[SG] Drawer opened, root.hidden =', root.hidden);
     document.documentElement.style.overflow = 'hidden';
     openTriggers.forEach(t => t.setAttribute('aria-expanded','true'));
     panel.focus();
@@ -1170,8 +1183,12 @@
   }
 
   /* Attach handlers */
+  console.log('[SG] Attaching click handlers to', openTriggers.length, 'triggers');
   openTriggers.forEach(trigger => {
-    trigger.addEventListener('click', (e) => openDrawer(e, trigger));
+    trigger.addEventListener('click', (e) => {
+      console.log('[SG] Trigger clicked!', trigger);
+      openDrawer(e, trigger);
+    });
   });
   overlay.addEventListener('click', closeDrawer);
   closeBtns.forEach(b=> b.addEventListener('click', closeDrawer));
