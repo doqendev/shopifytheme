@@ -1042,7 +1042,7 @@
 </style>
 
 <script>
-(function(){
+document.addEventListener('DOMContentLoaded', function(){
   console.log('[SG] Initializing size guide for {{ sg_id }}');
   const wrap = document.getElementById("sg-wrap-{{ sg_id }}");
   console.log('[SG] Wrap element:', wrap);
@@ -1200,7 +1200,7 @@
   if(sizeButtonsBody.length > 0) {
     sizeButtonsBody[0].click();
   }
-})();
+});
 </script>
 
 {%- endif -%}
