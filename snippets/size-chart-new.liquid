@@ -35,17 +35,17 @@
 
   {%- if product.metafields.custom.size_guide_product != blank -%}
     {%- assign has_metafield_product = true -%}
-    {%- assign metafield_product = product.metafields.custom.size_guide_product -%}
+    {%- assign metafield_product = product.metafields.custom.size_guide_product.value | default: product.metafields.custom.size_guide_product -%}
   {%- endif -%}
 
   {%- if product.metafields.custom.size_guide_body != blank -%}
     {%- assign has_metafield_body = true -%}
-    {%- assign metafield_body = product.metafields.custom.size_guide_body -%}
+    {%- assign metafield_body = product.metafields.custom.size_guide_body.value | default: product.metafields.custom.size_guide_body -%}
   {%- endif -%}
 
   {%- if product.metafields.custom.size_guide_instructions != blank -%}
     {%- assign has_metafield_instructions = true -%}
-    {%- assign metafield_instructions = product.metafields.custom.size_guide_instructions -%}
+    {%- assign metafield_instructions = product.metafields.custom.size_guide_instructions.value | default: product.metafields.custom.size_guide_instructions -%}
   {%- endif -%}
 
   <div id="sg-wrap-{{ sg_id }}" class="sg-wrap">
