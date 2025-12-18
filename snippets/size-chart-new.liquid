@@ -1,10 +1,6 @@
 {%- comment -%}
-  SNIPPET: size-guide.liquid
-  - Renders a "Guia de tamanhos" link that opens a drawer.
-  - Picks the table by product tag "sizechart:IDENT" (camisola, tshirt, saia, calcas).
-  - Mobile: swipe for size columns (ZONA sticky).
-  - Desktop (≥1024px): wider drawer, full-width table, no horizontal scroll.
-  - CM only (no inches).
+  SNIPPET: size-chart-new.liquid
+  Refined editorial-style size guide drawer with tab navigation
 {%- endcomment -%}
 
 {%- if product -%}
@@ -36,301 +32,868 @@
     <div class="sg-root" id="{{ sg_id }}" hidden role="dialog" aria-modal="true" aria-label="Guia de tamanhos">
       <div class="sg-overlay" data-sg-close></div>
       <aside class="sg-panel" tabindex="-1">
+
+        <!-- Header -->
         <header class="sg-header">
-          <h3 class="sg-title">Dimensões do produto</h3>
-          <button class="sg-close" type="button" data-sg-close aria-label="Fechar">✕</button>
+          <h2 class="sg-title">Guia de tamanhos</h2>
+          <button class="sg-close" type="button" data-sg-close aria-label="Fechar">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
         </header>
 
-        <div class="sg-media">
-          {%- assign first_media = product.featured_media | default: product.media.first -%}
-          {%- if first_media -%}
-            <img class="sg-img"
-                 alt="{{ first_media.alt | default: product.title | escape }}"
-                 loading="lazy"
-                 src="{{ first_media | image_url: width: 1100 }}"
-                 srcset="{{ first_media | image_url: width: 550 }} 550w, {{ first_media | image_url: width: 900 }} 900w, {{ first_media | image_url: width: 1100 }} 1100w"
-                 sizes="(max-width: 740px) 100vw, 600px">
-          {%- else -%}
-            <div class="sg-img sg-img--placeholder" aria-hidden="true"></div>
-          {%- endif -%}
+        <!-- Tab Navigation -->
+        <div class="sg-tabs" role="tablist">
+          <button class="sg-tab sg-tab--active" role="tab" aria-selected="true" aria-controls="sg-panel-measurements-{{ sg_id }}" id="sg-tab-measurements-{{ sg_id }}" data-tab="measurements">
+            Medidas do produto
+          </button>
+          <button class="sg-tab" role="tab" aria-selected="false" aria-controls="sg-panel-guide-{{ sg_id }}" id="sg-tab-guide-{{ sg_id }}" data-tab="guide">
+            Como medir
+          </button>
         </div>
 
-        <p class="sg-note">As medidas podem apresentar pequenas variações devido ao processo de produção. A peça de roupa está medida esticada.</p>
+        <!-- Tab Panel: Measurements -->
+        <div class="sg-tab-panel sg-tab-panel--active" role="tabpanel" id="sg-panel-measurements-{{ sg_id }}" aria-labelledby="sg-tab-measurements-{{ sg_id }}" data-panel="measurements">
 
-        <div class="sg-table-wrap" data-sg-table>
+          <!-- Size Selector -->
           {%- case sizechart_key -%}
-
-            {%- when 'tops' -%}
-            <div class="sg-scroll" data-sg-swipe>
-              <div class="sg-viewport" data-sg-viewport tabindex="0" aria-label="Tabela de tamanhos com scroll horizontal">
-                <table class="sg-table" aria-label="Tabela de tamanhos: Tops (cm)">
-                  <thead>
-                    <tr>
-                      <th class="sg-sticky">ZONA</th>
-                      <th class="sg-size">S</th>
-                      <th class="sg-size">M</th>
-                      <th class="sg-size">L</th>
-                      <th class="sg-size">XL</th>
-                      <th class="sg-size">XXL</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <th scope="row" class="sg-sticky">Peito</th>
-                      <td>50</td><td>53</td><td>56</td><td>59</td><td>62</td>
-                    </tr>
-                    <tr>
-                      <th scope="row" class="sg-sticky">Comprimento</th>
-                      <td>70</td><td>72</td><td>74</td><td>76</td><td>78</td>
-                    </tr>
-                    <tr>
-                      <th scope="row" class="sg-sticky">Manga</th>
-                      <td>20</td><td>21</td><td>22</td><td>23</td><td>24</td>
-                    </tr>
-                  </tbody>
-                </table>
+            {%- when 'tops' or 'saia' or 'saia-calcao' or 'calcas' or 'calcoes' -%}
+              <div class="sg-size-selector">
+                <p class="sg-size-label">Selecione o tamanho</p>
+                <div class="sg-size-buttons" role="radiogroup">
+                  <button class="sg-size-btn sg-size-btn--active" role="radio" aria-checked="true" data-size="S">S</button>
+                  <button class="sg-size-btn" role="radio" aria-checked="false" data-size="M">M</button>
+                  <button class="sg-size-btn" role="radio" aria-checked="false" data-size="L">L</button>
+                  <button class="sg-size-btn" role="radio" aria-checked="false" data-size="XL">XL</button>
+                  <button class="sg-size-btn" role="radio" aria-checked="false" data-size="XXL">XXL</button>
+                </div>
               </div>
-              <div class="sg-fade sg-fade--left" aria-hidden="true"></div>
-              <div class="sg-fade sg-fade--right" aria-hidden="true"></div>
-            </div>
-
-            {%- when 'saia' -%}
-            <div class="sg-scroll" data-sg-swipe>
-              <div class="sg-viewport" data-sg-viewport tabindex="0" aria-label="Tabela de tamanhos com scroll horizontal">
-                <table class="sg-table" aria-label="Tabela de tamanhos: Saia (cm)">
-                  <thead>
-                    <tr>
-                      <th class="sg-sticky">ZONA</th>
-                      <th class="sg-size">28</th>
-                      <th class="sg-size">30</th>
-                      <th class="sg-size">32</th>
-                      <th class="sg-size">34</th>
-                      <th class="sg-size">36</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr><th scope="row" class="sg-sticky">Comprimento</th>
-                      <td>70</td><td>72</td><td>74</td><td>76</td><td>78</td>
-                    </tr>
-                    <tr><th scope="row" class="sg-sticky">Largura</th>
-                      <td>20</td><td>21</td><td>22</td><td>23</td><td>24</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="sg-fade sg-fade--left" aria-hidden="true"></div>
-              <div class="sg-fade sg-fade--right" aria-hidden="true"></div>
-            </div>
-
-            {%- when 'calcas' -%}
-            <div class="sg-scroll" data-sg-swipe>
-              <div class="sg-viewport" data-sg-viewport tabindex="0" aria-label="Tabela de tamanhos com scroll horizontal">
-                <table class="sg-table" aria-label="Tabela de tamanhos: Calças (cm)">
-                  <thead>
-                    <tr>
-                      <th class="sg-sticky">ZONA</th>
-                      <th class="sg-size">28</th>
-                      <th class="sg-size">30</th>
-                      <th class="sg-size">32</th>
-                      <th class="sg-size">34</th>
-                      <th class="sg-size">36</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr><th scope="row" class="sg-sticky">Cintura</th>
-                      <td>72</td><td>77</td><td>82</td><td>87</td><td>92</td>
-                    </tr>
-                    <tr><th scope="row" class="sg-sticky">Anca</th>
-                      <td>92</td><td>97</td><td>102</td><td>107</td><td>112</td>
-                    </tr>
-                    <tr><th scope="row" class="sg-sticky">Entrepernas</th>
-                      <td>76</td><td>78</td><td>80</td><td>82</td><td>84</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="sg-fade sg-fade--left" aria-hidden="true"></div>
-              <div class="sg-fade sg-fade--right" aria-hidden="true"></div>
-            </div>
-
-            {%- when 'calcoes' -%}
-            <div class="sg-scroll" data-sg-swipe>
-              <div class="sg-viewport" data-sg-viewport tabindex="0" aria-label="Tabela de tamanhos com scroll horizontal">
-                <table class="sg-table" aria-label="Tabela de tamanhos: Calções (cm)">
-                  <thead>
-                    <tr>
-                      <th class="sg-sticky">ZONA</th>
-                      <th class="sg-size">S</th>
-                      <th class="sg-size">M</th>
-                      <th class="sg-size">L</th>
-                      <th class="sg-size">XL</th>
-                      <th class="sg-size">XXL</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr><th scope="row" class="sg-sticky">Cintura</th>
-                      <td>72</td><td>77</td><td>82</td><td>87</td><td>92</td>
-                    </tr>
-                    <tr><th scope="row" class="sg-sticky">Anca</th>
-                      <td>92</td><td>97</td><td>102</td><td>107</td><td>112</td>
-                    </tr>
-                    <tr><th scope="row" class="sg-sticky">Comprimento</th>
-                      <td>45</td><td>47</td><td>49</td><td>51</td><td>53</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="sg-fade sg-fade--left" aria-hidden="true"></div>
-              <div class="sg-fade sg-fade--right" aria-hidden="true"></div>
-            </div>
-
-            {%- when 'saia-calcao' -%}
-            <div class="sg-scroll" data-sg-swipe>
-              <div class="sg-viewport" data-sg-viewport tabindex="0" aria-label="Tabela de tamanhos com scroll horizontal">
-                <table class="sg-table" aria-label="Tabela de tamanhos: Saia-calção (cm)">
-                  <thead>
-                    <tr>
-                      <th class="sg-sticky">ZONA</th>
-                      <th class="sg-size">S</th>
-                      <th class="sg-size">M</th>
-                      <th class="sg-size">L</th>
-                      <th class="sg-size">XL</th>
-                      <th class="sg-size">XXL</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr><th scope="row" class="sg-sticky">Cintura</th>
-                      <td>68</td><td>72</td><td>76</td><td>80</td><td>84</td>
-                    </tr>
-                    <tr><th scope="row" class="sg-sticky">Anca</th>
-                      <td>88</td><td>92</td><td>96</td><td>100</td><td>104</td>
-                    </tr>
-                    <tr><th scope="row" class="sg-sticky">Comprimento</th>
-                      <td>40</td><td>41</td><td>42</td><td>43</td><td>44</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="sg-fade sg-fade--left" aria-hidden="true"></div>
-              <div class="sg-fade sg-fade--right" aria-hidden="true"></div>
-            </div>
-
-            {%- else -%}
-            <div class="sg-empty">
-              <p><strong>Sem tabela específica</strong></p>
-              <p>Adiciona uma tag como <code>tops</code>, <code>saia</code>, <code>saia-calção</code>, <code>calcas</code>, <code>calções</code>, etc.</p>
-            </div>
           {%- endcase -%}
+
+          <!-- Product Image -->
+          <div class="sg-media">
+            {%- assign first_media = product.featured_media | default: product.media.first -%}
+            {%- if first_media -%}
+              <img class="sg-img"
+                   alt="{{ first_media.alt | default: product.title | escape }}"
+                   loading="lazy"
+                   src="{{ first_media | image_url: width: 600 }}"
+                   srcset="{{ first_media | image_url: width: 400 }} 400w, {{ first_media | image_url: width: 600 }} 600w"
+                   sizes="(max-width: 740px) 200px, 300px">
+            {%- endif -%}
+          </div>
+
+          <!-- Measurement Table -->
+          <div class="sg-table-container">
+            {%- case sizechart_key -%}
+
+              {%- when 'tops' -%}
+              <div class="sg-measurement-grid">
+                <div class="sg-measurement-row sg-measurement-row--header">
+                  <div class="sg-measurement-cell sg-measurement-cell--label">Medida</div>
+                  <div class="sg-measurement-cell" data-size="S">S</div>
+                  <div class="sg-measurement-cell" data-size="M">M</div>
+                  <div class="sg-measurement-cell" data-size="L">L</div>
+                  <div class="sg-measurement-cell" data-size="XL">XL</div>
+                  <div class="sg-measurement-cell" data-size="XXL">XXL</div>
+                </div>
+                <div class="sg-measurement-row">
+                  <div class="sg-measurement-cell sg-measurement-cell--label">Peito</div>
+                  <div class="sg-measurement-cell" data-size="S">50 cm</div>
+                  <div class="sg-measurement-cell" data-size="M">53 cm</div>
+                  <div class="sg-measurement-cell" data-size="L">56 cm</div>
+                  <div class="sg-measurement-cell" data-size="XL">59 cm</div>
+                  <div class="sg-measurement-cell" data-size="XXL">62 cm</div>
+                </div>
+                <div class="sg-measurement-row">
+                  <div class="sg-measurement-cell sg-measurement-cell--label">Comprimento</div>
+                  <div class="sg-measurement-cell" data-size="S">70 cm</div>
+                  <div class="sg-measurement-cell" data-size="M">72 cm</div>
+                  <div class="sg-measurement-cell" data-size="L">74 cm</div>
+                  <div class="sg-measurement-cell" data-size="XL">76 cm</div>
+                  <div class="sg-measurement-cell" data-size="XXL">78 cm</div>
+                </div>
+                <div class="sg-measurement-row">
+                  <div class="sg-measurement-cell sg-measurement-cell--label">Manga</div>
+                  <div class="sg-measurement-cell" data-size="S">20 cm</div>
+                  <div class="sg-measurement-cell" data-size="M">21 cm</div>
+                  <div class="sg-measurement-cell" data-size="L">22 cm</div>
+                  <div class="sg-measurement-cell" data-size="XL">23 cm</div>
+                  <div class="sg-measurement-cell" data-size="XXL">24 cm</div>
+                </div>
+              </div>
+
+              {%- when 'saia' -%}
+              <div class="sg-measurement-grid">
+                <div class="sg-measurement-row sg-measurement-row--header">
+                  <div class="sg-measurement-cell sg-measurement-cell--label">Medida</div>
+                  <div class="sg-measurement-cell" data-size="S">S</div>
+                  <div class="sg-measurement-cell" data-size="M">M</div>
+                  <div class="sg-measurement-cell" data-size="L">L</div>
+                  <div class="sg-measurement-cell" data-size="XL">XL</div>
+                  <div class="sg-measurement-cell" data-size="XXL">XXL</div>
+                </div>
+                <div class="sg-measurement-row">
+                  <div class="sg-measurement-cell sg-measurement-cell--label">Cintura</div>
+                  <div class="sg-measurement-cell" data-size="S">68 cm</div>
+                  <div class="sg-measurement-cell" data-size="M">72 cm</div>
+                  <div class="sg-measurement-cell" data-size="L">76 cm</div>
+                  <div class="sg-measurement-cell" data-size="XL">80 cm</div>
+                  <div class="sg-measurement-cell" data-size="XXL">84 cm</div>
+                </div>
+                <div class="sg-measurement-row">
+                  <div class="sg-measurement-cell sg-measurement-cell--label">Anca</div>
+                  <div class="sg-measurement-cell" data-size="S">88 cm</div>
+                  <div class="sg-measurement-cell" data-size="M">92 cm</div>
+                  <div class="sg-measurement-cell" data-size="L">96 cm</div>
+                  <div class="sg-measurement-cell" data-size="XL">100 cm</div>
+                  <div class="sg-measurement-cell" data-size="XXL">104 cm</div>
+                </div>
+                <div class="sg-measurement-row">
+                  <div class="sg-measurement-cell sg-measurement-cell--label">Comprimento</div>
+                  <div class="sg-measurement-cell" data-size="S">40 cm</div>
+                  <div class="sg-measurement-cell" data-size="M">41 cm</div>
+                  <div class="sg-measurement-cell" data-size="L">42 cm</div>
+                  <div class="sg-measurement-cell" data-size="XL">43 cm</div>
+                  <div class="sg-measurement-cell" data-size="XXL">44 cm</div>
+                </div>
+              </div>
+
+              {%- when 'saia-calcao' -%}
+              <div class="sg-measurement-grid">
+                <div class="sg-measurement-row sg-measurement-row--header">
+                  <div class="sg-measurement-cell sg-measurement-cell--label">Medida</div>
+                  <div class="sg-measurement-cell" data-size="S">S</div>
+                  <div class="sg-measurement-cell" data-size="M">M</div>
+                  <div class="sg-measurement-cell" data-size="L">L</div>
+                  <div class="sg-measurement-cell" data-size="XL">XL</div>
+                  <div class="sg-measurement-cell" data-size="XXL">XXL</div>
+                </div>
+                <div class="sg-measurement-row">
+                  <div class="sg-measurement-cell sg-measurement-cell--label">Cintura</div>
+                  <div class="sg-measurement-cell" data-size="S">68 cm</div>
+                  <div class="sg-measurement-cell" data-size="M">72 cm</div>
+                  <div class="sg-measurement-cell" data-size="L">76 cm</div>
+                  <div class="sg-measurement-cell" data-size="XL">80 cm</div>
+                  <div class="sg-measurement-cell" data-size="XXL">84 cm</div>
+                </div>
+                <div class="sg-measurement-row">
+                  <div class="sg-measurement-cell sg-measurement-cell--label">Anca</div>
+                  <div class="sg-measurement-cell" data-size="S">88 cm</div>
+                  <div class="sg-measurement-cell" data-size="M">92 cm</div>
+                  <div class="sg-measurement-cell" data-size="L">96 cm</div>
+                  <div class="sg-measurement-cell" data-size="XL">100 cm</div>
+                  <div class="sg-measurement-cell" data-size="XXL">104 cm</div>
+                </div>
+                <div class="sg-measurement-row">
+                  <div class="sg-measurement-cell sg-measurement-cell--label">Comprimento</div>
+                  <div class="sg-measurement-cell" data-size="S">36 cm</div>
+                  <div class="sg-measurement-cell" data-size="M">37 cm</div>
+                  <div class="sg-measurement-cell" data-size="L">38 cm</div>
+                  <div class="sg-measurement-cell" data-size="XL">39 cm</div>
+                  <div class="sg-measurement-cell" data-size="XXL">40 cm</div>
+                </div>
+              </div>
+
+              {%- when 'calcas' -%}
+              <div class="sg-measurement-grid">
+                <div class="sg-measurement-row sg-measurement-row--header">
+                  <div class="sg-measurement-cell sg-measurement-cell--label">Medida</div>
+                  <div class="sg-measurement-cell" data-size="S">S</div>
+                  <div class="sg-measurement-cell" data-size="M">M</div>
+                  <div class="sg-measurement-cell" data-size="L">L</div>
+                  <div class="sg-measurement-cell" data-size="XL">XL</div>
+                  <div class="sg-measurement-cell" data-size="XXL">XXL</div>
+                </div>
+                <div class="sg-measurement-row">
+                  <div class="sg-measurement-cell sg-measurement-cell--label">Cintura</div>
+                  <div class="sg-measurement-cell" data-size="S">72 cm</div>
+                  <div class="sg-measurement-cell" data-size="M">76 cm</div>
+                  <div class="sg-measurement-cell" data-size="L">80 cm</div>
+                  <div class="sg-measurement-cell" data-size="XL">84 cm</div>
+                  <div class="sg-measurement-cell" data-size="XXL">88 cm</div>
+                </div>
+                <div class="sg-measurement-row">
+                  <div class="sg-measurement-cell sg-measurement-cell--label">Anca</div>
+                  <div class="sg-measurement-cell" data-size="S">92 cm</div>
+                  <div class="sg-measurement-cell" data-size="M">96 cm</div>
+                  <div class="sg-measurement-cell" data-size="L">100 cm</div>
+                  <div class="sg-measurement-cell" data-size="XL">104 cm</div>
+                  <div class="sg-measurement-cell" data-size="XXL">108 cm</div>
+                </div>
+                <div class="sg-measurement-row">
+                  <div class="sg-measurement-cell sg-measurement-cell--label">Comprimento</div>
+                  <div class="sg-measurement-cell" data-size="S">100 cm</div>
+                  <div class="sg-measurement-cell" data-size="M">102 cm</div>
+                  <div class="sg-measurement-cell" data-size="L">104 cm</div>
+                  <div class="sg-measurement-cell" data-size="XL">106 cm</div>
+                  <div class="sg-measurement-cell" data-size="XXL">108 cm</div>
+                </div>
+              </div>
+
+              {%- when 'calcoes' -%}
+              <div class="sg-measurement-grid">
+                <div class="sg-measurement-row sg-measurement-row--header">
+                  <div class="sg-measurement-cell sg-measurement-cell--label">Medida</div>
+                  <div class="sg-measurement-cell" data-size="S">S</div>
+                  <div class="sg-measurement-cell" data-size="M">M</div>
+                  <div class="sg-measurement-cell" data-size="L">L</div>
+                  <div class="sg-measurement-cell" data-size="XL">XL</div>
+                  <div class="sg-measurement-cell" data-size="XXL">XXL</div>
+                </div>
+                <div class="sg-measurement-row">
+                  <div class="sg-measurement-cell sg-measurement-cell--label">Cintura</div>
+                  <div class="sg-measurement-cell" data-size="S">72 cm</div>
+                  <div class="sg-measurement-cell" data-size="M">76 cm</div>
+                  <div class="sg-measurement-cell" data-size="L">80 cm</div>
+                  <div class="sg-measurement-cell" data-size="XL">84 cm</div>
+                  <div class="sg-measurement-cell" data-size="XXL">88 cm</div>
+                </div>
+                <div class="sg-measurement-row">
+                  <div class="sg-measurement-cell sg-measurement-cell--label">Anca</div>
+                  <div class="sg-measurement-cell" data-size="S">92 cm</div>
+                  <div class="sg-measurement-cell" data-size="M">96 cm</div>
+                  <div class="sg-measurement-cell" data-size="L">100 cm</div>
+                  <div class="sg-measurement-cell" data-size="XL">104 cm</div>
+                  <div class="sg-measurement-cell" data-size="XXL">108 cm</div>
+                </div>
+                <div class="sg-measurement-row">
+                  <div class="sg-measurement-cell sg-measurement-cell--label">Comprimento</div>
+                  <div class="sg-measurement-cell" data-size="S">42 cm</div>
+                  <div class="sg-measurement-cell" data-size="M">44 cm</div>
+                  <div class="sg-measurement-cell" data-size="L">46 cm</div>
+                  <div class="sg-measurement-cell" data-size="XL">48 cm</div>
+                  <div class="sg-measurement-cell" data-size="XXL">50 cm</div>
+                </div>
+              </div>
+
+              {%- else -%}
+              <div class="sg-empty">
+                <p>Sem tabela específica para este produto.</p>
+                <p class="sg-empty-hint">Adicione uma tag como: tops, saia, saia-calção, calcas, ou calções.</p>
+              </div>
+            {%- endcase -%}
+          </div>
+
+          <!-- Note -->
+          <p class="sg-note">As medidas podem apresentar pequenas variações devido ao processo de produção. A peça está medida esticada.</p>
         </div>
+
+        <!-- Tab Panel: Guide -->
+        <div class="sg-tab-panel" role="tabpanel" id="sg-panel-guide-{{ sg_id }}" aria-labelledby="sg-tab-guide-{{ sg_id }}" data-panel="guide">
+          <h3 class="sg-guide-title">Como medir corretamente</h3>
+
+          <div class="sg-guide-content">
+            {%- case sizechart_key -%}
+              {%- when 'tops' -%}
+              <div class="sg-guide-item">
+                <div class="sg-guide-number">1</div>
+                <div class="sg-guide-text">
+                  <h4>Peito</h4>
+                  <p>Medir a circunferência do peito na parte mais ampla, abaixo das axilas.</p>
+                </div>
+              </div>
+              <div class="sg-guide-item">
+                <div class="sg-guide-number">2</div>
+                <div class="sg-guide-text">
+                  <h4>Comprimento</h4>
+                  <p>Medir desde o ponto mais alto do ombro até à base da peça.</p>
+                </div>
+              </div>
+              <div class="sg-guide-item">
+                <div class="sg-guide-number">3</div>
+                <div class="sg-guide-text">
+                  <h4>Manga</h4>
+                  <p>Medir desde a costura do ombro até à extremidade da manga.</p>
+                </div>
+              </div>
+
+              {%- when 'saia' or 'saia-calcao' -%}
+              <div class="sg-guide-item">
+                <div class="sg-guide-number">1</div>
+                <div class="sg-guide-text">
+                  <h4>Cintura</h4>
+                  <p>Medir a circunferência da cintura na parte mais estreita.</p>
+                </div>
+              </div>
+              <div class="sg-guide-item">
+                <div class="sg-guide-number">2</div>
+                <div class="sg-guide-text">
+                  <h4>Anca</h4>
+                  <p>Medir a circunferência da anca na parte mais ampla, ao nível das nádegas.</p>
+                </div>
+              </div>
+              <div class="sg-guide-item">
+                <div class="sg-guide-number">3</div>
+                <div class="sg-guide-text">
+                  <h4>Comprimento</h4>
+                  <p>Medir desde a cintura até à base da peça.</p>
+                </div>
+              </div>
+
+              {%- when 'calcas' or 'calcoes' -%}
+              <div class="sg-guide-item">
+                <div class="sg-guide-number">1</div>
+                <div class="sg-guide-text">
+                  <h4>Cintura</h4>
+                  <p>Medir a circunferência da cintura onde as calças devem assentar.</p>
+                </div>
+              </div>
+              <div class="sg-guide-item">
+                <div class="sg-guide-number">2</div>
+                <div class="sg-guide-text">
+                  <h4>Anca</h4>
+                  <p>Medir a circunferência da anca na parte mais ampla.</p>
+                </div>
+              </div>
+              <div class="sg-guide-item">
+                <div class="sg-guide-number">3</div>
+                <div class="sg-guide-text">
+                  <h4>Comprimento</h4>
+                  <p>Medir desde a cintura até ao tornozelo pelo interior da perna.</p>
+                </div>
+              </div>
+
+              {%- else -%}
+              <p class="sg-empty">Adicione tags ao produto para ver o guia de medidas.</p>
+            {%- endcase -%}
+          </div>
+
+          <div class="sg-guide-tips">
+            <p><strong>Dicas importantes:</strong></p>
+            <ul>
+              <li>Use uma fita métrica flexível</li>
+              <li>Meça com roupa interior ou roupa justa ao corpo</li>
+              <li>Mantenha-se numa posição relaxada e natural</li>
+              <li>Peça ajuda se necessário para medidas mais precisas</li>
+            </ul>
+          </div>
+        </div>
+
       </aside>
     </div>
   </div>
 
 <style>
-  /* Scope variables to this drawer only */
-  #{{ sg_id }}{ --sg-label-col:210px; --sg-size-col:96px; }
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap');
 
-  .sg-link{background:transparent;border:0;padding:0;color:inherit;text-decoration:underline;cursor:pointer}
+  /* Root Variables */
+  .sg-root {
+    --sg-black: #1a1a1a;
+    --sg-grey: #666;
+    --sg-light-grey: #f5f5f5;
+    --sg-border: #e8e4df;
+    --sg-accent: #e8e4df;
+    --sg-white: #ffffff;
 
-  /* Make the root a topmost, isolated stacking context */
-  .sg-root{
-    position:fixed;
-    inset:0;
-    z-index:2147483645;   /* higher than any theme header/menu */
-    display:grid;
-    isolation:isolate;    /* new stacking context */
-  }
-  .sg-root[hidden]{display:none}
+    --sg-font-serif: 'Cormorant Garamond', serif;
+    --sg-font-sans: 'DM Sans', sans-serif;
 
-  /* Make overlay and panel fixed + explicit z-order */
-  .sg-overlay{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.45);
-    z-index:0;
-  }
-  .sg-panel{
-    position:fixed;
-    top:0; right:0; height:100%;
-    width:min(760px,100%);
-    background:#fff; box-shadow:-12px 0 30px rgba(0,0,0,.2);
-    display:flex; flex-direction:column; gap:16px; padding:20px; overflow:auto;
-    z-index:1; /* above overlay */
+    --sg-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .sg-header{display:flex;align-items:center;justify-content:space-between}
-  .sg-title{margin:0;font-size:18px}
-  .sg-close{background:transparent;padding:6px 10px;cursor:pointer;border:none}
-  .sg-media{display:flex;justify-content:center}
-  .sg-img{max-width:420px;width:60%;height:auto;background:#f3f4f6}
-  .sg-img--placeholder{width:320px;height:420px;background:linear-gradient(90deg,#f3f4f6,#eee,#f3f4f6)}
-  .sg-note{font-size:13px;color:#666;margin:0}
-  .sg-howto{font-size:14px;color:#555}
-
-  /* ---------- Tabela + Swipe (mobile) ---------- */
-  .sg-table{width:max-content;border-collapse:collapse}
-  .sg-table th,.sg-table td{border-top:1px solid #e5e7eb;padding:10px 8px;text-align:center;font-size:14px;white-space:nowrap}
-  .sg-table thead th{font-weight:600;color:#111;background:#fafafa}
-  .sg-table th[scope="row"]{text-align:left;font-weight:500;color:#111}
-
-  .sg-size{min-width:var(--sg-size-col)}
-  .sg-sticky{
-    position:sticky; left:0; z-index:2; background:#fff;
-    min-width:var(--sg-label-col); max-width:var(--sg-label-col)
+  /* Root Container */
+  .sg-root {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483645;
+    display: grid;
+    isolation: isolate;
+    font-family: var(--sg-font-sans);
+    color: var(--sg-black);
   }
-  thead .sg-sticky{background:#fafafa; z-index:3}
+  .sg-root[hidden] { display: none; }
 
-  .sg-scroll{position:relative}
-  .sg-viewport{
-    overflow-x:auto; -webkit-overflow-scrolling:touch;
-    scroll-snap-type:x proximity;
-    border-bottom:1px solid #e5e7eb
-  }
-  .sg-fade{position:absolute; top:42px; bottom:0; width:20px; pointer-events:none; opacity:0; transition:opacity .2s}
-  .sg-fade--left{left:var(--sg-label-col); background:linear-gradient(90deg,#fff,rgba(255,255,255,0))}
-  .sg-fade--right{right:0; background:linear-gradient(270deg,#fff,rgba(255,255,255,0))}
-
-  /* ---------- Desktop overrides ---------- */
-  @media (min-width: 1024px){
-    .sg-panel{ width:min(600px);}
-    .sg-media{ justify-content:flex-start; }
-    .sg-img{ width:220px; max-width:220px; }
-    .sg-viewport{ overflow-x:visible; scroll-snap-type:none; }
-    .sg-table{ width:100%;}
-    .sg-size{ min-width:auto; }
-    .sg-fade{ display:none; }
-    #{{ sg_id }}{ --sg-label-col:260px; }
+  /* Overlay */
+  .sg-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 0;
+    animation: sg-fade-in 0.3s ease;
   }
 
-  @media (max-width:740px){
-    .sg-panel{padding:16px}
-    .sg-img{max-width:100%}
-    #{{ sg_id }}{ --sg-label-col:180px; --sg-size-col:88px; }
+  @keyframes sg-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Panel */
+  .sg-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: min(540px, 100%);
+    background: var(--sg-white);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    z-index: 1;
+    animation: sg-slide-in 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: -8px 0 40px rgba(0, 0, 0, 0.12);
+  }
+
+  @keyframes sg-slide-in {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  /* Header */
+  .sg-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 32px 32px 24px;
+    border-bottom: 1px solid var(--sg-border);
+  }
+
+  .sg-title {
+    font-family: var(--sg-font-serif);
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.02em;
+    color: var(--sg-black);
+  }
+
+  .sg-close {
+    background: transparent;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    color: var(--sg-grey);
+    transition: var(--sg-transition);
+    border-radius: 4px;
+  }
+
+  .sg-close:hover {
+    color: var(--sg-black);
+    background: var(--sg-light-grey);
+  }
+
+  /* Tabs */
+  .sg-tabs {
+    display: flex;
+    gap: 0;
+    padding: 0 32px;
+    margin-top: 24px;
+    border-bottom: 1px solid var(--sg-border);
+  }
+
+  .sg-tab {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 16px 24px;
+    font-family: var(--sg-font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    color: var(--sg-grey);
+    position: relative;
+    transition: var(--sg-transition);
+  }
+
+  .sg-tab::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--sg-black);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+
+  .sg-tab--active {
+    color: var(--sg-black);
+  }
+
+  .sg-tab--active::after {
+    transform: scaleX(1);
+  }
+
+  .sg-tab:hover:not(.sg-tab--active) {
+    color: var(--sg-black);
+  }
+
+  /* Tab Panels */
+  .sg-tab-panel {
+    display: none;
+    padding: 32px;
+    animation: sg-tab-fade-in 0.4s ease;
+  }
+
+  .sg-tab-panel--active {
+    display: block;
+  }
+
+  @keyframes sg-tab-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Size Selector */
+  .sg-size-selector {
+    margin-bottom: 32px;
+  }
+
+  .sg-size-label {
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--sg-grey);
+    margin-bottom: 12px;
+  }
+
+  .sg-size-buttons {
+    display: flex;
+    gap: 8px;
+  }
+
+  .sg-size-btn {
+    flex: 1;
+    padding: 14px;
+    background: var(--sg-white);
+    border: 1.5px solid var(--sg-border);
+    font-family: var(--sg-font-sans);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--sg-black);
+    cursor: pointer;
+    transition: var(--sg-transition);
+    border-radius: 2px;
+  }
+
+  .sg-size-btn:hover {
+    border-color: var(--sg-black);
+    background: var(--sg-light-grey);
+  }
+
+  .sg-size-btn--active {
+    background: var(--sg-black);
+    color: var(--sg-white);
+    border-color: var(--sg-black);
+  }
+
+  /* Product Image */
+  .sg-media {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 32px;
+  }
+
+  .sg-img {
+    width: 100%;
+    max-width: 280px;
+    height: auto;
+    border-radius: 2px;
+    object-fit: cover;
+  }
+
+  /* Measurement Grid */
+  .sg-table-container {
+    margin-bottom: 24px;
+  }
+
+  .sg-measurement-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--sg-border);
+    border: 1px solid var(--sg-border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .sg-measurement-row {
+    display: grid;
+    grid-template-columns: 120px repeat(5, 1fr);
+    background: var(--sg-white);
+  }
+
+  .sg-measurement-row--header {
+    background: var(--sg-light-grey);
+  }
+
+  .sg-measurement-cell {
+    padding: 14px 12px;
+    font-size: 13px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--sg-transition);
+  }
+
+  .sg-measurement-row--header .sg-measurement-cell {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 11px;
+    color: var(--sg-grey);
+  }
+
+  .sg-measurement-cell--label {
+    text-align: left;
+    justify-content: flex-start;
+    font-weight: 500;
+    background: var(--sg-light-grey);
+    color: var(--sg-black);
+  }
+
+  /* Highlight selected size column */
+  .sg-measurement-row:not(.sg-measurement-row--header) .sg-measurement-cell[data-size].sg-size-highlight {
+    background: var(--sg-accent);
+    font-weight: 600;
+  }
+
+  /* Note */
+  .sg-note {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--sg-grey);
+    margin: 0;
+    padding: 16px;
+    background: var(--sg-light-grey);
+    border-radius: 2px;
+    border-left: 3px solid var(--sg-accent);
+  }
+
+  /* Guide Content */
+  .sg-guide-title {
+    font-family: var(--sg-font-serif);
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 28px;
+    color: var(--sg-black);
+  }
+
+  .sg-guide-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  .sg-guide-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .sg-guide-number {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--sg-black);
+    color: var(--sg-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--sg-font-serif);
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .sg-guide-text h4 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 6px 0;
+    color: var(--sg-black);
+  }
+
+  .sg-guide-text p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--sg-grey);
+    margin: 0;
+  }
+
+  .sg-guide-tips {
+    padding: 20px;
+    background: var(--sg-light-grey);
+    border-radius: 2px;
+    margin-top: 24px;
+  }
+
+  .sg-guide-tips p {
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0 0 12px 0;
+    color: var(--sg-black);
+  }
+
+  .sg-guide-tips ul {
+    margin: 0;
+    padding-left: 20px;
+  }
+
+  .sg-guide-tips li {
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--sg-grey);
+  }
+
+  /* Empty State */
+  .sg-empty {
+    padding: 48px 24px;
+    text-align: center;
+    color: var(--sg-grey);
+  }
+
+  .sg-empty p {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+  }
+
+  .sg-empty-hint {
+    font-size: 12px;
+    color: var(--sg-grey);
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 640px) {
+    .sg-panel {
+      width: 100%;
+    }
+
+    .sg-header {
+      padding: 24px 20px 20px;
+    }
+
+    .sg-title {
+      font-size: 24px;
+    }
+
+    .sg-tabs {
+      padding: 0 20px;
+    }
+
+    .sg-tab {
+      font-size: 11px;
+      padding: 14px 16px;
+    }
+
+    .sg-tab-panel {
+      padding: 24px 20px;
+    }
+
+    .sg-measurement-row {
+      grid-template-columns: 100px repeat(5, 1fr);
+      font-size: 12px;
+    }
+
+    .sg-measurement-cell {
+      padding: 10px 6px;
+      font-size: 11px;
+    }
+
+    .sg-size-btn {
+      padding: 12px;
+      font-size: 13px;
+    }
+  }
+
+  /* Desktop */
+  @media (min-width: 1024px) {
+    .sg-panel {
+      width: min(640px, 100%);
+    }
   }
 </style>
 
-
- <script>
+<script>
 (function(){
   const wrap = document.getElementById("sg-wrap-{{ sg_id }}");
   if(!wrap) return;
 
-  let root   = wrap.querySelector("#{{ sg_id }}");
+  let root = wrap.querySelector("#{{ sg_id }}");
   if(!root) return;
 
-  // Find all triggers for this drawer (accordion buttons, links, etc.)
   const openTriggers = document.querySelectorAll('[data-sg-open="{{ sg_id }}"]');
 
-  /* ---- 1) PORTAL: move the drawer to <body> to escape parent stacking contexts ---- */
+  /* Portal: move drawer to body */
   if(!root.hasAttribute('data-sg-portal')){
-    document.body.appendChild(root);           // keep same id (CSS still applies)
+    document.body.appendChild(root);
     root.setAttribute('data-sg-portal','true');
   }
 
-  const panel    = root.querySelector('.sg-panel');
-  const overlay  = root.querySelector('.sg-overlay');
-  const closeBtns= root.querySelectorAll('[data-sg-close]');
+  const panel = root.querySelector('.sg-panel');
+  const overlay = root.querySelector('.sg-overlay');
+  const closeBtns = root.querySelectorAll('[data-sg-close]');
+  const tabs = root.querySelectorAll('.sg-tab');
+  const tabPanels = root.querySelectorAll('.sg-tab-panel');
+  const sizeButtons = root.querySelectorAll('.sg-size-btn');
 
+  /* Tab Navigation */
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const targetPanel = tab.dataset.tab;
+
+      // Update tabs
+      tabs.forEach(t => {
+        t.classList.remove('sg-tab--active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      tab.classList.add('sg-tab--active');
+      tab.setAttribute('aria-selected', 'true');
+
+      // Update panels
+      tabPanels.forEach(p => {
+        p.classList.remove('sg-tab-panel--active');
+      });
+      const activePanel = root.querySelector(`[data-panel="${targetPanel}"]`);
+      if(activePanel) activePanel.classList.add('sg-tab-panel--active');
+    });
+  });
+
+  /* Size Selection */
+  sizeButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const selectedSize = btn.dataset.size;
+
+      // Update button states
+      sizeButtons.forEach(b => {
+        b.classList.remove('sg-size-btn--active');
+        b.setAttribute('aria-checked', 'false');
+      });
+      btn.classList.add('sg-size-btn--active');
+      btn.setAttribute('aria-checked', 'true');
+
+      // Highlight corresponding columns
+      const allCells = root.querySelectorAll('.sg-measurement-cell[data-size]');
+      allCells.forEach(cell => {
+        if(cell.dataset.size === selectedSize) {
+          cell.classList.add('sg-size-highlight');
+        } else {
+          cell.classList.remove('sg-size-highlight');
+        }
+      });
+    });
+  });
+
+  /* Focus Trap */
   function trapFocus(e){
     if(e.key !== 'Tab') return;
     const focusable = root.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])');
@@ -339,6 +902,7 @@
     else if(!e.shiftKey && document.activeElement === last){ first.focus(); e.preventDefault(); }
   }
 
+  /* Open/Close */
   function openDrawer(e, trigger){
     if(e) e.preventDefault();
     root.hidden = false;
@@ -347,69 +911,31 @@
     panel.focus();
     document.addEventListener('keydown', onKeydown);
     document.addEventListener('keydown', trapFocus);
-    // reset scroll & fades ao abrir
-    root.querySelectorAll('[data-sg-viewport]').forEach(v => { v.scrollLeft = 0; updateFades(v.closest('[data-sg-swipe]')); });
   }
+
   function closeDrawer(){
     root.hidden = true;
     document.documentElement.style.overflow = '';
-    openTriggers.forEach(t => {
-      t.setAttribute('aria-expanded','false');
-      // Return focus to the trigger if it's the accordion button
-      if(document.activeElement === panel && t.classList.contains('accordion__trigger')) {
-        t.focus();
-      }
-    });
+    openTriggers.forEach(t => t.setAttribute('aria-expanded','false'));
     document.removeEventListener('keydown', onKeydown);
     document.removeEventListener('keydown', trapFocus);
   }
-  function onKeydown(e){ if(e.key === 'Escape') closeDrawer(); }
 
-  // Attach click handlers to all triggers
+  function onKeydown(e){
+    if(e.key === 'Escape') closeDrawer();
+  }
+
+  /* Attach handlers */
   openTriggers.forEach(trigger => {
     trigger.addEventListener('click', (e) => openDrawer(e, trigger));
   });
   overlay.addEventListener('click', closeDrawer);
   closeBtns.forEach(b=> b.addEventListener('click', closeDrawer));
 
-  // Fades apenas quando existe overflow (mobile)
-  function updateFades(section){
-    if(!section) return;
-    const viewport = section.querySelector('[data-sg-viewport]');
-    const leftFade = section.querySelector('.sg-fade--left');
-    const rightFade = section.querySelector('.sg-fade--right');
-    if(!viewport || !leftFade || !rightFade) return;
-
-    const overflow = viewport.scrollWidth > viewport.clientWidth + 2 && getComputedStyle(viewport).overflowX !== 'visible';
-    if(!overflow){ leftFade.style.opacity = '0'; rightFade.style.opacity = '0'; return; }
-
-    const atStart = viewport.scrollLeft <= 2;
-    const atEnd = viewport.scrollLeft >= (viewport.scrollWidth - viewport.clientWidth - 2);
-    leftFade.style.opacity = atStart ? '0' : '1';
-    rightFade.style.opacity = atEnd ? '0' : '1';
+  /* Initialize: highlight first size */
+  if(sizeButtons.length > 0) {
+    sizeButtons[0].click();
   }
-
-  root.querySelectorAll('[data-sg-swipe]').forEach(section=>{
-    const viewport = section.querySelector('[data-sg-viewport]');
-    if(!viewport) return;
-
-    viewport.addEventListener('scroll', ()=> updateFades(section));
-    const ro = new ResizeObserver(()=> updateFades(section));
-    ro.observe(viewport);
-    updateFades(section);
-
-    // Navegação por teclado quando há overflow
-    viewport.addEventListener('keydown', (e)=>{
-      const overflow = viewport.scrollWidth > viewport.clientWidth + 2 && getComputedStyle(viewport).overflowX !== 'visible';
-      if(!overflow) return;
-      if(e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-      e.preventDefault();
-      const sizeHeader = viewport.querySelector('th.sg-size');
-      const colW = sizeHeader ? sizeHeader.getBoundingClientRect().width : 96;
-      const cols = Math.max(1, Math.floor(viewport.clientWidth / colW));
-      viewport.scrollBy({ left: cols * colW * (e.key === 'ArrowRight' ? 1 : -1), behavior: 'smooth' });
-    });
-  });
 })();
 </script>
 
