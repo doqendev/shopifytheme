@@ -2,37 +2,79 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Size Guide Accordion', () => {
   test.beforeEach(async ({ page }) => {
-    // Navigate to home page first to handle password
-    const baseUrl = process.env.BASE_URL || 'https://cheyenne.pt';
-    const password = process.env.STORE_PASSWORD || '123';
-
-    await page.goto(baseUrl);
-
-    // Handle password page if present
-    const passwordInput = page.locator('input[type="password"]');
-    if (await passwordInput.isVisible({ timeout: 2000 }).catch(() => false)) {
-      console.log('Password page detected, filling password...');
-      await passwordInput.fill(password);
-
-      // Click the padlock button
-      const submitButton = page.locator('button:has(.icon-padlock), button[type="submit"]').first();
-      await submitButton.click();
-      await page.waitForLoadState('networkidle');
-      console.log('Password submitted, waiting for page load...');
-    }
-
-    // Now navigate to the specific product page
     const productUrl = 'https://cheyenne.pt/products/sweatshirt-cropped-as-riscas-copy';
+    const password = '123';
+
+    // Navigate directly to product page
     await page.goto(productUrl);
     await page.waitForLoadState('networkidle');
+
+    // Check if we're on the password page by looking for the padlock button
+    const padlockButton = page.locator('button.password-reveal-trigger');
+    const isPasswordPage = await padlockButton.isVisible().catch(() => false);
+
+    if (isPasswordPage) {
+      console.log('Password page detected, clicking padlock button...');
+
+      // Step 1: Click the padlock button to reveal the password input
+      await padlockButton.click();
+      await page.waitForTimeout(500);
+
+      // Step 2: Wait for the password input to become visible
+      const passwordInput = page.locator('input[type="password"]#Password');
+      await passwordInput.waitFor({ state: 'visible', timeout: 3000 });
+
+      console.log('Password input revealed, typing password...');
+
+      // Step 3: Type the password
+      await passwordInput.fill(password);
+
+      // Step 4: Press Enter to submit
+      await passwordInput.press('Enter');
+
+      // Wait for navigation after password submission
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(2000); // Extra wait for page to fully load
+
+      console.log('Password submitted successfully');
+    }
+
+    // Verify we're now on the actual product page
+    await page.waitForSelector('body', { timeout: 5000 });
+
+    // Handle cookie consent if present
+    const acceptCookies = page.locator('button:has-text("Aceitar")');
+    if (await acceptCookies.isVisible().catch(() => false)) {
+      console.log('Cookie dialog detected, clicking Accept...');
+      await acceptCookies.click();
+      await page.waitForTimeout(500);
+    }
   });
 
   test('should display size guide accordion on product page', async ({ page }) => {
+    // Verify we're on the product page
+    const currentUrl = page.url();
+    console.log('Current URL:', currentUrl);
+
+    // If not on product page, navigate back
+    if (!currentUrl.includes('/products/')) {
+      console.log('Not on product page, navigating...');
+      await page.goto('https://cheyenne.pt/products/sweatshirt-cropped-as-riscas-copy');
+      await page.waitForLoadState('networkidle');
+    }
+
     // Wait for page to load
     await page.waitForLoadState('networkidle');
 
+    // Scroll down to the product info section
+    await page.evaluate(() => window.scrollTo(0, 800));
+    await page.waitForTimeout(1000);
+
     // Take screenshot of full page
     await page.screenshot({ path: 'tests/screenshots/size-guide-accordion-full-page.png', fullPage: true });
+
+    console.log('Page title:', await page.title());
+    console.log('Current URL:', page.url());
 
     // Look for the size guide accordion
     const sizeGuideAccordion = page.locator('.accordion--size-guide');
