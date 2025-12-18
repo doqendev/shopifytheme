@@ -61,21 +61,13 @@ data-option-position="{{ option.position }}" data-option-name="{{ option.name | 
             </span>
           </legend>
 
-          <div class="swatch-container{% if is_color_option %} swatch-row-with-ruler{% endif %}">
+          <div class="swatch-container">
             {% render 'product-variant-options',
               product: product,
               option: option,
               block: block,
               picker_type: picker_type
             %}
-
-            {% if is_color_option %}
-              {%- assign _scope_id = section.id | default: block.id | default: product.id -%}
-              {%- assign sg_id = 'sg-' | append: product.id | append: '-' | append: _scope_id -%}
-              <button type="button" class="size-guide-ruler-btn" onclick="document.querySelector('[data-sg-open=&quot;{{ sg_id }}&quot;]')?.click()">
-                Guia de tamanhos
-              </button>
-            {% endif %}
           </div>
         </fieldset>
       {%- elsif picker_type == 'button' -%}
