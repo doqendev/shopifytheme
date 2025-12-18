@@ -142,18 +142,18 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
 }
 
 .drawer__close {
-  display: inline-block;
-  padding: 0;
-  min-width: 3.2rem;
-  min-height: 3.2rem;
-  box-shadow: 0 0 0 0.2rem rgba(var(--color-button), 0);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #000000;
   position: absolute;
   top: 2rem;
   right: 2.5rem;
-  color: #000000;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
+  margin: -8px -8px -8px 0;
   z-index: 10;
   transition: opacity 0.2s ease;
 }
@@ -185,8 +185,8 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
   .drawer__close {
     top: 1.5rem;
     right: 1.5rem;
-    min-width: 2.8rem;
-    min-height: 2.8rem;
+    padding: 8px;
+    margin: -8px -8px -8px 0;
   }
 }
 
@@ -196,8 +196,16 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
 }
 
 .drawer__close .svg-wrapper {
-  height: 1.4rem;
-  width: 1.4rem;
+  height: 24px;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.drawer__close .svg-wrapper svg {
+  width: 24px;
+  height: 24px;
 }
 
 .drawer__contents {
