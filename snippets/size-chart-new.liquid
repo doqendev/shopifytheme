@@ -35,7 +35,6 @@
 
         <!-- Header -->
         <header class="sg-header">
-          <h2 class="sg-title">Guia de tamanhos</h2>
           <button class="sg-close" type="button" data-sg-close aria-label="Fechar">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -547,18 +546,9 @@
   .sg-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 32px 32px 24px;
+    justify-content: flex-end;
+    padding: 20px 32px 16px;
     border-bottom: 1px solid var(--sg-border);
-  }
-
-  .sg-title {
-    font-family: var(--sg-font-serif);
-    font-size: 28px;
-    font-weight: 600;
-    margin: 0;
-    letter-spacing: -0.02em;
-    color: var(--sg-black);
   }
 
   .sg-close {
@@ -581,7 +571,7 @@
     display: flex;
     gap: 0;
     padding: 0 32px;
-    margin-top: 24px;
+    margin-top: 8px;
     border-bottom: 1px solid var(--sg-border);
   }
 
@@ -589,16 +579,19 @@
     flex: 1;
     background: transparent;
     border: none;
-    padding: 16px 24px;
+    padding: 16px 12px;
     font-family: var(--sg-font-sans);
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.05em;
     cursor: pointer;
     color: var(--sg-grey);
     position: relative;
     transition: var(--sg-transition);
+    white-space: normal;
+    word-wrap: break-word;
+    line-height: 1.4;
   }
 
   .sg-tab::after {
@@ -912,20 +905,18 @@
     }
 
     .sg-header {
-      padding: 24px 20px 20px;
-    }
-
-    .sg-title {
-      font-size: 24px;
+      padding: 16px 20px 12px;
     }
 
     .sg-tabs {
       padding: 0 20px;
+      margin-top: 4px;
     }
 
     .sg-tab {
-      font-size: 11px;
-      padding: 14px 16px;
+      font-size: 10px;
+      padding: 12px 8px;
+      letter-spacing: 0.03em;
     }
 
     .sg-tab-panel {
