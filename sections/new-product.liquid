@@ -874,14 +874,24 @@
           assign _scope_id = section.id | default: product.id
           assign sg_id = 'sg-' | append: product.id | append: '-' | append: _scope_id
         -%}
-        <div class="size-guide-accordion-wrapper" style="border-top: 1px solid rgba(var(--color-foreground), 0.08);">
-          <button type="button" class="size-guide-summary h5" data-sg-open="{{ sg_id }}" aria-expanded="false" style="width: 100%; text-align: left; background: none; border: none; padding: 1.5rem 0; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-family: inherit; font-size: inherit; font-weight: inherit;">
-            <span>Guia de tamanhos</span>
-            <svg aria-hidden="true" focusable="false" class="icon icon-caret" viewBox="0 0 10 6" style="height: 0.6rem; width: 1rem;">
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M9.354.646a.5.5 0 00-.708 0L5 4.293 1.354.646a.5.5 0 00-.708.708l4 4a.5.5 0 00.708 0l4-4a.5.5 0 000-.708z" fill="currentColor"></path>
-            </svg>
-          </button>
-        </div>
+        <details id="size-guide-details-{{ sg_id }}" class="size-guide-details">
+          <summary class="h5" data-sg-open="{{ sg_id }}">Guia de tamanhos</summary>
+        </details>
+        <script>
+          (function() {
+            const sizeGuideDetails = document.getElementById('size-guide-details-{{ sg_id }}');
+
+            if (sizeGuideDetails) {
+              // Prevent the details element from opening when clicked
+              // The drawer will open via the existing data-sg-open handler
+              sizeGuideDetails.addEventListener('toggle', function(e) {
+                if (this.hasAttribute('open')) {
+                  this.removeAttribute('open');
+                }
+              });
+            }
+          })();
+        </script>
         {% if show_share %}
           <details>
             <summary class="h5">Partilhar</summary>
