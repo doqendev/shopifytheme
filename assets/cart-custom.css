@@ -1,8 +1,6 @@
-.il-icons-row{display:flex;gap:14px;align-items:center;margin-top:10px}
-.il-icon-btn{background:transparent;border:1px solid var(--cart-drawer-border);border-radius:50%;width:32px;height:32px;padding:0;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--cart-drawer-text);transition:all 250ms cubic-bezier(0.4, 0, 0.2, 1)}
-.il-icon-btn:hover{background:var(--cart-drawer-accent);border-color:var(--cart-drawer-accent);color:var(--cart-drawer-bg);transform:scale(1.05)}
-.il-move-to-favorites{background:none;border:none;color:var(--cart-drawer-text-muted);padding:0;margin-top:10px;cursor:pointer;font-weight:500;text-align:left;font-family:'Figtree',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:0.8125rem;letter-spacing:0.02em;text-decoration:underline;text-decoration-color:transparent;text-underline-offset:3px;transition:all 250ms ease}
-.il-move-to-favorites:hover{color:var(--cart-drawer-text);text-decoration-color:var(--cart-drawer-text)}
+.il-icons-row{display:flex;gap:12px;align-items:center;margin-top:6px}
+.il-icon-btn{background:transparent;border:none;border-radius:0;width:auto;height:auto;padding:0;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:rgb(var(--color-foreground))}
+.il-move-to-favorites{background:none;border:none;color:inherit;padding:0;margin-top:6px;cursor:pointer;font-weight:500;text-align:left;font-family:'Figtree',sans-serif}
 
 /* Loading overlay for cart item when moving to favorites */
 #CartDrawer .cart-item.is-moving-to-wishlist{
@@ -46,16 +44,14 @@
 #CartDrawer .cart-items tbody tr.cart-item{border-bottom:1px solid #e6e6e6}
 #CartDrawer td.cart-item__totals{vertical-align: top}
 #CartDrawer td.cart-item__details{vertical-align: top}
-#CartDrawer .cart__empty-text{text-align:center;color:var(--cart-drawer-text-muted);font-size:1rem;font-weight:400;font-family:'Figtree',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+#CartDrawer .cart__empty-text{text-align:center;color:rgba(var(--color-foreground, 18, 18, 18), 0.7);font-size:1rem;font-weight:400}
 #CartDrawer .drawer__empty-state:not([hidden]){display:flex;align-items:center;justify-content:center}
-#CartDrawer .cart-drawer__empty-content{margin-top:0;text-align:center}
-#CartDrawer .cart__empty-heading{font-family:'Figtree',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:1.5rem;font-weight:600;color:var(--cart-drawer-text);margin-bottom:0.75rem;letter-spacing:0em}
-#CartDrawer .cart__empty-subtitle{font-family:'Figtree',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:0.9375rem;color:var(--cart-drawer-text-muted);line-height:1.5}
-#CartDrawer .il-top-row{display:block;margin-bottom:8px}
-#CartDrawer .il-price{font-weight:600 !important;color:var(--cart-drawer-text) !important;font-size:15px;line-height:1.3;font-family:'Figtree',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
-#CartDrawer .il-item-title{display:block;margin-bottom:6px;font-weight:500;line-height:1.4;font-size:15px;color:var(--cart-drawer-text);font-family:'Figtree',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:0em}
-#CartDrawer .il-icons-row{display:flex;gap:14px;align-items:center;margin-top:10px}
-#CartDrawer .il-variant-small{font-size:13px;color:var(--cart-drawer-text-muted);margin-top:6px;font-family:'Figtree',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:0.01em}
+#CartDrawer .cart-drawer__empty-content{margin-top:0}
+#CartDrawer .il-top-row{display:block;margin-bottom:2px}
+#CartDrawer .il-price{font-weight:400 !important;color:#000 !important;font-size:14px;line-height:1.2}
+#CartDrawer .il-item-title{display:block;margin-bottom:2px;font-weight:400;line-height:1.2;font-size:14px;color:#000}
+#CartDrawer .il-icons-row{display:flex;gap:12px;align-items:center;margin-top:0}
+#CartDrawer .il-variant-small{font-size:13px;color:#666;margin-top:4px}
 /* Hide all default Shopify price displays - we show .il-price instead */
 #CartDrawer .il-item-details > .product-option,
 #CartDrawer .il-item-details > dl,
@@ -73,11 +69,9 @@
 
 /* Edit modal */
 .il-cart-edit[hidden]{display:none}
-.il-cart-edit{position:fixed;inset:0;z-index:9999;overflow:auto;backdrop-filter:blur(12px);animation:fadeIn 300ms cubic-bezier(0.4, 0, 0.2, 1)}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.il-cart-edit__backdrop{position:absolute;inset:0;background:rgba(26,26,26,.5)}
-.il-cart-edit__card{position:relative;display:grid;grid-template-columns:1.2fr 1fr;gap:32px;background:var(--cart-drawer-bg);border-radius:0;max-width:1000px;margin:40px auto;padding:40px;max-height:calc(100vh - 80px);overflow-y:auto;box-shadow:0 20px 80px rgba(0,0,0,0.2);animation:slideUp 400ms cubic-bezier(0.16, 1, 0.3, 1)}
-@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.il-cart-edit{position:fixed;inset:0;z-index:9999;overflow:auto}
+.il-cart-edit__backdrop{position:absolute;inset:0;background:rgba(0,0,0,.5)}
+.il-cart-edit__card{position:relative;display:grid;grid-template-columns:1.2fr 1fr;gap:24px;background:#fff;border-radius:12px;max-width:980px;margin:40px auto;padding:24px;max-height:calc(100vh - 80px);overflow-y:auto}
 @media (max-width: 900px){
   .il-cart-edit{
     display:flex;
@@ -101,27 +95,20 @@
 }
 .il-cart-edit__close{
   position:absolute;
-  top:24px;
-  right:24px;
+  top:12px;
+  right:12px;
   padding:0;
-  min-width:40px;
-  min-height:40px;
+  min-width:3.2rem;
+  min-height:3.2rem;
   background:transparent;
-  border:1px solid var(--cart-drawer-border);
-  border-radius:50%;
+  border:none;
+  box-shadow:0 0 0 0.2rem rgba(var(--color-button), 0);
   cursor:pointer;
   display:flex;
   align-items:center;
   justify-content:center;
-  color:var(--cart-drawer-text);
+  color:rgb(var(--color-foreground));
   z-index:10;
-  transition:all 250ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-.il-cart-edit__close:hover{
-  background:var(--cart-drawer-accent);
-  border-color:var(--cart-drawer-accent);
-  color:var(--cart-drawer-bg);
-  transform:rotate(90deg);
 }
 .il-cart-edit__close .svg-wrapper{
   width:1.4rem;
@@ -163,8 +150,8 @@
   }
 }
 
-.il-cart-edit__title{margin:0 0 12px;font-size:20px;line-height:1.3;font-family:'Figtree',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-weight:600;color:var(--cart-drawer-text);letter-spacing:0em}
-.il-cart-edit__price{font-weight:600;margin-bottom:20px;font-size:18px;font-family:'Figtree',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--cart-drawer-text)}
+.il-cart-edit__title{margin:0 0 6px;font-size:20px;line-height:1.3}
+.il-cart-edit__price{font-weight:700;margin-bottom:16px;font-size:18px}
 @media (max-width: 900px){
   .il-cart-edit__title{font-size:18px}
   .il-cart-edit__price{font-size:16px}
@@ -173,7 +160,7 @@
 .il-cart-edit__info{display:flex;flex-direction:column;gap:12px;min-height:0}
 .il-cart-edit__options{display:grid;gap:16px;margin-bottom:8px}
 .il-opt{display:grid;gap:8px}
-.il-opt__name{font-size:13px;color:var(--cart-drawer-text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;font-family:'Figtree',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+.il-opt__name{font-size:14px;color:#444;font-weight:500}
 .il-swatches,.il-pills{display:flex;flex-wrap:wrap;gap:8px}
 .il-swatches{margin-left:4px}
 @media (max-width: 900px){
@@ -354,10 +341,8 @@
 }
 
 .il-cart-edit__actions{margin-top:20px}
-.il-cart-edit__save{background:var(--cart-drawer-accent);color:var(--cart-drawer-bg);border:none;border-radius:0;padding:14px 24px;font-weight:600;cursor:pointer;width:100%;font-size:15px;font-family:'Figtree',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:0.08em;text-transform:uppercase;transition:all 300ms cubic-bezier(0.4, 0, 0.2, 1);position:relative;overflow:hidden}
-.il-cart-edit__save::before{content:'';position:absolute;top:50%;left:50%;width:0;height:0;border-radius:50%;background:rgba(255,255,255,0.15);transform:translate(-50%,-50%);transition:width 600ms ease,height 600ms ease}
-.il-cart-edit__save:hover::before{width:400px;height:400px}
-.il-cart-edit__save:hover{transform:translateY(-1px);box-shadow:0 8px 24px var(--cart-drawer-shadow)}
+.il-cart-edit__save{background:#000;color:#fff;border:none;border-radius:0;padding:12px 18px;font-weight:600;cursor:pointer;width:100%;font-size:15px;transition:background 0.2s ease}
+.il-cart-edit__save:hover{background:#111}
 @media (max-width: 900px){
   .il-cart-edit__actions{
     margin-top:20px;
@@ -422,18 +407,7 @@
 
 .il-icon-btn .svg-wrapper svg{width:18px;height:18px;display:block}
 
-/* Item animations */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
+/* Removal animation */
 @keyframes fadeOutSlide {
   0% {
     opacity: 1;
@@ -444,16 +418,6 @@
     transform: translateX(-20px);
   }
 }
-
-#CartDrawer .cart-item {
-  animation: fadeInUp 400ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
-}
-
-#CartDrawer .cart-item:nth-child(1) { animation-delay: 50ms; }
-#CartDrawer .cart-item:nth-child(2) { animation-delay: 100ms; }
-#CartDrawer .cart-item:nth-child(3) { animation-delay: 150ms; }
-#CartDrawer .cart-item:nth-child(4) { animation-delay: 200ms; }
-#CartDrawer .cart-item:nth-child(5) { animation-delay: 250ms; }
 
 #CartDrawer .cart-item.is-removing {
   animation: fadeOutSlide 0.3s ease-out forwards;
