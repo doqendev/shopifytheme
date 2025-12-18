@@ -106,17 +106,27 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
   transition: transform 0.3s ease;
 }
 
+.drawer__tab::after {
+  display: none;
+}
+
 .drawer__tab:hover {
   color: #000000;
+  background: transparent;
 }
 
 .drawer__tab.is-active {
   color: #000000;
   font-weight: 500;
+  background: transparent;
 }
 
 .drawer__tab.is-active::before {
   transform: scaleX(1);
+}
+
+.drawer__tab.is-active::after {
+  display: none;
 }
 
 /* Tab Count Badge - Minimal */
