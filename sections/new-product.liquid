@@ -798,7 +798,13 @@
         {{ product.content }}
       </div>
       <!-- Size chart (original link version) -->
-      <div class="size-chart" style="margin-top: 10px;">
+      <div class="size-chart" style="margin-top: 10px; display: none;">
+        {%- liquid
+          assign _scope_id = section.id | default: product.id
+          assign sg_id = 'sg-' | append: product.id | append: '-' | append: _scope_id
+        -%}
+        <!-- Hidden trigger for drawer script to find -->
+        <span data-sg-open="{{ sg_id }}" style="display: none;"></span>
         {% render 'size-chart-new' %}
       </div>
       <div class="product-info-accordion">
@@ -870,28 +876,24 @@
             {{ availability_content | newline_to_br }}
           </div>
         </details>
-        {%- liquid
-          assign _scope_id = section.id | default: product.id
-          assign sg_id = 'sg-' | append: product.id | append: '-' | append: _scope_id
-        -%}
         <details id="size-guide-details-{{ sg_id }}" class="size-guide-details">
-          <summary class="h5" data-sg-open="{{ sg_id }}">Guia de tamanhos</summary>
+          <summary class="h5 size-guide-trigger">Guia de tamanhos</summary>
         </details>
         <script>
           (function() {
-            const sizeGuideSummary = document.querySelector('#size-guide-details-{{ sg_id }} summary[data-sg-open="{{ sg_id }}"]');
+            const sizeGuideSummary = document.querySelector('#size-guide-details-{{ sg_id }} .size-guide-trigger');
+            const hiddenTrigger = document.querySelector('[data-sg-open="{{ sg_id }}"]');
 
-            if (sizeGuideSummary) {
-              // Prevent the details element from expanding, but allow click to bubble for drawer
+            if (sizeGuideSummary && hiddenTrigger) {
               sizeGuideSummary.addEventListener('click', function(e) {
-                // Don't prevent default or stop propagation - let it bubble to drawer handler
-                // Just close the details if it opens
+                e.preventDefault();
+                // Prevent the details element from opening
                 const details = this.closest('details');
-                setTimeout(() => {
-                  if (details && details.hasAttribute('open')) {
-                    details.removeAttribute('open');
-                  }
-                }, 0);
+                if (details) {
+                  details.removeAttribute('open');
+                }
+                // Trigger the hidden element to open the drawer
+                hiddenTrigger.click();
               });
             }
           })();
