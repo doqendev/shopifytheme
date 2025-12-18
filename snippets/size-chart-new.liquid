@@ -1,6 +1,6 @@
 {%- comment -%}
   SNIPPET: size-chart-new.liquid
-  Editorial luxury size guide drawer - Fashion-forward design
+  Minimalist Zara-inspired size guide drawer - Clean black & white design
 {%- endcomment -%}
 
 {%- if product -%}
@@ -55,29 +55,22 @@
 
         <!-- Header -->
         <header class="sg-header">
-          <div class="sg-header-content">
-            <h2 class="sg-title">Guia de Tamanhos</h2>
-            <p class="sg-subtitle">Encontre o seu ajuste perfeito</p>
-          </div>
+          <h2 class="sg-title">GUIA DE TAMANHOS</h2>
           <button class="sg-close" type="button" data-sg-close aria-label="Fechar">
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <path d="M13.5 4.5L4.5 13.5M4.5 4.5L13.5 13.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
           </button>
         </header>
 
-        <!-- Decorative divider -->
-        <div class="sg-divider"></div>
-
         <!-- Tab Navigation -->
         <div class="sg-tabs" role="tablist">
           <button class="sg-tab sg-tab--active" role="tab" aria-selected="true" aria-controls="sg-panel-measurements-{{ sg_id }}" id="sg-tab-measurements-{{ sg_id }}" data-tab="measurements">
-            <span class="sg-tab-text">Medidas do Artigo</span>
-            <span class="sg-tab-indicator"></span>
+            MEDIDAS DO ARTIGO
           </button>
           <button class="sg-tab" role="tab" aria-selected="false" aria-controls="sg-panel-body-{{ sg_id }}" id="sg-tab-body-{{ sg_id }}" data-tab="body">
-            <span class="sg-tab-text">Medidas Corporais</span>
-            <span class="sg-tab-indicator"></span>
+            MEDIDAS CORPORAIS
           </button>
         </div>
 
@@ -87,30 +80,17 @@
           <!-- Size Selector -->
           {%- if has_metafield_product or sizechart_key != '' -%}
             <div class="sg-size-selector">
-              <p class="sg-size-label">Selecione o Tamanho</p>
               <div class="sg-size-buttons" role="radiogroup">
                 {%- if has_metafield_product -%}
                   {%- for size in metafield_product.sizes -%}
-                    <button class="sg-size-btn {% if forloop.first %}sg-size-btn--active{% endif %}" role="radio" aria-checked="{% if forloop.first %}true{% else %}false{% endif %}" data-size="{{ size }}">
-                      <span class="sg-size-btn-text">{{ size }}</span>
-                    </button>
+                    <button class="sg-size-btn {% if forloop.first %}sg-size-btn--active{% endif %}" role="radio" aria-checked="{% if forloop.first %}true{% else %}false{% endif %}" data-size="{{ size }}">{{ size }}</button>
                   {%- endfor -%}
                 {%- else -%}
-                  <button class="sg-size-btn sg-size-btn--active" role="radio" aria-checked="true" data-size="S">
-                    <span class="sg-size-btn-text">S</span>
-                  </button>
-                  <button class="sg-size-btn" role="radio" aria-checked="false" data-size="M">
-                    <span class="sg-size-btn-text">M</span>
-                  </button>
-                  <button class="sg-size-btn" role="radio" aria-checked="false" data-size="L">
-                    <span class="sg-size-btn-text">L</span>
-                  </button>
-                  <button class="sg-size-btn" role="radio" aria-checked="false" data-size="XL">
-                    <span class="sg-size-btn-text">XL</span>
-                  </button>
-                  <button class="sg-size-btn" role="radio" aria-checked="false" data-size="XXL">
-                    <span class="sg-size-btn-text">XXL</span>
-                  </button>
+                  <button class="sg-size-btn sg-size-btn--active" role="radio" aria-checked="true" data-size="S">S</button>
+                  <button class="sg-size-btn" role="radio" aria-checked="false" data-size="M">M</button>
+                  <button class="sg-size-btn" role="radio" aria-checked="false" data-size="L">L</button>
+                  <button class="sg-size-btn" role="radio" aria-checked="false" data-size="XL">XL</button>
+                  <button class="sg-size-btn" role="radio" aria-checked="false" data-size="XXL">XXL</button>
                 {%- endif -%}
               </div>
             </div>
@@ -120,14 +100,12 @@
           <div class="sg-media">
             {%- assign first_media = product.featured_media | default: product.media.first -%}
             {%- if first_media -%}
-              <div class="sg-img-wrapper">
-                <img class="sg-img"
-                     alt="{{ first_media.alt | default: product.title | escape }}"
-                     loading="lazy"
-                     src="{{ first_media | image_url: width: 600 }}"
-                     srcset="{{ first_media | image_url: width: 400 }} 400w, {{ first_media | image_url: width: 600 }} 600w"
-                     sizes="(max-width: 740px) 200px, 300px">
-              </div>
+              <img class="sg-img"
+                   alt="{{ first_media.alt | default: product.title | escape }}"
+                   loading="lazy"
+                   src="{{ first_media | image_url: width: 600 }}"
+                   srcset="{{ first_media | image_url: width: 400 }} 400w, {{ first_media | image_url: width: 600 }} 600w"
+                   sizes="(max-width: 740px) 200px, 300px">
             {%- endif -%}
           </div>
 
@@ -135,257 +113,259 @@
           <div class="sg-table-container">
             {%- if has_metafield_product -%}
               {%- comment -%} Use metafield data {%- endcomment -%}
-              <div class="sg-measurement-grid">
-                <div class="sg-measurement-row sg-measurement-row--header">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Medida</div>
-                  {%- for size in metafield_product.sizes -%}
-                    <div class="sg-measurement-cell" data-size="{{ size }}">{{ size }}</div>
-                  {%- endfor -%}
-                </div>
-                {%- for measurement in metafield_product.measurements -%}
-                  <div class="sg-measurement-row">
-                    <div class="sg-measurement-cell sg-measurement-cell--label">{{ measurement.label }}</div>
-                    {%- for value in measurement.values -%}
-                      <div class="sg-measurement-cell" data-size="{{ metafield_product.sizes[forloop.index0] }}">{{ value }}</div>
+              <table class="sg-table">
+                <thead>
+                  <tr>
+                    <th>MEDIDA</th>
+                    {%- for size in metafield_product.sizes -%}
+                      <th data-size="{{ size }}">{{ size }}</th>
                     {%- endfor -%}
-                  </div>
-                {%- endfor -%}
-              </div>
+                  </tr>
+                </thead>
+                <tbody>
+                  {%- for measurement in metafield_product.measurements -%}
+                    <tr>
+                      <td class="sg-table-label">{{ measurement.label }}</td>
+                      {%- for value in measurement.values -%}
+                        <td data-size="{{ metafield_product.sizes[forloop.index0] }}">{{ value }}</td>
+                      {%- endfor -%}
+                    </tr>
+                  {%- endfor -%}
+                </tbody>
+              </table>
             {%- else -%}
               {%- comment -%} Use tag-based default data {%- endcomment -%}
               {%- case sizechart_key -%}
 
                 {%- when 'tops' -%}
-                <div class="sg-measurement-grid">
-                  <div class="sg-measurement-row sg-measurement-row--header">
-                    <div class="sg-measurement-cell sg-measurement-cell--label">Medida</div>
-                    <div class="sg-measurement-cell" data-size="S">S</div>
-                    <div class="sg-measurement-cell" data-size="M">M</div>
-                    <div class="sg-measurement-cell" data-size="L">L</div>
-                    <div class="sg-measurement-cell" data-size="XL">XL</div>
-                    <div class="sg-measurement-cell" data-size="XXL">XXL</div>
-                  </div>
-                  <div class="sg-measurement-row">
-                    <div class="sg-measurement-cell sg-measurement-cell--label">Peito</div>
-                    <div class="sg-measurement-cell" data-size="S">50 cm</div>
-                    <div class="sg-measurement-cell" data-size="M">53 cm</div>
-                    <div class="sg-measurement-cell" data-size="L">56 cm</div>
-                    <div class="sg-measurement-cell" data-size="XL">59 cm</div>
-                    <div class="sg-measurement-cell" data-size="XXL">62 cm</div>
-                  </div>
-                  <div class="sg-measurement-row">
-                    <div class="sg-measurement-cell sg-measurement-cell--label">Comprimento</div>
-                    <div class="sg-measurement-cell" data-size="S">70 cm</div>
-                    <div class="sg-measurement-cell" data-size="M">72 cm</div>
-                    <div class="sg-measurement-cell" data-size="L">74 cm</div>
-                    <div class="sg-measurement-cell" data-size="XL">76 cm</div>
-                    <div class="sg-measurement-cell" data-size="XXL">78 cm</div>
-                  </div>
-                  <div class="sg-measurement-row">
-                    <div class="sg-measurement-cell sg-measurement-cell--label">Manga</div>
-                    <div class="sg-measurement-cell" data-size="S">20 cm</div>
-                    <div class="sg-measurement-cell" data-size="M">21 cm</div>
-                  <div class="sg-measurement-cell" data-size="L">22 cm</div>
-                  <div class="sg-measurement-cell" data-size="XL">23 cm</div>
-                  <div class="sg-measurement-cell" data-size="XXL">24 cm</div>
-                </div>
-              </div>
+                <table class="sg-table">
+                  <thead>
+                    <tr>
+                      <th>MEDIDA</th>
+                      <th data-size="S">S</th>
+                      <th data-size="M">M</th>
+                      <th data-size="L">L</th>
+                      <th data-size="XL">XL</th>
+                      <th data-size="XXL">XXL</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="sg-table-label">Peito</td>
+                      <td data-size="S">50 cm</td>
+                      <td data-size="M">53 cm</td>
+                      <td data-size="L">56 cm</td>
+                      <td data-size="XL">59 cm</td>
+                      <td data-size="XXL">62 cm</td>
+                    </tr>
+                    <tr>
+                      <td class="sg-table-label">Comprimento</td>
+                      <td data-size="S">70 cm</td>
+                      <td data-size="M">72 cm</td>
+                      <td data-size="L">74 cm</td>
+                      <td data-size="XL">76 cm</td>
+                      <td data-size="XXL">78 cm</td>
+                    </tr>
+                    <tr>
+                      <td class="sg-table-label">Manga</td>
+                      <td data-size="S">20 cm</td>
+                      <td data-size="M">21 cm</td>
+                      <td data-size="L">22 cm</td>
+                      <td data-size="XL">23 cm</td>
+                      <td data-size="XXL">24 cm</td>
+                    </tr>
+                  </tbody>
+                </table>
 
               {%- when 'saia' -%}
-              <div class="sg-measurement-grid">
-                <div class="sg-measurement-row sg-measurement-row--header">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Medida</div>
-                  <div class="sg-measurement-cell" data-size="S">S</div>
-                  <div class="sg-measurement-cell" data-size="M">M</div>
-                  <div class="sg-measurement-cell" data-size="L">L</div>
-                  <div class="sg-measurement-cell" data-size="XL">XL</div>
-                  <div class="sg-measurement-cell" data-size="XXL">XXL</div>
-                </div>
-                <div class="sg-measurement-row">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Cintura</div>
-                  <div class="sg-measurement-cell" data-size="S">68 cm</div>
-                  <div class="sg-measurement-cell" data-size="M">72 cm</div>
-                  <div class="sg-measurement-cell" data-size="L">76 cm</div>
-                  <div class="sg-measurement-cell" data-size="XL">80 cm</div>
-                  <div class="sg-measurement-cell" data-size="XXL">84 cm</div>
-                </div>
-                <div class="sg-measurement-row">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Anca</div>
-                  <div class="sg-measurement-cell" data-size="S">88 cm</div>
-                  <div class="sg-measurement-cell" data-size="M">92 cm</div>
-                  <div class="sg-measurement-cell" data-size="L">96 cm</div>
-                  <div class="sg-measurement-cell" data-size="XL">100 cm</div>
-                  <div class="sg-measurement-cell" data-size="XXL">104 cm</div>
-                </div>
-                <div class="sg-measurement-row">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Comprimento</div>
-                  <div class="sg-measurement-cell" data-size="S">40 cm</div>
-                  <div class="sg-measurement-cell" data-size="M">41 cm</div>
-                  <div class="sg-measurement-cell" data-size="L">42 cm</div>
-                  <div class="sg-measurement-cell" data-size="XL">43 cm</div>
-                  <div class="sg-measurement-cell" data-size="XXL">44 cm</div>
-                </div>
-              </div>
+              <table class="sg-table">
+                <thead>
+                  <tr>
+                    <th>MEDIDA</th>
+                    <th data-size="S">S</th>
+                    <th data-size="M">M</th>
+                    <th data-size="L">L</th>
+                    <th data-size="XL">XL</th>
+                    <th data-size="XXL">XXL</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="sg-table-label">Cintura</td>
+                    <td data-size="S">68 cm</td>
+                    <td data-size="M">72 cm</td>
+                    <td data-size="L">76 cm</td>
+                    <td data-size="XL">80 cm</td>
+                    <td data-size="XXL">84 cm</td>
+                  </tr>
+                  <tr>
+                    <td class="sg-table-label">Anca</td>
+                    <td data-size="S">88 cm</td>
+                    <td data-size="M">92 cm</td>
+                    <td data-size="L">96 cm</td>
+                    <td data-size="XL">100 cm</td>
+                    <td data-size="XXL">104 cm</td>
+                  </tr>
+                  <tr>
+                    <td class="sg-table-label">Comprimento</td>
+                    <td data-size="S">40 cm</td>
+                    <td data-size="M">41 cm</td>
+                    <td data-size="L">42 cm</td>
+                    <td data-size="XL">43 cm</td>
+                    <td data-size="XXL">44 cm</td>
+                  </tr>
+                </tbody>
+              </table>
 
               {%- when 'saia-calcao' -%}
-              <div class="sg-measurement-grid">
-                <div class="sg-measurement-row sg-measurement-row--header">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Medida</div>
-                  <div class="sg-measurement-cell" data-size="S">S</div>
-                  <div class="sg-measurement-cell" data-size="M">M</div>
-                  <div class="sg-measurement-cell" data-size="L">L</div>
-                  <div class="sg-measurement-cell" data-size="XL">XL</div>
-                  <div class="sg-measurement-cell" data-size="XXL">XXL</div>
-                </div>
-                <div class="sg-measurement-row">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Cintura</div>
-                  <div class="sg-measurement-cell" data-size="S">68 cm</div>
-                  <div class="sg-measurement-cell" data-size="M">72 cm</div>
-                  <div class="sg-measurement-cell" data-size="L">76 cm</div>
-                  <div class="sg-measurement-cell" data-size="XL">80 cm</div>
-                  <div class="sg-measurement-cell" data-size="XXL">84 cm</div>
-                </div>
-                <div class="sg-measurement-row">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Anca</div>
-                  <div class="sg-measurement-cell" data-size="S">88 cm</div>
-                  <div class="sg-measurement-cell" data-size="M">92 cm</div>
-                  <div class="sg-measurement-cell" data-size="L">96 cm</div>
-                  <div class="sg-measurement-cell" data-size="XL">100 cm</div>
-                  <div class="sg-measurement-cell" data-size="XXL">104 cm</div>
-                </div>
-                <div class="sg-measurement-row">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Comprimento</div>
-                  <div class="sg-measurement-cell" data-size="S">36 cm</div>
-                  <div class="sg-measurement-cell" data-size="M">37 cm</div>
-                  <div class="sg-measurement-cell" data-size="L">38 cm</div>
-                  <div class="sg-measurement-cell" data-size="XL">39 cm</div>
-                  <div class="sg-measurement-cell" data-size="XXL">40 cm</div>
-                </div>
-              </div>
+              <table class="sg-table">
+                <thead>
+                  <tr>
+                    <th>MEDIDA</th>
+                    <th data-size="S">S</th>
+                    <th data-size="M">M</th>
+                    <th data-size="L">L</th>
+                    <th data-size="XL">XL</th>
+                    <th data-size="XXL">XXL</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="sg-table-label">Cintura</td>
+                    <td data-size="S">68 cm</td>
+                    <td data-size="M">72 cm</td>
+                    <td data-size="L">76 cm</td>
+                    <td data-size="XL">80 cm</td>
+                    <td data-size="XXL">84 cm</td>
+                  </tr>
+                  <tr>
+                    <td class="sg-table-label">Anca</td>
+                    <td data-size="S">88 cm</td>
+                    <td data-size="M">92 cm</td>
+                    <td data-size="L">96 cm</td>
+                    <td data-size="XL">100 cm</td>
+                    <td data-size="XXL">104 cm</td>
+                  </tr>
+                  <tr>
+                    <td class="sg-table-label">Comprimento</td>
+                    <td data-size="S">36 cm</td>
+                    <td data-size="M">37 cm</td>
+                    <td data-size="L">38 cm</td>
+                    <td data-size="XL">39 cm</td>
+                    <td data-size="XXL">40 cm</td>
+                  </tr>
+                </tbody>
+              </table>
 
               {%- when 'calcas' -%}
-              <div class="sg-measurement-grid">
-                <div class="sg-measurement-row sg-measurement-row--header">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Medida</div>
-                  <div class="sg-measurement-cell" data-size="S">S</div>
-                  <div class="sg-measurement-cell" data-size="M">M</div>
-                  <div class="sg-measurement-cell" data-size="L">L</div>
-                  <div class="sg-measurement-cell" data-size="XL">XL</div>
-                  <div class="sg-measurement-cell" data-size="XXL">XXL</div>
-                </div>
-                <div class="sg-measurement-row">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Cintura</div>
-                  <div class="sg-measurement-cell" data-size="S">72 cm</div>
-                  <div class="sg-measurement-cell" data-size="M">76 cm</div>
-                  <div class="sg-measurement-cell" data-size="L">80 cm</div>
-                  <div class="sg-measurement-cell" data-size="XL">84 cm</div>
-                  <div class="sg-measurement-cell" data-size="XXL">88 cm</div>
-                </div>
-                <div class="sg-measurement-row">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Anca</div>
-                  <div class="sg-measurement-cell" data-size="S">92 cm</div>
-                  <div class="sg-measurement-cell" data-size="M">96 cm</div>
-                  <div class="sg-measurement-cell" data-size="L">100 cm</div>
-                  <div class="sg-measurement-cell" data-size="XL">104 cm</div>
-                  <div class="sg-measurement-cell" data-size="XXL">108 cm</div>
-                </div>
-                <div class="sg-measurement-row">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Comprimento</div>
-                  <div class="sg-measurement-cell" data-size="S">100 cm</div>
-                  <div class="sg-measurement-cell" data-size="M">102 cm</div>
-                  <div class="sg-measurement-cell" data-size="L">104 cm</div>
-                  <div class="sg-measurement-cell" data-size="XL">106 cm</div>
-                  <div class="sg-measurement-cell" data-size="XXL">108 cm</div>
-                </div>
-              </div>
+              <table class="sg-table">
+                <thead>
+                  <tr>
+                    <th>MEDIDA</th>
+                    <th data-size="S">S</th>
+                    <th data-size="M">M</th>
+                    <th data-size="L">L</th>
+                    <th data-size="XL">XL</th>
+                    <th data-size="XXL">XXL</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="sg-table-label">Cintura</td>
+                    <td data-size="S">72 cm</td>
+                    <td data-size="M">76 cm</td>
+                    <td data-size="L">80 cm</td>
+                    <td data-size="XL">84 cm</td>
+                    <td data-size="XXL">88 cm</td>
+                  </tr>
+                  <tr>
+                    <td class="sg-table-label">Anca</td>
+                    <td data-size="S">92 cm</td>
+                    <td data-size="M">96 cm</td>
+                    <td data-size="L">100 cm</td>
+                    <td data-size="XL">104 cm</td>
+                    <td data-size="XXL">108 cm</td>
+                  </tr>
+                  <tr>
+                    <td class="sg-table-label">Comprimento</td>
+                    <td data-size="S">100 cm</td>
+                    <td data-size="M">102 cm</td>
+                    <td data-size="L">104 cm</td>
+                    <td data-size="XL">106 cm</td>
+                    <td data-size="XXL">108 cm</td>
+                  </tr>
+                </tbody>
+              </table>
 
               {%- when 'calcoes' -%}
-              <div class="sg-measurement-grid">
-                <div class="sg-measurement-row sg-measurement-row--header">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Medida</div>
-                  <div class="sg-measurement-cell" data-size="S">S</div>
-                  <div class="sg-measurement-cell" data-size="M">M</div>
-                  <div class="sg-measurement-cell" data-size="L">L</div>
-                  <div class="sg-measurement-cell" data-size="XL">XL</div>
-                  <div class="sg-measurement-cell" data-size="XXL">XXL</div>
-                </div>
-                <div class="sg-measurement-row">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Cintura</div>
-                  <div class="sg-measurement-cell" data-size="S">72 cm</div>
-                  <div class="sg-measurement-cell" data-size="M">76 cm</div>
-                  <div class="sg-measurement-cell" data-size="L">80 cm</div>
-                  <div class="sg-measurement-cell" data-size="XL">84 cm</div>
-                  <div class="sg-measurement-cell" data-size="XXL">88 cm</div>
-                </div>
-                <div class="sg-measurement-row">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Anca</div>
-                  <div class="sg-measurement-cell" data-size="S">92 cm</div>
-                  <div class="sg-measurement-cell" data-size="M">96 cm</div>
-                  <div class="sg-measurement-cell" data-size="L">100 cm</div>
-                  <div class="sg-measurement-cell" data-size="XL">104 cm</div>
-                  <div class="sg-measurement-cell" data-size="XXL">108 cm</div>
-                </div>
-                <div class="sg-measurement-row">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Comprimento</div>
-                  <div class="sg-measurement-cell" data-size="S">42 cm</div>
-                  <div class="sg-measurement-cell" data-size="M">44 cm</div>
-                  <div class="sg-measurement-cell" data-size="L">46 cm</div>
-                  <div class="sg-measurement-cell" data-size="XL">48 cm</div>
-                  <div class="sg-measurement-cell" data-size="XXL">50 cm</div>
-                </div>
-              </div>
+              <table class="sg-table">
+                <thead>
+                  <tr>
+                    <th>MEDIDA</th>
+                    <th data-size="S">S</th>
+                    <th data-size="M">M</th>
+                    <th data-size="L">L</th>
+                    <th data-size="XL">XL</th>
+                    <th data-size="XXL">XXL</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="sg-table-label">Cintura</td>
+                    <td data-size="S">72 cm</td>
+                    <td data-size="M">76 cm</td>
+                    <td data-size="L">80 cm</td>
+                    <td data-size="XL">84 cm</td>
+                    <td data-size="XXL">88 cm</td>
+                  </tr>
+                  <tr>
+                    <td class="sg-table-label">Anca</td>
+                    <td data-size="S">92 cm</td>
+                    <td data-size="M">96 cm</td>
+                    <td data-size="L">100 cm</td>
+                    <td data-size="XL">104 cm</td>
+                    <td data-size="XXL">108 cm</td>
+                  </tr>
+                  <tr>
+                    <td class="sg-table-label">Comprimento</td>
+                    <td data-size="S">42 cm</td>
+                    <td data-size="M">44 cm</td>
+                    <td data-size="L">46 cm</td>
+                    <td data-size="XL">48 cm</td>
+                    <td data-size="XXL">50 cm</td>
+                  </tr>
+                </tbody>
+              </table>
 
                 {%- else -%}
                 <div class="sg-empty">
                   <p>Sem tabela específica para este produto.</p>
-                  <p class="sg-empty-hint">Adicione uma tag como: tops, saia, saia-calção, calcas, ou calções.</p>
                 </div>
               {%- endcase -%}
             {%- endif -%}
           </div>
 
           <!-- Note -->
-          <div class="sg-note">
-            <svg class="sg-note-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/>
-              <path d="M8 11V7M8 5V5.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-            <p>As medidas podem apresentar pequenas variações devido ao processo de produção. A peça está medida esticada.</p>
-          </div>
+          <p class="sg-note">As medidas podem apresentar pequenas variações devido ao processo de produção.</p>
         </div>
 
         <!-- Tab Panel: Body Measurements -->
         <div class="sg-tab-panel" role="tabpanel" id="sg-panel-body-{{ sg_id }}" aria-labelledby="sg-tab-body-{{ sg_id }}" data-panel="body">
 
-          <h3 class="sg-section-title">Medidas do Corpo</h3>
-
           <!-- Size Selector for Body -->
           {%- if has_metafield_body or sizechart_key != '' -%}
             <div class="sg-size-selector">
-              <p class="sg-size-label">Selecione o Tamanho</p>
               <div class="sg-size-buttons" role="radiogroup">
                 {%- if has_metafield_body -%}
                   {%- for size in metafield_body.sizes -%}
-                    <button class="sg-size-btn-body {% if forloop.first %}sg-size-btn-body--active{% endif %}" role="radio" aria-checked="{% if forloop.first %}true{% else %}false{% endif %}" data-size-body="{{ size }}">
-                      <span class="sg-size-btn-text">{{ size }}</span>
-                    </button>
+                    <button class="sg-size-btn-body {% if forloop.first %}sg-size-btn-body--active{% endif %}" role="radio" aria-checked="{% if forloop.first %}true{% else %}false{% endif %}" data-size-body="{{ size }}">{{ size }}</button>
                   {%- endfor -%}
                 {%- else -%}
-                  <button class="sg-size-btn-body sg-size-btn-body--active" role="radio" aria-checked="true" data-size-body="S">
-                    <span class="sg-size-btn-text">S</span>
-                  </button>
-                  <button class="sg-size-btn-body" role="radio" aria-checked="false" data-size-body="M">
-                    <span class="sg-size-btn-text">M</span>
-                  </button>
-                  <button class="sg-size-btn-body" role="radio" aria-checked="false" data-size-body="L">
-                    <span class="sg-size-btn-text">L</span>
-                  </button>
-                  <button class="sg-size-btn-body" role="radio" aria-checked="false" data-size-body="XL">
-                    <span class="sg-size-btn-text">XL</span>
-                  </button>
-                  <button class="sg-size-btn-body" role="radio" aria-checked="false" data-size-body="XXL">
-                    <span class="sg-size-btn-text">XXL</span>
-                  </button>
+                  <button class="sg-size-btn-body sg-size-btn-body--active" role="radio" aria-checked="true" data-size-body="S">S</button>
+                  <button class="sg-size-btn-body" role="radio" aria-checked="false" data-size-body="M">M</button>
+                  <button class="sg-size-btn-body" role="radio" aria-checked="false" data-size-body="L">L</button>
+                  <button class="sg-size-btn-body" role="radio" aria-checked="false" data-size-body="XL">XL</button>
+                  <button class="sg-size-btn-body" role="radio" aria-checked="false" data-size-body="XXL">XXL</button>
                 {%- endif -%}
               </div>
             </div>
@@ -395,203 +375,196 @@
           <div class="sg-table-container">
             {%- if has_metafield_body -%}
               {%- comment -%} Use metafield data {%- endcomment -%}
-              <div class="sg-measurement-grid">
-                <div class="sg-measurement-row sg-measurement-row--header">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Medida</div>
-                  {%- for size in metafield_body.sizes -%}
-                    <div class="sg-measurement-cell" data-size-body="{{ size }}">{{ size }}</div>
-                  {%- endfor -%}
-                </div>
-                {%- for measurement in metafield_body.measurements -%}
-                  <div class="sg-measurement-row">
-                    <div class="sg-measurement-cell sg-measurement-cell--label">{{ measurement.label }}</div>
-                    {%- for value in measurement.values -%}
-                      <div class="sg-measurement-cell" data-size-body="{{ metafield_body.sizes[forloop.index0] }}">{{ value }}</div>
+              <table class="sg-table">
+                <thead>
+                  <tr>
+                    <th>MEDIDA</th>
+                    {%- for size in metafield_body.sizes -%}
+                      <th data-size-body="{{ size }}">{{ size }}</th>
                     {%- endfor -%}
-                  </div>
-                {%- endfor -%}
-              </div>
+                  </tr>
+                </thead>
+                <tbody>
+                  {%- for measurement in metafield_body.measurements -%}
+                    <tr>
+                      <td class="sg-table-label">{{ measurement.label }}</td>
+                      {%- for value in measurement.values -%}
+                        <td data-size-body="{{ metafield_body.sizes[forloop.index0] }}">{{ value }}</td>
+                      {%- endfor -%}
+                    </tr>
+                  {%- endfor -%}
+                </tbody>
+              </table>
             {%- else -%}
               {%- comment -%} Use tag-based default data {%- endcomment -%}
               {%- case sizechart_key -%}
 
                 {%- when 'tops' -%}
-                <div class="sg-measurement-grid">
-                  <div class="sg-measurement-row sg-measurement-row--header">
-                    <div class="sg-measurement-cell sg-measurement-cell--label">Medida</div>
-                    <div class="sg-measurement-cell" data-size-body="S">S</div>
-                    <div class="sg-measurement-cell" data-size-body="M">M</div>
-                    <div class="sg-measurement-cell" data-size-body="L">L</div>
-                    <div class="sg-measurement-cell" data-size-body="XL">XL</div>
-                  <div class="sg-measurement-cell" data-size-body="XXL">XXL</div>
-                </div>
-                <div class="sg-measurement-row">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Peito</div>
-                  <div class="sg-measurement-cell" data-size-body="S">82-86 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="M">87-91 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="L">92-96 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="XL">97-101 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="XXL">102-106 cm</div>
-                </div>
-                <div class="sg-measurement-row">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Cintura</div>
-                  <div class="sg-measurement-cell" data-size-body="S">62-66 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="M">67-71 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="L">72-76 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="XL">77-81 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="XXL">82-86 cm</div>
-                </div>
-                <div class="sg-measurement-row">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Anca</div>
-                  <div class="sg-measurement-cell" data-size-body="S">88-92 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="M">93-97 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="L">98-102 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="XL">103-107 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="XXL">108-112 cm</div>
-                </div>
-              </div>
+                <table class="sg-table">
+                  <thead>
+                    <tr>
+                      <th>MEDIDA</th>
+                      <th data-size-body="S">S</th>
+                      <th data-size-body="M">M</th>
+                      <th data-size-body="L">L</th>
+                      <th data-size-body="XL">XL</th>
+                      <th data-size-body="XXL">XXL</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="sg-table-label">Peito</td>
+                      <td data-size-body="S">82-86 cm</td>
+                      <td data-size-body="M">87-91 cm</td>
+                      <td data-size-body="L">92-96 cm</td>
+                      <td data-size-body="XL">97-101 cm</td>
+                      <td data-size-body="XXL">102-106 cm</td>
+                    </tr>
+                    <tr>
+                      <td class="sg-table-label">Cintura</td>
+                      <td data-size-body="S">62-66 cm</td>
+                      <td data-size-body="M">67-71 cm</td>
+                      <td data-size-body="L">72-76 cm</td>
+                      <td data-size-body="XL">77-81 cm</td>
+                      <td data-size-body="XXL">82-86 cm</td>
+                    </tr>
+                    <tr>
+                      <td class="sg-table-label">Anca</td>
+                      <td data-size-body="S">88-92 cm</td>
+                      <td data-size-body="M">93-97 cm</td>
+                      <td data-size-body="L">98-102 cm</td>
+                      <td data-size-body="XL">103-107 cm</td>
+                      <td data-size-body="XXL">108-112 cm</td>
+                    </tr>
+                  </tbody>
+                </table>
 
               {%- when 'saia' or 'saia-calcao' -%}
-              <div class="sg-measurement-grid">
-                <div class="sg-measurement-row sg-measurement-row--header">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Medida</div>
-                  <div class="sg-measurement-cell" data-size-body="S">S</div>
-                  <div class="sg-measurement-cell" data-size-body="M">M</div>
-                  <div class="sg-measurement-cell" data-size-body="L">L</div>
-                  <div class="sg-measurement-cell" data-size-body="XL">XL</div>
-                  <div class="sg-measurement-cell" data-size-body="XXL">XXL</div>
-                </div>
-                <div class="sg-measurement-row">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Cintura</div>
-                  <div class="sg-measurement-cell" data-size-body="S">62-66 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="M">67-71 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="L">72-76 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="XL">77-81 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="XXL">82-86 cm</div>
-                </div>
-                <div class="sg-measurement-row">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Anca</div>
-                  <div class="sg-measurement-cell" data-size-body="S">88-92 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="M">93-97 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="L">98-102 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="XL">103-107 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="XXL">108-112 cm</div>
-                </div>
-              </div>
+              <table class="sg-table">
+                <thead>
+                  <tr>
+                    <th>MEDIDA</th>
+                    <th data-size-body="S">S</th>
+                    <th data-size-body="M">M</th>
+                    <th data-size-body="L">L</th>
+                    <th data-size-body="XL">XL</th>
+                    <th data-size-body="XXL">XXL</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="sg-table-label">Cintura</td>
+                    <td data-size-body="S">62-66 cm</td>
+                    <td data-size-body="M">67-71 cm</td>
+                    <td data-size-body="L">72-76 cm</td>
+                    <td data-size-body="XL">77-81 cm</td>
+                    <td data-size-body="XXL">82-86 cm</td>
+                  </tr>
+                  <tr>
+                    <td class="sg-table-label">Anca</td>
+                    <td data-size-body="S">88-92 cm</td>
+                    <td data-size-body="M">93-97 cm</td>
+                    <td data-size-body="L">98-102 cm</td>
+                    <td data-size-body="XL">103-107 cm</td>
+                    <td data-size-body="XXL">108-112 cm</td>
+                  </tr>
+                </tbody>
+              </table>
 
               {%- when 'calcas' or 'calcoes' -%}
-              <div class="sg-measurement-grid">
-                <div class="sg-measurement-row sg-measurement-row--header">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Medida</div>
-                  <div class="sg-measurement-cell" data-size-body="S">S</div>
-                  <div class="sg-measurement-cell" data-size-body="M">M</div>
-                  <div class="sg-measurement-cell" data-size-body="L">L</div>
-                  <div class="sg-measurement-cell" data-size-body="XL">XL</div>
-                  <div class="sg-measurement-cell" data-size-body="XXL">XXL</div>
-                </div>
-                <div class="sg-measurement-row">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Cintura</div>
-                  <div class="sg-measurement-cell" data-size-body="S">68-72 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="M">73-77 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="L">78-82 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="XL">83-87 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="XXL">88-92 cm</div>
-                </div>
-                <div class="sg-measurement-row">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Anca</div>
-                  <div class="sg-measurement-cell" data-size-body="S">88-92 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="M">93-97 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="L">98-102 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="XL">103-107 cm</div>
-                  <div class="sg-measurement-cell" data-size-body="XXL">108-112 cm</div>
-                </div>
-              </div>
+              <table class="sg-table">
+                <thead>
+                  <tr>
+                    <th>MEDIDA</th>
+                    <th data-size-body="S">S</th>
+                    <th data-size-body="M">M</th>
+                    <th data-size-body="L">L</th>
+                    <th data-size-body="XL">XL</th>
+                    <th data-size-body="XXL">XXL</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="sg-table-label">Cintura</td>
+                    <td data-size-body="S">68-72 cm</td>
+                    <td data-size-body="M">73-77 cm</td>
+                    <td data-size-body="L">78-82 cm</td>
+                    <td data-size-body="XL">83-87 cm</td>
+                    <td data-size-body="XXL">88-92 cm</td>
+                  </tr>
+                  <tr>
+                    <td class="sg-table-label">Anca</td>
+                    <td data-size-body="S">88-92 cm</td>
+                    <td data-size-body="M">93-97 cm</td>
+                    <td data-size-body="L">98-102 cm</td>
+                    <td data-size-body="XL">103-107 cm</td>
+                    <td data-size-body="XXL">108-112 cm</td>
+                  </tr>
+                </tbody>
+              </table>
 
                 {%- else -%}
                 <div class="sg-empty">
                   <p>Sem tabela específica para este produto.</p>
-                  <p class="sg-empty-hint">Adicione uma tag como: tops, saia, saia-calção, calcas, ou calções.</p>
                 </div>
               {%- endcase -%}
             {%- endif -%}
           </div>
 
           <!-- How to Measure Guide -->
-          <h4 class="sg-guide-subtitle">Como Medir Corretamente</h4>
-          <div class="sg-guide-content">
-            {%- if has_metafield_instructions -%}
-              {%- comment -%} Use metafield instructions {%- endcomment -%}
-              {%- for step in metafield_instructions.steps -%}
-                <div class="sg-guide-item">
-                  <div class="sg-guide-number">{{ forloop.index }}</div>
-                  <div class="sg-guide-text">
-                    <h5>{{ step.title }}</h5>
+          <div class="sg-guide-section">
+            <h3 class="sg-guide-title">COMO MEDIR</h3>
+            <div class="sg-guide-content">
+              {%- if has_metafield_instructions -%}
+                {%- comment -%} Use metafield instructions {%- endcomment -%}
+                {%- for step in metafield_instructions.steps -%}
+                  <div class="sg-guide-item">
+                    <div class="sg-guide-label">{{ step.title }}</div>
                     <p>{{ step.description }}</p>
                   </div>
-                </div>
-              {%- endfor -%}
-            {%- else -%}
-              {%- comment -%} Use tag-based default instructions {%- endcomment -%}
-              {%- case sizechart_key -%}
-              {%- when 'tops' -%}
-              <div class="sg-guide-item">
-                <div class="sg-guide-number">1</div>
-                <div class="sg-guide-text">
-                  <h5>Peito</h5>
+                {%- endfor -%}
+              {%- else -%}
+                {%- comment -%} Use tag-based default instructions {%- endcomment -%}
+                {%- case sizechart_key -%}
+                {%- when 'tops' -%}
+                <div class="sg-guide-item">
+                  <div class="sg-guide-label">Peito</div>
                   <p>Medir a circunferência do peito na parte mais ampla, abaixo das axilas.</p>
                 </div>
-              </div>
-              <div class="sg-guide-item">
-                <div class="sg-guide-number">2</div>
-                <div class="sg-guide-text">
-                  <h5>Cintura</h5>
+                <div class="sg-guide-item">
+                  <div class="sg-guide-label">Cintura</div>
                   <p>Medir a circunferência da cintura na parte mais estreita.</p>
                 </div>
-              </div>
-              <div class="sg-guide-item">
-                <div class="sg-guide-number">3</div>
-                <div class="sg-guide-text">
-                  <h5>Anca</h5>
+                <div class="sg-guide-item">
+                  <div class="sg-guide-label">Anca</div>
                   <p>Medir a circunferência da anca na parte mais ampla, ao nível das nádegas.</p>
                 </div>
-              </div>
 
-              {%- when 'saia' or 'saia-calcao' -%}
-              <div class="sg-guide-item">
-                <div class="sg-guide-number">1</div>
-                <div class="sg-guide-text">
-                  <h5>Cintura</h5>
+                {%- when 'saia' or 'saia-calcao' -%}
+                <div class="sg-guide-item">
+                  <div class="sg-guide-label">Cintura</div>
                   <p>Medir a circunferência da cintura na parte mais estreita.</p>
                 </div>
-              </div>
-              <div class="sg-guide-item">
-                <div class="sg-guide-number">2</div>
-                <div class="sg-guide-text">
-                  <h5>Anca</h5>
+                <div class="sg-guide-item">
+                  <div class="sg-guide-label">Anca</div>
                   <p>Medir a circunferência da anca na parte mais ampla, ao nível das nádegas.</p>
                 </div>
-              </div>
 
-              {%- when 'calcas' or 'calcoes' -%}
-              <div class="sg-guide-item">
-                <div class="sg-guide-number">1</div>
-                <div class="sg-guide-text">
-                  <h5>Cintura</h5>
+                {%- when 'calcas' or 'calcoes' -%}
+                <div class="sg-guide-item">
+                  <div class="sg-guide-label">Cintura</div>
                   <p>Medir a circunferência da cintura onde as calças devem assentar.</p>
                 </div>
-              </div>
-              <div class="sg-guide-item">
-                <div class="sg-guide-number">2</div>
-                <div class="sg-guide-text">
-                  <h5>Anca</h5>
+                <div class="sg-guide-item">
+                  <div class="sg-guide-label">Anca</div>
                   <p>Medir a circunferência da anca na parte mais ampla.</p>
                 </div>
-              </div>
 
-                {%- else -%}
-                <p class="sg-empty">Adicione tags ao produto para ver o guia de medidas.</p>
-              {%- endcase -%}
-            {%- endif -%}
+                  {%- else -%}
+                  <p class="sg-empty">Adicione tags ao produto para ver o guia de medidas.</p>
+                {%- endcase -%}
+              {%- endif -%}
+            </div>
           </div>
         </div>
 
@@ -600,743 +573,371 @@
   </div>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-  /* ═══════════════════════════════════════════════════════════
-     ROOT VARIABLES - Editorial Luxury Palette
-     ═══════════════════════════════════════════════════════════ */
+  /* ══════════════════════════════════════════════════════════
+     ZARA-INSPIRED MINIMALIST DESIGN
+     Clean, modern, black & white aesthetic
+     ══════════════════════════════════════════════════════════ */
+
   .sg-root {
-    /* Color Palette */
-    --sg-cream: #FAF8F5;
-    --sg-warm-white: #FFFFFF;
-    --sg-charcoal: #2C2C2C;
-    --sg-warm-grey: #6B6B6B;
-    --sg-light-grey: #E8E4DF;
-    --sg-bronze: #B8956A;
-    --sg-gold: #D4AF7A;
-    --sg-accent: #F5EFE7;
+    --sg-black: #000000;
+    --sg-white: #FFFFFF;
+    --sg-grey-light: #F5F5F5;
+    --sg-grey-border: #E5E5E5;
+    --sg-grey-text: #707070;
 
-    /* Typography */
-    --sg-font-display: 'Cormorant Garamond', serif;
-    --sg-font-body: 'Outfit', sans-serif;
-
-    /* Transitions */
-    --sg-transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    --sg-transition-spring: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    --sg-transition-quick: all 0.2s ease;
+    --sg-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
 
-  /* ═══════════════════════════════════════════════════════════
-     ROOT CONTAINER & OVERLAY
-     ═══════════════════════════════════════════════════════════ */
+  /* Root & Overlay */
   .sg-root {
     position: fixed;
     inset: 0;
     z-index: 2147483645;
     display: grid;
     isolation: isolate;
-    font-family: var(--sg-font-body);
-    color: var(--sg-charcoal);
+    font-family: var(--sg-font);
+    color: var(--sg-black);
   }
   .sg-root[hidden] { display: none; }
 
   .sg-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(44, 44, 44, 0.6);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.4);
     z-index: 0;
-    animation: sg-overlay-in 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: sg-fade 0.25s ease;
   }
 
-  @keyframes sg-overlay-in {
-    from {
-      opacity: 0;
-      backdrop-filter: blur(0px);
-    }
-    to {
-      opacity: 1;
-      backdrop-filter: blur(8px);
-    }
+  @keyframes sg-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 
-  /* ═══════════════════════════════════════════════════════════
-     PANEL - Main Drawer Container
-     ═══════════════════════════════════════════════════════════ */
+  /* Panel */
   .sg-panel {
     position: fixed;
     top: 0;
     right: 0;
     height: 100%;
-    width: min(560px, 100%);
-    background: var(--sg-cream);
+    width: min(520px, 100%);
+    background: var(--sg-white);
     display: flex;
     flex-direction: column;
     overflow-y: auto;
     z-index: 1;
-    animation: sg-panel-slide 0.6s cubic-bezier(0.34, 1.26, 0.64, 1);
-    box-shadow:
-      -20px 0 60px -20px rgba(44, 44, 44, 0.3),
-      -4px 0 12px rgba(44, 44, 44, 0.1);
-
-    /* Subtle grain texture */
-    background-image:
-      radial-gradient(circle at 20% 50%, rgba(212, 175, 122, 0.03) 0%, transparent 50%),
-      radial-gradient(circle at 80% 80%, rgba(184, 149, 106, 0.02) 0%, transparent 50%);
+    animation: sg-slide 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  @keyframes sg-panel-slide {
-    from {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
+  @keyframes sg-slide {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
   }
 
   .sg-panel::-webkit-scrollbar {
-    width: 8px;
+    width: 0;
   }
 
-  .sg-panel::-webkit-scrollbar-track {
-    background: rgba(232, 228, 223, 0.3);
-  }
-
-  .sg-panel::-webkit-scrollbar-thumb {
-    background: var(--sg-bronze);
-    border-radius: 4px;
-  }
-
-  .sg-panel::-webkit-scrollbar-thumb:hover {
-    background: var(--sg-gold);
-  }
-
-  /* ═══════════════════════════════════════════════════════════
-     HEADER
-     ═══════════════════════════════════════════════════════════ */
+  /* Header */
   .sg-header {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    padding: 48px 40px 32px;
-    position: relative;
-  }
-
-  .sg-header-content {
-    flex: 1;
+    padding: 24px 32px;
+    border-bottom: 1px solid var(--sg-grey-border);
   }
 
   .sg-title {
-    font-family: var(--sg-font-display);
-    font-size: 36px;
-    font-weight: 600;
-    line-height: 1.2;
-    color: var(--sg-charcoal);
-    margin: 0 0 8px 0;
-    letter-spacing: -0.01em;
-  }
-
-  .sg-subtitle {
-    font-family: var(--sg-font-body);
     font-size: 14px;
-    font-weight: 300;
-    color: var(--sg-warm-grey);
+    font-weight: 600;
+    letter-spacing: 0.08em;
     margin: 0;
-    letter-spacing: 0.02em;
+    color: var(--sg-black);
   }
 
   .sg-close {
-    background: transparent;
+    background: none;
     border: none;
-    padding: 10px;
+    padding: 8px;
     cursor: pointer;
-    color: var(--sg-warm-grey);
-    transition: var(--sg-transition-smooth);
-    border-radius: 50%;
-    flex-shrink: 0;
-    margin-left: 16px;
+    color: var(--sg-black);
+    transition: opacity 0.2s;
+    margin: -8px -8px -8px 0;
   }
 
   .sg-close:hover {
-    color: var(--sg-charcoal);
-    background: rgba(232, 228, 223, 0.5);
-    transform: rotate(90deg);
+    opacity: 0.6;
   }
 
-  /* Decorative Divider */
-  .sg-divider {
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      var(--sg-bronze) 50%,
-      transparent 100%
-    );
-    margin: 0 40px 32px;
-    opacity: 0.3;
-  }
-
-  /* ═══════════════════════════════════════════════════════════
-     TABS NAVIGATION
-     ═══════════════════════════════════════════════════════════ */
+  /* Tabs */
   .sg-tabs {
     display: flex;
-    gap: 0;
-    padding: 0 40px;
-    margin-bottom: 40px;
-    position: relative;
-    border-bottom: 1px solid var(--sg-light-grey);
+    border-bottom: 1px solid var(--sg-grey-border);
+    padding: 0;
+    margin: 0;
   }
 
   .sg-tab {
     flex: 1;
-    background: transparent;
+    background: none;
     border: none;
-    padding: 0 0 20px 0;
-    font-family: var(--sg-font-body);
-    cursor: pointer;
-    position: relative;
-    transition: var(--sg-transition-smooth);
-  }
-
-  .sg-tab-text {
-    font-size: 13px;
+    padding: 16px 24px;
+    font-family: var(--sg-font);
+    font-size: 11px;
     font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--sg-warm-grey);
-    transition: var(--sg-transition-smooth);
-    display: block;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    color: var(--sg-grey-text);
+    position: relative;
+    transition: color 0.2s;
+    border-bottom: 2px solid transparent;
   }
 
-  .sg-tab--active .sg-tab-text {
-    color: var(--sg-charcoal);
-    font-weight: 600;
+  .sg-tab:hover {
+    color: var(--sg-black);
   }
 
-  .sg-tab-indicator {
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--sg-bronze), var(--sg-gold));
-    transform: scaleX(0);
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  .sg-tab--active {
+    color: var(--sg-black);
+    border-bottom-color: var(--sg-black);
   }
 
-  .sg-tab--active .sg-tab-indicator {
-    transform: scaleX(1);
-  }
-
-  .sg-tab:hover:not(.sg-tab--active) .sg-tab-text {
-    color: var(--sg-charcoal);
-  }
-
-  /* ═══════════════════════════════════════════════════════════
-     TAB PANELS
-     ═══════════════════════════════════════════════════════════ */
+  /* Tab Panels */
   .sg-tab-panel {
     display: none;
-    padding: 0 40px 48px;
-    animation: sg-panel-fade 0.5s ease;
+    padding: 32px;
   }
 
   .sg-tab-panel--active {
     display: block;
   }
 
-  @keyframes sg-panel-fade {
-    from {
-      opacity: 0;
-      transform: translateY(12px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .sg-section-title {
-    font-family: var(--sg-font-display);
-    font-size: 28px;
-    font-weight: 600;
-    margin: 0 0 32px 0;
-    color: var(--sg-charcoal);
-    letter-spacing: -0.01em;
-  }
-
-  /* ═══════════════════════════════════════════════════════════
-     SIZE SELECTOR
-     ═══════════════════════════════════════════════════════════ */
+  /* Size Selector */
   .sg-size-selector {
-    margin-bottom: 40px;
-  }
-
-  .sg-size-label {
-    font-family: var(--sg-font-body);
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--sg-warm-grey);
-    margin: 0 0 16px 0;
+    margin-bottom: 32px;
   }
 
   .sg-size-buttons {
     display: flex;
-    gap: 10px;
+    gap: 8px;
   }
 
   .sg-size-btn,
   .sg-size-btn-body {
     flex: 1;
-    padding: 16px;
-    background: var(--sg-warm-white);
-    border: 1.5px solid var(--sg-light-grey);
-    font-family: var(--sg-font-body);
-    font-size: 15px;
+    padding: 12px;
+    background: var(--sg-white);
+    border: 1px solid var(--sg-black);
+    font-family: var(--sg-font);
+    font-size: 13px;
     font-weight: 500;
-    color: var(--sg-charcoal);
+    color: var(--sg-black);
     cursor: pointer;
-    transition: var(--sg-transition-smooth);
-    border-radius: 4px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .sg-size-btn::before,
-  .sg-size-btn-body::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, var(--sg-bronze), var(--sg-gold));
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .sg-size-btn-text {
-    position: relative;
-    z-index: 1;
+    transition: all 0.15s;
   }
 
   .sg-size-btn:hover,
   .sg-size-btn-body:hover {
-    border-color: var(--sg-bronze);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(184, 149, 106, 0.2);
+    background: var(--sg-grey-light);
   }
 
   .sg-size-btn--active,
   .sg-size-btn-body--active {
-    background: linear-gradient(135deg, var(--sg-bronze), var(--sg-gold));
-    color: var(--sg-warm-white);
-    border-color: var(--sg-bronze);
-    box-shadow: 0 4px 16px rgba(184, 149, 106, 0.3);
+    background: var(--sg-black);
+    color: var(--sg-white);
   }
 
-  .sg-size-btn--active::before,
-  .sg-size-btn-body--active::before {
-    opacity: 1;
-  }
-
-  /* ═══════════════════════════════════════════════════════════
-     PRODUCT IMAGE
-     ═══════════════════════════════════════════════════════════ */
+  /* Product Image */
   .sg-media {
     display: flex;
     justify-content: center;
-    margin-bottom: 40px;
-  }
-
-  .sg-img-wrapper {
-    position: relative;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 8px 32px rgba(44, 44, 44, 0.12);
-  }
-
-  .sg-img-wrapper::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border: 1px solid rgba(184, 149, 106, 0.15);
-    border-radius: 8px;
-    pointer-events: none;
+    margin-bottom: 32px;
   }
 
   .sg-img {
     width: 100%;
-    max-width: 320px;
+    max-width: 280px;
     height: auto;
     display: block;
-    transition: transform 0.6s ease;
   }
 
-  .sg-img-wrapper:hover .sg-img {
-    transform: scale(1.02);
-  }
-
-  /* ═══════════════════════════════════════════════════════════
-     MEASUREMENT TABLE
-     ═══════════════════════════════════════════════════════════ */
+  /* Table */
   .sg-table-container {
-    margin-bottom: 32px;
+    margin-bottom: 24px;
   }
 
-  .sg-measurement-grid {
-    display: flex;
-    flex-direction: column;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 12px rgba(44, 44, 44, 0.06);
-    border: 1px solid var(--sg-light-grey);
+  .sg-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
   }
 
-  .sg-measurement-row {
-    display: grid;
-    grid-template-columns: 140px repeat(5, 1fr);
-    background: var(--sg-warm-white);
-  }
-
-  .sg-measurement-row:not(:last-child) {
-    border-bottom: 1px solid var(--sg-light-grey);
-  }
-
-  .sg-measurement-row--header {
-    background: linear-gradient(135deg, #FAF8F5 0%, #F5EFE7 100%);
-  }
-
-  .sg-measurement-cell {
-    padding: 18px 14px;
-    font-size: 13px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: var(--sg-transition-smooth);
-    font-family: var(--sg-font-body);
-  }
-
-  .sg-measurement-row--header .sg-measurement-cell {
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-size: 11px;
-    color: var(--sg-warm-grey);
-  }
-
-  .sg-measurement-cell--label {
+  .sg-table thead th {
+    padding: 12px 8px;
     text-align: left;
-    justify-content: flex-start;
+    font-weight: 600;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--sg-grey-text);
+    border-bottom: 1px solid var(--sg-grey-border);
+  }
+
+  .sg-table thead th:first-child {
+    padding-left: 0;
+  }
+
+  .sg-table tbody td {
+    padding: 12px 8px;
+    text-align: left;
+    border-bottom: 1px solid var(--sg-grey-border);
+    transition: background 0.2s;
+  }
+
+  .sg-table tbody td:first-child {
+    padding-left: 0;
+  }
+
+  .sg-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .sg-table-label {
     font-weight: 500;
-    color: var(--sg-charcoal);
-    background: var(--sg-accent);
   }
 
-  .sg-measurement-row:not(.sg-measurement-row--header) .sg-measurement-cell[data-size].sg-size-highlight,
-  .sg-measurement-row:not(.sg-measurement-row--header) .sg-measurement-cell[data-size-body].sg-size-highlight {
-    background: linear-gradient(135deg, rgba(184, 149, 106, 0.15), rgba(212, 175, 122, 0.12));
-    color: var(--sg-charcoal);
+  .sg-table thead th.sg-highlight,
+  .sg-table tbody td.sg-highlight {
+    background: var(--sg-grey-light);
     font-weight: 600;
-    position: relative;
   }
 
-  .sg-measurement-row:not(.sg-measurement-row--header) .sg-measurement-cell[data-size].sg-size-highlight::after,
-  .sg-measurement-row:not(.sg-measurement-row--header) .sg-measurement-cell[data-size-body].sg-size-highlight::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background: linear-gradient(180deg, var(--sg-bronze), var(--sg-gold));
-  }
-
-  /* ═══════════════════════════════════════════════════════════
-     NOTE / INFO BOX
-     ═══════════════════════════════════════════════════════════ */
+  /* Note */
   .sg-note {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    font-size: 13px;
+    font-size: 11px;
     line-height: 1.6;
-    color: var(--sg-warm-grey);
+    color: var(--sg-grey-text);
     margin: 0;
-    padding: 20px;
-    background: rgba(245, 239, 231, 0.5);
-    border-radius: 8px;
-    border-left: 3px solid var(--sg-bronze);
+    padding: 16px 0 0;
+    border-top: 1px solid var(--sg-grey-border);
   }
 
-  .sg-note-icon {
-    flex-shrink: 0;
-    margin-top: 2px;
-    color: var(--sg-bronze);
+  /* Guide Section */
+  .sg-guide-section {
+    margin-top: 40px;
+    padding-top: 32px;
+    border-top: 1px solid var(--sg-grey-border);
   }
 
-  .sg-note p {
-    margin: 0;
-  }
-
-  /* ═══════════════════════════════════════════════════════════
-     GUIDE CONTENT (How to Measure)
-     ═══════════════════════════════════════════════════════════ */
-  .sg-guide-subtitle {
-    font-family: var(--sg-font-display);
-    font-size: 22px;
+  .sg-guide-title {
+    font-size: 12px;
     font-weight: 600;
-    margin: 48px 0 28px 0;
-    color: var(--sg-charcoal);
-    letter-spacing: -0.01em;
+    letter-spacing: 0.08em;
+    margin: 0 0 24px 0;
+    color: var(--sg-black);
   }
 
   .sg-guide-content {
     display: flex;
     flex-direction: column;
-    gap: 24px;
-    margin-bottom: 32px;
+    gap: 20px;
   }
 
   .sg-guide-item {
     display: flex;
-    gap: 20px;
-    align-items: flex-start;
-    padding: 20px;
-    background: var(--sg-warm-white);
-    border-radius: 8px;
-    border: 1px solid var(--sg-light-grey);
-    transition: var(--sg-transition-smooth);
+    flex-direction: column;
+    gap: 8px;
   }
 
-  .sg-guide-item:hover {
-    border-color: var(--sg-bronze);
-    box-shadow: 0 4px 16px rgba(184, 149, 106, 0.1);
-    transform: translateX(4px);
-  }
-
-  .sg-guide-number {
-    flex-shrink: 0;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--sg-bronze), var(--sg-gold));
-    color: var(--sg-warm-white);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--sg-font-display);
-    font-size: 18px;
+  .sg-guide-label {
+    font-size: 11px;
     font-weight: 600;
-    box-shadow: 0 4px 12px rgba(184, 149, 106, 0.3);
+    letter-spacing: 0.05em;
+    color: var(--sg-black);
   }
 
-  .sg-guide-text h5 {
-    font-family: var(--sg-font-body);
-    font-size: 15px;
-    font-weight: 600;
-    margin: 0 0 8px 0;
-    color: var(--sg-charcoal);
-    letter-spacing: 0.01em;
-  }
-
-  .sg-guide-text p {
-    font-size: 14px;
+  .sg-guide-item p {
+    font-size: 12px;
     line-height: 1.6;
-    color: var(--sg-warm-grey);
+    color: var(--sg-grey-text);
     margin: 0;
   }
 
-  /* ═══════════════════════════════════════════════════════════
-     EMPTY STATE
-     ═══════════════════════════════════════════════════════════ */
+  /* Empty State */
   .sg-empty {
-    padding: 60px 24px;
+    padding: 48px 24px;
     text-align: center;
-    color: var(--sg-warm-grey);
+    color: var(--sg-grey-text);
+    font-size: 12px;
   }
 
   .sg-empty p {
-    margin: 0 0 8px 0;
-    font-size: 14px;
+    margin: 0;
   }
 
-  .sg-empty-hint {
-    font-size: 13px;
-    color: var(--sg-warm-grey);
-    opacity: 0.7;
-  }
-
-  /* ═══════════════════════════════════════════════════════════
-     RESPONSIVE - MOBILE
-     ═══════════════════════════════════════════════════════════ */
+  /* Mobile */
   @media (max-width: 640px) {
     .sg-panel {
       width: 100%;
     }
 
     .sg-header {
-      padding: 32px 24px 24px;
+      padding: 20px 24px;
     }
 
     .sg-title {
-      font-size: 28px;
-    }
-
-    .sg-subtitle {
       font-size: 13px;
     }
 
-    .sg-divider {
-      margin: 0 24px 24px;
-    }
-
-    .sg-tabs {
-      padding: 0 24px;
-      margin-bottom: 32px;
-    }
-
     .sg-tab {
-      padding: 0 0 16px 0;
-    }
-
-    .sg-tab-text {
-      font-size: 11px;
-      letter-spacing: 0.08em;
+      padding: 14px 16px;
+      font-size: 10px;
     }
 
     .sg-tab-panel {
-      padding: 0 24px 40px;
-    }
-
-    .sg-section-title {
-      font-size: 24px;
-    }
-
-    .sg-size-buttons {
-      gap: 8px;
+      padding: 24px;
     }
 
     .sg-size-btn,
     .sg-size-btn-body {
-      padding: 14px;
-      font-size: 14px;
-    }
-
-    .sg-measurement-row {
-      grid-template-columns: 110px repeat(5, 1fr);
-      font-size: 11px;
-    }
-
-    .sg-measurement-cell {
-      padding: 14px 8px;
-      font-size: 11px;
-    }
-
-    .sg-note {
-      padding: 16px;
+      padding: 10px;
       font-size: 12px;
     }
 
-    .sg-guide-subtitle {
-      font-size: 20px;
-      margin: 40px 0 24px 0;
+    .sg-table {
+      font-size: 11px;
     }
 
-    .sg-guide-item {
-      padding: 16px;
-      gap: 16px;
-    }
-
-    .sg-guide-number {
-      width: 32px;
-      height: 32px;
-      font-size: 16px;
+    .sg-table thead th,
+    .sg-table tbody td {
+      padding: 10px 6px;
     }
   }
 
-  /* ═══════════════════════════════════════════════════════════
-     RESPONSIVE - DESKTOP
-     ═══════════════════════════════════════════════════════════ */
-  @media (min-width: 1024px) {
-    .sg-panel {
-      width: min(680px, 100%);
-    }
-
-    .sg-header {
-      padding: 56px 48px 40px;
-    }
-
-    .sg-divider {
-      margin: 0 48px 40px;
-    }
-
-    .sg-tabs {
-      padding: 0 48px;
-      margin-bottom: 48px;
-    }
-
-    .sg-tab-panel {
-      padding: 0 48px 56px;
-    }
-
-    .sg-img {
-      max-width: 360px;
-    }
-  }
-
-  /* ═══════════════════════════════════════════════════════════
-     ACCESSIBILITY & FOCUS STATES
-     ═══════════════════════════════════════════════════════════ */
+  /* Focus States */
   .sg-close:focus-visible,
   .sg-tab:focus-visible,
   .sg-size-btn:focus-visible,
   .sg-size-btn-body:focus-visible {
-    outline: 2px solid var(--sg-bronze);
-    outline-offset: 3px;
-  }
-
-  /* Reduced Motion */
-  @media (prefers-reduced-motion: reduce) {
-    .sg-root *,
-    .sg-root *::before,
-    .sg-root *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
+    outline: 2px solid var(--sg-black);
+    outline-offset: 2px;
   }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function(){
-  console.log('[SG] Initializing size guide for {{ sg_id }}');
   const wrap = document.getElementById("sg-wrap-{{ sg_id }}");
-  console.log('[SG] Wrap element:', wrap);
-  if(!wrap) {
-    console.error('[SG] Wrap not found!');
-    return;
-  }
+  if(!wrap) return;
 
   let root = wrap.querySelector("#{{ sg_id }}");
-  console.log('[SG] Root element:', root);
-  if(!root) {
-    console.error('[SG] Root not found!');
-    return;
-  }
+  if(!root) return;
 
   const openTriggers = document.querySelectorAll('[data-sg-open="{{ sg_id }}"]');
-  console.log('[SG] Found', openTriggers.length, 'open triggers:', openTriggers);
 
-  /* Portal: move drawer to body */
+  /* Portal */
   if(!root.hasAttribute('data-sg-portal')){
     document.body.appendChild(root);
     root.setAttribute('data-sg-portal','true');
-    console.log('[SG] Moved drawer to body');
   }
 
   const panel = root.querySelector('.sg-panel');
@@ -1351,73 +952,44 @@ document.addEventListener('DOMContentLoaded', function(){
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       const targetPanel = tab.dataset.tab;
-
-      // Update tabs
       tabs.forEach(t => {
         t.classList.remove('sg-tab--active');
         t.setAttribute('aria-selected', 'false');
       });
       tab.classList.add('sg-tab--active');
       tab.setAttribute('aria-selected', 'true');
-
-      // Update panels
-      tabPanels.forEach(p => {
-        p.classList.remove('sg-tab-panel--active');
-      });
+      tabPanels.forEach(p => p.classList.remove('sg-tab-panel--active'));
       const activePanel = root.querySelector(`[data-panel="${targetPanel}"]`);
       if(activePanel) activePanel.classList.add('sg-tab-panel--active');
     });
   });
 
   /* Size Selection */
-  sizeButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const selectedSize = btn.dataset.size;
+  function updateHighlight(buttons, dataAttr) {
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const selectedSize = btn.dataset[dataAttr];
+        buttons.forEach(b => {
+          b.classList.remove('sg-size-btn--active', 'sg-size-btn-body--active');
+          b.setAttribute('aria-checked', 'false');
+        });
+        btn.classList.add(dataAttr === 'size' ? 'sg-size-btn--active' : 'sg-size-btn-body--active');
+        btn.setAttribute('aria-checked', 'true');
 
-      // Update button states
-      sizeButtons.forEach(b => {
-        b.classList.remove('sg-size-btn--active');
-        b.setAttribute('aria-checked', 'false');
-      });
-      btn.classList.add('sg-size-btn--active');
-      btn.setAttribute('aria-checked', 'true');
-
-      // Highlight corresponding columns
-      const allCells = root.querySelectorAll('.sg-measurement-cell[data-size]');
-      allCells.forEach(cell => {
-        if(cell.dataset.size === selectedSize) {
-          cell.classList.add('sg-size-highlight');
-        } else {
-          cell.classList.remove('sg-size-highlight');
-        }
-      });
-    });
-  });
-
-  /* Body Measurements Size Selection */
-  sizeButtonsBody.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const selectedSize = btn.dataset.sizeBody;
-
-      // Update button states
-      sizeButtonsBody.forEach(b => {
-        b.classList.remove('sg-size-btn-body--active');
-        b.setAttribute('aria-checked', 'false');
-      });
-      btn.classList.add('sg-size-btn-body--active');
-      btn.setAttribute('aria-checked', 'true');
-
-      // Highlight corresponding columns
-      const allCells = root.querySelectorAll('.sg-measurement-cell[data-size-body]');
-      allCells.forEach(cell => {
-        if(cell.dataset.sizeBody === selectedSize) {
-          cell.classList.add('sg-size-highlight');
-        } else {
-          cell.classList.remove('sg-size-highlight');
-        }
+        const cells = root.querySelectorAll(`[data-${dataAttr === 'size' ? 'size' : 'size-body'}]`);
+        cells.forEach(cell => {
+          if(cell.dataset[dataAttr === 'size' ? 'size' : 'sizeBody'] === selectedSize) {
+            cell.classList.add('sg-highlight');
+          } else {
+            cell.classList.remove('sg-highlight');
+          }
+        });
       });
     });
-  });
+  }
+
+  updateHighlight(sizeButtons, 'size');
+  updateHighlight(sizeButtonsBody, 'sizeBody');
 
   /* Focus Trap */
   function trapFocus(e){
@@ -1429,11 +1001,9 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   /* Open/Close */
-  function openDrawer(e, trigger){
-    console.log('[SG] openDrawer called', e, trigger);
+  function openDrawer(e){
     if(e) e.preventDefault();
     root.hidden = false;
-    console.log('[SG] Drawer opened, root.hidden =', root.hidden);
     document.documentElement.style.overflow = 'hidden';
     openTriggers.forEach(t => t.setAttribute('aria-expanded','true'));
     panel.focus();
@@ -1453,24 +1023,15 @@ document.addEventListener('DOMContentLoaded', function(){
     if(e.key === 'Escape') closeDrawer();
   }
 
-  /* Attach handlers */
-  console.log('[SG] Attaching click handlers to', openTriggers.length, 'triggers');
   openTriggers.forEach(trigger => {
-    trigger.addEventListener('click', (e) => {
-      console.log('[SG] Trigger clicked!', trigger);
-      openDrawer(e, trigger);
-    });
+    trigger.addEventListener('click', openDrawer);
   });
   overlay.addEventListener('click', closeDrawer);
   closeBtns.forEach(b=> b.addEventListener('click', closeDrawer));
 
-  /* Initialize: highlight first size */
-  if(sizeButtons.length > 0) {
-    sizeButtons[0].click();
-  }
-  if(sizeButtonsBody.length > 0) {
-    sizeButtonsBody[0].click();
-  }
+  /* Initialize */
+  if(sizeButtons.length > 0) sizeButtons[0].click();
+  if(sizeButtonsBody.length > 0) sizeButtonsBody[0].click();
 });
 </script>
 
