@@ -28,6 +28,26 @@
     {%- endif -%}
   {%- endfor -%}
 
+  {%- comment -%} Load metafields if available {%- endcomment -%}
+  {%- assign has_metafield_product = false -%}
+  {%- assign has_metafield_body = false -%}
+  {%- assign has_metafield_instructions = false -%}
+
+  {%- if product.metafields.custom.size_guide_product != blank -%}
+    {%- assign has_metafield_product = true -%}
+    {%- assign metafield_product = product.metafields.custom.size_guide_product -%}
+  {%- endif -%}
+
+  {%- if product.metafields.custom.size_guide_body != blank -%}
+    {%- assign has_metafield_body = true -%}
+    {%- assign metafield_body = product.metafields.custom.size_guide_body -%}
+  {%- endif -%}
+
+  {%- if product.metafields.custom.size_guide_instructions != blank -%}
+    {%- assign has_metafield_instructions = true -%}
+    {%- assign metafield_instructions = product.metafields.custom.size_guide_instructions -%}
+  {%- endif -%}
+
   <div id="sg-wrap-{{ sg_id }}" class="sg-wrap">
     <div class="sg-root" id="{{ sg_id }}" hidden role="dialog" aria-modal="true" aria-label="Guia de tamanhos">
       <div class="sg-overlay" data-sg-close></div>
@@ -56,19 +76,24 @@
         <div class="sg-tab-panel sg-tab-panel--active" role="tabpanel" id="sg-panel-measurements-{{ sg_id }}" aria-labelledby="sg-tab-measurements-{{ sg_id }}" data-panel="measurements">
 
           <!-- Size Selector -->
-          {%- case sizechart_key -%}
-            {%- when 'tops' or 'saia' or 'saia-calcao' or 'calcas' or 'calcoes' -%}
-              <div class="sg-size-selector">
-                <p class="sg-size-label">Selecione o tamanho</p>
-                <div class="sg-size-buttons" role="radiogroup">
+          {%- if has_metafield_product or sizechart_key != '' -%}
+            <div class="sg-size-selector">
+              <p class="sg-size-label">Selecione o tamanho</p>
+              <div class="sg-size-buttons" role="radiogroup">
+                {%- if has_metafield_product -%}
+                  {%- for size in metafield_product.sizes -%}
+                    <button class="sg-size-btn {% if forloop.first %}sg-size-btn--active{% endif %}" role="radio" aria-checked="{% if forloop.first %}true{% else %}false{% endif %}" data-size="{{ size }}">{{ size }}</button>
+                  {%- endfor -%}
+                {%- else -%}
                   <button class="sg-size-btn sg-size-btn--active" role="radio" aria-checked="true" data-size="S">S</button>
                   <button class="sg-size-btn" role="radio" aria-checked="false" data-size="M">M</button>
                   <button class="sg-size-btn" role="radio" aria-checked="false" data-size="L">L</button>
                   <button class="sg-size-btn" role="radio" aria-checked="false" data-size="XL">XL</button>
                   <button class="sg-size-btn" role="radio" aria-checked="false" data-size="XXL">XXL</button>
-                </div>
+                {%- endif -%}
               </div>
-          {%- endcase -%}
+            </div>
+          {%- endif -%}
 
           <!-- Product Image -->
           <div class="sg-media">
@@ -85,38 +110,58 @@
 
           <!-- Measurement Table -->
           <div class="sg-table-container">
-            {%- case sizechart_key -%}
-
-              {%- when 'tops' -%}
+            {%- if has_metafield_product -%}
+              {%- comment -%} Use metafield data {%- endcomment -%}
               <div class="sg-measurement-grid">
                 <div class="sg-measurement-row sg-measurement-row--header">
                   <div class="sg-measurement-cell sg-measurement-cell--label">Medida</div>
-                  <div class="sg-measurement-cell" data-size="S">S</div>
-                  <div class="sg-measurement-cell" data-size="M">M</div>
-                  <div class="sg-measurement-cell" data-size="L">L</div>
-                  <div class="sg-measurement-cell" data-size="XL">XL</div>
-                  <div class="sg-measurement-cell" data-size="XXL">XXL</div>
+                  {%- for size in metafield_product.sizes -%}
+                    <div class="sg-measurement-cell" data-size="{{ size }}">{{ size }}</div>
+                  {%- endfor -%}
                 </div>
-                <div class="sg-measurement-row">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Peito</div>
-                  <div class="sg-measurement-cell" data-size="S">50 cm</div>
-                  <div class="sg-measurement-cell" data-size="M">53 cm</div>
-                  <div class="sg-measurement-cell" data-size="L">56 cm</div>
-                  <div class="sg-measurement-cell" data-size="XL">59 cm</div>
-                  <div class="sg-measurement-cell" data-size="XXL">62 cm</div>
-                </div>
-                <div class="sg-measurement-row">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Comprimento</div>
-                  <div class="sg-measurement-cell" data-size="S">70 cm</div>
-                  <div class="sg-measurement-cell" data-size="M">72 cm</div>
-                  <div class="sg-measurement-cell" data-size="L">74 cm</div>
-                  <div class="sg-measurement-cell" data-size="XL">76 cm</div>
-                  <div class="sg-measurement-cell" data-size="XXL">78 cm</div>
-                </div>
-                <div class="sg-measurement-row">
-                  <div class="sg-measurement-cell sg-measurement-cell--label">Manga</div>
-                  <div class="sg-measurement-cell" data-size="S">20 cm</div>
-                  <div class="sg-measurement-cell" data-size="M">21 cm</div>
+                {%- for measurement in metafield_product.measurements -%}
+                  <div class="sg-measurement-row">
+                    <div class="sg-measurement-cell sg-measurement-cell--label">{{ measurement.label }}</div>
+                    {%- for value in measurement.values -%}
+                      <div class="sg-measurement-cell" data-size="{{ metafield_product.sizes[forloop.index0] }}">{{ value }}</div>
+                    {%- endfor -%}
+                  </div>
+                {%- endfor -%}
+              </div>
+            {%- else -%}
+              {%- comment -%} Use tag-based default data {%- endcomment -%}
+              {%- case sizechart_key -%}
+
+                {%- when 'tops' -%}
+                <div class="sg-measurement-grid">
+                  <div class="sg-measurement-row sg-measurement-row--header">
+                    <div class="sg-measurement-cell sg-measurement-cell--label">Medida</div>
+                    <div class="sg-measurement-cell" data-size="S">S</div>
+                    <div class="sg-measurement-cell" data-size="M">M</div>
+                    <div class="sg-measurement-cell" data-size="L">L</div>
+                    <div class="sg-measurement-cell" data-size="XL">XL</div>
+                    <div class="sg-measurement-cell" data-size="XXL">XXL</div>
+                  </div>
+                  <div class="sg-measurement-row">
+                    <div class="sg-measurement-cell sg-measurement-cell--label">Peito</div>
+                    <div class="sg-measurement-cell" data-size="S">50 cm</div>
+                    <div class="sg-measurement-cell" data-size="M">53 cm</div>
+                    <div class="sg-measurement-cell" data-size="L">56 cm</div>
+                    <div class="sg-measurement-cell" data-size="XL">59 cm</div>
+                    <div class="sg-measurement-cell" data-size="XXL">62 cm</div>
+                  </div>
+                  <div class="sg-measurement-row">
+                    <div class="sg-measurement-cell sg-measurement-cell--label">Comprimento</div>
+                    <div class="sg-measurement-cell" data-size="S">70 cm</div>
+                    <div class="sg-measurement-cell" data-size="M">72 cm</div>
+                    <div class="sg-measurement-cell" data-size="L">74 cm</div>
+                    <div class="sg-measurement-cell" data-size="XL">76 cm</div>
+                    <div class="sg-measurement-cell" data-size="XXL">78 cm</div>
+                  </div>
+                  <div class="sg-measurement-row">
+                    <div class="sg-measurement-cell sg-measurement-cell--label">Manga</div>
+                    <div class="sg-measurement-cell" data-size="S">20 cm</div>
+                    <div class="sg-measurement-cell" data-size="M">21 cm</div>
                   <div class="sg-measurement-cell" data-size="L">22 cm</div>
                   <div class="sg-measurement-cell" data-size="XL">23 cm</div>
                   <div class="sg-measurement-cell" data-size="XXL">24 cm</div>
@@ -267,12 +312,13 @@
                 </div>
               </div>
 
-              {%- else -%}
-              <div class="sg-empty">
-                <p>Sem tabela específica para este produto.</p>
-                <p class="sg-empty-hint">Adicione uma tag como: tops, saia, saia-calção, calcas, ou calções.</p>
-              </div>
-            {%- endcase -%}
+                {%- else -%}
+                <div class="sg-empty">
+                  <p>Sem tabela específica para este produto.</p>
+                  <p class="sg-empty-hint">Adicione uma tag como: tops, saia, saia-calção, calcas, ou calções.</p>
+                </div>
+              {%- endcase -%}
+            {%- endif -%}
           </div>
 
           <!-- Note -->
