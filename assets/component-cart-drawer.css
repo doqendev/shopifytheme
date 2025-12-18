@@ -168,8 +168,17 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
 
 /* Mobile Responsive Tab Styling */
 @media screen and (max-width: 749px) {
+  .drawer__inner {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    border-left: none;
+    padding: 0;
+  }
+
   .drawer__tabs {
-    padding: 1.5rem 1.5rem 0;
+    padding: calc(1.5rem + env(safe-area-inset-top)) 1.5rem 0;
   }
 
   .drawer__tab {
@@ -183,8 +192,8 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
   }
 
   .drawer__close {
-    top: 1.5rem;
-    right: 1.5rem;
+    top: calc(1.5rem + env(safe-area-inset-top));
+    right: calc(1.5rem + env(safe-area-inset-right));
     padding: 8px;
     margin: -8px -8px -8px 0;
   }
