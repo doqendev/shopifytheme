@@ -41,12 +41,17 @@
 }
 
 /* Compact cart line look in drawer */
-#CartDrawer .cart-items tbody tr.cart-item{border-bottom:1px solid #e6e6e6}
+#CartDrawer .cart-items tbody tr.cart-item{border-bottom:1px solid #E5E5E5; padding: 1.5rem 0;}
+#CartDrawer .cart-items tbody tr.cart-item:first-child{padding-top: 0;}
+#CartDrawer .cart-items tbody tr.cart-item:last-child{border-bottom: none; padding-bottom: 2rem;}
 #CartDrawer td.cart-item__totals{vertical-align: top}
-#CartDrawer td.cart-item__details{vertical-align: top}
-#CartDrawer .cart__empty-text{text-align:center;color:rgba(var(--color-foreground, 18, 18, 18), 0.7);font-size:1rem;font-weight:400}
+#CartDrawer td.cart-item__details{vertical-align: top; padding-top: 0 !important;}
+#CartDrawer .cart__empty-text{text-align:center;color:#666666;font-size:14px;font-weight:400;line-height:1.6;}
 #CartDrawer .drawer__empty-state:not([hidden]){display:flex;align-items:center;justify-content:center}
-#CartDrawer .cart-drawer__empty-content{margin-top:0}
+#CartDrawer .cart-drawer__empty-content{margin-top:0; margin-bottom: 2.5rem;}
+#CartDrawer .cart__empty-heading{font-size:18px;font-weight:500;color:#000000;margin-bottom:0.5rem;text-align:center;}
+#CartDrawer .cart__empty-subtitle{font-size:14px;color:#666666;text-align:center;margin:0;}
+#CartDrawer .cart-drawer__recommendations-title{font-size:14px;font-weight:500;color:#000000;margin-bottom:1.5rem;text-transform:uppercase;letter-spacing:0.5px;}
 #CartDrawer .il-top-row{display:block;margin-bottom:2px}
 #CartDrawer .il-price{font-weight:400 !important;color:#000 !important;font-size:14px;line-height:1.2}
 #CartDrawer .il-item-title{display:block;margin-bottom:2px;font-weight:400;line-height:1.2;font-size:14px;color:#000}
@@ -358,16 +363,9 @@
 #CartDrawer .drawer__inner{ display:flex; flex-direction:column; height:100vh; max-height:100vh }
 #CartDrawer .drawer__panels{ flex:1 1 auto; display:flex; flex-direction:column; min-height:0 }
 #CartDrawer #CartDrawer-CartPanel{ flex:1 1 auto; display:flex; flex-direction:column; min-height:0 }
-#CartDrawer cart-drawer-items{ flex:1 1 auto; min-height:0; overflow:auto }
+#CartDrawer cart-drawer-items{ flex:1 1 auto; min-height:0; overflow:auto; padding: 2rem 2rem 0; }
 #CartDrawer .drawer__footer{
   flex:0 0 auto;
-  margin-top:12px;
-  padding-bottom:calc(4rem + env(safe-area-inset-bottom, 0px));
-}
-@supports (padding: max(0px)){
-  #CartDrawer .drawer__footer{
-    padding-bottom:max(4rem, calc(1.5rem + env(safe-area-inset-bottom, 0px)));
-  }
 }
 #CartDrawer .cart__ctas{
   padding-bottom:env(safe-area-inset-bottom, 0px);
