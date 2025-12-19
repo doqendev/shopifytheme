@@ -120,7 +120,6 @@
   flex-direction:column;
   gap:0;
   min-height: 180px;
-  justify-content: space-between;
 }
 
 #CartDrawer .il-item-title{
@@ -146,7 +145,7 @@
 
 #CartDrawer .il-top-row{
   display:block;
-  margin:0 0 auto;
+  margin:0 0 0.75rem 0;
   order:3;
 }
 
@@ -162,7 +161,7 @@
   display:flex;
   gap:0;
   align-items:center;
-  margin:0 0 0.5rem 0;
+  margin:auto 0 0.5rem 0;
   order:4;
 }
 
@@ -241,7 +240,7 @@
   }
 
   #CartDrawer .il-top-row{
-    margin: 0 0 auto;
+    margin: 0 0 0.6rem 0;
   }
 
   #CartDrawer .il-price{
@@ -250,7 +249,7 @@
 
   #CartDrawer .il-icons-row{
     gap: 12px;
-    margin: 0 0 0.4rem 0;
+    margin: auto 0 0.4rem 0;
   }
 
   #CartDrawer .il-move-to-favorites{
