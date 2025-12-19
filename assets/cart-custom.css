@@ -114,7 +114,7 @@
 #CartDrawer .cart__empty-heading{font-size:18px;font-weight:500;color:#000000;margin-bottom:0.5rem;text-align:center;}
 #CartDrawer .cart__empty-subtitle{font-size:14px;color:#666666;text-align:center;margin:0;}
 #CartDrawer .cart-drawer__recommendations-title{font-size:14px;font-weight:500;color:#000000;margin-bottom:1.5rem;text-transform:uppercase;letter-spacing:0.5px;}
-/* Cart Item Structure - Zara Minimal Style */
+/* Cart Item Structure - Clean Zara Style */
 #CartDrawer .il-item-details{
   display:flex;
   flex-direction:column;
@@ -123,12 +123,13 @@
 
 #CartDrawer .il-item-title{
   display:block;
-  font-weight:500;
+  font-weight:400;
   font-size:14px;
   line-height:1.5;
   color:#000000;
-  margin:0 0 0.35rem 0;
+  margin:0 0 0.5rem 0;
   order:1;
+  text-transform:uppercase;
 }
 
 #CartDrawer .il-variant-small{
@@ -136,38 +137,72 @@
   font-weight:400;
   color:#666666;
   line-height:1.4;
-  margin:0 0 0.5rem 0;
+  margin:0 0 0.75rem 0;
   order:2;
+  text-transform:uppercase;
 }
 
 #CartDrawer .il-top-row{
   display:block;
-  margin:0 0 0.75rem 0;
+  margin:0 0 1.25rem 0;
   order:3;
 }
 
 #CartDrawer .il-price{
   font-weight:400 !important;
   color:#000000 !important;
-  font-size:15px;
+  font-size:14px;
   line-height:1.4;
   margin:0;
 }
 
 #CartDrawer .il-icons-row{
   display:flex;
-  gap:14px;
+  gap:0;
   align-items:center;
-  margin:0 0 0.5rem 0;
+  margin:0 0 0.75rem 0;
   order:4;
 }
 
+/* Hide icon buttons, use text links instead */
+#CartDrawer .il-icon-btn{
+  display:none;
+}
+
+/* Text action links */
+#CartDrawer .il-cart-line__edit,
+#CartDrawer .il-cart-line__remove{
+  font-size:11px;
+  font-weight:400;
+  color:#666666;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+  cursor:pointer;
+  transition:color 0.2s ease;
+  background:none;
+  border:none;
+  padding:0;
+  text-decoration:none;
+}
+
+#CartDrawer .il-cart-line__edit:hover,
+#CartDrawer .il-cart-line__remove:hover{
+  color:#000000;
+}
+
+#CartDrawer .il-cart-line__edit::after{
+  content:" · ";
+  margin:0 0.5rem;
+  color:#CCCCCC;
+}
+
 #CartDrawer .il-move-to-favorites{
-  font-size:12px;
+  font-size:11px;
   font-weight:400;
   color:#666666;
   text-decoration:underline;
   text-underline-offset:2px;
+  text-transform:none;
   margin:0;
   order:5;
   transition:color 0.2s ease;
