@@ -851,6 +851,16 @@ cart-items th:last-child {
   display: none !important;
 }
 
+/* Empty cart state - center text */
+#CartDrawer .drawer__empty-state {
+  text-align: center;
+}
+
+#CartDrawer .drawer__empty-state h2,
+#CartDrawer .drawer__empty-state p {
+  text-align: center;
+}
+
 /* Empty cart recommendations - add spacing between product cards */
 #CartDrawer .cart-drawer__collection {
   padding: 0 2rem 2rem !important;
