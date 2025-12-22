@@ -124,13 +124,6 @@
   height: 100%;
 }
 
-/* Wrapper to make content stretch full height */
-#CartDrawer td.cart-item__details > *:first-child{
-  display: flex !important;
-  flex-direction: column !important;
-  min-height: 100% !important;
-}
-
 /* Push buttons to the bottom using margin-top auto */
 #CartDrawer .il-icons-row{
   margin-top: auto !important;
@@ -162,7 +155,8 @@
   display:flex;
   flex-direction:column;
   gap:0;
-  min-height: 230px;
+  height: 100%;
+  min-height: 225px; /* Match image height */
 }
 
 #CartDrawer .il-item-title{
