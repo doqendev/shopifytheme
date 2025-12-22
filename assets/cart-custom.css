@@ -261,10 +261,6 @@
 
 /* Mobile cart item adjustments */
 @media screen and (max-width: 749px) {
-  #CartDrawer .il-item-details{
-    min-height: 130px;
-  }
-
   #CartDrawer td.cart-item__media{
     width: 130px;
     padding-right: 1rem !important;
