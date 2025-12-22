@@ -634,9 +634,7 @@
 /* Removed - now handled by absolute positioning above */
 #CartDrawer .il-item-title, #CartDrawer .il-variant-small, #CartDrawer .il-move-to-favorites{ display:block }
 
-/* Reduce left padding between image and details to gain width */
-#CartDrawer .cart-item > td + td { padding-left: 1.2rem !important }
-/* Ensure details column isn�t capped at 50% by upstream CSS */
+/* Ensure details column isn't capped at 50% by upstream CSS */
 #CartDrawer .cart-items thead th:nth-child(2){ width:auto !important; padding-left: 0 !important }
 /* Better word-breaking for long product names */
 #CartDrawer .il-item-title{ overflow-wrap: anywhere }
