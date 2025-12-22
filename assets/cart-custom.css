@@ -112,23 +112,27 @@
   padding-right: 1.5rem !important;
 }
 
-/* Make product details cell a flex container */
+/* Make product details cell with relative positioning */
 #CartDrawer td.cart-item__details{
   vertical-align: bottom;
-  display: flex !important;
-  flex-direction: column !important;
+  position: relative;
+  padding-bottom: 3.5rem !important; /* Space for absolutely positioned buttons */
 }
 
-/* Push buttons to the bottom */
+/* Position buttons at the absolute bottom of the cell */
 #CartDrawer .il-icons-row{
-  margin-top: auto !important;
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
   display: flex;
   gap: 0.5rem;
   align-items: center;
 }
 
 #CartDrawer .il-move-to-favorites{
-  margin-top: 0.5rem !important;
+  position: absolute !important;
+  bottom: -2rem !important;
+  left: 0 !important;
 }
 
 #CartDrawer td.cart-item__totals{vertical-align: top}
