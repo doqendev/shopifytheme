@@ -94,7 +94,6 @@
 }
 #CartDrawer td.cart-item__media{
   vertical-align: top;
-  width: 180px;
   padding-right: 1.5rem !important;
 }
 #CartDrawer td.cart-item__totals{vertical-align: top}
@@ -102,11 +101,6 @@
   vertical-align: top;
   padding-top: 0 !important;
   padding-left: 0 !important;
-}
-#CartDrawer .cart-item__image{
-  width: 180px;
-  height: auto;
-  display: block;
 }
 #CartDrawer .cart__empty-text{text-align:center;color:#666666;font-size:14px;font-weight:400;line-height:1.6;}
 #CartDrawer .drawer__empty-state:not([hidden]){display:flex;align-items:center;justify-content:center}
@@ -220,12 +214,7 @@
   }
 
   #CartDrawer td.cart-item__media{
-    width: 130px;
     padding-right: 1rem !important;
-  }
-
-  #CartDrawer .cart-item__image{
-    width: 130px;
   }
 
   #CartDrawer .il-item-title{
@@ -598,77 +587,11 @@
   margin: 0;
 }
 
-/* Item grid: compact image + details */
-#CartDrawer .cart-item{
-  display: grid !important;
-  grid-template-columns: 110px 1fr !important;
-  grid-auto-rows: auto;
-  column-gap: 1.2rem;
-  row-gap: 0.35rem;
-  align-items: start;
-  padding: 0 0 1.2rem;
-}
-#CartDrawer .cart-item:last-child{
-  padding-bottom: 0.8rem;
-}
-#CartDrawer .cart-item__media,
-#CartDrawer td.cart-item__media{
-  width: 110px !important;
-}
-#CartDrawer .cart-item__image{
-  width: 100%;
-  max-width: 110px;
-  height: auto;
-}
-#CartDrawer .cart-item__details{
-  padding: 0 !important;
-}
-#CartDrawer .il-item-title{
-  margin: 0 0 2px;
-  line-height: 1.2;
-}
-#CartDrawer .il-variant-small{
-  margin: 0 0 6px;
-  line-height: 1.25;
-}
-#CartDrawer .cart-item__price-wrapper{
-  margin: 0 0 6px;
-}
-#CartDrawer .il-item-details .il-icons-row{
-  margin: 8px 0 10px;
-  gap: 14px;
-}
-#CartDrawer .il-move-to-favorites{
-  margin-top: 6px;
-}
-
-@media (max-width: 749px){
-  #CartDrawer cart-drawer-items{
-    padding: 1.25rem 1.25rem 0;
-  }
-  #CartDrawer .drawer__footer,
-  #CartDrawer .cart-drawer__footer{
-    padding: 1.25rem;
-  }
-  #CartDrawer .cart-item{
-    grid-template-columns: 100px 1fr !important;
-    column-gap: 1rem;
-  }
-  #CartDrawer .cart-item__media,
-  #CartDrawer td.cart-item__media{
-    width: 100px !important;
-  }
-  #CartDrawer .cart-item__image{
-    max-width: 100px;
-  }
-}
-
 /* Expand the details width to the right edge; remove extra columns */
 #CartDrawer-ColumnTotal, #CartDrawer td.cart-item__totals{ display:none !important }
 #CartDrawer-ColumnQuantity{ display:none !important }
 #CartDrawer .cart-items{ width:100%; table-layout:auto }
 #CartDrawer td.cart-item__details{ width:auto; padding-right:4px }
-#CartDrawer td.cart-item__media{ width:180px }
 
 
 /* Remove header row (Produto) */
@@ -689,9 +612,7 @@
 /* Better word-breaking for long product names */
 #CartDrawer .il-item-title{ overflow-wrap: anywhere }
 
-/* Override Dawn mobile grid on tr.cart-item in the drawer so details get full width */
-#CartDrawer .cart-item{ display: table-row !important; grid-template: none !important }
-#CartDrawer .cart-item__media, #CartDrawer .cart-item__details, #CartDrawer .cart-item__quantity{ grid-column: auto !important; grid-row: auto !important; }
+/* Grid layout for cart items is defined below - removed table-row override */
 
 .il-icon-btn .svg-wrapper{
   display:inline-flex;
