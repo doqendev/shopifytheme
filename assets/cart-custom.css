@@ -883,11 +883,11 @@ cart-items th:last-child {
 }
 
 /* Wishlist/Favoritos tab - same spacing as cart */
-#WishlistDrawer-WishlistPanel .cart-drawer__collection {
+#CartDrawer-WishlistPanel .cart-drawer__collection {
   padding: 0 2rem 2rem !important;
 }
 
-#WishlistDrawer-WishlistPanel .cart-recommendation-card {
+#CartDrawer-WishlistPanel .cart-recommendation-card {
   margin-bottom: 1.5rem;
 }
 
@@ -901,11 +901,11 @@ cart-items th:last-child {
     margin-bottom: 1rem;
   }
 
-  #WishlistDrawer-WishlistPanel .cart-drawer__collection {
+  #CartDrawer-WishlistPanel .cart-drawer__collection {
     padding: 0 1.5rem 1.5rem !important;
   }
 
-  #WishlistDrawer-WishlistPanel .cart-recommendation-card {
+  #CartDrawer-WishlistPanel .cart-recommendation-card {
     margin-bottom: 1rem;
   }
 }
