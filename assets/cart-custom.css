@@ -81,11 +81,10 @@
 
 /* Add spacing via cells (padding on tr doesn't work in tables) */
 #CartDrawer .cart-items tbody tr.cart-item td{
-  padding-top: 3rem !important;
   padding-bottom: 3rem !important;
 }
 
-/* First row - no top padding */
+/* First row styling */
 #CartDrawer .cart-items tbody tr.cart-item:first-child td{
   padding-top: 0 !important;
 }
@@ -98,7 +97,6 @@
 /* Mobile cart item padding */
 @media screen and (max-width: 749px) {
   #CartDrawer .cart-items tbody tr.cart-item td{
-    padding-top: 1.5rem !important;
     padding-bottom: 1.5rem !important;
   }
 

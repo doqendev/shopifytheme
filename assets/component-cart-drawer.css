@@ -394,10 +394,6 @@ cart-drawer-items {
   padding-top: 2.5rem;
 }
 
-.cart-drawer .cart-items td {
-  padding-top: 1.7rem;
-}
-
 .cart-drawer .cart-item > td + td {
   padding-left: 1rem;
 }
