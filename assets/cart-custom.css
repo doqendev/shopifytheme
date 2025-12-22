@@ -107,16 +107,31 @@
   }
 }
 #CartDrawer td.cart-item__media{
-  vertical-align: top;
+  vertical-align: bottom;
   width: 180px;
   padding-right: 1.5rem !important;
 }
-#CartDrawer td.cart-item__totals{vertical-align: top}
+
+/* Make product details cell a flex container */
 #CartDrawer td.cart-item__details{
-  vertical-align: top;
-  padding-top: 0 !important;
-  padding-left: 0 !important;
+  vertical-align: bottom;
+  display: flex !important;
+  flex-direction: column !important;
 }
+
+/* Push buttons to the bottom */
+#CartDrawer .il-icons-row{
+  margin-top: auto !important;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+#CartDrawer .il-move-to-favorites{
+  margin-top: 0.5rem !important;
+}
+
+#CartDrawer td.cart-item__totals{vertical-align: top}
 #CartDrawer .cart-item__image{
   width: 180px;
   height: auto;
