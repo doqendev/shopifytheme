@@ -4103,8 +4103,8 @@ font-style: normal;
   bottom: auto;
   left: auto;
   right: auto;
-  width: auto;
-  max-width: min(34rem, 90vw);
+  width: auto; /* actual width is set inline from JS to match image width */
+  max-width: none;
   border-radius: 0;
   border: 1px solid rgba(0, 0, 0, 0.12);
   box-shadow: none;
