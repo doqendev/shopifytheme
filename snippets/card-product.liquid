@@ -1167,8 +1167,9 @@
         var card = openPlus.closest('.product-card-wrapper');
         if (!card) return;
         var clickedInsidePlus = ev.target.closest('.product-card-plus');
+        var clickedOverlayPlus = ev.target.closest('.plus-icon--overlay');
         var clickedSwatchSameCard = ev.target.closest('.swatch') && ev.target.closest('.product-card-wrapper') === card;
-        if (!clickedInsidePlus && !clickedSwatchSameCard) {
+        if (!clickedInsidePlus && !clickedOverlayPlus && !clickedSwatchSameCard) {
           ev.preventDefault();
           ev.stopPropagation();
           closeAllPlus();
