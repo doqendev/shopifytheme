@@ -106,22 +106,27 @@
     padding-top: 0 !important;
   }
 }
-/* Make both cells same height and align to top */
+/* Make both cells same height */
 #CartDrawer .cart-items tbody tr.cart-item{
-  height: 1px; /* Force row to wrap content tightly */
+  display: flex;
+  align-items: stretch;
 }
 
 #CartDrawer td.cart-item__media{
-  vertical-align: top;
   width: 180px;
   padding-right: 1.5rem !important;
-  height: 100%;
+  flex-shrink: 0;
 }
 
-/* Make product details cell stretch to full height with flex layout */
+/* Make product details cell stretch to full height */
 #CartDrawer td.cart-item__details{
-  vertical-align: top;
-  height: 100%;
+  flex: 1;
+  display: flex;
+}
+
+/* Hide or minimize the totals column */
+#CartDrawer td.cart-item__totals{
+  display: none;
 }
 
 /* Push buttons to the bottom using margin-top auto */
@@ -136,7 +141,6 @@
   display: none !important;
 }
 
-#CartDrawer td.cart-item__totals{vertical-align: top}
 #CartDrawer .cart-item__image{
   width: 100%;
   height: 225px; /* 4:5 ratio: 180 * 5/4 = 225 */
@@ -152,10 +156,8 @@
 #CartDrawer .cart-drawer__recommendations-title{font-size:14px;font-weight:500;color:#000000;margin-bottom:1.5rem;text-transform:uppercase;letter-spacing:0.5px;}
 /* Cart Item Structure - Clean Zara Style */
 #CartDrawer .il-item-details{
-  display:flex;
-  flex-direction:column;
+  flex-direction: column !important;
   gap:0;
-  height: 100%;
   min-height: 225px; /* Match image height */
 }
 
