@@ -42,8 +42,8 @@
   }
 
   .wishlist-toggle--mobile-inline .wishlist-toggle__icon {
-    width: 16px !important;
-    height: 16px !important;
+    width: 18px !important;
+    height: 18px !important;
     color: #111;
   }
 
@@ -72,6 +72,10 @@
     .wishlist-toggle--mobile-inline {
       width: 2.5rem;
       height: 2.5rem;
+    }
+    .wishlist-toggle--mobile-inline .wishlist-toggle__icon {
+      width: 20px !important;
+      height: 20px !important;
     }
   }
 
@@ -125,16 +129,17 @@
     width: auto;
     height: auto;
     padding: 0;
-    display: inline-flex;
+    display: inline-flex !important;
     align-items: center;
     justify-content: center;
     background: rgba(255, 255, 255, 0.92);
     border-radius: 0;
     border: 1px solid rgba(0, 0, 0, 0.05);
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-    z-index: 5;
+    z-index: 50;
     transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
     cursor: pointer;
+    pointer-events: auto !important;
   }
 
   .plus-icon--overlay img {
@@ -152,6 +157,19 @@
   .plus-icon--overlay:active {
     transform: translateY(0);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14);
+  }
+
+  /* Show overlay plus on desktop only */
+  @media screen and (min-width: 750px) {
+    .plus-icon--overlay {
+      display: inline-flex !important;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .plus-icon--overlay {
+      display: none !important;
+    }
   }
 
   .card__content {
