@@ -632,6 +632,9 @@
     window.initializeQuickAddListeners = function() {
       var plusEls = document.querySelectorAll('.product-card-plus');
       var productCards = document.querySelectorAll('.product-card-wrapper');
+      var activePlus = null;
+      var activeScrollPosition = { x: 0, y: 0 };
+      var SCROLL_CLOSE_THRESHOLD_PX = 12;
 
       function formatMoney(cents) {
         try {
@@ -1006,6 +1009,9 @@
           }
         });
         document.body.classList.remove('size-drawer-open');
+        activePlus = null;
+        activeScrollPosition.x = 0;
+        activeScrollPosition.y = 0;
       }
 
       function quickAddVariant(id) {
@@ -1067,35 +1073,24 @@
             ev.stopPropagation();
           }
 
-          // Save scroll position before any operations
-          var scrollX = window.scrollX || window.pageXOffset;
-          var scrollY = window.scrollY || window.pageYOffset;
-          console.log('[openDrawer] Initial scroll:', scrollX, scrollY);
+          var alreadyOpen = el.classList.contains('active');
+
+          // Toggle off if this drawer is already open
+          if (alreadyOpen) {
+            closeAllPlus();
+            return;
+          }
 
           closeAllPlus();
-          console.log('[openDrawer] After closeAllPlus:', window.scrollX, window.scrollY);
 
           updateSizeButtons(card);
-          console.log('[openDrawer] After updateSizeButtons:', window.scrollX, window.scrollY);
-
           el.classList.add('active');
-          console.log('[openDrawer] After add active:', window.scrollX, window.scrollY);
 
           positionSizeOptionsPanel(card, sizeOptions);
-          console.log('[openDrawer] After positionSizeOptionsPanel:', window.scrollX, window.scrollY);
 
-          // Restore scroll position if it changed
-          var newScrollX = window.scrollX || window.pageXOffset;
-          var newScrollY = window.scrollY || window.pageYOffset;
-          if (newScrollX !== scrollX || newScrollY !== scrollY) {
-            console.log('[openDrawer] Scroll changed! Restoring from', newScrollX, newScrollY, 'to', scrollX, scrollY);
-            requestAnimationFrame(function() {
-              window.scrollTo(scrollX, scrollY);
-              console.log('[openDrawer] Restored to:', window.scrollX, window.scrollY);
-            });
-          } else {
-            console.log('[openDrawer] Scroll unchanged - no restoration needed');
-          }
+          activePlus = el;
+          activeScrollPosition.x = window.scrollX || window.pageXOffset;
+          activeScrollPosition.y = window.scrollY || window.pageYOffset;
         }
 
         if (overlayPlus) {
@@ -1225,7 +1220,12 @@
       window.addEventListener('resize', repositionActiveSizeOptions);
       window.addEventListener('scroll', function() {
         if (!window.matchMedia('(min-width: 990px)').matches) return;
-        closeAllPlus();
+        if (!activePlus) return;
+        var deltaX = Math.abs((window.scrollX || window.pageXOffset) - activeScrollPosition.x);
+        var deltaY = Math.abs((window.scrollY || window.pageYOffset) - activeScrollPosition.y);
+        if (deltaX > SCROLL_CLOSE_THRESHOLD_PX || deltaY > SCROLL_CLOSE_THRESHOLD_PX) {
+          closeAllPlus();
+        }
       }, { passive: true });
     };
 
