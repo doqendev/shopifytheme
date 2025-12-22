@@ -1070,16 +1070,32 @@
           // Save scroll position before any operations
           var scrollX = window.scrollX || window.pageXOffset;
           var scrollY = window.scrollY || window.pageYOffset;
+          console.log('[openDrawer] Initial scroll:', scrollX, scrollY);
 
           closeAllPlus();
+          console.log('[openDrawer] After closeAllPlus:', window.scrollX, window.scrollY);
+
           updateSizeButtons(card);
+          console.log('[openDrawer] After updateSizeButtons:', window.scrollX, window.scrollY);
+
           el.classList.add('active');
+          console.log('[openDrawer] After add active:', window.scrollX, window.scrollY);
+
           positionSizeOptionsPanel(card, sizeOptions);
+          console.log('[openDrawer] After positionSizeOptionsPanel:', window.scrollX, window.scrollY);
 
           // Restore scroll position if it changed
-          requestAnimationFrame(function() {
-            window.scrollTo(scrollX, scrollY);
-          });
+          var newScrollX = window.scrollX || window.pageXOffset;
+          var newScrollY = window.scrollY || window.pageYOffset;
+          if (newScrollX !== scrollX || newScrollY !== scrollY) {
+            console.log('[openDrawer] Scroll changed! Restoring from', newScrollX, newScrollY, 'to', scrollX, scrollY);
+            requestAnimationFrame(function() {
+              window.scrollTo(scrollX, scrollY);
+              console.log('[openDrawer] Restored to:', window.scrollX, window.scrollY);
+            });
+          } else {
+            console.log('[openDrawer] Scroll unchanged - no restoration needed');
+          }
         }
 
         if (overlayPlus) {
