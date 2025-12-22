@@ -851,14 +851,21 @@ cart-items th:last-child {
   display: none !important;
 }
 
-/* Empty cart state - center text */
-#CartDrawer .drawer__empty-state {
+/* Empty cart state - center text but not recommendation cards */
+#CartDrawer .cart-drawer__empty-content {
   text-align: center;
 }
 
-#CartDrawer .drawer__empty-state h2,
-#CartDrawer .drawer__empty-state p {
+#CartDrawer .cart-drawer__empty-content h2,
+#CartDrawer .cart-drawer__empty-content p {
   text-align: center;
+}
+
+/* Reset text alignment for recommendation cards */
+#CartDrawer .cart-recommendation-card,
+#CartDrawer .cart-recommendation-card h4,
+#CartDrawer .cart-recommendation-card p {
+  text-align: left;
 }
 
 /* Empty cart recommendations - add spacing between product cards */
