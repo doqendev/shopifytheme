@@ -106,33 +106,41 @@
     padding-top: 0 !important;
   }
 }
+/* Make both cells same height and align to top */
+#CartDrawer .cart-items tbody tr.cart-item{
+  height: 1px; /* Force row to wrap content tightly */
+}
+
 #CartDrawer td.cart-item__media{
-  vertical-align: bottom;
+  vertical-align: top;
   width: 180px;
   padding-right: 1.5rem !important;
+  height: 100%;
 }
 
-/* Make product details cell with relative positioning */
+/* Make product details cell stretch to full height with flex layout */
 #CartDrawer td.cart-item__details{
-  vertical-align: bottom;
-  position: relative;
-  padding-bottom: 3.5rem !important; /* Space for absolutely positioned buttons */
+  vertical-align: top;
+  height: 100%;
 }
 
-/* Position buttons at the absolute bottom of the cell */
+/* Wrapper to make content stretch full height */
+#CartDrawer td.cart-item__details > *:first-child{
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 100% !important;
+}
+
+/* Push buttons to the bottom using margin-top auto */
 #CartDrawer .il-icons-row{
-  position: absolute !important;
-  bottom: 0 !important;
-  left: 0 !important;
+  margin-top: auto !important;
   display: flex;
   gap: 0.5rem;
   align-items: center;
 }
 
 #CartDrawer .il-move-to-favorites{
-  position: absolute !important;
-  bottom: -2rem !important;
-  left: 0 !important;
+  margin-top: 0.5rem !important;
 }
 
 #CartDrawer td.cart-item__totals{vertical-align: top}
