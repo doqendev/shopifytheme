@@ -590,8 +590,10 @@
 /* Expand the details width to the right edge; remove extra columns */
 #CartDrawer-ColumnTotal, #CartDrawer td.cart-item__totals{ display:none !important }
 #CartDrawer-ColumnQuantity{ display:none !important }
-#CartDrawer .cart-items{ width:100%; table-layout:auto }
+#CartDrawer .cart-items{ width:100%; display: block !important }
+#CartDrawer .cart-items tbody{ display: block !important }
 #CartDrawer td.cart-item__details{ width:auto; padding-right:4px }
+#CartDrawer .cart-item td{ display: block !important }
 
 
 /* Remove header row (Produto) */
