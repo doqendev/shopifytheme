@@ -850,3 +850,23 @@ cart-items .price {
 cart-items th:last-child {
   display: none !important;
 }
+
+/* Empty cart recommendations - add spacing between product cards */
+#CartDrawer .cart-drawer__collection {
+  padding: 0 2rem 2rem !important;
+}
+
+#CartDrawer .cart-recommendation-card {
+  margin-bottom: 1.5rem;
+}
+
+/* Mobile spacing for recommendations */
+@media screen and (max-width: 749px) {
+  #CartDrawer .cart-drawer__collection {
+    padding: 0 1.5rem 1.5rem !important;
+  }
+
+  #CartDrawer .cart-recommendation-card {
+    margin-bottom: 1rem;
+  }
+}
