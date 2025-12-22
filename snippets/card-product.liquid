@@ -1060,25 +1060,35 @@
         if (!plusIcon || !sizeOptions) return;
 
         var overlayPlus = card ? card.querySelector('.plus-icon--overlay') : null;
-        if (overlayPlus && plusIcon) {
-          ['click', 'keydown'].forEach(function(evtName) {
-            overlayPlus.addEventListener(evtName, function(ev) {
-              if (evtName === 'keydown' && ev.key !== 'Enter' && ev.key !== ' ') return;
-              ev.preventDefault();
-              ev.stopPropagation();
-              plusIcon.click();
-            });
-          });
-        }
 
-        plusIcon.addEventListener('click', function(ev) {
-          ev.stopPropagation();
+        function openDrawer(ev) {
+          if (ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+          }
           closeAllPlus();
           updateSizeButtons(card);
           el.classList.add('active');
-          positionSizeOptionsPanel(card, sizeOptions);
-          sizeOptions.focus({ preventScroll: true });
-        });
+
+          // Use requestAnimationFrame to avoid scroll during positioning
+          requestAnimationFrame(function() {
+            positionSizeOptionsPanel(card, sizeOptions);
+            sizeOptions.focus({ preventScroll: true });
+          });
+        }
+
+        if (overlayPlus) {
+          overlayPlus.addEventListener('click', openDrawer);
+          overlayPlus.addEventListener('keydown', function(ev) {
+            if (ev.key === 'Enter' || ev.key === ' ') {
+              ev.preventDefault();
+              ev.stopPropagation();
+              openDrawer(ev);
+            }
+          });
+        }
+
+        plusIcon.addEventListener('click', openDrawer);
 
         plusIcon.addEventListener('keydown', function(ev){
           if(ev.key === 'Enter' || ev.key === ' ') {
