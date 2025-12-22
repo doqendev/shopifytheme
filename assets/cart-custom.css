@@ -77,10 +77,10 @@
 /* Compact cart line look in drawer */
 #CartDrawer .cart-items tbody tr.cart-item{
   border-bottom:1px solid #E5E5E5;
-  padding: 2rem 0;
+  padding: 3rem 0;
 }
 #CartDrawer .cart-items tbody tr.cart-item:first-child{padding-top: 0;}
-#CartDrawer .cart-items tbody tr.cart-item:last-child{border-bottom: none; padding-bottom: 2.5rem;}
+#CartDrawer .cart-items tbody tr.cart-item:last-child{border-bottom: none; padding-bottom: 3rem;}
 
 /* Mobile cart item padding */
 @media screen and (max-width: 749px) {
