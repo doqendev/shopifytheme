@@ -146,8 +146,10 @@
 #CartDrawer td.cart-item__totals{vertical-align: top}
 #CartDrawer .cart-item__image{
   width: 180px;
-  height: auto;
+  height: 225px; /* 4:5 ratio: 180 * 5/4 = 225 */
   display: block;
+  object-fit: cover;
+  object-position: center;
 }
 #CartDrawer .cart__empty-text{text-align:center;color:#666666;font-size:14px;font-weight:400;line-height:1.6;}
 #CartDrawer .drawer__empty-state:not([hidden]){display:flex;align-items:center;justify-content:center}
@@ -268,6 +270,7 @@
 
   #CartDrawer .cart-item__image{
     width: 130px;
+    height: 163px; /* 4:5 ratio: 130 * 5/4 = 162.5 */
   }
 
   #CartDrawer .il-item-title{
