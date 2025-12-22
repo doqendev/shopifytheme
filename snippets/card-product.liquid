@@ -1077,7 +1077,7 @@
           updateSizeButtons(card);
           el.classList.add('active');
           positionSizeOptionsPanel(card, sizeOptions);
-          sizeOptions.focus();
+          sizeOptions.focus({ preventScroll: true });
         });
 
         plusIcon.addEventListener('keydown', function(ev){
@@ -1099,7 +1099,7 @@
               card.classList.remove('product-card-wrapper--size-open');
             }
             document.body.classList.remove('size-drawer-open');
-            plusIcon.focus();
+            plusIcon.focus({ preventScroll: true });
           }
         });
 
