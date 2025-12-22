@@ -129,13 +129,7 @@
   display: none;
 }
 
-/* Push buttons to the bottom using margin-top auto */
-#CartDrawer .il-icons-row{
-  margin-top: auto !important;
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
+/* Removed - buttons now use absolute positioning, see line ~201 */
 
 #CartDrawer .il-move-to-favorites{
   display: none !important;
@@ -158,11 +152,9 @@
 #CartDrawer .il-item-details{
   flex-direction: column !important;
   gap:0;
-  min-height: 225px; /* Match image height */
-  height: 100%;
-  flex: 1;
+  height: 225px; /* Exact match to image height */
   position: relative;
-  padding-bottom: 2rem; /* Space for buttons */
+  overflow: visible; /* Allow content to overflow if needed */
 }
 
 #CartDrawer .il-item-title{
@@ -203,12 +195,14 @@
 #CartDrawer .il-icons-row{
   display:flex;
   gap:0;
-  align-items:center;
+  align-items:flex-end;
   position: absolute;
-  bottom: 0;
+  bottom: -5px;
   left: 0;
   right: 0;
   order:4;
+  line-height: 1;
+  margin: 0 !important;
 }
 
 /* Hide icon buttons, use text links instead */
@@ -261,10 +255,6 @@
 
 /* Mobile cart item adjustments */
 @media screen and (max-width: 749px) {
-  #CartDrawer .il-item-details{
-    padding-bottom: 1.5rem; /* Space for buttons on mobile */
-  }
-
   #CartDrawer td.cart-item__media{
     width: 180px;
     padding-right: 1rem !important;
@@ -643,7 +633,7 @@
 
 #CartDrawer .il-item-details{ position:relative; padding-right:0 }
 #CartDrawer .il-top-row{ display:block; margin-bottom:2px }
-#CartDrawer .il-item-details .il-icons-row{display:flex;gap:12px;align-items:center;margin-top:8px}
+/* Removed - now handled by absolute positioning above */
 #CartDrawer .il-item-title, #CartDrawer .il-variant-small, #CartDrawer .il-move-to-favorites{ display:block }
 
 /* Reduce left padding between image and details to gain width */
