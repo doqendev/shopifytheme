@@ -934,7 +934,6 @@
         if (card) {
           card.classList.add('product-card-wrapper--size-open');
         }
-        document.body.classList.add('size-drawer-open');
 
         var rect = card.getBoundingClientRect();
         // Use .card__inner as the anchor since it contains the image and defines the visual boundary
@@ -1068,30 +1067,40 @@
         var overlayPlus = card ? card.querySelector('.plus-icon--overlay') : null;
 
         function openDrawer(ev) {
-          if (ev) {
-            ev.preventDefault();
-            ev.stopPropagation();
-          }
-
-          var alreadyOpen = el.classList.contains('active');
-
-          // Toggle off if this drawer is already open
-          if (alreadyOpen) {
-            closeAllPlus();
-            return;
-          }
-
-          closeAllPlus();
-
-          updateSizeButtons(card);
-          el.classList.add('active');
-
-          positionSizeOptionsPanel(card, sizeOptions);
-
-          activePlus = el;
-          activeScrollPosition.x = window.scrollX || window.pageXOffset;
-          activeScrollPosition.y = window.scrollY || window.pageYOffset;
+        if (ev) {
+          ev.preventDefault();
+          ev.stopPropagation();
         }
+
+        var scrollXBefore = window.scrollX || window.pageXOffset;
+        var scrollYBefore = window.scrollY || window.pageYOffset;
+        var alreadyOpen = el.classList.contains('active');
+
+        // Toggle off if this drawer is already open
+        if (alreadyOpen) {
+          closeAllPlus();
+          return;
+        }
+
+        closeAllPlus();
+
+        updateSizeButtons(card);
+        el.classList.add('active');
+
+        positionSizeOptionsPanel(card, sizeOptions);
+
+        activePlus = el;
+        activeScrollPosition.x = scrollXBefore;
+        activeScrollPosition.y = scrollYBefore;
+
+        var scrollXAfter = window.scrollX || window.pageXOffset;
+        var scrollYAfter = window.scrollY || window.pageYOffset;
+        if (scrollXBefore !== scrollXAfter || scrollYBefore !== scrollYAfter) {
+          requestAnimationFrame(function() {
+            window.scrollTo(scrollXBefore, scrollYBefore);
+          });
+        }
+      }
 
         if (overlayPlus) {
           overlayPlus.addEventListener('click', openDrawer);
