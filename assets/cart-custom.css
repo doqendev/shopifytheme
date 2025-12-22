@@ -802,7 +802,7 @@
 #CartDrawer .il-icons-row{
   display: flex;
   gap: 14px;
-  align-items: center;
+  align-items: baseline;
   margin: auto 0 0; /* push actions to the bottom */
 }
 #CartDrawer .il-move-to-favorites{ display: none !important; }
