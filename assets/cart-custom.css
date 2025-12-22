@@ -680,3 +680,160 @@
   pointer-events: none;
   opacity: 0.5;
 }
+
+/* ==========================================
+   MAIN CART PAGE STYLING (Desktop Cart)
+   ========================================== */
+
+/* Remove padding-top from cart items */
+cart-items .cart-items tbody tr.cart-item td {
+  padding-top: 0 !important;
+}
+
+/* Remove padding-left between image and details */
+cart-items .cart-item > td + td {
+  padding-left: 0 !important;
+}
+
+/* Make cart items display as flex for consistent layout */
+cart-items .cart-items tbody tr.cart-item {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid #E5E5E5;
+}
+
+cart-items .cart-items tbody tr.cart-item:last-child {
+  border-bottom: none;
+}
+
+/* Set fixed widths for cells */
+cart-items td.cart-item__media {
+  width: 180px;
+  padding-right: 0 !important;
+  flex-shrink: 0;
+}
+
+cart-items td.cart-item__details {
+  flex: 1;
+  display: flex;
+  position: relative;
+  height: 225px;
+}
+
+/* Hide totals column */
+cart-items td.cart-item__totals {
+  display: none !important;
+}
+
+/* Style the image */
+cart-items .cart-item__image {
+  width: 100%;
+  height: 225px;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Cart item details structure */
+cart-items .il-item-details {
+  flex-direction: column !important;
+  gap: 0;
+  height: 225px;
+  position: relative;
+  overflow: visible;
+  width: 100%;
+  display: flex;
+}
+
+cart-items .il-item-title {
+  display: block;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #000000;
+  margin: 0 0 0.6rem 0;
+  order: 1;
+  text-transform: uppercase;
+}
+
+cart-items .il-variant-small {
+  font-size: 13px;
+  font-weight: 400;
+  color: #666666;
+  line-height: 1.4;
+  margin: 0 0 0.5rem 0;
+  order: 2;
+  text-transform: uppercase;
+}
+
+cart-items .il-top-row {
+  display: block;
+  margin: 0 0 0.75rem 0;
+  order: 3;
+}
+
+cart-items .il-price {
+  font-weight: 400 !important;
+  color: #000000 !important;
+  font-size: 15px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Buttons positioned at bottom */
+cart-items .il-icons-row {
+  display: flex;
+  gap: 0;
+  align-items: flex-end;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  order: 4;
+  line-height: 1;
+  margin: 0 !important;
+}
+
+cart-items .il-cart-line__edit,
+cart-items .il-cart-line__remove {
+  font-size: 11px;
+  font-weight: 400;
+  color: #666666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  background: none;
+  border: none;
+  padding: 0;
+  text-decoration: none;
+}
+
+cart-items .il-cart-line__edit:hover,
+cart-items .il-cart-line__remove:hover {
+  color: #000000;
+}
+
+cart-items .il-cart-line__edit::after {
+  content: " · ";
+  margin: 0 0.5rem;
+  color: #CCCCCC;
+}
+
+/* Hide default Shopify elements */
+cart-items .cart-item__quantity,
+cart-items .product-option,
+cart-items dl,
+cart-items .unit-price,
+cart-items .cart-item__discounted-prices,
+cart-items .discounts,
+cart-items .cart-item__old-price,
+cart-items .cart-item__final-price,
+cart-items .price {
+  display: none !important;
+}
+
+/* Hide header total column */
+cart-items th:last-child {
+  display: none !important;
+}
