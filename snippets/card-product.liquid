@@ -1070,10 +1070,12 @@
           updateSizeButtons(card);
           el.classList.add('active');
 
-          // Use requestAnimationFrame to avoid scroll during positioning
+          // Use double requestAnimationFrame to ensure layout is fully stable after scroll
           requestAnimationFrame(function() {
-            positionSizeOptionsPanel(card, sizeOptions);
-            sizeOptions.focus({ preventScroll: true });
+            requestAnimationFrame(function() {
+              positionSizeOptionsPanel(card, sizeOptions);
+              sizeOptions.focus({ preventScroll: true });
+            });
           });
         }
 
