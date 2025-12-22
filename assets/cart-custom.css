@@ -93,16 +93,20 @@
   }
 }
 #CartDrawer td.cart-item__media{
-  width: 50% !important;
-  vertical-align: bottom !important;
-  padding-right: 1rem !important;
+  vertical-align: top;
+  width: 180px;
+  padding-right: 1.5rem !important;
 }
-#CartDrawer td.cart-item__totals{display: none !important;}
+#CartDrawer td.cart-item__totals{vertical-align: top}
 #CartDrawer td.cart-item__details{
-  width: 50% !important;
-  vertical-align: bottom !important;
+  vertical-align: top;
   padding-top: 0 !important;
   padding-left: 0 !important;
+}
+#CartDrawer .cart-item__image{
+  width: 180px;
+  height: auto;
+  display: block;
 }
 #CartDrawer .cart__empty-text{text-align:center;color:#666666;font-size:14px;font-weight:400;line-height:1.6;}
 #CartDrawer .drawer__empty-state:not([hidden]){display:flex;align-items:center;justify-content:center}
@@ -216,7 +220,12 @@
   }
 
   #CartDrawer td.cart-item__media{
+    width: 130px;
     padding-right: 1rem !important;
+  }
+
+  #CartDrawer .cart-item__image{
+    width: 130px;
   }
 
   #CartDrawer .il-item-title{
@@ -571,40 +580,16 @@
   padding-bottom:env(safe-area-inset-bottom, 0px);
 }
 
-/* --- Cart drawer layout polish (desktop + mobile) --- */
-#CartDrawer cart-drawer-items{
-  padding: 1.5rem 1.5rem 0;
-}
-#CartDrawer .drawer__footer,
-#CartDrawer .cart-drawer__footer{
-  padding: 1.5rem;
-  border-top: 1px solid #ededed;
-  background: #fff;
-}
-#CartDrawer .cart__ctas{
-  margin-top: 1rem;
-}
-#CartDrawer .cart__checkout-button{
-  width: 100%;
-  margin: 0;
-}
-
 /* Expand the details width to the right edge; remove extra columns */
 #CartDrawer-ColumnTotal, #CartDrawer td.cart-item__totals{ display:none !important }
 #CartDrawer-ColumnQuantity{ display:none !important }
-#CartDrawer .cart-items{ width:100%; table-layout: fixed !important }
-#CartDrawer td.cart-item__media{ width: 50% !important; padding-right: 1rem !important }
-#CartDrawer td.cart-item__details{ width: 50% !important; padding-right:0 !important }
+#CartDrawer .cart-items{ width:100%; table-layout:auto }
+#CartDrawer td.cart-item__details{ width:auto; padding-right:4px }
+#CartDrawer td.cart-item__media{ width:180px }
 
 
-/* Set column widths via thead */
-#CartDrawer .cart-items thead{ visibility: hidden; height: 0; }
-#CartDrawer .cart-items thead tr{ height: 0; }
-#CartDrawer .cart-items thead th{ padding: 0; border: none; height: 0; }
-#CartDrawer #CartDrawer-ColumnProductImage{ width: 50% !important; }
-#CartDrawer #CartDrawer-ColumnProduct{ width: 50% !important; }
-#CartDrawer #CartDrawer-ColumnTotal{ width: 0 !important; padding: 0 !important; }
-#CartDrawer #CartDrawer-ColumnQuantity{ width: 0 !important; padding: 0 !important; }
+/* Remove header row (Produto) */
+#CartDrawer .cart-items thead{ display:none !important }
 /* Remove built-in content width clamps so details can expand */
 #CartDrawer .cart-item__details{ width:auto !important; max-width:none !important }
 #CartDrawer .cart-item__details > *{ max-width:none !important }
@@ -621,7 +606,9 @@
 /* Better word-breaking for long product names */
 #CartDrawer .il-item-title{ overflow-wrap: anywhere }
 
-/* Grid layout for cart items is defined below - removed table-row override */
+/* Override Dawn mobile grid on tr.cart-item in the drawer so details get full width */
+#CartDrawer .cart-item{ display: table-row !important; grid-template: none !important }
+#CartDrawer .cart-item__media, #CartDrawer .cart-item__details, #CartDrawer .cart-item__quantity{ grid-column: auto !important; grid-row: auto !important; }
 
 .il-icon-btn .svg-wrapper{
   display:inline-flex;
@@ -659,110 +646,4 @@
 #CartDrawer .cart-item.is-removing .il-move-to-favorites {
   pointer-events: none;
   opacity: 0.5;
-}
-
-/* --- Zara-like cart line layout override (placed at end to win specificity) --- */
-#CartDrawer cart-drawer-items{
-  padding: 1.25rem 1.25rem 0;
-}
-#CartDrawer .drawer__footer,
-#CartDrawer .cart-drawer__footer{
-  padding: 1.25rem;
-  border-top: 1px solid #ededed;
-  background: #fff;
-}
-
-#CartDrawer .cart-item{
-  padding: 0 0 1.25rem;
-  border-bottom: 1px solid #e5e5e5;
-  vertical-align: bottom !important;
-}
-#CartDrawer .cart-item:last-child{
-  border-bottom: none;
-  padding-bottom: 0.75rem;
-}
-#CartDrawer .cart-item__image{
-  width: 100% !important;
-  height: auto;
-  display: block;
-  object-fit: cover;
-}
-
-#CartDrawer .il-item-details{
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-#CartDrawer .il-item-title{
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 1.35;
-  color: #000;
-  margin: 0;
-  text-transform: none;
-}
-#CartDrawer .il-variant-small{
-  font-size: 12px;
-  font-weight: 400;
-  color: #555;
-  line-height: 1.35;
-  margin: 0;
-  text-transform: uppercase;
-}
-#CartDrawer .il-price{
-  font-weight: 500 !important;
-  font-size: 14px;
-  color: #000 !important;
-  line-height: 1.35;
-  margin: 0;
-}
-#CartDrawer .il-icons-row{
-  display: flex;
-  gap: 14px;
-  align-items: baseline;
-  margin: auto 0 0; /* push actions to the bottom */
-}
-#CartDrawer .il-move-to-favorites{ display: none !important; }
-#CartDrawer .il-cart-line__remove{
-  font-size: 11px;
-  font-weight: 400;
-  color: #666;
-  text-transform: uppercase;
-  letter-spacing: 0.25px;
-  background: none;
-  border: none;
-  padding: 0;
-  text-decoration: none;
-}
-#CartDrawer .il-cart-line__remove:hover{ color: #000; }
-
-#CartDrawer .il-cart-line__edit{
-  font-size: 11px;
-  font-weight: 400;
-  color: #666;
-  text-transform: uppercase;
-  letter-spacing: 0.25px;
-  background: none;
-  border: none;
-  padding: 0;
-  text-decoration: none;
-}
-#CartDrawer .il-cart-line__edit:hover{ color: #000; }
-#CartDrawer .il-cart-line__edit::after{
-  content: " | ";
-  margin: 0 0.4rem;
-  color: #ccc;
-}
-
-@media (max-width: 749px){
-  #CartDrawer cart-drawer-items{
-    padding: 1rem 1rem 0;
-  }
-  #CartDrawer td.cart-item__media{
-    padding-right: 0.75rem !important;
-  }
-  #CartDrawer .il-item-title{ font-size: 13px; }
-  #CartDrawer .il-variant-small{ font-size: 11px; }
-  #CartDrawer .il-price{ font-size: 13px !important; }
-  #CartDrawer .il-icons-row{ gap: 12px; margin-top: 0.2rem; }
 }
