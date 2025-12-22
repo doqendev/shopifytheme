@@ -148,6 +148,14 @@
     display: block;
   }
 
+  /* Slightly smaller plus on mobile */
+  @media screen and (max-width: 749px) {
+    .plus-icon--overlay img {
+      width: 10px;
+      height: 10px;
+    }
+  }
+
   .plus-icon--overlay:hover {
     transform: translateY(-1px);
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
