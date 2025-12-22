@@ -80,6 +80,9 @@
 }
 
 /* Add spacing via cells (padding on tr doesn't work in tables) */
+#CartDrawer .cart-items tbody tr.cart-item td{
+  padding-bottom: 2rem !important;
+}
 
 /* First row styling */
 #CartDrawer .cart-items tbody tr.cart-item:first-child td{
@@ -100,6 +103,11 @@
   #CartDrawer .cart-items tbody tr.cart-item:first-child td{
     padding-top: 0 !important;
   }
+}
+
+/* Main cart page - add spacing between items */
+cart-items .cart-items tbody tr.cart-item td {
+  padding-bottom: 2rem !important;
 }
 /* Make both cells same height */
 #CartDrawer .cart-items tbody tr.cart-item{
