@@ -619,41 +619,18 @@ body.menu-drawer-open .nav-menu-new a.active::after {
     onScroll() {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       const boundary = (this.headerBounds && this.headerBounds.bottom) ? this.headerBounds.bottom : this.header.offsetHeight;
-      const isMobile = window.matchMedia('(max-width: 989px)').matches;
       const SCROLL_DELTA = 6;
+      const headerTop = (this.headerBounds && typeof this.headerBounds.top === 'number') ? this.headerBounds.top : 0;
+      const scrollingDown = scrollTop > this.currentScrollTop + SCROLL_DELTA;
+      const scrollingUp = scrollTop < this.currentScrollTop - SCROLL_DELTA;
 
       if (this.predictiveSearch && this.predictiveSearch.isOpen) return;
 
-      if (isMobile) {
-        const scrollingDown = scrollTop > this.currentScrollTop + SCROLL_DELTA;
-        const scrollingUp = scrollTop < this.currentScrollTop - SCROLL_DELTA;
-
-        if (scrollingDown && scrollTop > boundary) {
-          if (!this.preventHide) {
-            requestAnimationFrame(this.hide.bind(this));
-          }
-        } else if (scrollingUp) {
-          this.header.classList.add('scrolled-past-header');
-          if (!this.preventReveal) {
-            requestAnimationFrame(this.reveal.bind(this));
-          } else {
-            window.clearTimeout(this.isScrolling);
-            this.isScrolling = setTimeout(() => {
-              this.preventReveal = false;
-            }, 66);
-            requestAnimationFrame(this.hide.bind(this));
-          }
-        }
-
-        this.currentScrollTop = scrollTop;
-        return;
-      }
-
-      if (scrollTop > this.currentScrollTop && scrollTop > this.headerBounds.bottom) {
+      if (scrollingDown && scrollTop > boundary) {
         this.header.classList.add('scrolled-past-header');
         if (this.preventHide) return;
         requestAnimationFrame(this.hide.bind(this));
-      } else if (scrollTop < this.currentScrollTop && scrollTop > this.headerBounds.bottom) {
+      } else if (scrollingUp && scrollTop > boundary) {
         this.header.classList.add('scrolled-past-header');
         if (!this.preventReveal) {
           requestAnimationFrame(this.reveal.bind(this));
@@ -666,7 +643,7 @@ body.menu-drawer-open .nav-menu-new a.active::after {
 
           requestAnimationFrame(this.hide.bind(this));
         }
-      } else if (scrollTop <= this.headerBounds.top) {
+      } else if (scrollTop <= headerTop + SCROLL_DELTA) {
         this.header.classList.remove('scrolled-past-header');
         requestAnimationFrame(this.reset.bind(this));
       }
