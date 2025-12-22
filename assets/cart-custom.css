@@ -868,6 +868,11 @@ cart-items th:last-child {
   text-align: left;
 }
 
+/* Remove bold from recommendation card prices */
+#CartDrawer .cart-recommendation-card__price {
+  font-weight: 400;
+}
+
 /* Empty cart recommendations - add spacing between product cards */
 #CartDrawer .cart-drawer__collection {
   padding: 0 2rem 2rem !important;
