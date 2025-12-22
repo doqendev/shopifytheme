@@ -157,7 +157,7 @@ cart-items .il-cart-line:last-child {
 #CartDrawer .drawer__empty-state:not([hidden]){display:flex;align-items:center;justify-content:center}
 #CartDrawer .cart-drawer__empty-content{margin-top:0; margin-bottom: 2.5rem;}
 #CartDrawer .cart__empty-heading{font-size:18px;font-weight:500;color:#000000;margin-bottom:0.5rem;text-align:center;}
-#CartDrawer .cart__empty-subtitle{font-size:14px;color:#666666;text-align:center;margin:0;}
+#CartDrawer .cart__empty-subtitle{font-size:14px;color:#666666;text-align:center;}
 #CartDrawer .cart-drawer__recommendations-title{font-size:14px;font-weight:500;color:#000000;margin-bottom:1.5rem;text-transform:uppercase;letter-spacing:0.5px;}
 /* Cart Item Structure - Clean Zara Style */
 #CartDrawer .il-item-details{
