@@ -892,7 +892,7 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
 
 @media (max-width: 749px) {
   .cart-drawer__empty-content {
-    padding: 2rem 0.5rem 1.5rem;
+    padding: 4rem 2rem 5rem;
   }
 
   .cart-drawer__collection {
