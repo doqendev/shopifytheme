@@ -109,6 +109,14 @@
 cart-items .cart-items tbody tr.cart-item td {
   padding-bottom: 2rem !important;
 }
+
+cart-items .il-cart-line {
+  margin-bottom: 2rem;
+}
+
+cart-items .il-cart-line:last-child {
+  margin-bottom: 0;
+}
 /* Make both cells same height */
 #CartDrawer .cart-items tbody tr.cart-item{
   display: flex;
