@@ -109,17 +109,45 @@
     height: 16px;
   }
 
-  /* Keep drawer logic intact but visually move the plus onto the image */
-  .product-card-plus .plus-icon {
-    position: absolute !important;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    clip-path: inset(50%);
-    border: 0;
+  @media screen and (max-width: 749px) {
+    .product-card-plus .plus-icon svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  /* Hide inline plus on desktop (will use overlay version instead) */
+  @media screen and (min-width: 750px) {
+    .product-card-plus .plus-icon {
+      position: absolute !important;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      clip-path: inset(50%);
+      border: 0;
+    }
+  }
+
+  /* Show inline plus on mobile */
+  @media screen and (max-width: 749px) {
+    .product-card-plus .plus-icon {
+      position: static !important;
+      width: 2.5rem;
+      height: 2.5rem;
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      padding: 0;
+      margin: 0;
+      clip: none;
+      clip-path: none;
+      overflow: visible;
+    }
   }
 
   .plus-icon--overlay {
