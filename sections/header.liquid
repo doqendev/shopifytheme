@@ -570,6 +570,7 @@ body.menu-drawer-open .nav-menu-new a.active::after {
     constructor() {
       super();
       this.shrinkEnabled = {{ request.page_type != 'index' | json }};
+      this._debugLastLog = 0;
     }
 
     connectedCallback() {
@@ -646,6 +647,21 @@ body.menu-drawer-open .nav-menu-new a.active::after {
       } else if (scrollTop <= headerTop + SCROLL_DELTA) {
         this.header.classList.remove('scrolled-past-header');
         requestAnimationFrame(this.reset.bind(this));
+      }
+
+      // Debug logging (throttled) to verify hide/reveal decisions across devices.
+      if (Date.now() - this._debugLastLog > 250) {
+        this._debugLastLog = Date.now();
+        console.debug('[StickyHeader]', {
+          scrollTop,
+          boundary,
+          headerTop,
+          scrollingDown,
+          scrollingUp,
+          hidden: this.header.classList.contains('shopify-section-header-hidden'),
+          sticky: this.header.classList.contains('shopify-section-header-sticky'),
+          preventReveal: this.preventReveal
+        });
       }
 
       if (this.shrinkEnabled) {
