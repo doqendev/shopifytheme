@@ -17,18 +17,9 @@
 .product-card { position: relative; }
 .product-card .card__inner { position: relative; }
 
-  /* Hide original wishlist heart on mobile, show on desktop */
+  /* Hide absolute positioned wishlist heart, always use inline version */
   .wishlist-toggle:not(.wishlist-toggle--mobile-inline) {
-    display: none; /* Hide on mobile by default */
-  }
-
-  @media screen and (min-width: 750px) {
-    .wishlist-toggle:not(.wishlist-toggle--mobile-inline) {
-      display: block; /* Show on desktop */
-    }
-    .wishlist-toggle--mobile-inline {
-      display: none !important; /* Hide inline version on desktop */
-    }
+    display: none !important; /* Always hide absolute positioned heart */
   }
 
   /* Mobile inline wishlist heart styling */
