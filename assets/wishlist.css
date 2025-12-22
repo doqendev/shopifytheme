@@ -235,7 +235,8 @@
 }
 
 .drawer__panels {
-  margin-top: 1.5rem;
+  margin-top: 2%;
+  padding: 3%;
 }
 
 .drawer__panel {
@@ -446,10 +447,6 @@ cart-drawer.drawer--wishlist-active #CartDrawer-CartErrors {
   background: rgb(var(--color-foreground, 18, 18, 18));
   color: rgb(var(--color-background, 255, 255, 255));
   border-color: rgb(var(--color-foreground, 18, 18, 18));
-}
-
-.drawer__panels {
-  margin-top: 5%;
 }
 
 .drawer__panel {
