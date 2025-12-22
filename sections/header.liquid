@@ -571,6 +571,8 @@ body.menu-drawer-open .nav-menu-new a.active::after {
       super();
       this.shrinkEnabled = {{ request.page_type != 'index' | json }};
       this._debugLastLog = 0;
+      this._debugPrefix = '[StickyHeader]';
+      this._debugEnabled = true;
     }
 
     connectedCallback() {
@@ -650,9 +652,9 @@ body.menu-drawer-open .nav-menu-new a.active::after {
       }
 
       // Debug logging (throttled) to verify hide/reveal decisions across devices.
-      if (Date.now() - this._debugLastLog > 250) {
+      if (this._debugEnabled && Date.now() - this._debugLastLog > 250) {
         this._debugLastLog = Date.now();
-        console.debug('[StickyHeader]', {
+        console.log(this._debugPrefix, {
           scrollTop,
           boundary,
           headerTop,
