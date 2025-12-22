@@ -111,11 +111,11 @@ cart-items .cart-items tbody tr.cart-item td {
 }
 
 cart-items .il-cart-line {
-  margin-bottom: 2rem;
+  margin-bottom: 2rem !important;
 }
 
 cart-items .il-cart-line:last-child {
-  margin-bottom: 0;
+  margin-bottom: 0 !important;
 }
 /* Make both cells same height */
 #CartDrawer .cart-items tbody tr.cart-item{
