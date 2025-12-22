@@ -93,12 +93,14 @@
   }
 }
 #CartDrawer td.cart-item__media{
-  vertical-align: top;
-  padding-right: 1.5rem !important;
+  width: 50% !important;
+  vertical-align: bottom !important;
+  padding-right: 1rem !important;
 }
-#CartDrawer td.cart-item__totals{vertical-align: top}
+#CartDrawer td.cart-item__totals{display: none !important;}
 #CartDrawer td.cart-item__details{
-  vertical-align: top;
+  width: 50% !important;
+  vertical-align: bottom !important;
   padding-top: 0 !important;
   padding-left: 0 !important;
 }
@@ -595,8 +597,14 @@
 #CartDrawer td.cart-item__details{ width: 50% !important; padding-right:0 !important }
 
 
-/* Remove header row (Produto) */
-#CartDrawer .cart-items thead{ display:none !important }
+/* Set column widths via thead */
+#CartDrawer .cart-items thead{ visibility: hidden; height: 0; }
+#CartDrawer .cart-items thead tr{ height: 0; }
+#CartDrawer .cart-items thead th{ padding: 0; border: none; height: 0; }
+#CartDrawer #CartDrawer-ColumnProductImage{ width: 50% !important; }
+#CartDrawer #CartDrawer-ColumnProduct{ width: 50% !important; }
+#CartDrawer #CartDrawer-ColumnTotal{ width: 0 !important; padding: 0 !important; }
+#CartDrawer #CartDrawer-ColumnQuantity{ width: 0 !important; padding: 0 !important; }
 /* Remove built-in content width clamps so details can expand */
 #CartDrawer .cart-item__details{ width:auto !important; max-width:none !important }
 #CartDrawer .cart-item__details > *{ max-width:none !important }
@@ -673,18 +681,11 @@
   border-bottom: none;
   padding-bottom: 0.75rem;
 }
-#CartDrawer .cart-item__media,
-#CartDrawer td.cart-item__media{
-  vertical-align: bottom !important;
-}
 #CartDrawer .cart-item__image{
-  width: 100%;
+  width: 100% !important;
   height: auto;
   display: block;
-}
-#CartDrawer .cart-item__details{
-  padding: 0 !important;
-  vertical-align: bottom !important;
+  object-fit: cover;
 }
 
 #CartDrawer .il-item-details{
