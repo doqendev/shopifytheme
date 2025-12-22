@@ -632,7 +632,7 @@
 
 #CartDrawer .il-item-details{ position:relative; padding-right:0 }
 #CartDrawer .il-top-row{ display:block; margin-bottom:2px }
-#CartDrawer .il-item-details .il-icons-row{display:flex;gap:12px;align-items:center;margin-top:8px;margin-bottom:8px}
+#CartDrawer .il-item-details .il-icons-row{display:flex;gap:12px;align-items:center;margin-top:8px}
 #CartDrawer .il-item-title, #CartDrawer .il-variant-small, #CartDrawer .il-move-to-favorites{ display:block }
 
 /* Reduce left padding between image and details to gain width */
