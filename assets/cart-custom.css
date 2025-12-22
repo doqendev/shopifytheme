@@ -92,11 +92,14 @@
     padding-bottom: 1.5rem;
   }
 }
+#CartDrawer .cart-items td{
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
 #CartDrawer td.cart-item__media{
   vertical-align: top;
   width: 180px;
   padding-right: 1.5rem !important;
-  padding-top: 0 !important;
 }
 #CartDrawer td.cart-item__totals{vertical-align: top}
 #CartDrawer td.cart-item__details{
