@@ -1066,16 +1066,19 @@
             ev.preventDefault();
             ev.stopPropagation();
           }
+
+          // Save scroll position before any operations
+          var scrollX = window.scrollX || window.pageXOffset;
+          var scrollY = window.scrollY || window.pageYOffset;
+
           closeAllPlus();
           updateSizeButtons(card);
           el.classList.add('active');
+          positionSizeOptionsPanel(card, sizeOptions);
 
-          // Use double requestAnimationFrame to ensure layout is fully stable after scroll
+          // Restore scroll position if it changed
           requestAnimationFrame(function() {
-            requestAnimationFrame(function() {
-              positionSizeOptionsPanel(card, sizeOptions);
-              sizeOptions.focus({ preventScroll: true });
-            });
+            window.scrollTo(scrollX, scrollY);
           });
         }
 
