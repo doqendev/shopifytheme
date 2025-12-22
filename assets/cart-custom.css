@@ -140,7 +140,7 @@
 }
 
 #CartDrawer .il-move-to-favorites{
-  margin-top: 0.5rem !important;
+  display: none !important;
 }
 
 #CartDrawer td.cart-item__totals{vertical-align: top}
