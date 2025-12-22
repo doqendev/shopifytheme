@@ -570,7 +570,9 @@ body.menu-drawer-open .nav-menu-new a.active::after {
   class StickyHeader extends HTMLElement {
     constructor() {
       super();
-      this.shrinkEnabled = {{ request.page_type != 'index' | json }};
+      this.shrinkEnabled = true;
+      // Force non-“always” behavior so hide/reveal works even if theme setting is “always”
+      this.headerIsAlwaysSticky = false;
       this._debugLastLog = 0;
       this._debugPrefix = '[StickyHeader]';
       this._debugEnabled = true;
@@ -578,7 +580,7 @@ body.menu-drawer-open .nav-menu-new a.active::after {
 
     connectedCallback() {
       this.header = document.querySelector('.section-header');
-      this.headerIsAlwaysSticky = this.getAttribute('data-sticky-type') === 'always' || this.getAttribute('data-sticky-type') === 'reduce-logo-size';
+      // Ignore data-sticky-type so scroll up/down logic always applies
       this.headerBounds = {};
 
       this.setHeaderHeight();
