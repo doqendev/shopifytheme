@@ -151,6 +151,7 @@
   function handleNextStep(drawer) {
     const currentStep = parseInt(drawer.dataset.currentStep || '1', 10);
     console.log('[SizeCalculator] handleNextStep called, current step:', currentStep);
+    console.log('[SizeCalculator] Drawer section ID:', drawer.dataset.sectionId);
 
     // Validate step 1 before proceeding to step 2
     if (currentStep === 1) {
@@ -158,10 +159,17 @@
         showStatus(drawer, 'Por favor, preencha todos os campos corretamente.', 'error');
         return;
       }
+      console.log('[SizeCalculator] Step 1 validation passed');
     }
 
-    console.log('[SizeCalculator] Moving to step:', currentStep + 1);
-    goToStep(drawer, currentStep + 1);
+    const targetStep = currentStep + 1;
+    console.log('[SizeCalculator] Moving to step:', targetStep);
+    goToStep(drawer, targetStep);
+
+    // Verify the step was changed
+    setTimeout(() => {
+      console.log('[SizeCalculator] After goToStep, current step:', drawer.dataset.currentStep);
+    }, 100);
   }
 
   function handlePrevStep(drawer) {
@@ -604,7 +612,12 @@
         console.log('[SizeCalculator] Next button clicked');
         const drawer = nextBtn.closest('.size-calculator-drawer');
         if (drawer) {
-          console.log('[SizeCalculator] Drawer found, calling handleNextStep');
+          // Only handle if this drawer is actually open
+          if (!drawer.classList.contains('is-open')) {
+            console.log('[SizeCalculator] Drawer not open, ignoring click');
+            return;
+          }
+          console.log('[SizeCalculator] Drawer found and open, calling handleNextStep');
           try {
             handleNextStep(drawer);
           } catch (error) {
@@ -676,13 +689,43 @@
       }
     });
 
-    // Escape key to close
+    // Keyboard event handlers
     document.addEventListener('keydown', (event) => {
+      // Escape key to close
       if (event.key === 'Escape') {
         const openDrawer = document.querySelector('.size-calculator-drawer.is-open');
         if (openDrawer) {
           event.preventDefault();
           closeCalculatorDrawer(openDrawer.dataset.sectionId);
+        }
+        return;
+      }
+
+      // Enter key handling
+      if (event.key === 'Enter') {
+        const input = event.target;
+        const form = input.closest('[data-calculator-form]');
+
+        if (form) {
+          const drawer = form.closest('.size-calculator-drawer');
+          if (!drawer || !drawer.classList.contains('is-open')) return;
+
+          const currentStep = parseInt(drawer.dataset.currentStep || '1', 10);
+
+          // If on step 1, Enter should trigger Next button
+          if (currentStep === 1 && (input.name === 'idade' || input.name === 'altura' || input.name === 'peso')) {
+            event.preventDefault();
+            console.log('[SizeCalculator] Enter pressed in step 1 - triggering Next button');
+
+            const nextBtn = drawer.querySelector('[data-next-step]');
+            if (nextBtn) {
+              nextBtn.click();
+            }
+            return;
+          }
+
+          // For all other cases in the form, prevent Enter from submitting
+          event.preventDefault();
         }
       }
     });
