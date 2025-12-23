@@ -634,6 +634,19 @@
         return;
       }
 
+      // Calculate/Submit button (from Step 2)
+      const calculateBtn = event.target.closest('[data-calculate-submit]');
+      if (calculateBtn) {
+        event.preventDefault();
+        console.log('[SizeCalculator] Calculate button clicked');
+        const drawer = calculateBtn.closest('.size-calculator-drawer');
+        if (drawer) {
+          const form = drawer.querySelector('[data-calculator-form]');
+          if (form) handleFormSubmit(form);
+        }
+        return;
+      }
+
       // Recalculate button
       const recalculateBtn = event.target.closest('[data-calculator-recalculate]');
       if (recalculateBtn) {
@@ -652,12 +665,14 @@
       }
     });
 
-    // Form submission
+    // Form submission - ONLY allow from submit button click, not Enter key
     document.addEventListener('submit', (event) => {
       const form = event.target.closest('[data-calculator-form]');
       if (form) {
         event.preventDefault();
-        handleFormSubmit(form);
+        // Prevent any form submission - user must use button clicks only
+        console.log('[SizeCalculator] Form submit prevented - use buttons only');
+        return false;
       }
     });
 
