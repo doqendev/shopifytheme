@@ -98,7 +98,7 @@
 
           <!-- Product Image -->
           <div class="sg-media">
-            {%- assign first_media = product.featured_media | default: product.media.first -%}
+            {%- assign first_media = product.media[4] | default: product.featured_media -%}
             {%- if first_media -%}
               <img class="sg-img"
                    alt="{{ first_media.alt | default: product.title | escape }}"
