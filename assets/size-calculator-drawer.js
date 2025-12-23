@@ -47,16 +47,22 @@
     const sectionId = drawer.dataset.sectionId;
     const state = ensureState(sectionId);
 
+    console.log('[SizeCalculator] goToStep called:', stepNumber);
+
     // Hide all step contents
     const stepContents = drawer.querySelectorAll('[data-step-content]');
+    console.log('[SizeCalculator] Found step contents:', stepContents.length);
     stepContents.forEach(content => {
       content.hidden = true;
+      console.log('[SizeCalculator] Hiding step:', content.dataset.stepContent);
     });
 
     // Show target step content
     const targetContent = drawer.querySelector(`[data-step-content="${stepNumber}"]`);
+    console.log('[SizeCalculator] Target content found:', !!targetContent);
     if (targetContent) {
       targetContent.hidden = false;
+      console.log('[SizeCalculator] Showing step:', stepNumber);
     }
 
     // Update step indicators
@@ -75,26 +81,47 @@
     // Update drawer data attribute
     drawer.dataset.currentStep = stepNumber;
     state.currentStep = stepNumber;
+    console.log('[SizeCalculator] Step updated to:', stepNumber);
   }
 
   function validateStep1(drawer) {
     const form = drawer.querySelector('[data-calculator-form]');
-    if (!form) return false;
+    if (!form) {
+      console.log('[SizeCalculator] Form not found');
+      return false;
+    }
 
     const idade = form.querySelector('[name="idade"]');
     const altura = form.querySelector('[name="altura"]');
     const peso = form.querySelector('[name="peso"]');
 
-    // Check if all fields are filled and valid
-    if (!idade || !idade.value || !idade.checkValidity()) return false;
-    if (!altura || !altura.value || !altura.checkValidity()) return false;
-    if (!peso || !peso.value || !peso.checkValidity()) return false;
+    console.log('[SizeCalculator] Validating Step 1:', {
+      idade: idade?.value,
+      altura: altura?.value,
+      peso: peso?.value
+    });
 
+    // Check if all fields are filled and valid
+    if (!idade || !idade.value || !idade.checkValidity()) {
+      console.log('[SizeCalculator] Idade validation failed');
+      return false;
+    }
+    if (!altura || !altura.value || !altura.checkValidity()) {
+      console.log('[SizeCalculator] Altura validation failed');
+      return false;
+    }
+    if (!peso || !peso.value || !peso.checkValidity()) {
+      console.log('[SizeCalculator] Peso validation failed');
+      return false;
+    }
+
+    console.log('[SizeCalculator] Step 1 validation passed');
     return true;
   }
 
   function handleNextStep(drawer) {
     const currentStep = parseInt(drawer.dataset.currentStep || '1', 10);
+    console.log('[SizeCalculator] handleNextStep called, current step:', currentStep);
 
     // Validate step 1 before proceeding
     if (currentStep === 1) {
@@ -104,6 +131,7 @@
       }
     }
 
+    console.log('[SizeCalculator] Moving to step:', currentStep + 1);
     goToStep(drawer, currentStep + 1);
   }
 
@@ -528,8 +556,19 @@
       const nextBtn = event.target.closest('[data-next-step]');
       if (nextBtn) {
         event.preventDefault();
+        event.stopPropagation();
+        console.log('[SizeCalculator] Next button clicked');
         const drawer = nextBtn.closest('.size-calculator-drawer');
-        if (drawer) handleNextStep(drawer);
+        if (drawer) {
+          console.log('[SizeCalculator] Drawer found, calling handleNextStep');
+          try {
+            handleNextStep(drawer);
+          } catch (error) {
+            console.error('[SizeCalculator] Error in handleNextStep:', error);
+          }
+        } else {
+          console.error('[SizeCalculator] Drawer not found');
+        }
         return;
       }
 

@@ -53,21 +53,8 @@
     <div class="size-calculator-drawer__body">
       <form class="size-calculator-form" data-calculator-form>
 
-        <!-- STEP 1: Basic Measurements + Product Image -->
+        <!-- STEP 1: Basic Measurements -->
         <div class="calculator-step-content" data-step-content="1">
-          <!-- Product Image -->
-          {%- if fifth_media -%}
-            <div class="calculator-product-image">
-              <img
-                src="{{ fifth_media | image_url: width: 400 }}"
-                srcset="{{ fifth_media | image_url: width: 200 }} 200w, {{ fifth_media | image_url: width: 400 }} 400w"
-                sizes="(max-width: 640px) 200px, 300px"
-                alt="{{ fifth_media.alt | default: product.title | escape }}"
-                loading="lazy"
-              />
-            </div>
-          {%- endif -%}
-
           <div class="calculator-form__section">
             <label for="calculator-idade-{{ calculator_section_id }}" class="calculator-form__label">
               Idade (anos)
