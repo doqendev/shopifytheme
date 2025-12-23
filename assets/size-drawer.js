@@ -840,6 +840,15 @@
       }
     });
 
+    // Apply recommendation labels if available
+    if (typeof window.themeCalculatorDrawer !== 'undefined') {
+      const savedMeasurements = window.themeCalculatorDrawer.loadSavedMeasurements();
+      if (savedMeasurements) {
+        const result = window.themeCalculatorDrawer.calculateSize(savedMeasurements);
+        window.themeCalculatorDrawer.addRecommendationLabelsToSizeDrawer(sectionId, result.recommendedSize);
+      }
+    }
+
     if (!hasAvailableOption) {
       setStatus(sectionId, 'Esgotado para a combinação selecionada.');
     } else {
@@ -1102,6 +1111,12 @@
     const state = ensureState(sectionId);
     console.log('State ensured for section:', sectionId, state);
     renderSizeOptions(sectionId);
+
+    // Check for saved measurements and auto-calculate recommendation
+    if (typeof window.themeCalculatorDrawer !== 'undefined' &&
+        typeof window.themeCalculatorDrawer.autoCalculateIfMeasurementsSaved === 'function') {
+      window.themeCalculatorDrawer.autoCalculateIfMeasurementsSaved(sectionId);
+    }
 
     state.lastFocused = triggerElement || document.activeElement;
     state.activeTrigger = triggerElement || state.triggers[0] || null;

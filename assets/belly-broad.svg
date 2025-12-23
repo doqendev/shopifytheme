@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Broad belly body type icon -->
+  <path d="M32 8 C30 8, 26 10, 26 14 L26 22 C24 22, 20 24, 20 28 L20 42 C20 46, 24 48, 26 48 L26 56 C26 58, 28 60, 32 60 C36 60, 38 58, 38 56 L38 48 C40 48, 44 46, 44 42 L44 28 C44 24, 40 22, 38 22 L38 14 C38 10, 34 8, 32 8 Z"
+        fill="#333"
+        opacity="0.8"/>
+  <!-- Head -->
+  <circle cx="32" cy="6" r="4" fill="#333" opacity="0.8"/>
+</svg>
