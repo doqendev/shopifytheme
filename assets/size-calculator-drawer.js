@@ -119,11 +119,40 @@
     return true;
   }
 
+  function validateStep2(drawer) {
+    const form = drawer.querySelector('[data-calculator-form]');
+    if (!form) {
+      console.error('[SizeCalculator] Form not found for step 2 validation');
+      return false;
+    }
+
+    const belly = form.querySelector('[name="belly"]');
+    const shoulders = form.querySelector('[name="shoulders"]');
+
+    console.log('[SizeCalculator] Validating Step 2:', {
+      belly: belly?.value,
+      shoulders: shoulders?.value
+    });
+
+    if (!belly || !belly.value) {
+      console.error('[SizeCalculator] Step 2 validation failed: belly not selected');
+      return false;
+    }
+
+    if (!shoulders || !shoulders.value) {
+      console.error('[SizeCalculator] Step 2 validation failed: shoulders not selected');
+      return false;
+    }
+
+    console.log('[SizeCalculator] Step 2 validation passed');
+    return true;
+  }
+
   function handleNextStep(drawer) {
     const currentStep = parseInt(drawer.dataset.currentStep || '1', 10);
     console.log('[SizeCalculator] handleNextStep called, current step:', currentStep);
 
-    // Validate step 1 before proceeding
+    // Validate step 1 before proceeding to step 2
     if (currentStep === 1) {
       if (!validateStep1(drawer)) {
         showStatus(drawer, 'Por favor, preencha todos os campos corretamente.', 'error');
@@ -377,6 +406,27 @@
     // Prevent double submission
     if (state.isProcessing) return;
 
+    // Validate current step - form can only be submitted from Step 2
+    const currentStep = parseInt(drawer.dataset.currentStep || '1', 10);
+    console.log('[SizeCalculator] Form submit triggered, current step:', currentStep);
+
+    if (currentStep !== 2) {
+      console.log('[SizeCalculator] Form submit blocked - not on step 2');
+      return;
+    }
+
+    // Validate Step 1 fields
+    if (!validateStep1(drawer)) {
+      showStatus(drawer, 'Por favor, preencha todos os campos de medidas.', 'error');
+      return;
+    }
+
+    // Validate Step 2 fields
+    if (!validateStep2(drawer)) {
+      showStatus(drawer, 'Por favor, selecione o tipo de barriga e ombros.', 'error');
+      return;
+    }
+
     // Collect form data
     const formData = new FormData(form);
     const measurements = {
@@ -386,12 +436,6 @@
       belly: formData.get('belly'),
       shoulders: formData.get('shoulders'),
     };
-
-    // Validate
-    if (!measurements.idade || !measurements.altura || !measurements.peso || !measurements.belly || !measurements.shoulders) {
-      showStatus(drawer, 'Por favor, preencha todos os campos.', 'error');
-      return;
-    }
 
     // Set processing state
     state.isProcessing = true;
