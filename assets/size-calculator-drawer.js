@@ -159,9 +159,13 @@
         showStatus(drawer, 'Por favor, preencha todos os campos corretamente.', 'error');
         return;
       }
-      console.log('[SizeCalculator] Step 1 validation passed');
+      console.log('[SizeCalculator] Step 1 validation passed, going to step 2');
+      // ALWAYS go to step 2 from step 1
+      goToStep(drawer, 2);
+      return;
     }
 
+    // For other steps, advance normally
     const targetStep = currentStep + 1;
     console.log('[SizeCalculator] Moving to step:', targetStep);
     goToStep(drawer, targetStep);
@@ -753,9 +757,16 @@
   // INITIALIZATION
   // ============================================
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initialize);
+  // Prevent multiple initializations if script is loaded more than once
+  if (!window.themeCalculatorDrawerInitialized) {
+    window.themeCalculatorDrawerInitialized = true;
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initialize);
+    } else {
+      initialize();
+    }
   } else {
-    initialize();
+    console.log('[SizeCalculator] Already initialized, skipping');
   }
 })();
