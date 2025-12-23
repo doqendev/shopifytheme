@@ -28,6 +28,7 @@
       state = {
         lastFocused: null,
         isProcessing: false,
+        currentStep: 1,
         selectedValues: {
           belly: null,
           shoulders: null,
@@ -36,6 +37,81 @@
       calculatorState.set(sectionId, state);
     }
     return state;
+  }
+
+  // ============================================
+  // STEP NAVIGATION
+  // ============================================
+
+  function goToStep(drawer, stepNumber) {
+    const sectionId = drawer.dataset.sectionId;
+    const state = ensureState(sectionId);
+
+    // Hide all step contents
+    const stepContents = drawer.querySelectorAll('[data-step-content]');
+    stepContents.forEach(content => {
+      content.hidden = true;
+    });
+
+    // Show target step content
+    const targetContent = drawer.querySelector(`[data-step-content="${stepNumber}"]`);
+    if (targetContent) {
+      targetContent.hidden = false;
+    }
+
+    // Update step indicators
+    const stepIndicators = drawer.querySelectorAll('[data-step-indicator]');
+    stepIndicators.forEach((indicator, index) => {
+      const indicatorStep = parseInt(indicator.dataset.stepIndicator, 10);
+      indicator.classList.remove('calculator-step--active', 'calculator-step--completed');
+
+      if (indicatorStep < stepNumber) {
+        indicator.classList.add('calculator-step--completed');
+      } else if (indicatorStep === stepNumber) {
+        indicator.classList.add('calculator-step--active');
+      }
+    });
+
+    // Update drawer data attribute
+    drawer.dataset.currentStep = stepNumber;
+    state.currentStep = stepNumber;
+  }
+
+  function validateStep1(drawer) {
+    const form = drawer.querySelector('[data-calculator-form]');
+    if (!form) return false;
+
+    const idade = form.querySelector('[name="idade"]');
+    const altura = form.querySelector('[name="altura"]');
+    const peso = form.querySelector('[name="peso"]');
+
+    // Check if all fields are filled and valid
+    if (!idade || !idade.value || !idade.checkValidity()) return false;
+    if (!altura || !altura.value || !altura.checkValidity()) return false;
+    if (!peso || !peso.value || !peso.checkValidity()) return false;
+
+    return true;
+  }
+
+  function handleNextStep(drawer) {
+    const currentStep = parseInt(drawer.dataset.currentStep || '1', 10);
+
+    // Validate step 1 before proceeding
+    if (currentStep === 1) {
+      if (!validateStep1(drawer)) {
+        showStatus(drawer, 'Por favor, preencha todos os campos corretamente.', 'error');
+        return;
+      }
+    }
+
+    goToStep(drawer, currentStep + 1);
+  }
+
+  function handlePrevStep(drawer) {
+    const currentStep = parseInt(drawer.dataset.currentStep || '1', 10);
+    if (currentStep > 1) {
+      goToStep(drawer, currentStep - 1);
+    }
   }
 
   // ============================================
@@ -180,11 +256,8 @@
       }
     }
 
-    // Hide result, show form
-    const resultSection = drawer.querySelector('[data-calculator-result]');
-    const formElement = drawer.querySelector('[data-calculator-form]');
-    if (resultSection) resultSection.hidden = true;
-    if (formElement) formElement.hidden = false;
+    // Reset to step 1
+    goToStep(drawer, 1);
 
     // Open drawer
     drawer.classList.add('is-open');
@@ -314,18 +387,12 @@
   }
 
   function displayResult(drawer, result) {
-    const formSection = drawer.querySelector('[data-calculator-form]');
-    const resultSection = drawer.querySelector('[data-calculator-result]');
-
-    if (!resultSection) return;
-
-    // Hide form, show result
-    if (formSection) formSection.hidden = true;
-    resultSection.hidden = false;
+    // Go to step 3 (results)
+    goToStep(drawer, 3);
 
     // Update result content
-    const sizeElement = resultSection.querySelector('[data-result-size]');
-    const messageElement = resultSection.querySelector('[data-result-message]');
+    const sizeElement = drawer.querySelector('[data-result-size]');
+    const messageElement = drawer.querySelector('[data-result-message]');
 
     if (sizeElement) {
       sizeElement.textContent = result.recommendedSize;
@@ -337,12 +404,8 @@
   }
 
   function handleRecalculate(drawer) {
-    const formSection = drawer.querySelector('[data-calculator-form]');
-    const resultSection = drawer.querySelector('[data-calculator-result]');
-
-    // Show form, hide result
-    if (formSection) formSection.hidden = false;
-    if (resultSection) resultSection.hidden = true;
+    // Go back to step 1
+    goToStep(drawer, 1);
 
     // Focus first input
     const firstInput = drawer.querySelector('input[type="number"]');
@@ -458,6 +521,24 @@
       if (option) {
         event.preventDefault();
         handleVisualOptionClick(option);
+        return;
+      }
+
+      // Next step button
+      const nextBtn = event.target.closest('[data-next-step]');
+      if (nextBtn) {
+        event.preventDefault();
+        const drawer = nextBtn.closest('.size-calculator-drawer');
+        if (drawer) handleNextStep(drawer);
+        return;
+      }
+
+      // Previous step button
+      const prevBtn = event.target.closest('[data-prev-step]');
+      if (prevBtn) {
+        event.preventDefault();
+        const drawer = prevBtn.closest('.size-calculator-drawer');
+        if (drawer) handlePrevStep(drawer);
         return;
       }
 

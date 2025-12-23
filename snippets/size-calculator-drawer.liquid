@@ -1,10 +1,11 @@
 {%- comment -%}
   SNIPPET: size-calculator-drawer.liquid
-  Size calculator drawer - Collects user measurements to recommend sizes
+  Size calculator drawer - Multi-step flow to collect user measurements
 {%- endcomment -%}
 
 {%- liquid
   assign calculator_section_id = section_id | default: 'default'
+  assign fifth_media = product.media[4] | default: product.featured_media
 -%}
 
 <div
@@ -12,6 +13,7 @@
   class="size-calculator-drawer"
   data-section-id="{{ calculator_section_id }}"
   aria-hidden="true"
+  data-current-step="1"
 >
   <div class="size-calculator-drawer__overlay" data-calculator-drawer-close></div>
   <div
@@ -32,174 +34,242 @@
       </button>
     </header>
 
+    <!-- Step Indicators -->
+    <div class="calculator-steps">
+      <div class="calculator-step calculator-step--active" data-step-indicator="1">
+        <div class="calculator-step__number">1</div>
+        <div class="calculator-step__label">Medidas</div>
+      </div>
+      <div class="calculator-step" data-step-indicator="2">
+        <div class="calculator-step__number">2</div>
+        <div class="calculator-step__label">Tipo de Corpo</div>
+      </div>
+      <div class="calculator-step" data-step-indicator="3">
+        <div class="calculator-step__number">3</div>
+        <div class="calculator-step__label">Resultado</div>
+      </div>
+    </div>
+
     <div class="size-calculator-drawer__body">
-      <!-- Step 1: Input Form -->
       <form class="size-calculator-form" data-calculator-form>
-        <div class="calculator-form__section">
-          <label for="calculator-idade-{{ calculator_section_id }}" class="calculator-form__label">
-            Idade (anos)
-          </label>
-          <input
-            type="number"
-            id="calculator-idade-{{ calculator_section_id }}"
-            name="idade"
-            class="calculator-form__input"
-            min="1"
-            max="120"
-            required
-            placeholder="Ex: 25"
-          />
+
+        <!-- STEP 1: Basic Measurements + Product Image -->
+        <div class="calculator-step-content" data-step-content="1">
+          <!-- Product Image -->
+          {%- if fifth_media -%}
+            <div class="calculator-product-image">
+              <img
+                src="{{ fifth_media | image_url: width: 400 }}"
+                srcset="{{ fifth_media | image_url: width: 200 }} 200w, {{ fifth_media | image_url: width: 400 }} 400w"
+                sizes="(max-width: 640px) 200px, 300px"
+                alt="{{ fifth_media.alt | default: product.title | escape }}"
+                loading="lazy"
+              />
+            </div>
+          {%- endif -%}
+
+          <div class="calculator-form__section">
+            <label for="calculator-idade-{{ calculator_section_id }}" class="calculator-form__label">
+              Idade (anos)
+            </label>
+            <input
+              type="number"
+              id="calculator-idade-{{ calculator_section_id }}"
+              name="idade"
+              class="calculator-form__input"
+              min="1"
+              max="120"
+              required
+              placeholder="Ex: 25"
+            />
+          </div>
+
+          <div class="calculator-form__section">
+            <label for="calculator-altura-{{ calculator_section_id }}" class="calculator-form__label">
+              Altura (cm)
+            </label>
+            <input
+              type="number"
+              id="calculator-altura-{{ calculator_section_id }}"
+              name="altura"
+              class="calculator-form__input"
+              min="100"
+              max="250"
+              required
+              placeholder="Ex: 175"
+            />
+          </div>
+
+          <div class="calculator-form__section">
+            <label for="calculator-peso-{{ calculator_section_id }}" class="calculator-form__label">
+              Peso (kg)
+            </label>
+            <input
+              type="number"
+              id="calculator-peso-{{ calculator_section_id }}"
+              name="peso"
+              class="calculator-form__input"
+              min="30"
+              max="300"
+              required
+              placeholder="Ex: 70"
+            />
+          </div>
+
+          <button
+            type="button"
+            class="calculator-form__next button button--primary"
+            data-next-step
+          >
+            Próximo
+          </button>
         </div>
 
-        <div class="calculator-form__section">
-          <label for="calculator-altura-{{ calculator_section_id }}" class="calculator-form__label">
-            Altura (cm)
-          </label>
-          <input
-            type="number"
-            id="calculator-altura-{{ calculator_section_id }}"
-            name="altura"
-            class="calculator-form__input"
-            min="100"
-            max="250"
-            required
-            placeholder="Ex: 175"
-          />
-        </div>
+        <!-- STEP 2: Body Type Selection -->
+        <div class="calculator-step-content" data-step-content="2" hidden>
+          <div class="calculator-form__section">
+            <label class="calculator-form__label calculator-form__label--visual">
+              Tipo de Barriga
+            </label>
+            <div class="calculator-visual-selector" data-selector-group="belly">
+              <button
+                type="button"
+                class="calculator-visual-option"
+                data-value="slim"
+                data-visual-option
+              >
+                <div class="calculator-visual-option__icon">
+                  <img src="{{ 'belly-slim.svg' | asset_url }}" alt="Barriga Magra" />
+                </div>
+                <span class="calculator-visual-option__label">Magra</span>
+              </button>
+              <button
+                type="button"
+                class="calculator-visual-option"
+                data-value="normal"
+                data-visual-option
+              >
+                <div class="calculator-visual-option__icon">
+                  <img src="{{ 'belly-normal.svg' | asset_url }}" alt="Barriga Normal" />
+                </div>
+                <span class="calculator-visual-option__label">Normal</span>
+              </button>
+              <button
+                type="button"
+                class="calculator-visual-option"
+                data-value="broad"
+                data-visual-option
+              >
+                <div class="calculator-visual-option__icon">
+                  <img src="{{ 'belly-broad.svg' | asset_url }}" alt="Barriga Larga" />
+                </div>
+                <span class="calculator-visual-option__label">Larga</span>
+              </button>
+            </div>
+            <input type="hidden" name="belly" required />
+          </div>
 
-        <div class="calculator-form__section">
-          <label for="calculator-peso-{{ calculator_section_id }}" class="calculator-form__label">
-            Peso (kg)
-          </label>
-          <input
-            type="number"
-            id="calculator-peso-{{ calculator_section_id }}"
-            name="peso"
-            class="calculator-form__input"
-            min="30"
-            max="300"
-            required
-            placeholder="Ex: 70"
-          />
-        </div>
+          <div class="calculator-form__section">
+            <label class="calculator-form__label calculator-form__label--visual">
+              Tipo de Ombros
+            </label>
+            <div class="calculator-visual-selector" data-selector-group="shoulders">
+              <button
+                type="button"
+                class="calculator-visual-option"
+                data-value="narrow"
+                data-visual-option
+              >
+                <div class="calculator-visual-option__icon">
+                  <img src="{{ 'shoulders-narrow.svg' | asset_url }}" alt="Ombros Estreitos" />
+                </div>
+                <span class="calculator-visual-option__label">Estreitos</span>
+              </button>
+              <button
+                type="button"
+                class="calculator-visual-option"
+                data-value="normal"
+                data-visual-option
+              >
+                <div class="calculator-visual-option__icon">
+                  <img src="{{ 'shoulders-normal.svg' | asset_url }}" alt="Ombros Normais" />
+                </div>
+                <span class="calculator-visual-option__label">Normais</span>
+              </button>
+              <button
+                type="button"
+                class="calculator-visual-option"
+                data-value="broad"
+                data-visual-option
+              >
+                <div class="calculator-visual-option__icon">
+                  <img src="{{ 'shoulders-broad.svg' | asset_url }}" alt="Ombros Largos" />
+                </div>
+                <span class="calculator-visual-option__label">Largos</span>
+              </button>
+            </div>
+            <input type="hidden" name="shoulders" required />
+          </div>
 
-        <div class="calculator-form__section">
-          <label class="calculator-form__label calculator-form__label--visual">
-            Tipo de Barriga
-          </label>
-          <div class="calculator-visual-selector" data-selector-group="belly">
+          <div class="calculator-form__navigation">
             <button
               type="button"
-              class="calculator-visual-option"
-              data-value="slim"
-              data-visual-option
+              class="calculator-form__back button button--secondary"
+              data-prev-step
             >
-              <div class="calculator-visual-option__icon">
-                <img src="{{ 'belly-slim.svg' | asset_url }}" alt="Barriga Magra" />
-              </div>
-              <span class="calculator-visual-option__label">Magra</span>
+              Voltar
             </button>
             <button
-              type="button"
-              class="calculator-visual-option"
-              data-value="normal"
-              data-visual-option
+              type="submit"
+              class="calculator-form__submit button button--primary"
             >
-              <div class="calculator-visual-option__icon">
-                <img src="{{ 'belly-normal.svg' | asset_url }}" alt="Barriga Normal" />
-              </div>
-              <span class="calculator-visual-option__label">Normal</span>
-            </button>
-            <button
-              type="button"
-              class="calculator-visual-option"
-              data-value="broad"
-              data-visual-option
-            >
-              <div class="calculator-visual-option__icon">
-                <img src="{{ 'belly-broad.svg' | asset_url }}" alt="Barriga Larga" />
-              </div>
-              <span class="calculator-visual-option__label">Larga</span>
+              Calcular Tamanho
             </button>
           </div>
-          <input type="hidden" name="belly" required />
         </div>
 
-        <div class="calculator-form__section">
-          <label class="calculator-form__label calculator-form__label--visual">
-            Tipo de Ombros
-          </label>
-          <div class="calculator-visual-selector" data-selector-group="shoulders">
-            <button
-              type="button"
-              class="calculator-visual-option"
-              data-value="narrow"
-              data-visual-option
-            >
-              <div class="calculator-visual-option__icon">
-                <img src="{{ 'shoulders-narrow.svg' | asset_url }}" alt="Ombros Estreitos" />
-              </div>
-              <span class="calculator-visual-option__label">Estreitos</span>
-            </button>
-            <button
-              type="button"
-              class="calculator-visual-option"
-              data-value="normal"
-              data-visual-option
-            >
-              <div class="calculator-visual-option__icon">
-                <img src="{{ 'shoulders-normal.svg' | asset_url }}" alt="Ombros Normais" />
-              </div>
-              <span class="calculator-visual-option__label">Normais</span>
-            </button>
-            <button
-              type="button"
-              class="calculator-visual-option"
-              data-value="broad"
-              data-visual-option
-            >
-              <div class="calculator-visual-option__icon">
-                <img src="{{ 'shoulders-broad.svg' | asset_url }}" alt="Ombros Largos" />
-              </div>
-              <span class="calculator-visual-option__label">Largos</span>
-            </button>
-          </div>
-          <input type="hidden" name="shoulders" required />
-        </div>
-
-        <button
-          type="submit"
-          class="calculator-form__submit button button--primary"
-        >
-          Calcular Tamanho
-        </button>
       </form>
 
-      <!-- Step 2: Results Display (initially hidden) -->
-      <div class="size-calculator-result" data-calculator-result hidden>
-        <div class="calculator-result__icon">
-          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="32" cy="32" r="28" stroke="#198754" stroke-width="4" fill="none"/>
-            <path d="M20 32 L28 40 L44 24" stroke="#198754" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+      <!-- STEP 3: Results Display -->
+      <div class="calculator-step-content" data-step-content="3" hidden>
+        <!-- Product Image -->
+        {%- if fifth_media -%}
+          <div class="calculator-product-image">
+            <img
+              src="{{ fifth_media | image_url: width: 400 }}"
+              srcset="{{ fifth_media | image_url: width: 200 }} 200w, {{ fifth_media | image_url: width: 400 }} 400w"
+              sizes="(max-width: 640px) 200px, 300px"
+              alt="{{ fifth_media.alt | default: product.title | escape }}"
+              loading="lazy"
+            />
+          </div>
+        {%- endif -%}
+
+        <div class="size-calculator-result">
+          <div class="calculator-result__icon">
+            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="32" cy="32" r="28" stroke="#198754" stroke-width="4" fill="none"/>
+              <path d="M20 32 L28 40 L44 24" stroke="#198754" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h4 class="calculator-result__title">Tamanho Recomendado</h4>
+          <div class="calculator-result__size" data-result-size></div>
+          <p class="calculator-result__message" data-result-message></p>
+          <button
+            type="button"
+            class="calculator-result__confirm button button--primary"
+            data-calculator-confirm
+          >
+            Confirmar
+          </button>
+          <button
+            type="button"
+            class="calculator-result__recalculate link"
+            data-calculator-recalculate
+          >
+            Recalcular
+          </button>
         </div>
-        <h4 class="calculator-result__title">Tamanho Recomendado</h4>
-        <div class="calculator-result__size" data-result-size></div>
-        <p class="calculator-result__message" data-result-message></p>
-        <button
-          type="button"
-          class="calculator-result__confirm button button--primary"
-          data-calculator-confirm
-        >
-          Confirmar
-        </button>
-        <button
-          type="button"
-          class="calculator-result__recalculate link"
-          data-calculator-recalculate
-        >
-          Recalcular
-        </button>
       </div>
 
       <!-- Error/Status Messages -->
