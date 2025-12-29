@@ -3,6 +3,13 @@
    Drawer for collecting user measurements
    ============================================ */
 
+/* Force header below calculator when drawer is open */
+body:has(.size-calculator-drawer.is-open) .section-header,
+body:has(.size-calculator-drawer.is-open) .shopify-section-group-header-group,
+body:has(.size-calculator-drawer.is-open) sticky-header {
+  z-index: 1 !important;
+}
+
 /* Base Calculator Drawer Structure */
 .size-calculator-drawer {
   position: fixed;
