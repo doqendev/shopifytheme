@@ -10,7 +10,7 @@
   display: none;
   align-items: flex-end;
   justify-content: center;
-  z-index: 99999; /* On top of everything */
+  z-index: 2147483647 !important; /* Maximum z-index value - on top of everything */
 }
 
 .size-calculator-drawer.is-open {
@@ -21,7 +21,7 @@
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
-  z-index: 99998;
+  z-index: 2147483646 !important;
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -42,7 +42,7 @@
   overflow-y: auto;
   transform: translateY(100%);
   transition: transform 0.3s ease;
-  z-index: 99999;
+  z-index: 2147483647 !important;
 }
 
 .size-calculator-drawer.is-open .size-calculator-drawer__content {
