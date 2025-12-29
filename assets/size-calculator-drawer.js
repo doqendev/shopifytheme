@@ -578,13 +578,15 @@
   // ============================================
 
   function initialize() {
-    // Calculator drawer triggers
+    // Calculator drawer triggers (use capture phase to run before other handlers)
     document.addEventListener('click', (event) => {
       // Open calculator drawer
       const trigger = event.target.closest('[data-calculator-drawer-trigger]');
       if (trigger) {
         event.preventDefault();
+        event.stopPropagation(); // Prevent other handlers from interfering
         const sectionId = trigger.dataset.calculatorDrawerTrigger;
+        console.log('[SizeCalculator] Button clicked, sectionId:', sectionId);
         openCalculatorDrawer(sectionId);
         return;
       }
@@ -732,7 +734,7 @@
           event.preventDefault();
         }
       }
-    });
+    }, true); // Use capture phase to ensure we catch events before other handlers
 
     console.log('[SizeCalculator] Initialized');
   }
