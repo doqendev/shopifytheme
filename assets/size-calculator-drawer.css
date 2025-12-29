@@ -72,7 +72,7 @@ body:has(.size-calculator-drawer.is-open) div[class*="product"] {
   max-width: 500px;
   max-height: 90vh;
   background: #fff;
-  border-radius: 12px 12px 0 0;
+  border-radius: 0;
   padding: 24px;
   overflow-y: auto;
   transform: translateY(100%);
