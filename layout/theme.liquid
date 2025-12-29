@@ -5,13 +5,14 @@
       window.customerId = {{ customer.id | json }};
       window.customerLoggedIn = !!window.customerId;
 
-      if (!{{ request.design_mode | json }}) {
-        ['log', 'info', 'debug', 'warn', 'group', 'groupCollapsed', 'groupEnd'].forEach((method) => {
-          if (typeof console !== 'undefined' && console[method]) {
-            console[method] = () => {};
-          }
-        });
-      }
+      // Console logs temporarily enabled for debugging
+      // if (!{{ request.design_mode | json }}) {
+      //   ['log', 'info', 'debug', 'warn', 'group', 'groupCollapsed', 'groupEnd'].forEach((method) => {
+      //     if (typeof console !== 'undefined' && console[method]) {
+      //       console[method] = () => {};
+      //     }
+      //   });
+      // }
     </script>
 
 
