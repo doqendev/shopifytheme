@@ -8,6 +8,7 @@ body:has(.size-calculator-drawer.is-open) .section-header,
 body:has(.size-calculator-drawer.is-open) .shopify-section-group-header-group,
 body:has(.size-calculator-drawer.is-open) sticky-header {
   z-index: 1 !important;
+  pointer-events: none !important;
 }
 
 /* Force all header child elements below calculator drawer */
@@ -15,6 +16,7 @@ body:has(.size-calculator-drawer.is-open) .section-header *,
 body:has(.size-calculator-drawer.is-open) .shopify-section-group-header-group *,
 body:has(.size-calculator-drawer.is-open) sticky-header * {
   z-index: 1 !important;
+  pointer-events: none !important;
 }
 
 /* Base Calculator Drawer Structure */
