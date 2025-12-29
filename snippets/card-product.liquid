@@ -611,15 +611,6 @@
   </div>
 
   {%- comment -%}
-    Size Calculator Drawer for Product Card
-    Rendered outside the card wrapper to avoid display issues
-  {%- endcomment -%}
-  {%- liquid
-    assign card_calculator_id = 'card-' | append: section_id | append: '-' | append: card_product.id
-  -%}
-  {% render 'size-calculator-drawer', product: card_product, section_id: card_calculator_id, product_form_id: product_form_id %}
-
-  {%- comment -%}
     --- NEW: Swiper Initialization Function ---
     Wrap the Swiper initialization in a function so it can be re-run
     after the product grid is updated via filtering.

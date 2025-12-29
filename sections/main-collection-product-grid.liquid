@@ -557,6 +557,17 @@
               {% endfor %}
             </ul>
 
+            {%- comment -%}
+              Render size calculator drawers for product cards
+              One drawer per product to handle calculator functionality
+            {%- endcomment -%}
+            {% for product in collection.products %}
+              {%- liquid
+                assign card_calculator_id = 'card-' | append: section.id | append: '-' | append: product.id
+              -%}
+              {% render 'size-calculator-drawer', product: product, section_id: card_calculator_id %}
+            {% endfor %}
+
             <div
               id="collection-infinite-loader"
               class="collection-infinite-loader"
