@@ -10,6 +10,10 @@
 <script src="{{ 'quick-add.js' | asset_url }}" defer="defer"></script>
 <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
 
+{%- comment -%} Load calculator drawer assets {%- endcomment -%}
+{{ 'size-calculator-drawer.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'size-calculator-drawer.js' | asset_url }}" defer="defer"></script>
+
 {%- style -%}
   .section-{{ section.id }}-padding {
     padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
@@ -41,9 +45,13 @@
       >
         {% assign skip_card_product_styles = false %}
         {% for recommendation in recommendations.products %}
+          {%- liquid
+            assign card_section_id = 'card-' | append: section.id | append: '-' | append: recommendation.id
+          -%}
           <li class="grid__item">
             {% render 'card-product',
               card_product: recommendation,
+              section_id: card_section_id,
               media_aspect_ratio: section.settings.image_ratio,
               image_shape: section.settings.image_shape,
               show_secondary_image: section.settings.show_secondary_image,
@@ -60,6 +68,18 @@
   {% if section.settings.image_shape == 'arch' %}
     {{ 'mask-arch.svg' | inline_asset_content }}
   {%- endif -%}
+
+  {%- comment -%} Render calculator drawers for all recommended products {%- endcomment -%}
+  {% if recommendations.performed and recommendations.products_count > 0 %}
+    <div id="related-calculator-drawers-container" style="display: none;">
+      {% for recommendation in recommendations.products %}
+        {%- liquid
+          assign card_calculator_id = 'card-' | append: section.id | append: '-' | append: recommendation.id
+        -%}
+        {% render 'size-calculator-drawer', product: recommendation, section_id: card_calculator_id %}
+      {% endfor %}
+    </div>
+  {% endif %}
 </div>
 
 {% schema %}
