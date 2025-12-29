@@ -699,7 +699,7 @@
         if (drawer) closeCalculatorDrawer(drawer.dataset.sectionId);
         return;
       }
-    });
+    }, true); // Use capture phase to catch events before other handlers
 
     // Form submission - ONLY allow from submit button click, not Enter key
     document.addEventListener('submit', (event) => {
