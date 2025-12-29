@@ -555,15 +555,15 @@
                           </div>
 
                           <!-- Size Calculator Trigger -->
-                          <div class="size-calculator-trigger-wrapper">
+                          <div class="size-drawer__calculator-trigger">
                             <button
                               type="button"
-                              class="size-calculator-trigger-button"
+                              class="size-drawer__calculator-button"
                               data-calculator-drawer-trigger="card-{{ section_id }}-{{ card_product.id }}"
                               aria-controls="size-calculator-drawer-card-{{ section_id }}-{{ card_product.id }}"
                               aria-haspopup="dialog"
                             >
-                              <svg class="size-calculator-trigger-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <svg class="size-drawer__calculator-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <rect x="2" y="1" width="12" height="14" rx="1" stroke="currentColor" stroke-width="1.5"/>
                                 <line x1="4" y1="4" x2="12" y2="4" stroke="currentColor" stroke-width="1.5"/>
                                 <circle cx="5" cy="7" r="0.75" fill="currentColor"/>
@@ -582,7 +582,7 @@
                         </div>
 
                         <!-- Size Calculator Drawer for Product Card -->
-                        {% render 'size-calculator-drawer', product: card_product, section_id: "card-#{section_id}-#{card_product.id}" %}
+                        {% render 'size-calculator-drawer', product: card_product, section_id: "card-#{section_id}-#{card_product.id}", product_form_id: "product-form-#{section_id}-#{card_product.id}" %}
 
                       </div>
                     {% endif %}
