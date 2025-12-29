@@ -1167,6 +1167,13 @@
   function handleDocumentClick(event) {
     console.log('Document click detected:', event.target);
 
+    // IMPORTANT: Check for calculator button first and ignore it
+    const calculatorButton = event.target.closest('[data-calculator-drawer-trigger]');
+    if (calculatorButton) {
+      console.log('Calculator button detected, ignoring in size-drawer.js');
+      return; // Let size-calculator-drawer.js handle it
+    }
+
     const trigger = event.target.closest('[data-size-drawer-trigger]');
     if (trigger) {
       const sectionId = trigger.getAttribute('data-size-drawer-trigger');
