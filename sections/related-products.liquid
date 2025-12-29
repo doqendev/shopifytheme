@@ -45,13 +45,10 @@
       >
         {% assign skip_card_product_styles = false %}
         {% for recommendation in recommendations.products %}
-          {%- liquid
-            assign card_section_id = 'card-' | append: section.id | append: '-' | append: recommendation.id
-          -%}
           <li class="grid__item">
             {% render 'card-product',
               card_product: recommendation,
-              section_id: card_section_id,
+              section_id: section.id,
               media_aspect_ratio: section.settings.image_ratio,
               image_shape: section.settings.image_shape,
               show_secondary_image: section.settings.show_secondary_image,
