@@ -544,3 +544,61 @@
 }
 
 /* Card Shape Hover Rules - Disabled */
+
+/* ============================================
+   SIZE CALCULATOR TRIGGER IN QUICK-ADD
+   ============================================ */
+
+/* Calculator trigger button in quick-add drawer */
+.size-calculator-trigger-wrapper {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.size-calculator-trigger-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background: #f8f8f8;
+  border: 1px solid #d1d1d1;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.size-calculator-trigger-button:hover {
+  background: #f0f0f0;
+  border-color: #000;
+}
+
+.size-calculator-trigger-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* Focus state for accessibility */
+.size-calculator-trigger-button:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: 2px;
+}
+
+/* Mobile responsive */
+@media (max-width: 749px) {
+  .size-calculator-trigger-wrapper {
+    margin-top: 12px;
+    padding-top: 12px;
+  }
+
+  .size-calculator-trigger-button {
+    padding: 10px;
+    font-size: 12px;
+  }
+}
