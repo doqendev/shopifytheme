@@ -567,12 +567,14 @@
               Render size calculator drawers for product cards
               One drawer per product to handle calculator functionality
             {%- endcomment -%}
-            {% for product in collection.products %}
-              {%- liquid
-                assign card_calculator_id = 'card-' | append: section.id | append: '-' | append: product.id
-              -%}
-              {% render 'size-calculator-drawer', product: product, section_id: card_calculator_id %}
-            {% endfor %}
+            <div id="calculator-drawers-container">
+              {% for product in collection.products %}
+                {%- liquid
+                  assign card_calculator_id = 'card-' | append: section.id | append: '-' | append: product.id
+                -%}
+                {% render 'size-calculator-drawer', product: product, section_id: card_calculator_id %}
+              {% endfor %}
+            </div>
 
             <div
               id="collection-infinite-loader"
@@ -1057,6 +1059,15 @@
       Array.prototype.slice.call(newGrid.children).forEach(function(item) {
         currentGrid.appendChild(item);
       });
+
+      // Also append calculator drawers for the new products
+      var newDrawersContainer = doc.getElementById('calculator-drawers-container');
+      var currentDrawersContainer = document.getElementById('calculator-drawers-container');
+      if (newDrawersContainer && currentDrawersContainer) {
+        Array.prototype.slice.call(newDrawersContainer.children).forEach(function(drawer) {
+          currentDrawersContainer.appendChild(drawer);
+        });
+      }
     }
 
     function updatePaginationFromDocument(doc) {
