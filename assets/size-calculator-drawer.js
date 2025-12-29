@@ -290,9 +290,19 @@
   // ============================================
 
   function openCalculatorDrawer(sectionId) {
-    const drawer = document.getElementById(`size-calculator-drawer-${sectionId}`);
+    console.log('[SizeCalculator] openCalculatorDrawer called with sectionId:', sectionId);
+    const drawerId = `size-calculator-drawer-${sectionId}`;
+    console.log('[SizeCalculator] Looking for drawer with ID:', drawerId);
+
+    const drawer = document.getElementById(drawerId);
+    console.log('[SizeCalculator] Drawer element found:', drawer);
+
     if (!drawer) {
-      console.warn('[SizeCalculator] Drawer not found for section:', sectionId);
+      console.error('[SizeCalculator] ❌ Drawer not found for section:', sectionId);
+      console.log('[SizeCalculator] Available calculator drawers on page:');
+      document.querySelectorAll('.size-calculator-drawer').forEach(d => {
+        console.log('  - ID:', d.id, 'Section ID:', d.dataset.sectionId);
+      });
       return;
     }
 
@@ -580,13 +590,18 @@
   function initialize() {
     // Calculator drawer triggers (use capture phase to run before other handlers)
     document.addEventListener('click', (event) => {
+      console.log('[SizeCalculator] Click event detected on:', event.target);
+
       // Open calculator drawer
       const trigger = event.target.closest('[data-calculator-drawer-trigger]');
+      console.log('[SizeCalculator] Trigger found:', trigger);
+
       if (trigger) {
+        console.log('[SizeCalculator] ✓ Calculator button clicked!');
         event.preventDefault();
         event.stopPropagation(); // Prevent other handlers from interfering
         const sectionId = trigger.dataset.calculatorDrawerTrigger;
-        console.log('[SizeCalculator] Button clicked, sectionId:', sectionId);
+        console.log('[SizeCalculator] Section ID from button:', sectionId);
         openCalculatorDrawer(sectionId);
         return;
       }
@@ -736,7 +751,15 @@
       }
     }, true); // Use capture phase to ensure we catch events before other handlers
 
-    console.log('[SizeCalculator] Initialized');
+    console.log('[SizeCalculator] ✓ Event listener added successfully');
+    console.log('[SizeCalculator] ✓ Initialized');
+
+    // Log all calculator buttons on page
+    const buttons = document.querySelectorAll('[data-calculator-drawer-trigger]');
+    console.log('[SizeCalculator] Found', buttons.length, 'calculator trigger buttons');
+    buttons.forEach(btn => {
+      console.log('  - Button with section ID:', btn.dataset.calculatorDrawerTrigger);
+    });
   }
 
   // ============================================
