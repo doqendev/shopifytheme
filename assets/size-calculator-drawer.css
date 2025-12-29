@@ -3,9 +3,10 @@
    Drawer for collecting user measurements
    ============================================ */
 
-/* Force header below calculator when drawer is open */
+/* Force header and announcement bar below calculator when drawer is open */
 body:has(.size-calculator-drawer.is-open) .section-header,
 body:has(.size-calculator-drawer.is-open) .shopify-section-group-header-group,
+body:has(.size-calculator-drawer.is-open) .announcement-bar-section,
 body:has(.size-calculator-drawer.is-open) sticky-header {
   position: relative !important;
   z-index: 1 !important;
@@ -15,9 +16,19 @@ body:has(.size-calculator-drawer.is-open) sticky-header {
 /* Force all header child elements below calculator drawer */
 body:has(.size-calculator-drawer.is-open) .section-header *,
 body:has(.size-calculator-drawer.is-open) .shopify-section-group-header-group *,
+body:has(.size-calculator-drawer.is-open) .announcement-bar-section *,
 body:has(.size-calculator-drawer.is-open) sticky-header * {
   z-index: 1 !important;
   pointer-events: none !important;
+}
+
+/* Remove stacking context from parent sections when drawer is open */
+body:has(.size-calculator-drawer.is-open) .product,
+body:has(.size-calculator-drawer.is-open) .product__info-container,
+body:has(.size-calculator-drawer.is-open) main,
+body:has(.size-calculator-drawer.is-open) section {
+  position: static !important;
+  z-index: auto !important;
 }
 
 /* Base Calculator Drawer Structure */
