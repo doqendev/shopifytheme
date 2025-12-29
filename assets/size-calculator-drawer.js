@@ -6,6 +6,8 @@
 (() => {
   'use strict';
 
+  console.log('🔵 [SizeCalculator] Script file loaded!');
+
   // ============================================
   // CONFIGURATION
   // ============================================
