@@ -1385,4 +1385,10 @@
     console.log('Size drawer delayed initialization attempt...');
     initialize();
   }, 500);
+
+  // Export functions to global scope for integration with other components
+  window.themeSizeDrawer = {
+    closeDrawer: closeDrawer,
+    openDrawer: openDrawer
+  };
 })();

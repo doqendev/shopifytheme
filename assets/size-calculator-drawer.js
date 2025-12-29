@@ -308,6 +308,21 @@
       return;
     }
 
+    // Close any open size drawer before opening calculator drawer
+    const openSizeDrawer = document.querySelector('.size-drawer.is-open');
+    if (openSizeDrawer && openSizeDrawer.dataset.sectionId) {
+      console.log('[SizeCalculator] Closing open size drawer for section:', openSizeDrawer.dataset.sectionId);
+      // Call the size drawer's close function if available
+      if (window.themeSizeDrawer && typeof window.themeSizeDrawer.closeDrawer === 'function') {
+        window.themeSizeDrawer.closeDrawer(openSizeDrawer.dataset.sectionId);
+      } else {
+        // Fallback: manually close the drawer
+        openSizeDrawer.classList.remove('is-open');
+        openSizeDrawer.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+    }
+
     const state = ensureState(sectionId);
 
     // Store last focused element
