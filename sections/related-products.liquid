@@ -70,15 +70,13 @@
   {% if recommendations.performed and recommendations.products_count > 0 %}
     <!-- DEBUG: Section ID is {{ section.id }} -->
     <!-- DEBUG: Rendering {{ recommendations.products_count }} calculator drawers -->
-    <div id="related-calculator-drawers-container" style="display: none;">
-      {% for recommendation in recommendations.products %}
-        {%- liquid
-          assign card_calculator_id = 'card-' | append: section.id | append: '-' | append: recommendation.id
-        -%}
-        <!-- DEBUG: Rendering drawer for {{ card_calculator_id }} -->
-        {% render 'size-calculator-drawer', product: recommendation, section_id: card_calculator_id %}
-      {% endfor %}
-    </div>
+    {% for recommendation in recommendations.products %}
+      {%- liquid
+        assign card_calculator_id = 'card-' | append: section.id | append: '-' | append: recommendation.id
+      -%}
+      <!-- DEBUG: Rendering drawer for {{ card_calculator_id }} -->
+      {% render 'size-calculator-drawer', product: recommendation, section_id: card_calculator_id %}
+    {% endfor %}
   {% else %}
     <!-- DEBUG: Recommendations not performed or no products. performed={{ recommendations.performed }}, count={{ recommendations.products_count }} -->
   {% endif %}
