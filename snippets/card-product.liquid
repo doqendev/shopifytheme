@@ -1157,10 +1157,16 @@
         });
 
         sizeOptions.addEventListener('click', function(ev) {
+          console.log('[CardProduct] Size options clicked, target:', ev.target);
           // Allow calculator button clicks to propagate
-          if (ev.target.closest('[data-calculator-drawer-trigger]')) {
+          const calcButton = ev.target.closest('[data-calculator-drawer-trigger]');
+          if (calcButton) {
+            console.log('[CardProduct] ✓ Calculator button clicked inside size-options');
+            console.log('[CardProduct] Button section ID:', calcButton.dataset.calculatorDrawerTrigger);
+            console.log('[CardProduct] Allowing event to propagate');
             return;
           }
+          console.log('[CardProduct] Regular size-options click, stopping propagation');
           ev.stopPropagation();
         });
 

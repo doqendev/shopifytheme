@@ -6,7 +6,9 @@
 (() => {
   'use strict';
 
+  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('🔵 [SizeCalculator] Script file loaded!');
+  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
   // ============================================
   // CONFIGURATION
@@ -292,12 +294,13 @@
   // ============================================
 
   function openCalculatorDrawer(sectionId) {
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log('[SizeCalculator] openCalculatorDrawer called with sectionId:', sectionId);
     const drawerId = `size-calculator-drawer-${sectionId}`;
     console.log('[SizeCalculator] Looking for drawer with ID:', drawerId);
 
     const drawer = document.getElementById(drawerId);
-    console.log('[SizeCalculator] Drawer element found:', drawer);
+    console.log('[SizeCalculator] Drawer element found:', !!drawer);
 
     if (!drawer) {
       console.error('[SizeCalculator] ❌ Drawer not found for section:', sectionId);
@@ -305,6 +308,11 @@
       document.querySelectorAll('.size-calculator-drawer').forEach(d => {
         console.log('  - ID:', d.id, 'Section ID:', d.dataset.sectionId);
       });
+      console.log('[SizeCalculator] All elements with data-calculator-drawer-trigger:');
+      document.querySelectorAll('[data-calculator-drawer-trigger]').forEach(btn => {
+        console.log('  - Button trigger value:', btn.dataset.calculatorDrawerTrigger);
+      });
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
       return;
     }
 
@@ -607,11 +615,23 @@
   function initialize() {
     // Calculator drawer triggers (use capture phase to run before other handlers)
     document.addEventListener('click', (event) => {
-      console.log('[SizeCalculator] Click event detected on:', event.target);
+      const targetInfo = {
+        tag: event.target.tagName,
+        classes: event.target.className,
+        id: event.target.id
+      };
+
+      // Only log if it looks like it might be a calculator button click
+      const maybeCalcButton = event.target.closest('[data-calculator-drawer-trigger]');
+      if (maybeCalcButton || event.target.closest('.size-drawer__calculator-button')) {
+        console.log('[SizeCalculator] Click event detected on:', targetInfo);
+      }
 
       // Open calculator drawer
       const trigger = event.target.closest('[data-calculator-drawer-trigger]');
-      console.log('[SizeCalculator] Trigger found:', trigger);
+      if (maybeCalcButton || trigger) {
+        console.log('[SizeCalculator] Trigger found:', !!trigger, trigger);
+      }
 
       if (trigger) {
         console.log('[SizeCalculator] ✓ Calculator button clicked!');
@@ -777,6 +797,15 @@
     buttons.forEach(btn => {
       console.log('  - Button with section ID:', btn.dataset.calculatorDrawerTrigger);
     });
+
+    // Log all calculator drawers on page
+    const drawers = document.querySelectorAll('.size-calculator-drawer');
+    console.log('[SizeCalculator] Found', drawers.length, 'calculator drawers');
+    drawers.forEach(drawer => {
+      console.log('  - Drawer ID:', drawer.id, 'Section ID:', drawer.dataset.sectionId);
+    });
+
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   }
 
   // ============================================
@@ -803,9 +832,15 @@
   if (!window.themeCalculatorDrawerInitialized) {
     window.themeCalculatorDrawerInitialized = true;
 
+    console.log('[SizeCalculator] Script loaded, document.readyState:', document.readyState);
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initialize);
+      console.log('[SizeCalculator] Waiting for DOMContentLoaded...');
+      document.addEventListener('DOMContentLoaded', () => {
+        console.log('[SizeCalculator] DOMContentLoaded fired, initializing...');
+        initialize();
+      });
     } else {
+      console.log('[SizeCalculator] DOM already loaded, initializing immediately...');
       initialize();
     }
   } else {
