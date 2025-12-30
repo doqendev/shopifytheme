@@ -232,39 +232,36 @@
    SIZE CALCULATOR INTEGRATION
    ============================================ */
 
-/* Calculator Trigger Button */
+/* Calculator Trigger Button - styled to match size items */
 .size-drawer__calculator-trigger {
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid #e5e5e5;
+  /* No special styling - button will blend with size list */
 }
 
 .size-drawer__calculator-button {
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 8px;
-  padding: 12px;
-  background: #f8f8f8;
-  border: 1px solid #d1d1d1;
-  border-radius: 4px;
-  font-size: 13px;
-  font-weight: 500;
+  padding: 12px 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  font-size: 14px;
+  font-weight: 400;
   color: #333;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease;
+  text-align: left;
 }
 
 .size-drawer__calculator-button:hover {
-  background: #f0f0f0;
-  border-color: #000;
+  background-color: #f8f8f8;
 }
 
+/* Hide the icon */
 .size-drawer__calculator-icon {
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
+  display: none;
 }
 
 /* Recommendation Badge */
