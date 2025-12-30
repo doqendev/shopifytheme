@@ -232,36 +232,25 @@
    SIZE CALCULATOR INTEGRATION
    ============================================ */
 
-/* Calculator Trigger Button - styled to match size items */
-.size-drawer__calculator-trigger {
-  /* No special styling - button will blend with size list */
-}
-
+/* Calculator Trigger Button - uses size-item/size-option classes, minimal overrides */
 .size-drawer__calculator-button {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 8px;
-  padding: 12px 0;
-  background: transparent;
+  /* Button element reset */
   border: none;
-  border-radius: 0;
-  font-size: 14px;
-  font-weight: 400;
-  color: #333;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+  background: transparent;
+  font-family: inherit;
   text-align: left;
+  width: 100%;
+  cursor: pointer;
 }
 
-.size-drawer__calculator-button:hover {
-  background-color: #f8f8f8;
+/* Make sure it doesn't add extra spacing when used with size-option */
+.size-option.size-drawer__calculator-button {
+  /* Inherits all size-option styles, no overrides needed */
 }
 
-/* Hide the icon */
-.size-drawer__calculator-icon {
-  display: none;
+/* Make sure it doesn't add extra spacing when used with size-item */
+.size-item.size-drawer__calculator-button {
+  /* Inherits all size-item styles, no overrides needed */
 }
 
 /* Recommendation Badge */
