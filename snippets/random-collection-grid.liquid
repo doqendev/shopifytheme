@@ -209,18 +209,6 @@
       </ul>
     </div>
   </div>
-
-  {%- comment -%} Render calculator drawers for all recommended products {%- endcomment -%}
-  <!-- DEBUG: Rendering calculator drawers for random collection products -->
-  {% for related_product in first_collection.products limit: 13 %}
-    {% if related_product.id != product.id %}
-      {%- liquid
-        assign random_calc_id = 'card-product-grid-' | append: related_product.id
-      -%}
-      <!-- DEBUG: Drawer ID will be: size-calculator-drawer-{{ random_calc_id }} for product {{ related_product.title }} -->
-      {% render 'size-calculator-drawer', product: related_product, section_id: random_calc_id %}
-    {% endif %}
-  {% endfor %}
 {% endif %}
 
 <!-- Swatch Click Script for Random Collection Grid -->
