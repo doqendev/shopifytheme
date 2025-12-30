@@ -888,6 +888,11 @@
 
         var buttons = card.querySelectorAll('.size-options .size-option');
         buttons.forEach(function(btn) {
+          // Skip calculator button - it should always be visible
+          if (btn.classList.contains('size-drawer__calculator-button')) {
+            return;
+          }
+
           var sizeVal = btn.dataset.size;
           var lowStockEl = btn.querySelector('.size-option__low-stock');
           if (sizeAvailability[sizeVal] === undefined) {

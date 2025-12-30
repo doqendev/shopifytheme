@@ -752,7 +752,7 @@
   function renderSizeOptions(sectionId) {
     // The sizes are now rendered in Liquid, so we just need to attach event listeners
     const data = getSectionData(sectionId);
-    const sizeItems = document.querySelectorAll(`#size-drawer-${sectionId} .size-item`);
+    const sizeItems = document.querySelectorAll(`#size-drawer-${sectionId} .size-item:not(.size-drawer__calculator-button)`);
 
     if (!data || data.sizeOptionIndex < 0) {
       setStatus(sectionId, 'Tamanhos indisponíveis para este produto.');

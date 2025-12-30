@@ -243,14 +243,31 @@
   cursor: pointer;
 }
 
-/* Make sure it doesn't add extra spacing when used with size-option */
-.size-option.size-drawer__calculator-button {
-  /* Inherits all size-option styles, no overrides needed */
+/* Make sure calculator button is always visible and not styled as unavailable */
+.size-option.size-drawer__calculator-button,
+.size-item.size-drawer__calculator-button {
+  display: flex !important; /* Never hide the calculator button */
+  opacity: 1 !important;
+  cursor: pointer !important;
+  background-color: transparent !important;
 }
 
-/* Make sure it doesn't add extra spacing when used with size-item */
-.size-item.size-drawer__calculator-button {
-  /* Inherits all size-item styles, no overrides needed */
+.size-option.size-drawer__calculator-button .size-option__label,
+.size-item.size-drawer__calculator-button .size-item__label {
+  text-decoration: none !important; /* No strikethrough */
+  color: #333 !important; /* Normal text color */
+}
+
+/* Ensure calculator button doesn't get unavailable styling */
+.size-item.size-drawer__calculator-button.size-item--unavailable .size-item__label {
+  text-decoration: none !important;
+  color: #333 !important;
+}
+
+/* Hover state for calculator button */
+.size-option.size-drawer__calculator-button:hover,
+.size-item.size-drawer__calculator-button:hover {
+  background-color: #f8f8f8 !important;
 }
 
 /* Recommendation Badge */
