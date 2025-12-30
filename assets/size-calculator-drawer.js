@@ -427,6 +427,33 @@
       isInViewport: rect.top >= 0 && rect.left >= 0 && rect.bottom <= window.innerHeight && rect.right <= window.innerWidth
     });
 
+    // Check parent elements for transform/positioning issues
+    let parent = drawer.parentElement;
+    let depth = 0;
+    console.log('[SizeCalculator] Checking parent elements for positioning issues:');
+    while (parent && depth < 5) {
+      const parentStyle = window.getComputedStyle(parent);
+      const hasTransform = parentStyle.transform !== 'none';
+      const hasPerspective = parentStyle.perspective !== 'none';
+      const hasFilter = parentStyle.filter !== 'none';
+      const hasWillChange = parentStyle.willChange !== 'auto';
+
+      if (hasTransform || hasPerspective || hasFilter || hasWillChange) {
+        console.log(`[SizeCalculator] ⚠️  Parent element (depth ${depth}):`, {
+          tag: parent.tagName,
+          classes: parent.className,
+          id: parent.id,
+          transform: parentStyle.transform,
+          perspective: parentStyle.perspective,
+          filter: parentStyle.filter,
+          willChange: parentStyle.willChange,
+          position: parentStyle.position
+        });
+      }
+      parent = parent.parentElement;
+      depth++;
+    }
+
     // Focus first input
     setTimeout(() => {
       const firstInput = drawer.querySelector('input[type="number"]');
