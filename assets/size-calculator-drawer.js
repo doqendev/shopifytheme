@@ -389,10 +389,43 @@
       position: computedStyle.position,
       top: computedStyle.top,
       left: computedStyle.left,
+      bottom: computedStyle.bottom,
+      right: computedStyle.right,
+      inset: computedStyle.inset,
       transform: computedStyle.transform
     });
     console.log('[SizeCalculator] Drawer classList:', drawer.classList.toString());
     console.log('[SizeCalculator] Drawer aria-hidden:', drawer.getAttribute('aria-hidden'));
+
+    // Check drawer content element
+    const drawerContent = drawer.querySelector('.size-calculator-drawer__content');
+    if (drawerContent) {
+      const contentStyle = window.getComputedStyle(drawerContent);
+      console.log('[SizeCalculator] Drawer CONTENT computed styles:', {
+        display: contentStyle.display,
+        visibility: contentStyle.visibility,
+        opacity: contentStyle.opacity,
+        transform: contentStyle.transform,
+        position: contentStyle.position,
+        width: contentStyle.width,
+        height: contentStyle.height,
+        maxHeight: contentStyle.maxHeight
+      });
+    } else {
+      console.error('[SizeCalculator] ❌ Drawer content element not found!');
+    }
+
+    // Check if drawer is in viewport
+    const rect = drawer.getBoundingClientRect();
+    console.log('[SizeCalculator] Drawer bounding rect:', {
+      top: rect.top,
+      left: rect.left,
+      bottom: rect.bottom,
+      right: rect.right,
+      width: rect.width,
+      height: rect.height,
+      isInViewport: rect.top >= 0 && rect.left >= 0 && rect.bottom <= window.innerHeight && rect.right <= window.innerWidth
+    });
 
     // Focus first input
     setTimeout(() => {
