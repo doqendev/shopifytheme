@@ -318,13 +318,16 @@
 
     // Close any open size drawer before opening calculator drawer
     const openSizeDrawer = document.querySelector('.size-drawer.is-open');
+    console.log('[SizeCalculator] Open size drawer found:', !!openSizeDrawer);
     if (openSizeDrawer && openSizeDrawer.dataset.sectionId) {
       console.log('[SizeCalculator] Closing open size drawer for section:', openSizeDrawer.dataset.sectionId);
       // Call the size drawer's close function if available
       if (window.themeSizeDrawer && typeof window.themeSizeDrawer.closeDrawer === 'function') {
+        console.log('[SizeCalculator] Using themeSizeDrawer.closeDrawer()');
         window.themeSizeDrawer.closeDrawer(openSizeDrawer.dataset.sectionId);
       } else {
         // Fallback: manually close the drawer
+        console.log('[SizeCalculator] Manually closing size drawer');
         openSizeDrawer.classList.remove('is-open');
         openSizeDrawer.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
@@ -332,17 +335,22 @@
     }
 
     const state = ensureState(sectionId);
+    console.log('[SizeCalculator] State initialized for section:', sectionId);
 
     // Store last focused element
     state.lastFocused = document.activeElement;
+    console.log('[SizeCalculator] Stored last focused element');
 
     // Reset form if exists
     const form = drawer.querySelector('[data-calculator-form]');
+    console.log('[SizeCalculator] Form found:', !!form);
     if (form) {
       form.reset();
+      console.log('[SizeCalculator] Form reset');
 
       // Load saved measurements if available
       const savedMeasurements = loadSavedMeasurements();
+      console.log('[SizeCalculator] Saved measurements:', savedMeasurements);
       if (savedMeasurements) {
         form.querySelector('[name="idade"]').value = savedMeasurements.idade || '';
         form.querySelector('[name="altura"]').value = savedMeasurements.altura || '';
@@ -361,20 +369,29 @@
     }
 
     // Reset to step 1
+    console.log('[SizeCalculator] Resetting to step 1');
     goToStep(drawer, 1);
 
     // Open drawer
+    console.log('[SizeCalculator] Adding is-open class to drawer');
     drawer.classList.add('is-open');
+    console.log('[SizeCalculator] Setting aria-hidden to false');
     drawer.setAttribute('aria-hidden', 'false');
+    console.log('[SizeCalculator] Drawer should now be visible');
 
     // Focus first input
     setTimeout(() => {
       const firstInput = drawer.querySelector('input[type="number"]');
-      if (firstInput) firstInput.focus();
+      if (firstInput) {
+        console.log('[SizeCalculator] Focusing first input');
+        firstInput.focus();
+      }
     }, 100);
 
     // Prevent body scroll
+    console.log('[SizeCalculator] Preventing body scroll');
     document.body.style.overflow = 'hidden';
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   }
 
   function closeCalculatorDrawer(sectionId) {
