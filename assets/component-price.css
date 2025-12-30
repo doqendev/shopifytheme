@@ -11,7 +11,7 @@
   .card__information .price,
   .card__information .price-item {
     font-size: 1.1rem !important;
-    font-weight: 200 !important;
+    font-weight: 100 !important;
   }
 }
 
