@@ -49,7 +49,7 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
   transform: translateX(0);
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
 
 .drawer__header {
   position: relative;
@@ -78,7 +78,7 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
   background: transparent;
   border: none;
   padding: 0 1rem 1.25rem;
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 13px;
   font-weight: 400;
   letter-spacing: 0.5px;
@@ -134,7 +134,7 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 13px;
   font-weight: 400;
   color: inherit;
