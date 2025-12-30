@@ -252,6 +252,11 @@
   background-color: transparent !important;
 }
 
+/* Add spacing above calculator button in quick add (size-option context) */
+.size-option.size-drawer__calculator-button {
+  margin-top: 1.5rem;
+}
+
 .size-option.size-drawer__calculator-button .size-option__label,
 .size-item.size-drawer__calculator-button .size-item__label {
   text-decoration: none !important; /* No strikethrough */
