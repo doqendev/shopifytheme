@@ -379,6 +379,21 @@
     drawer.setAttribute('aria-hidden', 'false');
     console.log('[SizeCalculator] Drawer should now be visible');
 
+    // Check computed styles
+    const computedStyle = window.getComputedStyle(drawer);
+    console.log('[SizeCalculator] Drawer computed styles:', {
+      display: computedStyle.display,
+      visibility: computedStyle.visibility,
+      opacity: computedStyle.opacity,
+      zIndex: computedStyle.zIndex,
+      position: computedStyle.position,
+      top: computedStyle.top,
+      left: computedStyle.left,
+      transform: computedStyle.transform
+    });
+    console.log('[SizeCalculator] Drawer classList:', drawer.classList.toString());
+    console.log('[SizeCalculator] Drawer aria-hidden:', drawer.getAttribute('aria-hidden'));
+
     // Focus first input
     setTimeout(() => {
       const firstInput = drawer.querySelector('input[type="number"]');
