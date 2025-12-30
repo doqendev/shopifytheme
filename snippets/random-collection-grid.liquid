@@ -12,8 +12,10 @@
 {{ 'component-card.css' | asset_url | stylesheet_tag }}
 {{ 'component-price.css' | asset_url | stylesheet_tag }}
 
-{%- comment -%} Load calculator drawer assets {%- endcomment -%}
+{%- comment -%} Load size drawer and calculator drawer assets {%- endcomment -%}
+{{ 'size-drawer.css' | asset_url | stylesheet_tag }}
 {{ 'size-calculator-drawer.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'size-drawer.js' | asset_url }}" defer="defer"></script>
 <script src="{{ 'size-calculator-drawer.js' | asset_url }}" defer="defer"></script>
 
 {% if section.settings.image_shape == 'blob' %}
@@ -209,12 +211,14 @@
   </div>
 
   {%- comment -%} Render calculator drawers for all recommended products {%- endcomment -%}
+  <!-- DEBUG: Rendering calculator drawers for random collection products -->
   <div id="random-collection-calculator-drawers-container" style="display: none;">
     {% for related_product in first_collection.products limit: 13 %}
       {% if related_product.id != product.id %}
         {%- liquid
           assign random_calc_id = 'card-product-grid-' | append: related_product.id
         -%}
+        <!-- DEBUG: Drawer ID will be: size-calculator-drawer-{{ random_calc_id }} for product {{ related_product.title }} -->
         {% render 'size-calculator-drawer', product: related_product, section_id: random_calc_id %}
       {% endif %}
     {% endfor %}

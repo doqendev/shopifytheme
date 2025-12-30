@@ -1157,6 +1157,10 @@
         });
 
         sizeOptions.addEventListener('click', function(ev) {
+          // Allow calculator button clicks to propagate
+          if (ev.target.closest('[data-calculator-drawer-trigger]')) {
+            return;
+          }
           ev.stopPropagation();
         });
 
