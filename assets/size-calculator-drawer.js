@@ -427,32 +427,32 @@
       isInViewport: rect.top >= 0 && rect.left >= 0 && rect.bottom <= window.innerHeight && rect.right <= window.innerWidth
     });
 
-    // Check parent elements for transform/positioning issues
+    // Check parent elements for ALL potential issues
     let parent = drawer.parentElement;
     let depth = 0;
-    console.log('[SizeCalculator] Checking parent elements for positioning issues:');
-    while (parent && depth < 5) {
+    console.log('[SizeCalculator] Checking ALL parent elements:');
+    while (parent && depth < 8) {
       const parentStyle = window.getComputedStyle(parent);
-      const hasTransform = parentStyle.transform !== 'none';
-      const hasPerspective = parentStyle.perspective !== 'none';
-      const hasFilter = parentStyle.filter !== 'none';
-      const hasWillChange = parentStyle.willChange !== 'auto';
+      const parentRect = parent.getBoundingClientRect();
 
-      if (hasTransform || hasPerspective || hasFilter || hasWillChange) {
-        console.log(`[SizeCalculator] ⚠️  Parent element (depth ${depth}):`, {
-          tag: parent.tagName,
-          classes: parent.className,
-          id: parent.id,
-          transform: parentStyle.transform,
-          perspective: parentStyle.perspective,
-          filter: parentStyle.filter,
-          willChange: parentStyle.willChange,
-          position: parentStyle.position
-        });
-      }
+      console.log(`[SizeCalculator] Parent (depth ${depth}):`, {
+        tag: parent.tagName,
+        classes: parent.className,
+        id: parent.id,
+        display: parentStyle.display,
+        position: parentStyle.position,
+        width: parentRect.width,
+        height: parentRect.height,
+        overflow: parentStyle.overflow,
+        transform: parentStyle.transform,
+        zIndex: parentStyle.zIndex
+      });
+
       parent = parent.parentElement;
       depth++;
     }
+
+    console.log('[SizeCalculator] Drawer direct parent:', drawer.parentElement?.tagName, drawer.parentElement?.className);
 
     // Focus first input
     setTimeout(() => {
