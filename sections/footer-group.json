@@ -55,7 +55,7 @@
             "icon_color": "#121212",
             "item_padding": 16,
             "title_size": 16,
-            "title_weight": "600",
+            "title_weight": "400",
             "title_transform": "uppercase",
             "title_spacing": 0.5,
             "icon_size": 20,
