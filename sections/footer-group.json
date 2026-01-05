@@ -138,7 +138,8 @@
         "image_gdtJYG": {
           "type": "image",
           "settings": {
-            "image_width": 100,
+            "image": "shopify://shop_images/cheyenne_final_banner3.svg",
+            "image_width": 550,
             "alignment": "center"
           }
         }
