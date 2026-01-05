@@ -124,7 +124,9 @@
     },
     "footers_MJGUrj": {
       "type": "FOOTERS",
-      "custom_css": [],
+      "custom_css": [
+        "@media screen and (max-width: 750px) {div {display:none; }}"
+      ],
       "settings": {}
     },
     "footer": {
