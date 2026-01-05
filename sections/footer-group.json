@@ -77,6 +77,7 @@
       "blocks": {
         "ai_gen_block_8ab1030_me3WXy": {
           "type": "ai_gen_block_8ab1030",
+          "disabled": true,
           "settings": {
             "desktop_behavior": "always_open",
             "background_color": "#ffffff",
@@ -123,6 +124,7 @@
     },
     "footers_MJGUrj": {
       "type": "FOOTERS",
+      "disabled": true,
       "custom_css": [],
       "settings": {}
     },
