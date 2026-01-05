@@ -2418,7 +2418,7 @@
           publish(PUB_SUB_EVENTS.cartUpdate, { source: 'wishlist' });
         }
       })
-      .catch((error) => );
+      .catch(() => {});
   };
 
   const findWishlistCardContext = (element) => {
