@@ -233,6 +233,7 @@
     --swatch-gap: 8px;
     gap: var(--swatch-gap, 8px);
     margin-bottom: 16px;
+    margin-right: 1.5rem;
   }
 
   .product-form__input--swatch .swatch-input__label {
