@@ -170,17 +170,37 @@
   .card__content {
     width: 100%;
   }
+
+  /* Title and heart row */
+  .title-heart-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    margin-bottom: 0.25rem;
+  }
+
+  .title-heart-row .wishlist-toggle--mobile-inline {
+    width: 2.2rem;
+    height: 2.2rem;
+    flex: 0 0 2.2rem;
+  }
+
+  .title-heart-row .wishlist-toggle--mobile-inline .wishlist-toggle__icon {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
   .title-cheyenne {
     font-family: "Work Sans";
     /*Arial, Helvetica, sans-serif; */
     display: inline-block;
     color: black;
-    width: 95%;
+    flex: 1;
     text-decoration: none !important;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-right: 5%;
     font-size: 12px!important;
     font-weight: 500;
     line-height: 16px;
@@ -470,20 +490,34 @@
 
             <span class="caption-large light">{{ block.settings.description | escape }}</span>
 
-            <!-- Title first -->
-            <a
-              href="{{ card_product.url }}"
-              id="CardLink-{{ section_id }}-{{ card_product.id }}"
-              class="title-cheyenne"
-              aria-labelledby="CardLink-{{ section_id }}-{{ card_product.id }} Badge-{{ section_id }}-{{ card_product.id }}"
-            >
-              {{ card_product.title | escape }}
-            </a>
+            <!-- Title and Heart on same row -->
+            <div class="title-heart-row">
+              <a
+                href="{{ card_product.url }}"
+                id="CardLink-{{ section_id }}-{{ card_product.id }}"
+                class="title-cheyenne"
+                aria-labelledby="CardLink-{{ section_id }}-{{ card_product.id }} Badge-{{ section_id }}-{{ card_product.id }}"
+              >
+                {{ card_product.title | escape }}
+              </a>
+              {% if size_option_index != -1 %}
+                <button
+                  class="wishlist-toggle wishlist-toggle--mobile-inline"
+                  type="button"
+                  aria-pressed="false"
+                  aria-label="{{ 'general.add_to_wishlist' | t | default: 'Add to wishlist' }}"
+                >
+                  <svg class="wishlist-toggle__icon" viewBox="0 0 24 24" role="presentation" focusable="false">
+                    <path d="M12 21.35 10.55 20.03C6.2 15.99 3 12.99 3 9.31 3 6.28 5.42 4 8.4 4A5.2 5.2 0 0 1 12 5.86 5.2 5.2 0 0 1 15.6 4C18.58 4 21 6.28 21 9.31c0 3.68-3.2 6.68-7.55 10.72z" />
+                  </svg>
+                </button>
+              {% endif %}
+            </div>
 
             <!-- Price second -->
             {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
 
-            <!-- Swatches and heart third -->
+            <!-- Swatches third -->
             <div class="price-and-swatch">
               <!-- BEGIN: Option C code for color swatches from option.value.swatch -->
               {% for option in card_product.options_with_values %}
@@ -535,51 +569,6 @@
                     {% endfor %}
                     {% if additional_swatch_count > 0 %}
                       <span class="additional-swatch-count">+{{ additional_swatch_count }}</span>
-                    {% endif %}
-                    {% if size_option_index != -1 %}
-                      <div class="product-card-plus">
-                        <button
-                          class="wishlist-toggle wishlist-toggle--mobile-inline"
-                          type="button"
-                          aria-pressed="false"
-                          aria-label="{{ 'general.add_to_wishlist' | t | default: 'Add to wishlist' }}"
-                        >
-                          <svg class="wishlist-toggle__icon" viewBox="0 0 24 24" role="presentation" focusable="false">
-                            <path d="M12 21.35 10.55 20.03C6.2 15.99 3 12.99 3 9.31 3 6.28 5.42 4 8.4 4A5.2 5.2 0 0 1 12 5.86 5.2 5.2 0 0 1 15.6 4C18.58 4 21 6.28 21 9.31c0 3.68-3.2 6.68-7.55 10.72z" />
-                          </svg>
-                        </button>
-                        <button type="button" class="plus-icon" aria-label="{{ 'products.product.add_to_cart' | t }}" tabindex="0">
-                          {{ 'icon-plus.svg' | inline_asset_content }}
-                        </button>
-                        <div class="size-options" tabindex="-1">
-                          <div class="size-options-header size-options-header--mobile-only">
-                            <span class="size-options-title">Seleciona o tamanho</span>
-                            <a href="/pages/guia-de-tamanhos" class="size-guide-link">
-                              Guia de tamanhos
-                            </a>
-                          </div>
-                          <div class="overlay-sizes">
-                            {% for size in all_sizes %}
-                              <button type="button" class="size-option{% unless available_sizes contains size %} sold-out{% endunless %}" data-size="{{ size }}" {% unless available_sizes contains size %}disabled="disabled"{% endunless %}>
-                                <span class="size-option__label">{{ size }}</span>
-                                <span class="size-option__low-stock hidden">Poucas unidades</span>
-                              </button>
-                            {% endfor %}
-                          </div>
-
-                          <!-- Size Calculator Trigger - styled as size item -->
-                          <button
-                            type="button"
-                            class="size-option size-drawer__calculator-button"
-                            data-calculator-drawer-trigger="card-{{ section_id }}-{{ card_product.id }}"
-                            aria-controls="size-calculator-drawer-card-{{ section_id }}-{{ card_product.id }}"
-                            aria-haspopup="dialog"
-                          >
-                            <span class="size-option__label">CALCULAR TAMANHO</span>
-                          </button>
-                        </div>
-
-                      </div>
                     {% endif %}
                   </div>
                 {% endif %}
