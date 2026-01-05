@@ -11,6 +11,116 @@
   "name": "t:sections.footer.name",
   "type": "footer",
   "sections": {
+    "176763001547e37d9f": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_710cd49_f7VTdi": {
+          "type": "ai_gen_block_710cd49",
+          "settings": {
+            "section_1_enabled": true,
+            "section_1_title": "About",
+            "section_1_menu": "",
+            "section_2_enabled": true,
+            "section_2_title": "Customer service",
+            "section_2_menu": "",
+            "section_3_enabled": true,
+            "section_3_title": "Information",
+            "section_3_menu": "",
+            "section_4_enabled": true,
+            "section_4_title": "Follow us",
+            "section_4_menu": "",
+            "section_5_enabled": false,
+            "section_5_title": "Section 5",
+            "section_5_menu": "",
+            "section_6_enabled": false,
+            "section_6_title": "Section 6",
+            "section_6_menu": "",
+            "section_7_enabled": false,
+            "section_7_title": "Section 7",
+            "section_7_menu": "",
+            "section_8_enabled": false,
+            "section_8_title": "Section 8",
+            "section_8_menu": "",
+            "section_9_enabled": false,
+            "section_9_title": "Section 9",
+            "section_9_menu": "",
+            "section_10_enabled": false,
+            "section_10_title": "Section 10",
+            "section_10_menu": "",
+            "desktop_width_percent": 100,
+            "padding_left": 0,
+            "padding_right": 0,
+            "text_color": "#121212",
+            "border_color": "#e0e0e0",
+            "icon_color": "#121212",
+            "item_padding": 16,
+            "title_size": 16,
+            "title_weight": "600",
+            "title_transform": "uppercase",
+            "title_spacing": 0.5,
+            "icon_size": 20,
+            "link_size": 14,
+            "link_color": "#121212",
+            "link_hover_color": "#666666",
+            "link_spacing": 12
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_710cd49_f7VTdi"
+      ],
+      "settings": {}
+    },
+    "blocks_qw8b6q": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_8ab1030_me3WXy": {
+          "type": "ai_gen_block_8ab1030",
+          "settings": {
+            "desktop_behavior": "always_open",
+            "background_color": "#ffffff",
+            "header_text_color": "#121212",
+            "header_hover_color": "#666666",
+            "content_text_color": "#666666",
+            "link_color": "#121212",
+            "link_hover_color": "#666666",
+            "divider_color": "#e8e8e8",
+            "divider_thickness": 1,
+            "border_radius": 0,
+            "padding": 0,
+            "item_padding": 20,
+            "link_spacing": 8,
+            "header_font_size": 14,
+            "header_font_weight": "500",
+            "header_text_transform": "uppercase",
+            "content_font_size": 13,
+            "icon_size": 16,
+            "section_1_enabled": true,
+            "section_1_title": "Customer care",
+            "section_1_content": "<ul><li><a href=\"#\">Contact us</a></li><li><a href=\"#\">Shipping</a></li><li><a href=\"#\">Returns</a></li><li><a href=\"#\">Size guide</a></li></ul>",
+            "section_2_enabled": true,
+            "section_2_title": "About",
+            "section_2_content": "<ul><li><a href=\"#\">Our story</a></li><li><a href=\"#\">Careers</a></li><li><a href=\"#\">Press</a></li><li><a href=\"#\">Sustainability</a></li></ul>",
+            "section_3_enabled": true,
+            "section_3_title": "Legal",
+            "section_3_content": "<ul><li><a href=\"#\">Privacy policy</a></li><li><a href=\"#\">Terms of service</a></li><li><a href=\"#\">Cookie policy</a></li></ul>",
+            "section_4_enabled": false,
+            "section_4_title": "",
+            "section_4_content": "",
+            "section_5_enabled": false,
+            "section_5_title": "",
+            "section_5_content": ""
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_8ab1030_me3WXy"
+      ],
+      "name": "Footer accordion",
+      "settings": {}
+    },
     "footers_MJGUrj": {
       "type": "FOOTERS",
       "custom_css": [],
@@ -36,6 +146,8 @@
     }
   },
   "order": [
+    "176763001547e37d9f",
+    "blocks_qw8b6q",
     "footers_MJGUrj",
     "footer"
   ]
