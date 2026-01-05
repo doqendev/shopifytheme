@@ -78,7 +78,7 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
   background: transparent;
   border: none;
   padding: 0 1rem 1.25rem;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Work Sans', sans-serif;
   font-size: 13px;
   font-weight: 400;
   letter-spacing: 0.5px;
@@ -134,7 +134,7 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Work Sans', sans-serif;
   font-size: 13px;
   font-weight: 400;
   color: inherit;

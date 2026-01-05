@@ -4,9 +4,9 @@
    Styles for a full-screen “Coming Soon” hero with a centered email signup.
    ============================================================================= */
 
-/* 1. Host “Playfair Display” locally from Assets */
+/* 1. Host "Work Sans" locally from Assets */
 @font-face {
-  font-family: 'Playfair Display';
+  font-family: 'Work Sans';
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -37,12 +37,12 @@
   width: 100%;
 }
 
-/* 4. “COMING SOON” heading (uses Playfair Display) */
+/* 4. "COMING SOON" heading (uses Work Sans) */
 .coming-soon-title {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Work Sans', serif;
   font-size: 10rem;       /* desktop size */
   line-height: 1.1;
-  margin: 0 0 1rem;      
+  margin: 0 0 1rem;
   text-transform: uppercase;
   color: #ffffff;
 }
