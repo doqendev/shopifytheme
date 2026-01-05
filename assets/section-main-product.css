@@ -276,43 +276,49 @@ a.product__text {
 }
 
 .wishlist-toggle--product-page {
-  background: rgba(255, 255, 255, 0.9);
-  border: none;
-  padding: 0;
+  background: transparent;
+  border: 1px solid #e0e0e0;
+  padding: 0.5rem;
   cursor: pointer;
   display: flex !important;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 3rem;
+  height: 3rem;
   flex-shrink: 0;
   border-radius: 50%;
   margin: 0;
   position: relative;
   z-index: 1;
+  transition: all 0.2s ease;
+}
+
+.wishlist-toggle--product-page:hover {
+  border-color: #111;
+  background: rgba(0, 0, 0, 0.02);
 }
 
 .wishlist-toggle--product-page .wishlist-toggle__icon {
-  width: 18px !important;
-  height: 18px !important;
-  color: #111;
+  width: 20px !important;
+  height: 20px !important;
   display: block !important;
+  fill: none;
+  stroke: #111;
+  stroke-width: 1.5;
 }
 
-/* Inactive heart: thin black outline */
+/* Inactive heart: outline only */
 .wishlist-toggle--product-page[aria-pressed="false"] .wishlist-toggle__icon path {
   fill: none !important;
   stroke: #111 !important;
-  stroke-width: 0.8 !important;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  stroke-width: 1.5 !important;
 }
 
 /* Active heart: filled */
 .wishlist-toggle--product-page[aria-pressed="true"] .wishlist-toggle__icon path {
   fill: #111 !important;
   stroke: #111 !important;
-  stroke-width: 0.8 !important;
+  stroke-width: 1.5 !important;
 }
 
 /* Mobile specific styling */
@@ -324,13 +330,14 @@ a.product__text {
 
   .wishlist-toggle--product-page {
     display: flex !important;
-    width: 2.2rem;
-    height: 2.2rem;
+    width: 2.8rem;
+    height: 2.8rem;
+    padding: 0.4rem;
   }
 
   .wishlist-toggle--product-page .wishlist-toggle__icon {
-    width: 16px !important;
-    height: 16px !important;
+    width: 18px !important;
+    height: 18px !important;
   }
 }
 
