@@ -1,6 +1,478 @@
+{% doc %}
+  @prompt
+    a footer accordion. we want to be able to have for example "ABOUT", then an arrow on the right most, when we press it opens the dropdown and we see a sepecific menu below. basically I want to be able to select a specific menu for each dropdown, we need to be able to add left and right padding
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-footer-accordion-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding-left: {{ block.settings.padding_left }}px;
+    padding-right: {{ block.settings.padding_right }}px;
+  }
+
+  .ai-footer-accordion__item-{{ ai_gen_id }} {
+    border-bottom: 1px solid {{ block.settings.border_color }};
+  }
+
+  .ai-footer-accordion__item-{{ ai_gen_id }}:first-child {
+    border-top: 1px solid {{ block.settings.border_color }};
+  }
+
+  .ai-footer-accordion__header-{{ ai_gen_id }} {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: {{ block.settings.item_padding }}px 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-footer-accordion__title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    font-weight: {{ block.settings.title_weight }};
+    margin: 0;
+    text-transform: {{ block.settings.title_transform }};
+    letter-spacing: {{ block.settings.title_spacing }}px;
+  }
+
+  .ai-footer-accordion__icon-{{ ai_gen_id }} {
+    width: {{ block.settings.icon_size }}px;
+    height: {{ block.settings.icon_size }}px;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+    margin-left: 16px;
+  }
+
+  .ai-footer-accordion__icon-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    stroke: {{ block.settings.icon_color }};
+  }
+
+  .ai-footer-accordion__header-{{ ai_gen_id }}[aria-expanded="true"] .ai-footer-accordion__icon-{{ ai_gen_id }} {
+    transform: rotate(180deg);
+  }
+
+  .ai-footer-accordion__content-{{ ai_gen_id }} {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  .ai-footer-accordion__content-{{ ai_gen_id }}.active {
+    max-height: 1000px;
+  }
+
+  .ai-footer-accordion__menu-{{ ai_gen_id }} {
+    list-style: none;
+    padding: 0 0 {{ block.settings.item_padding }}px 0;
+    margin: 0;
+  }
+
+  .ai-footer-accordion__menu-item-{{ ai_gen_id }} {
+    margin-bottom: {{ block.settings.link_spacing }}px;
+  }
+
+  .ai-footer-accordion__menu-item-{{ ai_gen_id }}:last-child {
+    margin-bottom: 0;
+  }
+
+  .ai-footer-accordion__link-{{ ai_gen_id }} {
+    color: {{ block.settings.link_color }};
+    text-decoration: none;
+    font-size: {{ block.settings.link_size }}px;
+    display: inline-block;
+    transition: color 0.2s ease;
+  }
+
+  .ai-footer-accordion__link-{{ ai_gen_id }}:hover {
+    color: {{ block.settings.link_hover_color }};
+  }
+
+  .ai-footer-accordion__empty-{{ ai_gen_id }} {
+    padding: 12px 0 {{ block.settings.item_padding }}px 0;
+    color: {{ block.settings.text_color }};
+    opacity: 0.6;
+    font-size: 14px;
+    font-style: italic;
+  }
+
+  @media screen and (min-width: 750px) {
+    .ai-footer-accordion-{{ ai_gen_id }} {
+      width: {{ block.settings.desktop_width_percent }}%;
+    }
+  }
+{% endstyle %}
+
+<footer-accordion-{{ ai_gen_id }} class="ai-footer-accordion-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  {% for i in (1..4) %}
+    {% liquid
+      assign section_enabled_key = 'section_' | append: i | append: '_enabled'
+      assign section_title_key = 'section_' | append: i | append: '_title'
+      assign section_menu_key = 'section_' | append: i | append: '_menu'
+
+      assign section_enabled = block.settings[section_enabled_key]
+      assign section_title = block.settings[section_title_key]
+      assign section_menu = block.settings[section_menu_key]
+    %}
+
+    {% if section_enabled %}
+      <div class="ai-footer-accordion__item-{{ ai_gen_id }}">
+        <button
+          class="ai-footer-accordion__header-{{ ai_gen_id }}"
+          aria-expanded="false"
+          aria-controls="ai-footer-accordion-content-{{ ai_gen_id }}-{{ i }}"
+        >
+          <h3 class="ai-footer-accordion__title-{{ ai_gen_id }}">{{ section_title }}</h3>
+          <span class="ai-footer-accordion__icon-{{ ai_gen_id }}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </span>
+        </button>
+        <div
+          id="ai-footer-accordion-content-{{ ai_gen_id }}-{{ i }}"
+          class="ai-footer-accordion__content-{{ ai_gen_id }}"
+        >
+          {% if section_menu != blank and section_menu.links.size > 0 %}
+            <ul class="ai-footer-accordion__menu-{{ ai_gen_id }}">
+              {% for link in section_menu.links %}
+                <li class="ai-footer-accordion__menu-item-{{ ai_gen_id }}">
+                  <a href="{{ link.url }}" class="ai-footer-accordion__link-{{ ai_gen_id }}">
+                    {{ link.title }}
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <div class="ai-footer-accordion__empty-{{ ai_gen_id }}">
+              Next, select a menu for this section
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
+</footer-accordion-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class FooterAccordion{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.headers = this.querySelectorAll('.ai-footer-accordion__header-{{ ai_gen_id }}');
+        this.setupEventListeners();
+      }
+
+      setupEventListeners() {
+        this.headers.forEach((header) => {
+          header.addEventListener('click', () => {
+            const content = header.nextElementSibling;
+            const isExpanded = header.getAttribute('aria-expanded') === 'true';
+
+            if (isExpanded) {
+              header.setAttribute('aria-expanded', 'false');
+              content.classList.remove('active');
+            } else {
+              header.setAttribute('aria-expanded', 'true');
+              content.classList.add('active');
+            }
+          });
+        });
+      }
+    }
+
+    customElements.define('footer-accordion-{{ ai_gen_id }}', FooterAccordion{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Footer accordion",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "section_1_enabled",
+      "label": "Enable section 1",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "section_1_title",
+      "label": "Title",
+      "default": "About"
+    },
+    {
+      "type": "link_list",
+      "id": "section_1_menu",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Section 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "section_2_enabled",
+      "label": "Enable section 2",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "section_2_title",
+      "label": "Title",
+      "default": "Customer service"
+    },
+    {
+      "type": "link_list",
+      "id": "section_2_menu",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Section 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "section_3_enabled",
+      "label": "Enable section 3",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "section_3_title",
+      "label": "Title",
+      "default": "Information"
+    },
+    {
+      "type": "link_list",
+      "id": "section_3_menu",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Section 4"
+    },
+    {
+      "type": "checkbox",
+      "id": "section_4_enabled",
+      "label": "Enable section 4",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "section_4_title",
+      "label": "Title",
+      "default": "Follow us"
+    },
+    {
+      "type": "link_list",
+      "id": "section_4_menu",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Left padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Right padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#121212"
+    },
+    {
+      "type": "range",
+      "id": "item_padding",
+      "label": "Item padding",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Title"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi-bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "select",
+      "id": "title_transform",
+      "label": "Transform",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "uppercase",
+          "label": "Uppercase"
+        },
+        {
+          "value": "capitalize",
+          "label": "Capitalize"
+        }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "range",
+      "id": "title_spacing",
+      "label": "Letter spacing",
+      "min": 0,
+      "max": 3,
+      "step": 0.5,
+      "unit": "px",
+      "default": 0.5
+    },
+    {
+      "type": "header",
+      "content": "Icon"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Size",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Links"
+    },
+    {
+      "type": "range",
+      "id": "link_size",
+      "label": "Size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Color",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "link_hover_color",
+      "label": "Hover color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "link_spacing",
+      "label": "Spacing",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer accordion"
+    }
+  ],
+  "tag": null
+}
 {% endschema %}
