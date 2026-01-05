@@ -1,4 +1,8 @@
 (() => {
+  const sizeDrawerLog = () => {};
+  const sizeDrawerWarn = () => {};
+  const sizeDrawerError = () => {};
+
   const stateBySection = new Map();
   const COLOR_KEYWORDS = ['color', 'cor', 'colour'];
   const SIZE_KEYWORDS = ['size', 'tamanho', 'talla'];
@@ -117,10 +121,10 @@
         const matches = document.querySelectorAll(selector);
         matches.forEach((element) => roots.add(element));
         if (matches.length) {
-          console.log('[SizeDrawer] Found variant root via selector', { sectionId, selector, matchCount: matches.length });
+          sizeDrawerLog('[SizeDrawer] Found variant root via selector', { sectionId, selector, matchCount: matches.length });
         }
       } catch (error) {
-        console.warn('Variant root selector failed', selector, error);
+        sizeDrawerWarn('Variant root selector failed', selector, error);
       }
     });
 
@@ -130,14 +134,14 @@
   const getVariantSelectRoot = (sectionId) => {
     const roots = getVariantRoots(sectionId);
     if (roots.length) {
-      console.log(`Using variant root for section ${sectionId}:`, roots[0]);
+      sizeDrawerLog(`Using variant root for section ${sectionId}:`, roots[0]);
       return roots[0];
     }
 
     const fallback = document.querySelector(
       `variant-selects[data-section="${sectionId}"], variant-radios[data-section="${sectionId}"]`
     );
-    console.log(`Fallback search for variant roots with data-section="${sectionId}":`, fallback);
+    sizeDrawerLog(`Fallback search for variant roots with data-section="${sectionId}":`, fallback);
     return fallback || null;
   };
 
@@ -212,7 +216,7 @@
     const normalizedOptionName = optionName.toLowerCase();
     let selectedValue = null;
 
-    console.log('[SizeDrawer] Resolving selected value', {
+    sizeDrawerLog('[SizeDrawer] Resolving selected value', {
       sectionId,
       optionName,
       optionPosition: option?.position,
@@ -240,7 +244,7 @@
           trimmedName === `options[${optionName}]` ||
           trimmedName === `options[${normalizedOptionName}]`
         ) {
-          console.log('[SizeDrawer] Found value via direct checked radio match', {
+          sizeDrawerLog('[SizeDrawer] Found value via direct checked radio match', {
             contextSectionId,
             value: radio.value,
             radioName: radio.name,
@@ -253,7 +257,7 @@
       for (const pattern of patterns) {
         const radio = root.querySelector(`input[name="${cssEscape(pattern)}"]:checked`);
         if (radio) {
-          console.log('[SizeDrawer] Found value via pattern match', {
+          sizeDrawerLog('[SizeDrawer] Found value via pattern match', {
             contextSectionId,
             pattern,
             value: radio.value,
@@ -270,7 +274,7 @@
         for (const selector of selectSelectors) {
           const select = root.querySelector(selector);
           if (select && select.value) {
-            console.log('[SizeDrawer] Found value via select element', {
+            sizeDrawerLog('[SizeDrawer] Found value via select element', {
               contextSectionId,
               selector,
               value: select.value,
@@ -284,7 +288,7 @@
         `[data-option-value][data-option-position="${option.position}"].is-active, [data-option-value].active, [data-option-value].selected`
       );
       if (activeSwatch?.dataset?.optionValue) {
-        console.log('[SizeDrawer] Found value via active swatch dataset', {
+        sizeDrawerLog('[SizeDrawer] Found value via active swatch dataset', {
           contextSectionId,
           value: activeSwatch.dataset.optionValue,
         });
@@ -295,7 +299,7 @@
         `[data-option-index="${option.position - 1}"] input[type="radio"]:checked`
       );
       if (inputWithDataset) {
-        console.log('[SizeDrawer] Found value via data-option-index match', {
+        sizeDrawerLog('[SizeDrawer] Found value via data-option-index match', {
           contextSectionId,
           value: inputWithDataset.value,
         });
@@ -322,13 +326,13 @@
 
     if (!selectedValue) {
       selectedValue = getOptionValueString(option.selected_value);
-      console.log('[SizeDrawer] Falling back to option default', {
+      sizeDrawerLog('[SizeDrawer] Falling back to option default', {
         sectionId,
         optionName,
         value: selectedValue,
       });
     } else {
-      console.log('[SizeDrawer] Resolved selected value', {
+      sizeDrawerLog('[SizeDrawer] Resolved selected value', {
         sectionId,
         optionName,
         value: selectedValue,
@@ -512,7 +516,7 @@
         return Shopify.formatMoney(cents, moneyFormat);
       }
     } catch (error) {
-      console.warn('formatMoney fallback triggered', error);
+      sizeDrawerWarn('formatMoney fallback triggered', error);
     }
     const amount = Number(cents) / 100;
     if (Number.isNaN(amount)) return '';
@@ -615,18 +619,18 @@
   }
 
   function updateDisplayedPrice(sectionId, overrideVariant) {
-    console.groupCollapsed('[SizeDrawer] updateDisplayedPrice', sectionId);
+    sizeDrawerLog('[SizeDrawer] updateDisplayedPrice', sectionId);
     const priceElements = getPriceElementsForSection(sectionId);
-    console.log('[SizeDrawer] Found price elements', priceElements.length, priceElements);
+    sizeDrawerLog('[SizeDrawer] Found price elements', priceElements.length, priceElements);
     if (!priceElements.length) {
-      console.groupEnd();
+      sizeDrawerLog();
       return;
     }
 
     const variant = overrideVariant || getVariantForSelections(sectionId);
     if (!variant) {
-      console.log('[SizeDrawer] No matching variant found for price update');
-      console.groupEnd();
+      sizeDrawerLog('[SizeDrawer] No matching variant found for price update');
+      sizeDrawerLog();
       return;
     }
 
@@ -635,7 +639,7 @@
       typeof variant.compare_at_price === 'number' ? variant.compare_at_price : Number(variant.compare_at_price);
 
     const isOnSale = compareValue > priceValue;
-    console.log('[SizeDrawer] Variant price data', {
+    sizeDrawerLog('[SizeDrawer] Variant price data', {
       variantId: variant.id,
       priceValue,
       compareValue,
@@ -701,7 +705,7 @@
 
       updateProductBadges(priceElement, variant);
     });
-    console.groupEnd();
+    sizeDrawerLog();
   }
 
 
@@ -889,7 +893,7 @@
   }
 
   function handleSizeSelection(sectionId, variant, sizeItem) {
-    console.log('handleSizeSelection called:', sectionId, variant, sizeItem);
+    sizeDrawerLog('handleSizeSelection called:', sectionId, variant, sizeItem);
     if (!variant || !variant.id) return;
 
     // Remove active state from all size items in this drawer
@@ -912,22 +916,22 @@
 
     // Add loading message inline to the size item
     const stockSpan = sizeItem.querySelector('.size-item__stock');
-    console.log('stockSpan found:', stockSpan);
-    console.log('sizeItem HTML before:', sizeItem.innerHTML);
+    sizeDrawerLog('stockSpan found:', stockSpan);
+    sizeDrawerLog('sizeItem HTML before:', sizeItem.innerHTML);
     let originalStockText = '';
     if (stockSpan) {
       originalStockText = stockSpan.textContent;
-      console.log('Setting stockSpan to Adicionando...');
+      sizeDrawerLog('Setting stockSpan to Adicionando...');
       stockSpan.textContent = 'Adicionando...';
     } else {
-      console.log('Creating new loading span');
+      sizeDrawerLog('Creating new loading span');
       const loadingSpan = document.createElement('span');
       loadingSpan.className = 'size-item__stock size-item__loading-message';
       loadingSpan.textContent = 'Adicionando...';
       loadingSpan.style.marginLeft = '8px';
       sizeItem.appendChild(loadingSpan);
-      console.log('Loading span created:', loadingSpan);
-      console.log('sizeItem HTML after:', sizeItem.innerHTML);
+      sizeDrawerLog('Loading span created:', loadingSpan);
+      sizeDrawerLog('sizeItem HTML after:', sizeItem.innerHTML);
     }
 
     sizeItem.classList.add('size-item--loading');
@@ -970,7 +974,7 @@
         }
       })
       .catch((error) => {
-        console.error('Size drawer add to cart failed', error);
+        sizeDrawerError('Size drawer add to cart failed', error);
         const message = error?.message || 'Erro ao adicionar ao carrinho.';
 
         // Show error inline
@@ -1092,24 +1096,24 @@
   }
 
   function openDrawer(sectionId, triggerElement) {
-    console.log('openDrawer called for section:', sectionId);
+    sizeDrawerLog('openDrawer called for section:', sectionId);
     const drawer = document.getElementById(`size-drawer-${sectionId}`);
-    console.log('Drawer element found:', drawer);
+    sizeDrawerLog('Drawer element found:', drawer);
     if (!drawer) {
-      console.error('No drawer found for section:', sectionId);
+      sizeDrawerError('No drawer found for section:', sectionId);
       return;
     }
 
     // Debug: Check all variant-selects elements on page
     const allVariantSelects = document.querySelectorAll('variant-selects, variant-radios');
-    console.log('All variant pickers on page:', allVariantSelects);
+    sizeDrawerLog('All variant pickers on page:', allVariantSelects);
     allVariantSelects.forEach((el, index) => {
-      console.log(`  ${index + 1}. ID: ${el.id}, data-section: ${el.dataset.section}`);
+      sizeDrawerLog(`  ${index + 1}. ID: ${el.id}, data-section: ${el.dataset.section}`);
     });
 
     stopDesktopPositioning(sectionId);
     const state = ensureState(sectionId);
-    console.log('State ensured for section:', sectionId, state);
+    sizeDrawerLog('State ensured for section:', sectionId, state);
     renderSizeOptions(sectionId);
 
     // Check for saved measurements and auto-calculate recommendation
@@ -1165,25 +1169,25 @@
   }
 
   function handleDocumentClick(event) {
-    console.log('Document click detected:', event.target);
+    sizeDrawerLog('Document click detected:', event.target);
 
     // IMPORTANT: Check for calculator button first and ignore it
     const calculatorButton = event.target.closest('[data-calculator-drawer-trigger]');
     if (calculatorButton) {
-      console.log('Calculator button detected, ignoring in size-drawer.js');
+      sizeDrawerLog('Calculator button detected, ignoring in size-drawer.js');
       return; // Let size-calculator-drawer.js handle it
     }
 
     const trigger = event.target.closest('[data-size-drawer-trigger]');
     if (trigger) {
       const sectionId = trigger.getAttribute('data-size-drawer-trigger');
-      console.log('Size drawer clicked! Section ID:', sectionId);
+      sizeDrawerLog('Size drawer clicked! Section ID:', sectionId);
       if (sectionId) {
         event.preventDefault();
-        console.log('Opening drawer for section:', sectionId);
+        sizeDrawerLog('Opening drawer for section:', sectionId);
         openDrawer(sectionId, trigger);
       } else {
-        console.error('No section ID found on trigger:', trigger);
+        sizeDrawerError('No section ID found on trigger:', trigger);
       }
       return;
     }
@@ -1191,16 +1195,16 @@
     // Check if any drawer is open
     const openDrawerElement = document.querySelector('.size-drawer.is-open');
     if (openDrawerElement) {
-      console.log('Open drawer detected:', openDrawerElement);
+      sizeDrawerLog('Open drawer detected:', openDrawerElement);
 
       // Check if click is inside drawer content
       const drawerContent = event.target.closest('.size-drawer__content');
-      console.log('Click inside drawer content?:', !!drawerContent);
+      sizeDrawerLog('Click inside drawer content?:', !!drawerContent);
 
       if (!drawerContent) {
         // Click is outside drawer content, close the drawer
         const sectionId = openDrawerElement.dataset.sectionId;
-        console.log('Closing drawer (clicked outside) for section:', sectionId);
+        sizeDrawerLog('Closing drawer (clicked outside) for section:', sectionId);
         if (sectionId) {
           // Prevent default action and stop propagation to prevent clicking through to elements behind
           event.preventDefault();
@@ -1213,13 +1217,13 @@
     }
 
     const closeTrigger = event.target.closest('[data-size-drawer-close]');
-    console.log('Close trigger found:', closeTrigger);
+    sizeDrawerLog('Close trigger found:', closeTrigger);
     if (closeTrigger) {
       const drawer = closeTrigger.closest('.size-drawer');
-      console.log('Drawer found from close trigger:', drawer);
-      console.log('Drawer sectionId:', drawer?.dataset.sectionId);
+      sizeDrawerLog('Drawer found from close trigger:', drawer);
+      sizeDrawerLog('Drawer sectionId:', drawer?.dataset.sectionId);
       if (drawer?.dataset.sectionId) {
-        console.log('Closing drawer for section:', drawer.dataset.sectionId);
+        sizeDrawerLog('Closing drawer for section:', drawer.dataset.sectionId);
         event.preventDefault();
         event.stopPropagation();
         closeDrawer(drawer.dataset.sectionId);
@@ -1243,7 +1247,7 @@
 
     if (!sectionId) return;
 
-    console.log('[SizeDrawer] Variant change from pub/sub', {
+    sizeDrawerLog('[SizeDrawer] Variant change from pub/sub', {
       sectionId,
       variantId: variant?.id,
       variant
@@ -1260,7 +1264,7 @@
     const sourceSectionId = variantElement.dataset.section;
     if (!sourceSectionId) return;
 
-    console.log('[SizeDrawer] Variant change detected', {
+    sizeDrawerLog('[SizeDrawer] Variant change detected', {
       sourceSectionId,
       changedElement: event.target,
       pickerType: variantElement.tagName,
@@ -1278,10 +1282,10 @@
       if (drawerSectionId) {
         const state = stateBySection.get(drawerSectionId);
         if (state && state.isProcessing) {
-          console.log('Skipping refresh for drawer during cart addition:', drawerSectionId);
+          sizeDrawerLog('Skipping refresh for drawer during cart addition:', drawerSectionId);
           return;
         }
-        console.log('Refreshing size options for open drawer:', drawerSectionId);
+        sizeDrawerLog('Refreshing size options for open drawer:', drawerSectionId);
         renderSizeOptions(drawerSectionId);
       }
     });
@@ -1296,7 +1300,7 @@
       const optionName = changedInput.name.split('-')[0];
       const optionValue = changedInput.value;
 
-      console.log(`Syncing ${optionName} = ${optionValue} from section ${sourceSectionId} to all sections`);
+      sizeDrawerLog(`Syncing ${optionName} = ${optionValue} from section ${sourceSectionId} to all sections`);
 
       // Find all variant-selects elements except the source
       const allVariantSelects = document.querySelectorAll('variant-selects, variant-radios');
@@ -1309,7 +1313,7 @@
         const matchingInput = variantSelect.querySelector(`input[name*="${optionName}"][value="${optionValue}"]`);
 
         if (matchingInput && !matchingInput.checked) {
-          console.log(`Syncing to section ${targetSectionId}: setting ${optionName} to ${optionValue}`);
+          sizeDrawerLog(`Syncing to section ${targetSectionId}: setting ${optionName} to ${optionValue}`);
           matchingInput.checked = true;
           // Dispatch change event but without bubbling to prevent loops
           matchingInput.dispatchEvent(new Event('change', { bubbles: false }));
@@ -1343,7 +1347,7 @@
   }
 
   function initialize() {
-    console.log('Size drawer initializing...');
+    sizeDrawerLog('Size drawer initializing...');
     hideProductSizeInputs();
     document.addEventListener('click', handleDocumentClick, true); // Use capture phase
     document.addEventListener('keydown', handleDocumentKeydown);
@@ -1357,14 +1361,14 @@
 
     document.addEventListener('product-info:loaded', handleProductInfoLoaded);
     document.addEventListener('shopify:section:load', handleSectionLoad);
-    console.log('Size drawer initialized. Event listeners attached.');
+    sizeDrawerLog('Size drawer initialized. Event listeners attached.');
 
     // Debug: Check for size drawer data
-    console.log('Size drawer data:', window.themeSizeDrawerData);
+    sizeDrawerLog('Size drawer data:', window.themeSizeDrawerData);
 
     // Debug: Check for size drawer triggers
     const triggers = document.querySelectorAll('[data-size-drawer-trigger]');
-    console.log('Found size drawer triggers:', triggers.length, triggers);
+    sizeDrawerLog('Found size drawer triggers:', triggers.length, triggers);
 
     if (window.themeSizeDrawerData && typeof window.themeSizeDrawerData === 'object') {
       Object.keys(window.themeSizeDrawerData).forEach((sectionKey) => {
@@ -1382,7 +1386,7 @@
 
   // Also try initializing after a short delay as fallback
   setTimeout(() => {
-    console.log('Size drawer delayed initialization attempt...');
+    sizeDrawerLog('Size drawer delayed initialization attempt...');
     initialize();
   }, 500);
 

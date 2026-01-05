@@ -744,39 +744,42 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- Variant ID Sync Script for Desktop -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  var desktopProductLog = function() {};
+  var desktopProductWarn = function() {};
+  var desktopProductError = function() {};
   var productData = {{ product | json }};
   if (!productData.variants) {
-    console.warn("productData has no variants");
+    desktopProductWarn("productData has no variants");
     return;
   }
   
   var addToCartContainer = document.querySelector('.desktop-product-info .add-to-cart');
   if (!addToCartContainer) {
-    console.warn("No add-to-cart container found in desktop product info");
+    desktopProductWarn("No add-to-cart container found in desktop product info");
     return;
   }
   
   var buyButtonsForm = addToCartContainer.querySelector('form');
   if (!buyButtonsForm) {
-    console.warn("No buy-buttons form found inside the add-to-cart container");
+    desktopProductWarn("No buy-buttons form found inside the add-to-cart container");
     return;
   }
   
   var hiddenInput = buyButtonsForm.querySelector('input[name="id"]');
   if (!hiddenInput) {
-    console.warn("No hidden input[name='id'] found in desktop buy-buttons form");
+    desktopProductWarn("No hidden input[name='id'] found in desktop buy-buttons form");
     return;
   }
   
   var variantPickerEl = document.getElementById('variant-selects-{{ section.id }}');
   if (!variantPickerEl) {
-    console.warn("No variant-picker element found with id: variant-selects-{{ section.id }}");
+    desktopProductWarn("No variant-picker element found with id: variant-selects-{{ section.id }}");
     return;
   }
   
   var optionWrappers = variantPickerEl.querySelectorAll('.product-form__input');
   if (!optionWrappers.length) {
-    console.warn("No product-form__input fieldsets found in variant-picker");
+    desktopProductWarn("No product-form__input fieldsets found in variant-picker");
     return;
   }
 
@@ -848,7 +851,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }
     } else {
-      console.warn("No matching variant found for options:", selectedOptions);
+      desktopProductWarn("No matching variant found for options:", selectedOptions);
     }
   }
   
@@ -868,23 +871,23 @@ document.addEventListener('DOMContentLoaded', function() {
     var matchingVariant = findVariant(selectedOptions);
     
     if (!matchingVariant) {
-      console.warn('No matching variant found for price update');
+      desktopProductWarn('No matching variant found for price update');
       return;
     }
     
-    console.log('Updating price for variant:', matchingVariant.title);
-    console.log('Variant price:', matchingVariant.price);
-    console.log('Variant compare_at_price:', matchingVariant.compare_at_price);
+    desktopProductLog('Updating price for variant:', matchingVariant.title);
+    desktopProductLog('Variant price:', matchingVariant.price);
+    desktopProductLog('Variant compare_at_price:', matchingVariant.compare_at_price);
     
     var priceContainer = document.querySelector('.desktop-product-info .price-container .price');
     if (!priceContainer) {
-      console.warn('Price container not found');
+      desktopProductWarn('Price container not found');
       return;
     }
     
     var hasComparePrice = matchingVariant.compare_at_price && matchingVariant.compare_at_price > matchingVariant.price;
     
-    console.log('Has compare price (on sale):', hasComparePrice);
+    desktopProductLog('Has compare price (on sale):', hasComparePrice);
     
     // Update the price container classes
     if (hasComparePrice) {

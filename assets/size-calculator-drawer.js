@@ -5,10 +5,13 @@
 
 (() => {
   'use strict';
+  const sizeCalculatorLog = () => {};
+  const sizeCalculatorWarn = () => {};
+  const sizeCalculatorError = () => {};
 
-  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  console.log('🔵 [SizeCalculator] Script file loaded!');
-  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  sizeCalculatorLog('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  sizeCalculatorLog('🔵 [SizeCalculator] Script file loaded!');
+  sizeCalculatorLog('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
   // ============================================
   // CONFIGURATION
@@ -51,22 +54,22 @@
     const sectionId = drawer.dataset.sectionId;
     const state = ensureState(sectionId);
 
-    console.log('[SizeCalculator] goToStep called:', stepNumber);
+    sizeCalculatorLog('[SizeCalculator] goToStep called:', stepNumber);
 
     // Hide all step contents
     const stepContents = drawer.querySelectorAll('[data-step-content]');
-    console.log('[SizeCalculator] Found step contents:', stepContents.length);
+    sizeCalculatorLog('[SizeCalculator] Found step contents:', stepContents.length);
     stepContents.forEach(content => {
       content.hidden = true;
-      console.log('[SizeCalculator] Hiding step:', content.dataset.stepContent);
+      sizeCalculatorLog('[SizeCalculator] Hiding step:', content.dataset.stepContent);
     });
 
     // Show target step content
     const targetContent = drawer.querySelector(`[data-step-content="${stepNumber}"]`);
-    console.log('[SizeCalculator] Target content found:', !!targetContent);
+    sizeCalculatorLog('[SizeCalculator] Target content found:', !!targetContent);
     if (targetContent) {
       targetContent.hidden = false;
-      console.log('[SizeCalculator] Showing step:', stepNumber);
+      sizeCalculatorLog('[SizeCalculator] Showing step:', stepNumber);
     }
 
     // Update step indicators
@@ -85,13 +88,13 @@
     // Update drawer data attribute
     drawer.dataset.currentStep = stepNumber;
     state.currentStep = stepNumber;
-    console.log('[SizeCalculator] Step updated to:', stepNumber);
+    sizeCalculatorLog('[SizeCalculator] Step updated to:', stepNumber);
   }
 
   function validateStep1(drawer) {
     const form = drawer.querySelector('[data-calculator-form]');
     if (!form) {
-      console.log('[SizeCalculator] Form not found');
+      sizeCalculatorLog('[SizeCalculator] Form not found');
       return false;
     }
 
@@ -99,7 +102,7 @@
     const altura = form.querySelector('[name="altura"]');
     const peso = form.querySelector('[name="peso"]');
 
-    console.log('[SizeCalculator] Validating Step 1:', {
+    sizeCalculatorLog('[SizeCalculator] Validating Step 1:', {
       idade: idade?.value,
       altura: altura?.value,
       peso: peso?.value
@@ -107,55 +110,55 @@
 
     // Check if all fields are filled and valid
     if (!idade || !idade.value || !idade.checkValidity()) {
-      console.log('[SizeCalculator] Idade validation failed');
+      sizeCalculatorLog('[SizeCalculator] Idade validation failed');
       return false;
     }
     if (!altura || !altura.value || !altura.checkValidity()) {
-      console.log('[SizeCalculator] Altura validation failed');
+      sizeCalculatorLog('[SizeCalculator] Altura validation failed');
       return false;
     }
     if (!peso || !peso.value || !peso.checkValidity()) {
-      console.log('[SizeCalculator] Peso validation failed');
+      sizeCalculatorLog('[SizeCalculator] Peso validation failed');
       return false;
     }
 
-    console.log('[SizeCalculator] Step 1 validation passed');
+    sizeCalculatorLog('[SizeCalculator] Step 1 validation passed');
     return true;
   }
 
   function validateStep2(drawer) {
     const form = drawer.querySelector('[data-calculator-form]');
     if (!form) {
-      console.error('[SizeCalculator] Form not found for step 2 validation');
+      sizeCalculatorError('[SizeCalculator] Form not found for step 2 validation');
       return false;
     }
 
     const belly = form.querySelector('[name="belly"]');
     const shoulders = form.querySelector('[name="shoulders"]');
 
-    console.log('[SizeCalculator] Validating Step 2:', {
+    sizeCalculatorLog('[SizeCalculator] Validating Step 2:', {
       belly: belly?.value,
       shoulders: shoulders?.value
     });
 
     if (!belly || !belly.value) {
-      console.error('[SizeCalculator] Step 2 validation failed: belly not selected');
+      sizeCalculatorError('[SizeCalculator] Step 2 validation failed: belly not selected');
       return false;
     }
 
     if (!shoulders || !shoulders.value) {
-      console.error('[SizeCalculator] Step 2 validation failed: shoulders not selected');
+      sizeCalculatorError('[SizeCalculator] Step 2 validation failed: shoulders not selected');
       return false;
     }
 
-    console.log('[SizeCalculator] Step 2 validation passed');
+    sizeCalculatorLog('[SizeCalculator] Step 2 validation passed');
     return true;
   }
 
   function handleNextStep(drawer) {
     const currentStep = parseInt(drawer.dataset.currentStep || '1', 10);
-    console.log('[SizeCalculator] handleNextStep called, current step:', currentStep);
-    console.log('[SizeCalculator] Drawer section ID:', drawer.dataset.sectionId);
+    sizeCalculatorLog('[SizeCalculator] handleNextStep called, current step:', currentStep);
+    sizeCalculatorLog('[SizeCalculator] Drawer section ID:', drawer.dataset.sectionId);
 
     // Validate step 1 before proceeding to step 2
     if (currentStep === 1) {
@@ -163,7 +166,7 @@
         showStatus(drawer, 'Por favor, preencha todos os campos corretamente.', 'error');
         return;
       }
-      console.log('[SizeCalculator] Step 1 validation passed, going to step 2');
+      sizeCalculatorLog('[SizeCalculator] Step 1 validation passed, going to step 2');
       // ALWAYS go to step 2 from step 1
       goToStep(drawer, 2);
       return;
@@ -171,12 +174,12 @@
 
     // For other steps, advance normally
     const targetStep = currentStep + 1;
-    console.log('[SizeCalculator] Moving to step:', targetStep);
+    sizeCalculatorLog('[SizeCalculator] Moving to step:', targetStep);
     goToStep(drawer, targetStep);
 
     // Verify the step was changed
     setTimeout(() => {
-      console.log('[SizeCalculator] After goToStep, current step:', drawer.dataset.currentStep);
+      sizeCalculatorLog('[SizeCalculator] After goToStep, current step:', drawer.dataset.currentStep);
     }, 100);
   }
 
@@ -200,7 +203,7 @@
       localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(data));
       return true;
     } catch (error) {
-      console.error('[SizeCalculator] Failed to save measurements:', error);
+      sizeCalculatorError('[SizeCalculator] Failed to save measurements:', error);
       return false;
     }
   }
@@ -222,7 +225,7 @@
 
       return measurements;
     } catch (error) {
-      console.error('[SizeCalculator] Failed to load measurements:', error);
+      sizeCalculatorError('[SizeCalculator] Failed to load measurements:', error);
       return null;
     }
   }
@@ -232,7 +235,7 @@
       localStorage.removeItem(CONFIG.STORAGE_KEY);
       return true;
     } catch (error) {
-      console.error('[SizeCalculator] Failed to clear measurements:', error);
+      sizeCalculatorError('[SizeCalculator] Failed to clear measurements:', error);
       return false;
     }
   }
@@ -294,40 +297,40 @@
   // ============================================
 
   function openCalculatorDrawer(sectionId) {
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log('[SizeCalculator] openCalculatorDrawer called with sectionId:', sectionId);
+    sizeCalculatorLog('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    sizeCalculatorLog('[SizeCalculator] openCalculatorDrawer called with sectionId:', sectionId);
     const drawerId = `size-calculator-drawer-${sectionId}`;
-    console.log('[SizeCalculator] Looking for drawer with ID:', drawerId);
+    sizeCalculatorLog('[SizeCalculator] Looking for drawer with ID:', drawerId);
 
     const drawer = document.getElementById(drawerId);
-    console.log('[SizeCalculator] Drawer element found:', !!drawer);
+    sizeCalculatorLog('[SizeCalculator] Drawer element found:', !!drawer);
 
     if (!drawer) {
-      console.error('[SizeCalculator] ❌ Drawer not found for section:', sectionId);
-      console.log('[SizeCalculator] Available calculator drawers on page:');
+      sizeCalculatorError('[SizeCalculator] ❌ Drawer not found for section:', sectionId);
+      sizeCalculatorLog('[SizeCalculator] Available calculator drawers on page:');
       document.querySelectorAll('.size-calculator-drawer').forEach(d => {
-        console.log('  - ID:', d.id, 'Section ID:', d.dataset.sectionId);
+        sizeCalculatorLog('  - ID:', d.id, 'Section ID:', d.dataset.sectionId);
       });
-      console.log('[SizeCalculator] All elements with data-calculator-drawer-trigger:');
+      sizeCalculatorLog('[SizeCalculator] All elements with data-calculator-drawer-trigger:');
       document.querySelectorAll('[data-calculator-drawer-trigger]').forEach(btn => {
-        console.log('  - Button trigger value:', btn.dataset.calculatorDrawerTrigger);
+        sizeCalculatorLog('  - Button trigger value:', btn.dataset.calculatorDrawerTrigger);
       });
-      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      sizeCalculatorLog('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
       return;
     }
 
     // Close any open size drawer before opening calculator drawer
     const openSizeDrawer = document.querySelector('.size-drawer.is-open');
-    console.log('[SizeCalculator] Open size drawer found:', !!openSizeDrawer);
+    sizeCalculatorLog('[SizeCalculator] Open size drawer found:', !!openSizeDrawer);
     if (openSizeDrawer && openSizeDrawer.dataset.sectionId) {
-      console.log('[SizeCalculator] Closing open size drawer for section:', openSizeDrawer.dataset.sectionId);
+      sizeCalculatorLog('[SizeCalculator] Closing open size drawer for section:', openSizeDrawer.dataset.sectionId);
       // Call the size drawer's close function if available
       if (window.themeSizeDrawer && typeof window.themeSizeDrawer.closeDrawer === 'function') {
-        console.log('[SizeCalculator] Using themeSizeDrawer.closeDrawer()');
+        sizeCalculatorLog('[SizeCalculator] Using themeSizeDrawer.closeDrawer()');
         window.themeSizeDrawer.closeDrawer(openSizeDrawer.dataset.sectionId);
       } else {
         // Fallback: manually close the drawer
-        console.log('[SizeCalculator] Manually closing size drawer');
+        sizeCalculatorLog('[SizeCalculator] Manually closing size drawer');
         openSizeDrawer.classList.remove('is-open');
         openSizeDrawer.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
@@ -335,22 +338,22 @@
     }
 
     const state = ensureState(sectionId);
-    console.log('[SizeCalculator] State initialized for section:', sectionId);
+    sizeCalculatorLog('[SizeCalculator] State initialized for section:', sectionId);
 
     // Store last focused element
     state.lastFocused = document.activeElement;
-    console.log('[SizeCalculator] Stored last focused element');
+    sizeCalculatorLog('[SizeCalculator] Stored last focused element');
 
     // Reset form if exists
     const form = drawer.querySelector('[data-calculator-form]');
-    console.log('[SizeCalculator] Form found:', !!form);
+    sizeCalculatorLog('[SizeCalculator] Form found:', !!form);
     if (form) {
       form.reset();
-      console.log('[SizeCalculator] Form reset');
+      sizeCalculatorLog('[SizeCalculator] Form reset');
 
       // Load saved measurements if available
       const savedMeasurements = loadSavedMeasurements();
-      console.log('[SizeCalculator] Saved measurements:', savedMeasurements);
+      sizeCalculatorLog('[SizeCalculator] Saved measurements:', savedMeasurements);
       if (savedMeasurements) {
         form.querySelector('[name="idade"]').value = savedMeasurements.idade || '';
         form.querySelector('[name="altura"]').value = savedMeasurements.altura || '';
@@ -369,19 +372,19 @@
     }
 
     // Reset to step 1
-    console.log('[SizeCalculator] Resetting to step 1');
+    sizeCalculatorLog('[SizeCalculator] Resetting to step 1');
     goToStep(drawer, 1);
 
     // Open drawer
-    console.log('[SizeCalculator] Adding is-open class to drawer');
+    sizeCalculatorLog('[SizeCalculator] Adding is-open class to drawer');
     drawer.classList.add('is-open');
-    console.log('[SizeCalculator] Setting aria-hidden to false');
+    sizeCalculatorLog('[SizeCalculator] Setting aria-hidden to false');
     drawer.setAttribute('aria-hidden', 'false');
-    console.log('[SizeCalculator] Drawer should now be visible');
+    sizeCalculatorLog('[SizeCalculator] Drawer should now be visible');
 
     // Check computed styles
     const computedStyle = window.getComputedStyle(drawer);
-    console.log('[SizeCalculator] Drawer computed styles:', {
+    sizeCalculatorLog('[SizeCalculator] Drawer computed styles:', {
       display: computedStyle.display,
       visibility: computedStyle.visibility,
       opacity: computedStyle.opacity,
@@ -394,14 +397,14 @@
       inset: computedStyle.inset,
       transform: computedStyle.transform
     });
-    console.log('[SizeCalculator] Drawer classList:', drawer.classList.toString());
-    console.log('[SizeCalculator] Drawer aria-hidden:', drawer.getAttribute('aria-hidden'));
+    sizeCalculatorLog('[SizeCalculator] Drawer classList:', drawer.classList.toString());
+    sizeCalculatorLog('[SizeCalculator] Drawer aria-hidden:', drawer.getAttribute('aria-hidden'));
 
     // Check drawer content element
     const drawerContent = drawer.querySelector('.size-calculator-drawer__content');
     if (drawerContent) {
       const contentStyle = window.getComputedStyle(drawerContent);
-      console.log('[SizeCalculator] Drawer CONTENT computed styles:', {
+      sizeCalculatorLog('[SizeCalculator] Drawer CONTENT computed styles:', {
         display: contentStyle.display,
         visibility: contentStyle.visibility,
         opacity: contentStyle.opacity,
@@ -412,12 +415,12 @@
         maxHeight: contentStyle.maxHeight
       });
     } else {
-      console.error('[SizeCalculator] ❌ Drawer content element not found!');
+      sizeCalculatorError('[SizeCalculator] ❌ Drawer content element not found!');
     }
 
     // Check if drawer is in viewport
     const rect = drawer.getBoundingClientRect();
-    console.log('[SizeCalculator] Drawer bounding rect:', {
+    sizeCalculatorLog('[SizeCalculator] Drawer bounding rect:', {
       top: rect.top,
       left: rect.left,
       bottom: rect.bottom,
@@ -430,12 +433,12 @@
     // Check parent elements for ALL potential issues
     let parent = drawer.parentElement;
     let depth = 0;
-    console.log('[SizeCalculator] Checking ALL parent elements:');
+    sizeCalculatorLog('[SizeCalculator] Checking ALL parent elements:');
     while (parent && depth < 8) {
       const parentStyle = window.getComputedStyle(parent);
       const parentRect = parent.getBoundingClientRect();
 
-      console.log(`[SizeCalculator] Parent (depth ${depth}):`, {
+      sizeCalculatorLog(`[SizeCalculator] Parent (depth ${depth}):`, {
         tag: parent.tagName,
         classes: parent.className,
         id: parent.id,
@@ -452,21 +455,21 @@
       depth++;
     }
 
-    console.log('[SizeCalculator] Drawer direct parent:', drawer.parentElement?.tagName, drawer.parentElement?.className);
+    sizeCalculatorLog('[SizeCalculator] Drawer direct parent:', drawer.parentElement?.tagName, drawer.parentElement?.className);
 
     // Focus first input
     setTimeout(() => {
       const firstInput = drawer.querySelector('input[type="number"]');
       if (firstInput) {
-        console.log('[SizeCalculator] Focusing first input');
+        sizeCalculatorLog('[SizeCalculator] Focusing first input');
         firstInput.focus();
       }
     }, 100);
 
     // Prevent body scroll
-    console.log('[SizeCalculator] Preventing body scroll');
+    sizeCalculatorLog('[SizeCalculator] Preventing body scroll');
     document.body.style.overflow = 'hidden';
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    sizeCalculatorLog('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   }
 
   function closeCalculatorDrawer(sectionId) {
@@ -547,10 +550,10 @@
 
     // Validate current step - form can only be submitted from Step 2
     const currentStep = parseInt(drawer.dataset.currentStep || '1', 10);
-    console.log('[SizeCalculator] Form submit triggered, current step:', currentStep);
+    sizeCalculatorLog('[SizeCalculator] Form submit triggered, current step:', currentStep);
 
     if (currentStep !== 2) {
-      console.log('[SizeCalculator] Form submit blocked - not on step 2');
+      sizeCalculatorLog('[SizeCalculator] Form submit blocked - not on step 2');
       return;
     }
 
@@ -716,21 +719,21 @@
       // Only log if it looks like it might be a calculator button click
       const maybeCalcButton = event.target.closest('[data-calculator-drawer-trigger]');
       if (maybeCalcButton || event.target.closest('.size-drawer__calculator-button')) {
-        console.log('[SizeCalculator] Click event detected on:', targetInfo);
+        sizeCalculatorLog('[SizeCalculator] Click event detected on:', targetInfo);
       }
 
       // Open calculator drawer
       const trigger = event.target.closest('[data-calculator-drawer-trigger]');
       if (maybeCalcButton || trigger) {
-        console.log('[SizeCalculator] Trigger found:', !!trigger, trigger);
+        sizeCalculatorLog('[SizeCalculator] Trigger found:', !!trigger, trigger);
       }
 
       if (trigger) {
-        console.log('[SizeCalculator] ✓ Calculator button clicked!');
+        sizeCalculatorLog('[SizeCalculator] ✓ Calculator button clicked!');
         event.preventDefault();
         event.stopPropagation(); // Prevent other handlers from interfering
         const sectionId = trigger.dataset.calculatorDrawerTrigger;
-        console.log('[SizeCalculator] Section ID from button:', sectionId);
+        sizeCalculatorLog('[SizeCalculator] Section ID from button:', sectionId);
         openCalculatorDrawer(sectionId);
         return;
       }
@@ -759,22 +762,22 @@
       if (nextBtn) {
         event.preventDefault();
         event.stopPropagation();
-        console.log('[SizeCalculator] Next button clicked');
+        sizeCalculatorLog('[SizeCalculator] Next button clicked');
         const drawer = nextBtn.closest('.size-calculator-drawer');
         if (drawer) {
           // Only handle if this drawer is actually open
           if (!drawer.classList.contains('is-open')) {
-            console.log('[SizeCalculator] Drawer not open, ignoring click');
+            sizeCalculatorLog('[SizeCalculator] Drawer not open, ignoring click');
             return;
           }
-          console.log('[SizeCalculator] Drawer found and open, calling handleNextStep');
+          sizeCalculatorLog('[SizeCalculator] Drawer found and open, calling handleNextStep');
           try {
             handleNextStep(drawer);
           } catch (error) {
-            console.error('[SizeCalculator] Error in handleNextStep:', error);
+            sizeCalculatorError('[SizeCalculator] Error in handleNextStep:', error);
           }
         } else {
-          console.error('[SizeCalculator] Drawer not found');
+          sizeCalculatorError('[SizeCalculator] Drawer not found');
         }
         return;
       }
@@ -801,7 +804,7 @@
       const calculateBtn = event.target.closest('[data-calculate-submit]');
       if (calculateBtn) {
         event.preventDefault();
-        console.log('[SizeCalculator] Calculate button clicked');
+        sizeCalculatorLog('[SizeCalculator] Calculate button clicked');
         const drawer = calculateBtn.closest('.size-calculator-drawer');
         if (drawer) {
           const form = drawer.querySelector('[data-calculator-form]');
@@ -834,7 +837,7 @@
       if (form) {
         event.preventDefault();
         // Prevent any form submission - user must use button clicks only
-        console.log('[SizeCalculator] Form submit prevented - use buttons only');
+        sizeCalculatorLog('[SizeCalculator] Form submit prevented - use buttons only');
         return false;
       }
     });
@@ -865,7 +868,7 @@
           // If on step 1, Enter should trigger Next button
           if (currentStep === 1 && (input.name === 'idade' || input.name === 'altura' || input.name === 'peso')) {
             event.preventDefault();
-            console.log('[SizeCalculator] Enter pressed in step 1 - triggering Next button');
+            sizeCalculatorLog('[SizeCalculator] Enter pressed in step 1 - triggering Next button');
 
             const nextBtn = drawer.querySelector('[data-next-step]');
             if (nextBtn) {
@@ -880,24 +883,24 @@
       }
     }, true); // Use capture phase to ensure we catch events before other handlers
 
-    console.log('[SizeCalculator] ✓ Event listener added successfully');
-    console.log('[SizeCalculator] ✓ Initialized');
+    sizeCalculatorLog('[SizeCalculator] ✓ Event listener added successfully');
+    sizeCalculatorLog('[SizeCalculator] ✓ Initialized');
 
     // Log all calculator buttons on page
     const buttons = document.querySelectorAll('[data-calculator-drawer-trigger]');
-    console.log('[SizeCalculator] Found', buttons.length, 'calculator trigger buttons');
+    sizeCalculatorLog('[SizeCalculator] Found', buttons.length, 'calculator trigger buttons');
     buttons.forEach(btn => {
-      console.log('  - Button with section ID:', btn.dataset.calculatorDrawerTrigger);
+      sizeCalculatorLog('  - Button with section ID:', btn.dataset.calculatorDrawerTrigger);
     });
 
     // Log all calculator drawers on page
     const drawers = document.querySelectorAll('.size-calculator-drawer');
-    console.log('[SizeCalculator] Found', drawers.length, 'calculator drawers');
+    sizeCalculatorLog('[SizeCalculator] Found', drawers.length, 'calculator drawers');
     drawers.forEach(drawer => {
-      console.log('  - Drawer ID:', drawer.id, 'Section ID:', drawer.dataset.sectionId);
+      sizeCalculatorLog('  - Drawer ID:', drawer.id, 'Section ID:', drawer.dataset.sectionId);
     });
 
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    sizeCalculatorLog('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   }
 
   // ============================================
@@ -924,18 +927,18 @@
   if (!window.themeCalculatorDrawerInitialized) {
     window.themeCalculatorDrawerInitialized = true;
 
-    console.log('[SizeCalculator] Script loaded, document.readyState:', document.readyState);
+    sizeCalculatorLog('[SizeCalculator] Script loaded, document.readyState:', document.readyState);
     if (document.readyState === 'loading') {
-      console.log('[SizeCalculator] Waiting for DOMContentLoaded...');
+      sizeCalculatorLog('[SizeCalculator] Waiting for DOMContentLoaded...');
       document.addEventListener('DOMContentLoaded', () => {
-        console.log('[SizeCalculator] DOMContentLoaded fired, initializing...');
+        sizeCalculatorLog('[SizeCalculator] DOMContentLoaded fired, initializing...');
         initialize();
       });
     } else {
-      console.log('[SizeCalculator] DOM already loaded, initializing immediately...');
+      sizeCalculatorLog('[SizeCalculator] DOM already loaded, initializing immediately...');
       initialize();
     }
   } else {
-    console.log('[SizeCalculator] Already initialized, skipping');
+    sizeCalculatorLog('[SizeCalculator] Already initialized, skipping');
   }
 })();

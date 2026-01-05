@@ -1167,37 +1167,6 @@
     return null;
   };
 
-  const shouldDebugWishlist = () =>
-    window.WISHLIST_DEBUG === true || window.location.search.includes('wishlist_debug=1');
-
-  const wishlistDebugLog = (...args) => {
-    if (!shouldDebugWishlist()) return;
-    console.log(...args);
-  };
-
-  const wishlistDebugWarn = (...args) => {
-    if (!shouldDebugWishlist()) return;
-    console.warn(...args);
-  };
-
-  let wishlistHeartsLogged = false;
-
-  const logWishlistHearts = (root = document, label = 'init') => {
-    if (!shouldDebugWishlist() || wishlistHeartsLogged) return;
-    const buttons = Array.from(root.querySelectorAll(HEART_SELECTOR));
-    const withHandle = buttons.filter((button) => {
-      const card = getCardFromHeart(button);
-      return Boolean(card?.dataset?.productHandle);
-    }).length;
-
-    wishlistDebugLog(`[wishlist] ${label} hearts`, { total: buttons.length, withHandle });
-    if (buttons.length && withHandle === 0) {
-      wishlistDebugWarn('[wishlist] Hearts found without product data. Check data-product-handle on the wrapper.');
-    }
-    wishlistHeartsLogged = true;
-  };
-
-
   const getProductFromCard = (card) => {
     if (!card) return null;
     const handle = card.dataset.productHandle;
@@ -1349,12 +1318,7 @@
     const button = event.currentTarget;
     const card = getCardFromHeart(button);
     const product = getProductFromCard(card);
-    if (!product) {
-      if (shouldDebugWishlist()) {
-        wishlistDebugWarn('[wishlist] Heart click without product data', { button, card });
-      }
-      return;
-    }
+    if (!product) return;
 
     const existingItem = findWishlistItem(product.handle);
     if (existingItem) {
@@ -1370,7 +1334,6 @@
       button.dataset.wishlistBound = 'true';
       button.addEventListener('click', handleHeartClick);
     });
-    logWishlistHearts(root, 'attach');
   };
 
   const syncHearts = () => {

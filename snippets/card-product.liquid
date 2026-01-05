@@ -634,10 +634,14 @@
   {%- endcomment -%}
   {% if include_card_product_script %}
   <script>
+    var cardProductLog = function() {};
+    var cardProductWarn = function() {};
+    var cardProductError = function() {};
+
     function initializeProductCardSwipers() {
       // Ensure Swiper library is loaded
       if (typeof Swiper === 'undefined') {
-        console.error('Swiper is not loaded. Please include Swiper JS library.');
+        cardProductError('Swiper is not loaded. Please include Swiper JS library.');
         return;
       }
 
@@ -764,7 +768,7 @@
           var decoded = raw.replace(/&quot;/g, '"');
           return JSON.parse(decoded) || [];
         } catch (error) {
-          console.warn('Unable to parse variants for card', card, error);
+          cardProductWarn('Unable to parse variants for card', card, error);
           return [];
         }
       }
@@ -1095,7 +1099,7 @@
             }
             publish(PUB_SUB_EVENTS.cartUpdate, {source:'quick-add-size', productVariantId:id, cartData:response});
           })
-          .catch(function(e){ console.error(e); });
+          .catch(function(e){ cardProductError(e); });
       }
 
       plusEls.forEach(function(el) {
@@ -1179,16 +1183,16 @@
         });
 
         sizeOptions.addEventListener('click', function(ev) {
-          console.log('[CardProduct] Size options clicked, target:', ev.target);
+          cardProductLog('[CardProduct] Size options clicked, target:', ev.target);
           // Allow calculator button clicks to propagate
           const calcButton = ev.target.closest('[data-calculator-drawer-trigger]');
           if (calcButton) {
-            console.log('[CardProduct] ✓ Calculator button clicked inside size-options');
-            console.log('[CardProduct] Button section ID:', calcButton.dataset.calculatorDrawerTrigger);
-            console.log('[CardProduct] Allowing event to propagate');
+            cardProductLog('[CardProduct] ✓ Calculator button clicked inside size-options');
+            cardProductLog('[CardProduct] Button section ID:', calcButton.dataset.calculatorDrawerTrigger);
+            cardProductLog('[CardProduct] Allowing event to propagate');
             return;
           }
-          console.log('[CardProduct] Regular size-options click, stopping propagation');
+          cardProductLog('[CardProduct] Regular size-options click, stopping propagation');
           ev.stopPropagation();
         });
 

@@ -1,3 +1,7 @@
+const productInfoLog = () => {};
+const productInfoWarn = () => {};
+const productInfoError = () => {};
+
 if (!customElements.get('product-info')) {
   customElements.define(
     'product-info',
@@ -130,9 +134,9 @@ if (!customElements.get('product-info')) {
           })
           .catch((error) => {
             if (error.name === 'AbortError') {
-              console.log('Fetch aborted by user');
+              productInfoLog('Fetch aborted by user');
             } else {
-              console.error(error);
+              productInfoError(error);
             }
           });
       }
@@ -361,7 +365,7 @@ if (!customElements.get('product-info')) {
             const html = new DOMParser().parseFromString(responseText, 'text/html');
             this.updateQuantityRules(this.dataset.section, html);
           })
-          .catch((e) => console.error(e))
+          .catch((e) => productInfoError(e))
           .finally(() => this.querySelector('.quantity__rules-cart .loading__spinner').classList.add('hidden'));
       }
 
