@@ -461,7 +461,7 @@
 
 
           <div class="card-information">
-              
+
 
             {% if show_vendor %}
               <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
@@ -470,9 +470,21 @@
 
             <span class="caption-large light">{{ block.settings.description | escape }}</span>
 
-            <!-- Price and swatch side by side -->
-            <div class="price-and-swatch">
+            <!-- Title first -->
+            <a
+              href="{{ card_product.url }}"
+              id="CardLink-{{ section_id }}-{{ card_product.id }}"
+              class="title-cheyenne"
+              aria-labelledby="CardLink-{{ section_id }}-{{ card_product.id }} Badge-{{ section_id }}-{{ card_product.id }}"
+            >
+              {{ card_product.title | escape }}
+            </a>
 
+            <!-- Price second -->
+            {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
+
+            <!-- Swatches and heart third -->
+            <div class="price-and-swatch">
               <!-- BEGIN: Option C code for color swatches from option.value.swatch -->
               {% for option in card_product.options_with_values %}
                 {% if option.name == 'Color' or option.name == 'Cor' %}
@@ -573,16 +585,6 @@
                 {% endif %}
               {% endfor %}
               <!-- END: Option C code -->
-              <a
-              href="{{ card_product.url }}"
-                id="CardLink-{{ section_id }}-{{ card_product.id }}"
-              class="title-cheyenne"
-              aria-labelledby="CardLink-{{ section_id }}-{{ card_product.id }} Badge-{{ section_id }}-{{ card_product.id }}"
-            >
-              {{ card_product.title | escape }}
-            </a>
-
-              {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
             </div>
           </div>
                       
