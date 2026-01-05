@@ -1130,10 +1130,27 @@
       const card = getCardFromHeart(button);
       return Boolean(card?.dataset?.productHandle);
     }).length;
+    const visible = productButtons.filter(
+      (button) => button.offsetParent || button.getClientRects().length > 0,
+    ).length;
+    const counts = {
+      titleRow: productButtons.filter((button) => button.closest('.product-title-heart-row')).length,
+      mobileInfo: productButtons.filter((button) => button.closest('.mobile-product-info')).length,
+      desktopTitle: productButtons.filter((button) => button.closest('.desktop-product-title-wrapper')).length,
+      sticky: productButtons.filter((button) => button.closest('.sticky-bar-summary')).length,
+    };
 
-    console.log(`[wishlist] ${label} product hearts`, { total: productButtons.length, withHandle });
+    console.log(`[wishlist] ${label} product hearts`, {
+      total: productButtons.length,
+      withHandle,
+      visible,
+      counts,
+    });
     if (productButtons.length && withHandle === 0) {
       console.warn('[wishlist] Product hearts missing data. Check data-product-handle on the wrapper.');
+    }
+    if (productButtons.length && visible === 0) {
+      console.warn('[wishlist] Product hearts exist but are not visible in the layout.');
     }
     wishlistHeartsLogged = true;
   };
