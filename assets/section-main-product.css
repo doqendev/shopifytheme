@@ -293,6 +293,17 @@ a.product__text {
   transition: all 0.2s ease;
 }
 
+.product-title-heart-row .wishlist-toggle--product-page {
+  position: static;
+  top: auto;
+  right: auto;
+  width: 3rem;
+  height: 3rem;
+  border: 1px solid #e0e0e0;
+  background: transparent;
+  color: #111;
+}
+
 .wishlist-toggle--product-page:hover {
   border-color: #111;
   background: rgba(0, 0, 0, 0.02);
@@ -305,6 +316,11 @@ a.product__text {
   fill: none;
   stroke: #111;
   stroke-width: 1.5;
+}
+
+.product-title-heart-row .wishlist-toggle--product-page .wishlist-toggle__icon {
+  width: 20px !important;
+  height: 20px !important;
 }
 
 /* Inactive heart: outline only */
@@ -328,7 +344,8 @@ a.product__text {
     align-items: center !important;
   }
 
-  .wishlist-toggle--product-page {
+  .wishlist-toggle--product-page,
+  .product-title-heart-row .wishlist-toggle--product-page {
     display: flex !important;
     width: 2.8rem;
     height: 2.8rem;
