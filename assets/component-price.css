@@ -10,7 +10,7 @@
 @media screen and (max-width: 749px) {
   .card__information .price,
   .card__information .price-item {
-    font-size: 1.1rem !important;
+    font-size: 1.2rem !important;
     font-weight: 100 !important;
   }
 }
