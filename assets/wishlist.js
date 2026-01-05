@@ -1139,12 +1139,37 @@
       desktopTitle: productButtons.filter((button) => button.closest('.desktop-product-title-wrapper')).length,
       sticky: productButtons.filter((button) => button.closest('.sticky-bar-summary')).length,
     };
+    const details = productButtons.map((button, index) => {
+      const rect = button.getBoundingClientRect();
+      const styles = window.getComputedStyle(button);
+      let container = 'other';
+      if (button.closest('.product-title-heart-row')) container = 'titleRow';
+      else if (button.closest('.mobile-product-info')) container = 'mobileInfo';
+      else if (button.closest('.desktop-product-title-wrapper')) container = 'desktopTitle';
+      else if (button.closest('.sticky-bar-summary')) container = 'sticky';
+      return {
+        index,
+        container,
+        rect: {
+          x: Math.round(rect.x),
+          y: Math.round(rect.y),
+          width: Math.round(rect.width),
+          height: Math.round(rect.height),
+        },
+        display: styles.display,
+        visibility: styles.visibility,
+        opacity: styles.opacity,
+        position: styles.position,
+        zIndex: styles.zIndex,
+      };
+    });
 
     console.log(`[wishlist] ${label} product hearts`, {
       total: productButtons.length,
       withHandle,
       visible,
       counts,
+      details,
     });
     if (productButtons.length && withHandle === 0) {
       console.warn('[wishlist] Product hearts missing data. Check data-product-handle on the wrapper.');
