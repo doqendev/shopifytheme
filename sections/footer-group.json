@@ -124,12 +124,23 @@
     },
     "footers_MJGUrj": {
       "type": "FOOTERS",
-      "disabled": true,
       "custom_css": [],
       "settings": {}
     },
     "footer": {
       "type": "footer",
+      "blocks": {
+        "image_gdtJYG": {
+          "type": "image",
+          "settings": {
+            "image_width": 100,
+            "alignment": "center"
+          }
+        }
+      },
+      "block_order": [
+        "image_gdtJYG"
+      ],
       "settings": {
         "color_scheme": "scheme-1",
         "newsletter_enable": false,
