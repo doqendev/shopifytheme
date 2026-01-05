@@ -11,6 +11,10 @@
   "name": "t:sections.footer.name",
   "type": "footer",
   "sections": {
+    "176763369963d9b90e": {
+      "type": "_blocks",
+      "settings": {}
+    },
     "176763001547e37d9f": {
       "type": "_blocks",
       "blocks": {
@@ -117,10 +121,28 @@
             "section_5_content": ""
           },
           "blocks": {}
+        },
+        "ai_gen_block_c2e8fce_fWyPjd": {
+          "type": "ai_gen_block_c2e8fce",
+          "settings": {
+            "image": "shopify://shop_images/cheyenne_final_banner3.svg",
+            "full_width": true,
+            "desktop_width_percent": 100,
+            "padding_top": 0,
+            "padding_bottom": 0,
+            "padding_left": 0,
+            "padding_right": 0,
+            "mobile_padding_top": 0,
+            "mobile_padding_bottom": 0,
+            "mobile_padding_left": 0,
+            "mobile_padding_right": 0
+          },
+          "blocks": {}
         }
       },
       "block_order": [
-        "ai_gen_block_8ab1030_me3WXy"
+        "ai_gen_block_8ab1030_me3WXy",
+        "ai_gen_block_c2e8fce_fWyPjd"
       ],
       "name": "Footer accordion",
       "settings": {}
@@ -134,19 +156,6 @@
     },
     "footer": {
       "type": "footer",
-      "blocks": {
-        "image_gdtJYG": {
-          "type": "image",
-          "settings": {
-            "image": "shopify://shop_images/cheyenne_final_banner3.svg",
-            "image_width": 550,
-            "alignment": "center"
-          }
-        }
-      },
-      "block_order": [
-        "image_gdtJYG"
-      ],
       "custom_css": [
         "@media screen and (min-width: 750px) {div {display: none; }}"
       ],
@@ -167,6 +176,7 @@
     }
   },
   "order": [
+    "176763369963d9b90e",
     "176763001547e37d9f",
     "blocks_qw8b6q",
     "footers_MJGUrj",
