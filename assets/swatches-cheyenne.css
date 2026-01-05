@@ -233,7 +233,10 @@
     --swatch-gap: 8px;
     gap: var(--swatch-gap, 8px);
     margin-bottom: 16px;
-    padding-right: 1.5rem !important;
+    padding: 0 5% 0 0 !important;
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: flex-start;
   }
 
   .product-form__input--swatch .swatch-input__label {
