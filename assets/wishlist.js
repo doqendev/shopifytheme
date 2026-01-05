@@ -1111,32 +1111,29 @@
     return null;
   };
 
-  const isMobileProductPage = () => {
-    const hasMobileContainer =
-      document.querySelector('.mobile-product-page, .mobile-product-info, .product-title-heart-row') != null;
-    if (!hasMobileContainer) return false;
-    if (window.matchMedia) {
-      return window.matchMedia('(max-width: 749px)').matches;
-    }
-    return window.innerWidth <= 749;
-  };
+  const isProductPageWithHeart = () =>
+    document.querySelector(
+      '.product-title-heart-row, .mobile-product-info, .desktop-product-title-wrapper, .sticky-bar-summary'
+    ) != null;
 
   let wishlistHeartsLogged = false;
 
   const logWishlistHearts = (root = document, label = 'attach') => {
-    if (wishlistHeartsLogged || !isMobileProductPage()) return;
+    if (wishlistHeartsLogged || !isProductPageWithHeart()) return;
     const buttons = Array.from(root.querySelectorAll(HEART_SELECTOR));
-    const mobileButtons = buttons.filter((button) =>
-      button.closest('.mobile-product-info, .product-title-heart-row'),
+    const productButtons = buttons.filter((button) =>
+      button.closest(
+        '.product-title-heart-row, .mobile-product-info, .desktop-product-title-wrapper, .sticky-bar-summary',
+      ),
     );
-    const withHandle = mobileButtons.filter((button) => {
+    const withHandle = productButtons.filter((button) => {
       const card = getCardFromHeart(button);
       return Boolean(card?.dataset?.productHandle);
     }).length;
 
-    console.log(`[wishlist] ${label} mobile hearts`, { total: mobileButtons.length, withHandle });
-    if (mobileButtons.length && withHandle === 0) {
-      console.warn('[wishlist] Mobile hearts missing product data. Check data-product-handle on the wrapper.');
+    console.log(`[wishlist] ${label} product hearts`, { total: productButtons.length, withHandle });
+    if (productButtons.length && withHandle === 0) {
+      console.warn('[wishlist] Product hearts missing data. Check data-product-handle on the wrapper.');
     }
     wishlistHeartsLogged = true;
   };
@@ -1293,7 +1290,7 @@
     const card = getCardFromHeart(button);
     const product = getProductFromCard(card);
     if (!product) {
-      if (isMobileProductPage()) {
+      if (isProductPageWithHeart()) {
         console.warn('[wishlist] Heart click missing product data', { button, card });
       }
       return;
