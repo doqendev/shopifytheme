@@ -263,6 +263,55 @@ a.product__text {
   margin-bottom: 1.5rem;
 }
 
+.product-title-heart-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0;
+}
+
+.product-title-heart-row h1 {
+  flex: 1;
+  margin: 0;
+}
+
+.wishlist-toggle--product-page {
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  margin: 0;
+}
+
+.wishlist-toggle--product-page .wishlist-toggle__icon {
+  width: 18px !important;
+  height: 18px !important;
+  color: #111;
+}
+
+/* Inactive heart: thin black outline */
+.wishlist-toggle--product-page[aria-pressed="false"] .wishlist-toggle__icon path {
+  fill: none !important;
+  stroke: #111 !important;
+  stroke-width: 0.8 !important;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Active heart: filled */
+.wishlist-toggle--product-page[aria-pressed="true"] .wishlist-toggle__icon path {
+  fill: #111 !important;
+  stroke: #111 !important;
+  stroke-width: 0.8 !important;
+}
+
 .product__title > * {
   margin: 0;
 }
