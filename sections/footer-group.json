@@ -70,6 +70,9 @@
       "block_order": [
         "ai_gen_block_710cd49_f7VTdi"
       ],
+      "custom_css": [
+        "@media screen and (min-width: 750px) {div {display: none; }}"
+      ],
       "settings": {}
     },
     "blocks_qw8b6q": {
