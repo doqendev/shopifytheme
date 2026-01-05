@@ -270,7 +270,8 @@ a.product__text {
   margin-bottom: 0;
 }
 
-.product-title-heart-row h1 {
+.product-title-heart-row h1,
+.product-title-heart-row h2 {
   flex: 1;
   margin: 0;
 }
