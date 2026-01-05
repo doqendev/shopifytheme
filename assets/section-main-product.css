@@ -350,14 +350,14 @@ a.product__text {
   .wishlist-toggle--product-page,
   .product-title-heart-row .wishlist-toggle--product-page {
     display: flex !important;
-    width: 2.8rem;
-    height: 2.8rem;
-    padding: 0.4rem;
+    width: 2.4rem;
+    height: 2.4rem;
+    padding: 0.3rem;
   }
 
   .wishlist-toggle--product-page .wishlist-toggle__icon {
-    width: 18px !important;
-    height: 18px !important;
+    width: 16px !important;
+    height: 16px !important;
   }
 }
 
