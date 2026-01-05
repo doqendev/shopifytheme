@@ -499,9 +499,16 @@
         aria-pressed="false"
         aria-label="{{ 'general.add_to_wishlist' | t | default: 'Add to wishlist' }}"
       >
-        <svg class="wishlist-toggle__icon" viewBox="0 0 24 24" role="presentation" focusable="false">
-          <path d="M12 21.35 10.55 20.03C6.2 15.99 3 12.99 3 9.31 3 6.28 5.42 4 8.4 4A5.2 5.2 0 0 1 12 5.86 5.2 5.2 0 0 1 15.6 4C18.58 4 21 6.28 21 9.31c0 3.68-3.2 6.68-7.55 10.72z" />
-        </svg>
+        <img
+          class="wishlist-toggle__icon wishlist-toggle__icon--empty"
+          src="{{ 'empty-heart.svg' | asset_url }}"
+          alt=""
+        >
+        <img
+          class="wishlist-toggle__icon wishlist-toggle__icon--full"
+          src="{{ 'full-heart.svg' | asset_url }}"
+          alt=""
+        >
       </button>
       <div class="card__media" style="display: none;">
         <div class="media media--transparent media--hover-effect">

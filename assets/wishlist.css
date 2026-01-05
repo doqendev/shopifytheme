@@ -33,6 +33,21 @@
   width: 3rem;
   height: 3rem;
   display: block;
+  object-fit: contain;
+}
+
+.wishlist-toggle__icon--full {
+  display: none !important;
+}
+
+.wishlist-toggle.is-active .wishlist-toggle__icon--full,
+.wishlist-toggle[aria-pressed="true"] .wishlist-toggle__icon--full {
+  display: block !important;
+}
+
+.wishlist-toggle.is-active .wishlist-toggle__icon--empty,
+.wishlist-toggle[aria-pressed="true"] .wishlist-toggle__icon--empty {
+  display: none !important;
 }
 
 .wishlist-toggle__icon path {

@@ -24,6 +24,9 @@
   const COLOR_LABEL_PATTERN = /(\bcolor\b|\bcolour\b|\bcor\b|\bfarbe\b)/i;
   const SIZE_LABEL_PATTERN = /(\bsize\b|\btamanho\b|\btalla\b|\btaille\b)/i;
   const WISHLIST_STORAGE_KEY = 'theme-wishlist-cache';
+  const HEART_ICONS = window.wishlistHeartIcons || {};
+  const HEART_ICON_EMPTY = HEART_ICONS.empty || '/assets/empty-heart.svg';
+  const HEART_ICON_FULL = HEART_ICONS.full || '/assets/full-heart.svg';
 
   function normalizeOptionValue(value){
     return typeof value === 'string' ? value.trim().toLowerCase() : '';
@@ -208,9 +211,8 @@
       <div class="card-wrapper product-card-wrapper product-card underline-links-hover">
         <div class="card card--standard card--media">
           <button class="wishlist-toggle is-active" type="button" aria-pressed="true" aria-label="Remove from wishlist">
-            <svg class="wishlist-toggle__icon" viewBox="0 0 24 24" role="presentation" focusable="false">
-              <path d="M12 21.35 10.55 20.03C6.2 15.99 3 12.99 3 9.31 3 6.28 5.42 4 8.4 4A5.2 5.2 0 0 1 12 5.86 5.2 5.2 0 0 1 15.6 4C18.58 4 21 6.28 21 9.31c0 3.68-3.2 6.68-7.55 10.72z" />
-            </svg>
+            <img class="wishlist-toggle__icon wishlist-toggle__icon--empty" src="${HEART_ICON_EMPTY}" alt="">
+            <img class="wishlist-toggle__icon wishlist-toggle__icon--full" src="${HEART_ICON_FULL}" alt="">
           </button>
           <div class="card__inner ratio" style="--ratio-percent: 150%;">
             <div class="card__media">
