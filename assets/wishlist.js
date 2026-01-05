@@ -1111,22 +1111,32 @@
     return null;
   };
 
-  const shouldDebugWishlist = () =>
-    window.WISHLIST_DEBUG === true || window.location.search.includes('wishlist_debug=1');
+  const isMobileProductPage = () => {
+    const hasMobileContainer =
+      document.querySelector('.mobile-product-page, .mobile-product-info, .product-title-heart-row') != null;
+    if (!hasMobileContainer) return false;
+    if (window.matchMedia) {
+      return window.matchMedia('(max-width: 749px)').matches;
+    }
+    return window.innerWidth <= 749;
+  };
 
   let wishlistHeartsLogged = false;
 
-  const logWishlistHearts = (root = document, label = 'init') => {
-    if (!shouldDebugWishlist() || wishlistHeartsLogged) return;
+  const logWishlistHearts = (root = document, label = 'attach') => {
+    if (wishlistHeartsLogged || !isMobileProductPage()) return;
     const buttons = Array.from(root.querySelectorAll(HEART_SELECTOR));
-    const withHandle = buttons.filter((button) => {
+    const mobileButtons = buttons.filter((button) =>
+      button.closest('.mobile-product-info, .product-title-heart-row'),
+    );
+    const withHandle = mobileButtons.filter((button) => {
       const card = getCardFromHeart(button);
       return Boolean(card?.dataset?.productHandle);
     }).length;
 
-    console.log(`[wishlist] ${label} hearts`, { total: buttons.length, withHandle });
-    if (buttons.length && withHandle === 0) {
-      console.warn('[wishlist] Hearts found without product data. Check data-product-handle on the wrapper.');
+    console.log(`[wishlist] ${label} mobile hearts`, { total: mobileButtons.length, withHandle });
+    if (mobileButtons.length && withHandle === 0) {
+      console.warn('[wishlist] Mobile hearts missing product data. Check data-product-handle on the wrapper.');
     }
     wishlistHeartsLogged = true;
   };
@@ -1283,8 +1293,8 @@
     const card = getCardFromHeart(button);
     const product = getProductFromCard(card);
     if (!product) {
-      if (shouldDebugWishlist()) {
-        console.warn('[wishlist] Heart click without product data', { button, card });
+      if (isMobileProductPage()) {
+        console.warn('[wishlist] Heart click missing product data', { button, card });
       }
       return;
     }
