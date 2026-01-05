@@ -576,6 +576,40 @@
                     {% if additional_swatch_count > 0 %}
                       <span class="additional-swatch-count">+{{ additional_swatch_count }}</span>
                     {% endif %}
+                    {% if size_option_index != -1 %}
+                      <div class="product-card-plus">
+                        <button type="button" class="plus-icon" aria-label="{{ 'products.product.add_to_cart' | t }}" tabindex="0">
+                          {{ 'icon-plus.svg' | inline_asset_content }}
+                        </button>
+                        <div class="size-options" tabindex="-1">
+                          <div class="size-options-header size-options-header--mobile-only">
+                            <span class="size-options-title">Seleciona o tamanho</span>
+                            <a href="/pages/guia-de-tamanhos" class="size-guide-link">
+                              Guia de tamanhos
+                            </a>
+                          </div>
+                          <div class="overlay-sizes">
+                            {% for size in all_sizes %}
+                              <button type="button" class="size-option{% unless available_sizes contains size %} sold-out{% endunless %}" data-size="{{ size }}" {% unless available_sizes contains size %}disabled="disabled"{% endunless %}>
+                                <span class="size-option__label">{{ size }}</span>
+                                <span class="size-option__low-stock hidden">Poucas unidades</span>
+                              </button>
+                            {% endfor %}
+                          </div>
+
+                          <!-- Size Calculator Trigger - styled as size item -->
+                          <button
+                            type="button"
+                            class="size-option size-drawer__calculator-button"
+                            data-calculator-drawer-trigger="card-{{ section_id }}-{{ card_product.id }}"
+                            aria-controls="size-calculator-drawer-card-{{ section_id }}-{{ card_product.id }}"
+                            aria-haspopup="dialog"
+                          >
+                            <span class="size-option__label">CALCULAR TAMANHO</span>
+                          </button>
+                        </div>
+                      </div>
+                    {% endif %}
                   </div>
                 {% endif %}
               {% endfor %}
