@@ -272,8 +272,10 @@ a.product__text {
 
 .product-title-heart-row h1,
 .product-title-heart-row h2 {
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0;
   margin: 0;
+  overflow-wrap: anywhere;
 }
 
 .wishlist-toggle--product-page {
