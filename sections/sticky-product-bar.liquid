@@ -621,9 +621,6 @@
   var productData = {{ product | json }};
 </script>
 <script>
-  var stickyBarLog = function() {};
-  var stickyBarWarn = function() {};
-  var stickyBarError = function() {};
 </script>
 
 <!-- Sticky Product Bar Container -->
@@ -1036,7 +1033,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const swatchCondensedEl = document.querySelector('.swatch-condensed');
   if (swatchCondensedEl) {
     swatchCondensedEl.style.touchAction = 'auto';
-    stickyBarLog('✓ Set touch-action: auto on swatch-condensed');
   }
 
   // --------------------------
@@ -1062,31 +1058,26 @@ document.addEventListener('DOMContentLoaded', function() {
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   if (typeof productData === 'undefined' || !productData.variants) {
-    stickyBarWarn("productData not found or has no variants");
     return;
   }
   
   const buyButtonsForm = document.querySelector('#sticky-product-bar .add-to-cart form');
   if (!buyButtonsForm) {
-    stickyBarWarn("No buy-buttons form found within .add-to-cart");
     return;
   }
   
   const hiddenInput = buyButtonsForm.querySelector('input[name="id"]');
   if (!hiddenInput) {
-    stickyBarWarn("No hidden input[name='id'] found in buy-buttons form");
     return;
   }
   
   const variantPickerEl = document.getElementById('variant-selects-{{ section.id }}');
   if (!variantPickerEl) {
-    stickyBarWarn("No variant-picker element found with id: variant-selects-{{ section.id }}");
     return;
   }
   
   const optionInputs = variantPickerEl.querySelectorAll('input[name^="options"], select[name^="options"]');
   if (!optionInputs.length) {
-    stickyBarWarn("No variant option inputs found in variant-picker");
     return;
   }
 
@@ -1117,7 +1108,6 @@ document.addEventListener('DOMContentLoaded', function() {
       hiddenInput.value = matchingVariant.id;
       hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
     } else {
-      stickyBarWarn("No matching variant found for options:", selectedOptions);
     }
   }
 
@@ -1131,26 +1121,21 @@ document.addEventListener('DOMContentLoaded', function() {
 {% raw %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  stickyBarLog("Sticky bar variant scroll script loaded");
 
   // Find the sticky variant picker.
   var variantPicker = document.querySelector('[id^="variant-selects-template"][id*="sticky_product_bar"]');
   if (!variantPicker) {
-    stickyBarLog("Sticky variant picker not found");
     return;
   }
-  stickyBarLog("Sticky variant picker found:", variantPicker.id);
 
   // Listen for changes on any input/select within the variant picker.
   variantPicker.addEventListener('change', function(e) {
-    stickyBarLog("Change event fired on sticky variant picker", e);
 
     // Gather selected options from the picker.
     var selectedOptions = [];
     variantPicker.querySelectorAll('input[name^="options"], select[name^="options"]').forEach(function(input) {
       selectedOptions.push(input.value.trim());
     });
-    stickyBarLog("Selected options:", selectedOptions);
 
     // Find the matching variant using the productData object.
     var matchingVariant = productData.variants.find(function(variant) {
@@ -1159,37 +1144,28 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
     if (matchingVariant) {
-      stickyBarLog("Matching variant found:", matchingVariant);
       if (matchingVariant.featured_media && matchingVariant.featured_media.id) {
         // Find the media gallery element.
         var galleryEl = document.querySelector('[id^="MediaGallery-"]');
         if (!galleryEl) {
-          stickyBarLog("Gallery element not found");
           return;
         }
-        stickyBarLog("Gallery element found:", galleryEl.id);
 
         // Instead of splitting the id, remove the prefix "MediaGallery-"
         var sectionId = galleryEl.id.replace('MediaGallery-', '');
-        stickyBarLog("Extracted sectionId:", sectionId);
 
         // Construct the target media id that should match the data-media-id attribute.
         var targetMediaId = sectionId + '-' + matchingVariant.featured_media.id;
-        stickyBarLog("Looking for media element with data-media-id:", targetMediaId);
 
         // Locate the media element.
         var mediaEl = document.querySelector('[data-media-id="' + targetMediaId + '"]');
         if (mediaEl) {
-          stickyBarLog("Found media element, scrolling into view", mediaEl);
           mediaEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else {
-          stickyBarLog("No matching media element found for", targetMediaId);
         }
       } else {
-        stickyBarLog("Matching variant does not have a featured_media property", matchingVariant);
       }
     } else {
-      stickyBarLog("No matching variant found for options", selectedOptions);
     }
   });
 });
@@ -1199,21 +1175,16 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- Sync selected color to hidden card for wishlist -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  stickyBarLog('=== WISHLIST COLOR SYNC SCRIPT LOADED ===');
 
   const stickyBarWrapper = document.querySelector('.sticky-bar-summary.product-card-wrapper');
   const hiddenCard = stickyBarWrapper?.querySelector('.sticky-bar-hidden-card .product-card-wrapper');
 
-  stickyBarLog('Sticky bar wrapper:', stickyBarWrapper);
-  stickyBarLog('Hidden card:', hiddenCard);
 
   if (!stickyBarWrapper || !hiddenCard) {
-    stickyBarError('Could not find sticky bar wrapper or hidden card!');
     return;
   }
 
   function syncSelectedColorToHiddenCard() {
-    stickyBarLog('--- Syncing selected color to hidden card ---');
 
     // Try multiple ways to get the selected color
     let selectedColorName = null;
@@ -1221,12 +1192,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Method 1: From condensed swatch
     const swatchCondensed = document.querySelector('.swatch-condensed');
     const currentSwatchEl = swatchCondensed?.querySelector('.current-swatch');
-    stickyBarLog('Swatch condensed:', swatchCondensed);
-    stickyBarLog('Current swatch element:', currentSwatchEl);
 
     if (currentSwatchEl) {
       selectedColorName = currentSwatchEl.dataset?.currentColor;
-      stickyBarLog('Selected color from current swatch:', selectedColorName);
     }
 
     // Method 2: From variant picker select
@@ -1234,11 +1202,9 @@ document.addEventListener('DOMContentLoaded', function() {
       const variantSelect = document.querySelector('select[name="id"]');
       if (variantSelect) {
         const selectedOption = variantSelect.options[variantSelect.selectedIndex];
-        stickyBarLog('Variant select found, selected option:', selectedOption);
         // Try to extract color from option text or data attribute
         if (selectedOption?.dataset?.color) {
           selectedColorName = selectedOption.dataset.color;
-          stickyBarLog('Selected color from variant select:', selectedColorName);
         }
       }
     }
@@ -1248,20 +1214,16 @@ document.addEventListener('DOMContentLoaded', function() {
       const colorInput = document.querySelector('input[name*="Color"], input[name*="Cor"]');
       if (colorInput) {
         selectedColorName = colorInput.value;
-        stickyBarLog('Selected color from color input:', selectedColorName);
       }
     }
 
-    stickyBarLog('Final selected color name:', selectedColorName);
 
     if (!selectedColorName || !hiddenCard) {
-      stickyBarWarn('No selected color or hidden card found - selectedColor:', selectedColorName, 'hiddenCard:', hiddenCard);
       return;
     }
 
     // Find all swatches in the hidden card
     const hiddenSwatches = hiddenCard.querySelectorAll('.swatch');
-    stickyBarLog('Hidden swatches found:', hiddenSwatches.length);
 
     // Remove active class from all swatches
     hiddenSwatches.forEach(swatch => swatch.classList.remove('active'));
@@ -1270,53 +1232,41 @@ document.addEventListener('DOMContentLoaded', function() {
     const matchingSwatch = Array.from(hiddenSwatches).find(swatch => {
       const swatchColor = swatch.dataset?.color?.toLowerCase().trim();
       const targetColor = selectedColorName?.toLowerCase().trim();
-      stickyBarLog('Comparing swatch color:', swatchColor, 'with target:', targetColor);
       return swatchColor === targetColor;
     });
 
-    stickyBarLog('Matching swatch:', matchingSwatch);
 
     let variantImage = null; // Declare outside the if block
 
     if (matchingSwatch) {
       matchingSwatch.classList.add('active');
-      stickyBarLog('✓ Marked swatch as active');
 
       // Update the image if variant image is available
       variantImage = matchingSwatch.dataset?.variantImage;
-      stickyBarLog('Variant image URL:', variantImage);
 
       if (variantImage) {
         const hiddenCardImage = hiddenCard.querySelector('.swiper-slide-active img, .card__media img');
-        stickyBarLog('Hidden card image element:', hiddenCardImage);
 
         if (hiddenCardImage) {
           hiddenCardImage.src = variantImage;
           hiddenCardImage.srcset = variantImage;
-          stickyBarLog('✓ Updated hidden card image to:', variantImage);
         } else {
-          stickyBarWarn('Could not find hidden card image element');
         }
       } else {
-        stickyBarWarn('No variant image available on swatch');
       }
     } else {
-      stickyBarWarn('No matching swatch found in hidden card');
     }
 
     // Store the selected color on the main wrapper
     stickyBarWrapper.dataset.selectedColor = selectedColorName;
-    stickyBarLog('✓ Stored selected color on wrapper:', selectedColorName);
 
     // Force the main wrapper to also update its data-product-image
     if (matchingSwatch && variantImage) {
       stickyBarWrapper.dataset.productImage = variantImage;
-      stickyBarLog('✓ Updated main wrapper product image to:', variantImage);
     }
   }
 
   // Sync on page load (default color) - multiple attempts
-  stickyBarLog('Scheduling initial sync attempts...');
   setTimeout(syncSelectedColorToHiddenCard, 500);
   setTimeout(syncSelectedColorToHiddenCard, 1000);
   setTimeout(syncSelectedColorToHiddenCard, 2000);
@@ -1327,14 +1277,12 @@ document.addEventListener('DOMContentLoaded', function() {
   document.addEventListener('click', function(e) {
     const swatchDrawerItem = e.target.closest('.swatch-drawer-item');
     if (swatchDrawerItem) {
-      stickyBarLog('Swatch drawer item clicked, syncing...');
       setTimeout(syncSelectedColorToHiddenCard, 100);
     }
 
     // Also sync before wishlist heart click
     const wishlistHeart = e.target.closest('.wishlist-heart-inline, .wishlist-toggle');
     if (wishlistHeart && wishlistHeart.closest('.sticky-bar-summary') && !isRetriggering) {
-      stickyBarLog('Wishlist heart clicked on sticky bar, PREVENTING default and syncing...');
       e.preventDefault();
       e.stopPropagation();
       e.stopImmediatePropagation();
@@ -1344,7 +1292,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // Then trigger the wishlist click after a small delay
       setTimeout(() => {
-        stickyBarLog('Now triggering wishlist add after sync...');
         isRetriggering = true;
         wishlistHeart.click();
         setTimeout(() => { isRetriggering = false; }, 100);
@@ -1357,7 +1304,6 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- Swatch Drawer Functionality -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  stickyBarLog('=== SWATCH DRAWER SCRIPT LOADED ===');
 
   const swatchCondensed = document.querySelector('.swatch-condensed');
   const swatchDrawer = document.getElementById('swatch-drawer');
@@ -1366,18 +1312,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const buyButtonsForm = document.querySelector('#sticky-product-bar .add-to-cart form');
   const hiddenInput = buyButtonsForm ? buyButtonsForm.querySelector('input[name="id"]') : null;
 
-  stickyBarLog('Swatch drawer initialization:');
-  stickyBarLog('- swatchCondensed:', swatchCondensed);
-  stickyBarLog('- swatchCondensed exists?:', !!swatchCondensed);
-  stickyBarLog('- swatchDrawer:', swatchDrawer);
-  stickyBarLog('- swatchDrawer exists?:', !!swatchDrawer);
-  stickyBarLog('- swatchDrawerItems count:', swatchDrawerItems.length);
-  stickyBarLog('- currentSwatchEl:', currentSwatchEl);
 
   if (swatchCondensed) {
-    stickyBarLog('- swatchCondensed computed style:', window.getComputedStyle(swatchCondensed));
-    stickyBarLog('- swatchCondensed pointer-events:', window.getComputedStyle(swatchCondensed).pointerEvents);
-    stickyBarLog('- swatchCondensed z-index:', window.getComputedStyle(swatchCondensed).zIndex);
   }
 
   // Function to position the drawer right above the sticky bar
@@ -1395,52 +1331,35 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Toggle drawer when condensed swatch is clicked
   if (swatchCondensed) {
-    stickyBarLog('✓ Swatch condensed element found, adding event listeners');
 
     // Add ALL possible event types to debug which one fires
     swatchCondensed.addEventListener('touchstart', function(e) {
-      stickyBarLog('>>> TOUCHSTART event fired on swatchCondensed');
     }, { passive: true });
 
     swatchCondensed.addEventListener('touchend', function(e) {
-      stickyBarLog('>>> TOUCHEND event fired on swatchCondensed');
-      stickyBarLog('- Event target:', e.target);
-      stickyBarLog('- Current target:', e.currentTarget);
-      stickyBarLog('- Drawer active?:', swatchDrawer.classList.contains('active'));
 
       e.preventDefault();
       e.stopPropagation();
 
       if (swatchDrawer.classList.contains('active')) {
-        stickyBarLog('→ Closing swatch drawer');
         closeDrawer();
       } else {
-        stickyBarLog('→ Opening swatch drawer');
-        stickyBarLog('- Setting drawer display to block');
         swatchDrawer.style.display = 'block';
-        stickyBarLog('- Positioning drawer');
         positionDrawer();
         setTimeout(() => {
-          stickyBarLog('- Adding active class to drawer');
           swatchDrawer.classList.add('active');
-          stickyBarLog('- Drawer should now be visible');
         }, 10);
       }
     }, { passive: false });
 
     swatchCondensed.addEventListener('click', function(e) {
-      stickyBarLog('>>> CLICK event fired on swatchCondensed');
-      stickyBarLog('- Event target:', e.target);
-      stickyBarLog('- Current target:', e.currentTarget);
 
       e.preventDefault();
       e.stopPropagation();
 
       if (swatchDrawer.classList.contains('active')) {
-        stickyBarLog('→ Closing drawer (click)');
         closeDrawer();
       } else {
-        stickyBarLog('→ Opening drawer (click)');
         swatchDrawer.style.display = 'block';
         positionDrawer();
         setTimeout(() => {
@@ -1450,26 +1369,20 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     swatchCondensed.addEventListener('pointerdown', function(e) {
-      stickyBarLog('>>> POINTERDOWN event fired on swatchCondensed');
     });
 
     swatchCondensed.addEventListener('pointerup', function(e) {
-      stickyBarLog('>>> POINTERUP event fired on swatchCondensed');
     });
 
-    stickyBarLog('✓ All event listeners added to swatchCondensed');
 
   } else {
-    stickyBarLog('✗ Swatch condensed element NOT found - drawer will not work');
   }
 
   // Close drawer
   function closeDrawer() {
-    stickyBarLog('→ closeDrawer() called');
     swatchDrawer.classList.remove('active');
     setTimeout(() => {
       swatchDrawer.style.display = 'none';
-      stickyBarLog('→ Drawer display set to none');
     }, 300);
   }
 
@@ -1478,18 +1391,15 @@ document.addEventListener('DOMContentLoaded', function() {
     if (swatchDrawer.classList.contains('active') &&
         !swatchDrawer.contains(e.target) &&
         !swatchCondensed.contains(e.target)) {
-      stickyBarLog('→ Closing drawer (clicked outside)');
       closeDrawer();
     }
   });
 
   // Add a general click listener to document to see if ANY clicks are registered
   document.addEventListener('click', function(e) {
-    stickyBarLog('>>> Document click detected at:', e.target);
   });
 
   document.addEventListener('touchend', function(e) {
-    stickyBarLog('>>> Document touchend detected at:', e.target);
   });
 
   // Handle swatch selection
@@ -1529,7 +1439,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // Define correctVariantId at the top level
       let correctVariantId = variantId;
-      stickyBarLog('Initial correctVariantId from dataset:', correctVariantId);
 
       // Update variant ID in form - find correct variant for selected color
       if (hiddenInput) {
@@ -1565,43 +1474,30 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       // Scroll to the variant image if available
-      stickyBarLog('Attempting to scroll to variant image...');
-      stickyBarLog('correctVariantId:', correctVariantId);
-      stickyBarLog('productData:', typeof productData !== 'undefined' ? productData : 'undefined');
 
       if (correctVariantId && typeof productData !== 'undefined') {
         const variant = productData.variants.find(v => v.id == correctVariantId);
-        stickyBarLog('Found variant:', variant);
 
         if (variant && variant.featured_media && variant.featured_media.id) {
-          stickyBarLog('Variant has featured_media:', variant.featured_media);
 
           // Find the media gallery
           const galleryEl = document.querySelector('[id^="MediaGallery-"]');
-          stickyBarLog('Gallery element:', galleryEl);
 
           if (galleryEl) {
             const sectionId = galleryEl.id.replace('MediaGallery-', '');
             const targetMediaId = sectionId + '-' + variant.featured_media.id;
-            stickyBarLog('Looking for media with ID:', targetMediaId);
 
             const mediaEl = document.querySelector('[data-media-id="' + targetMediaId + '"]');
-            stickyBarLog('Media element found:', mediaEl);
 
             if (mediaEl) {
-              stickyBarLog('Scrolling to media element...');
               mediaEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
             } else {
-              stickyBarLog('No media element found with data-media-id:', targetMediaId);
             }
           } else {
-            stickyBarLog('No gallery element found');
           }
         } else {
-          stickyBarLog('Variant does not have featured_media');
         }
       } else {
-        stickyBarLog('No correctVariantId or productData not available');
       }
 
       // Close drawer after selection

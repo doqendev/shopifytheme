@@ -1,6 +1,3 @@
-const productFormLog = () => {};
-const productFormWarn = () => {};
-const productFormError = () => {};
 
 if (!customElements.get('product-form')) {
   customElements.define(
@@ -94,7 +91,6 @@ if (!customElements.get('product-form')) {
             }
           })
           .catch((e) => {
-            productFormError(e);
           })
           .finally(() => {
             this.submitButton.classList.remove('loading');

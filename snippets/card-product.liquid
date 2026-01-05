@@ -634,14 +634,10 @@
   {%- endcomment -%}
   {% if include_card_product_script %}
   <script>
-    var cardProductLog = function() {};
-    var cardProductWarn = function() {};
-    var cardProductError = function() {};
 
     function initializeProductCardSwipers() {
       // Ensure Swiper library is loaded
       if (typeof Swiper === 'undefined') {
-        cardProductError('Swiper is not loaded. Please include Swiper JS library.');
         return;
       }
 
@@ -768,7 +764,6 @@
           var decoded = raw.replace(/&quot;/g, '"');
           return JSON.parse(decoded) || [];
         } catch (error) {
-          cardProductWarn('Unable to parse variants for card', card, error);
           return [];
         }
       }
@@ -1099,7 +1094,7 @@
             }
             publish(PUB_SUB_EVENTS.cartUpdate, {source:'quick-add-size', productVariantId:id, cartData:response});
           })
-          .catch(function(e){ cardProductError(e); });
+          .catch(function(e){  });
       }
 
       plusEls.forEach(function(el) {
@@ -1183,16 +1178,11 @@
         });
 
         sizeOptions.addEventListener('click', function(ev) {
-          cardProductLog('[CardProduct] Size options clicked, target:', ev.target);
           // Allow calculator button clicks to propagate
           const calcButton = ev.target.closest('[data-calculator-drawer-trigger]');
           if (calcButton) {
-            cardProductLog('[CardProduct] ✓ Calculator button clicked inside size-options');
-            cardProductLog('[CardProduct] Button section ID:', calcButton.dataset.calculatorDrawerTrigger);
-            cardProductLog('[CardProduct] Allowing event to propagate');
             return;
           }
-          cardProductLog('[CardProduct] Regular size-options click, stopping propagation');
           ev.stopPropagation();
         });
 

@@ -1,7 +1,4 @@
 (() => {
-  const sizeDrawerLog = () => {};
-  const sizeDrawerWarn = () => {};
-  const sizeDrawerError = () => {};
 
   const stateBySection = new Map();
   const COLOR_KEYWORDS = ['color', 'cor', 'colour'];
@@ -121,10 +118,8 @@
         const matches = document.querySelectorAll(selector);
         matches.forEach((element) => roots.add(element));
         if (matches.length) {
-          sizeDrawerLog('[SizeDrawer] Found variant root via selector', { sectionId, selector, matchCount: matches.length });
         }
       } catch (error) {
-        sizeDrawerWarn('Variant root selector failed', selector, error);
       }
     });
 
@@ -134,14 +129,12 @@
   const getVariantSelectRoot = (sectionId) => {
     const roots = getVariantRoots(sectionId);
     if (roots.length) {
-      sizeDrawerLog(`Using variant root for section ${sectionId}:`, roots[0]);
       return roots[0];
     }
 
     const fallback = document.querySelector(
       `variant-selects[data-section="${sectionId}"], variant-radios[data-section="${sectionId}"]`
     );
-    sizeDrawerLog(`Fallback search for variant roots with data-section="${sectionId}":`, fallback);
     return fallback || null;
   };
 
@@ -216,11 +209,6 @@
     const normalizedOptionName = optionName.toLowerCase();
     let selectedValue = null;
 
-    sizeDrawerLog('[SizeDrawer] Resolving selected value', {
-      sectionId,
-      optionName,
-      optionPosition: option?.position,
-    });
 
     const buildPatterns = (contextSectionId) =>
       [
@@ -244,11 +232,6 @@
           trimmedName === `options[${optionName}]` ||
           trimmedName === `options[${normalizedOptionName}]`
         ) {
-          sizeDrawerLog('[SizeDrawer] Found value via direct checked radio match', {
-            contextSectionId,
-            value: radio.value,
-            radioName: radio.name,
-          });
           return radio.value;
         }
       }
@@ -257,11 +240,6 @@
       for (const pattern of patterns) {
         const radio = root.querySelector(`input[name="${cssEscape(pattern)}"]:checked`);
         if (radio) {
-          sizeDrawerLog('[SizeDrawer] Found value via pattern match', {
-            contextSectionId,
-            pattern,
-            value: radio.value,
-          });
           return radio.value;
         }
       }
@@ -274,11 +252,6 @@
         for (const selector of selectSelectors) {
           const select = root.querySelector(selector);
           if (select && select.value) {
-            sizeDrawerLog('[SizeDrawer] Found value via select element', {
-              contextSectionId,
-              selector,
-              value: select.value,
-            });
             return select.value;
           }
         }
@@ -288,10 +261,6 @@
         `[data-option-value][data-option-position="${option.position}"].is-active, [data-option-value].active, [data-option-value].selected`
       );
       if (activeSwatch?.dataset?.optionValue) {
-        sizeDrawerLog('[SizeDrawer] Found value via active swatch dataset', {
-          contextSectionId,
-          value: activeSwatch.dataset.optionValue,
-        });
         return activeSwatch.dataset.optionValue;
       }
 
@@ -299,10 +268,6 @@
         `[data-option-index="${option.position - 1}"] input[type="radio"]:checked`
       );
       if (inputWithDataset) {
-        sizeDrawerLog('[SizeDrawer] Found value via data-option-index match', {
-          contextSectionId,
-          value: inputWithDataset.value,
-        });
         return inputWithDataset.value;
       }
 
@@ -326,17 +291,7 @@
 
     if (!selectedValue) {
       selectedValue = getOptionValueString(option.selected_value);
-      sizeDrawerLog('[SizeDrawer] Falling back to option default', {
-        sectionId,
-        optionName,
-        value: selectedValue,
-      });
     } else {
-      sizeDrawerLog('[SizeDrawer] Resolved selected value', {
-        sectionId,
-        optionName,
-        value: selectedValue,
-      });
     }
 
     return selectedValue;
@@ -516,7 +471,6 @@
         return Shopify.formatMoney(cents, moneyFormat);
       }
     } catch (error) {
-      sizeDrawerWarn('formatMoney fallback triggered', error);
     }
     const amount = Number(cents) / 100;
     if (Number.isNaN(amount)) return '';
@@ -619,18 +573,13 @@
   }
 
   function updateDisplayedPrice(sectionId, overrideVariant) {
-    sizeDrawerLog('[SizeDrawer] updateDisplayedPrice', sectionId);
     const priceElements = getPriceElementsForSection(sectionId);
-    sizeDrawerLog('[SizeDrawer] Found price elements', priceElements.length, priceElements);
     if (!priceElements.length) {
-      sizeDrawerLog();
       return;
     }
 
     const variant = overrideVariant || getVariantForSelections(sectionId);
     if (!variant) {
-      sizeDrawerLog('[SizeDrawer] No matching variant found for price update');
-      sizeDrawerLog();
       return;
     }
 
@@ -639,12 +588,6 @@
       typeof variant.compare_at_price === 'number' ? variant.compare_at_price : Number(variant.compare_at_price);
 
     const isOnSale = compareValue > priceValue;
-    sizeDrawerLog('[SizeDrawer] Variant price data', {
-      variantId: variant.id,
-      priceValue,
-      compareValue,
-      isOnSale,
-    });
 
     priceElements.forEach((priceElement) => {
       if (!priceElement) return;
@@ -705,7 +648,6 @@
 
       updateProductBadges(priceElement, variant);
     });
-    sizeDrawerLog();
   }
 
 
@@ -893,7 +835,6 @@
   }
 
   function handleSizeSelection(sectionId, variant, sizeItem) {
-    sizeDrawerLog('handleSizeSelection called:', sectionId, variant, sizeItem);
     if (!variant || !variant.id) return;
 
     // Remove active state from all size items in this drawer
@@ -916,22 +857,16 @@
 
     // Add loading message inline to the size item
     const stockSpan = sizeItem.querySelector('.size-item__stock');
-    sizeDrawerLog('stockSpan found:', stockSpan);
-    sizeDrawerLog('sizeItem HTML before:', sizeItem.innerHTML);
     let originalStockText = '';
     if (stockSpan) {
       originalStockText = stockSpan.textContent;
-      sizeDrawerLog('Setting stockSpan to Adicionando...');
       stockSpan.textContent = 'Adicionando...';
     } else {
-      sizeDrawerLog('Creating new loading span');
       const loadingSpan = document.createElement('span');
       loadingSpan.className = 'size-item__stock size-item__loading-message';
       loadingSpan.textContent = 'Adicionando...';
       loadingSpan.style.marginLeft = '8px';
       sizeItem.appendChild(loadingSpan);
-      sizeDrawerLog('Loading span created:', loadingSpan);
-      sizeDrawerLog('sizeItem HTML after:', sizeItem.innerHTML);
     }
 
     sizeItem.classList.add('size-item--loading');
@@ -974,7 +909,6 @@
         }
       })
       .catch((error) => {
-        sizeDrawerError('Size drawer add to cart failed', error);
         const message = error?.message || 'Erro ao adicionar ao carrinho.';
 
         // Show error inline
@@ -1096,24 +1030,18 @@
   }
 
   function openDrawer(sectionId, triggerElement) {
-    sizeDrawerLog('openDrawer called for section:', sectionId);
     const drawer = document.getElementById(`size-drawer-${sectionId}`);
-    sizeDrawerLog('Drawer element found:', drawer);
     if (!drawer) {
-      sizeDrawerError('No drawer found for section:', sectionId);
       return;
     }
 
     // Debug: Check all variant-selects elements on page
     const allVariantSelects = document.querySelectorAll('variant-selects, variant-radios');
-    sizeDrawerLog('All variant pickers on page:', allVariantSelects);
     allVariantSelects.forEach((el, index) => {
-      sizeDrawerLog(`  ${index + 1}. ID: ${el.id}, data-section: ${el.dataset.section}`);
     });
 
     stopDesktopPositioning(sectionId);
     const state = ensureState(sectionId);
-    sizeDrawerLog('State ensured for section:', sectionId, state);
     renderSizeOptions(sectionId);
 
     // Check for saved measurements and auto-calculate recommendation
@@ -1169,25 +1097,20 @@
   }
 
   function handleDocumentClick(event) {
-    sizeDrawerLog('Document click detected:', event.target);
 
     // IMPORTANT: Check for calculator button first and ignore it
     const calculatorButton = event.target.closest('[data-calculator-drawer-trigger]');
     if (calculatorButton) {
-      sizeDrawerLog('Calculator button detected, ignoring in size-drawer.js');
       return; // Let size-calculator-drawer.js handle it
     }
 
     const trigger = event.target.closest('[data-size-drawer-trigger]');
     if (trigger) {
       const sectionId = trigger.getAttribute('data-size-drawer-trigger');
-      sizeDrawerLog('Size drawer clicked! Section ID:', sectionId);
       if (sectionId) {
         event.preventDefault();
-        sizeDrawerLog('Opening drawer for section:', sectionId);
         openDrawer(sectionId, trigger);
       } else {
-        sizeDrawerError('No section ID found on trigger:', trigger);
       }
       return;
     }
@@ -1195,16 +1118,13 @@
     // Check if any drawer is open
     const openDrawerElement = document.querySelector('.size-drawer.is-open');
     if (openDrawerElement) {
-      sizeDrawerLog('Open drawer detected:', openDrawerElement);
 
       // Check if click is inside drawer content
       const drawerContent = event.target.closest('.size-drawer__content');
-      sizeDrawerLog('Click inside drawer content?:', !!drawerContent);
 
       if (!drawerContent) {
         // Click is outside drawer content, close the drawer
         const sectionId = openDrawerElement.dataset.sectionId;
-        sizeDrawerLog('Closing drawer (clicked outside) for section:', sectionId);
         if (sectionId) {
           // Prevent default action and stop propagation to prevent clicking through to elements behind
           event.preventDefault();
@@ -1217,13 +1137,9 @@
     }
 
     const closeTrigger = event.target.closest('[data-size-drawer-close]');
-    sizeDrawerLog('Close trigger found:', closeTrigger);
     if (closeTrigger) {
       const drawer = closeTrigger.closest('.size-drawer');
-      sizeDrawerLog('Drawer found from close trigger:', drawer);
-      sizeDrawerLog('Drawer sectionId:', drawer?.dataset.sectionId);
       if (drawer?.dataset.sectionId) {
-        sizeDrawerLog('Closing drawer for section:', drawer.dataset.sectionId);
         event.preventDefault();
         event.stopPropagation();
         closeDrawer(drawer.dataset.sectionId);
@@ -1247,11 +1163,6 @@
 
     if (!sectionId) return;
 
-    sizeDrawerLog('[SizeDrawer] Variant change from pub/sub', {
-      sectionId,
-      variantId: variant?.id,
-      variant
-    });
 
     // Use the variant from the event data if available
     updateDisplayedPrice(sectionId, variant);
@@ -1264,11 +1175,6 @@
     const sourceSectionId = variantElement.dataset.section;
     if (!sourceSectionId) return;
 
-    sizeDrawerLog('[SizeDrawer] Variant change detected', {
-      sourceSectionId,
-      changedElement: event.target,
-      pickerType: variantElement.tagName,
-    });
 
     updateDisplayedPrice(sourceSectionId);
 
@@ -1282,10 +1188,8 @@
       if (drawerSectionId) {
         const state = stateBySection.get(drawerSectionId);
         if (state && state.isProcessing) {
-          sizeDrawerLog('Skipping refresh for drawer during cart addition:', drawerSectionId);
           return;
         }
-        sizeDrawerLog('Refreshing size options for open drawer:', drawerSectionId);
         renderSizeOptions(drawerSectionId);
       }
     });
@@ -1300,7 +1204,6 @@
       const optionName = changedInput.name.split('-')[0];
       const optionValue = changedInput.value;
 
-      sizeDrawerLog(`Syncing ${optionName} = ${optionValue} from section ${sourceSectionId} to all sections`);
 
       // Find all variant-selects elements except the source
       const allVariantSelects = document.querySelectorAll('variant-selects, variant-radios');
@@ -1313,7 +1216,6 @@
         const matchingInput = variantSelect.querySelector(`input[name*="${optionName}"][value="${optionValue}"]`);
 
         if (matchingInput && !matchingInput.checked) {
-          sizeDrawerLog(`Syncing to section ${targetSectionId}: setting ${optionName} to ${optionValue}`);
           matchingInput.checked = true;
           // Dispatch change event but without bubbling to prevent loops
           matchingInput.dispatchEvent(new Event('change', { bubbles: false }));
@@ -1347,7 +1249,6 @@
   }
 
   function initialize() {
-    sizeDrawerLog('Size drawer initializing...');
     hideProductSizeInputs();
     document.addEventListener('click', handleDocumentClick, true); // Use capture phase
     document.addEventListener('keydown', handleDocumentKeydown);
@@ -1361,14 +1262,11 @@
 
     document.addEventListener('product-info:loaded', handleProductInfoLoaded);
     document.addEventListener('shopify:section:load', handleSectionLoad);
-    sizeDrawerLog('Size drawer initialized. Event listeners attached.');
 
     // Debug: Check for size drawer data
-    sizeDrawerLog('Size drawer data:', window.themeSizeDrawerData);
 
     // Debug: Check for size drawer triggers
     const triggers = document.querySelectorAll('[data-size-drawer-trigger]');
-    sizeDrawerLog('Found size drawer triggers:', triggers.length, triggers);
 
     if (window.themeSizeDrawerData && typeof window.themeSizeDrawerData === 'object') {
       Object.keys(window.themeSizeDrawerData).forEach((sectionKey) => {
@@ -1386,7 +1284,6 @@
 
   // Also try initializing after a short delay as fallback
   setTimeout(() => {
-    sizeDrawerLog('Size drawer delayed initialization attempt...');
     initialize();
   }, 500);
 

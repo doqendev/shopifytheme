@@ -7,9 +7,6 @@
   const TAB_CART = 'cart';
   const TAB_WISHLIST = 'wishlist';
 
-  const wishlistLog = () => {};
-  const wishlistWarn = () => {};
-  const wishlistError = () => {};
 
   let cachedWishlist = null;
   const htmlDecoder = document.createElement('textarea');
@@ -79,7 +76,6 @@
       if (!contentType || !contentType.includes('application/json')) {
         // Got HTML instead of JSON - likely cold start
         if (retryCount < 2) {
-          wishlistLog(`Server warming up, retrying in 3 seconds... (attempt ${retryCount + 1}/2)`);
           await new Promise(resolve => setTimeout(resolve, 3000));
           return fetchServerWishlist(retryCount + 1);
         }
@@ -90,22 +86,11 @@
       const wishlist = data.wishlist || [];
 
       // Log what we received from server
-      wishlistLog(`Fetched ${wishlist.length} items from server`);
       wishlist.forEach(item => {
-        wishlistLog(`Received ${item.title}:`, {
-          hasVariants: !!item.variants,
-          variantCount: item.variants?.length || 0,
-          hasSwatches: !!item.swatches,
-          swatchCount: item.swatches?.length || 0,
-          sizeIndex: item.sizeIndex,
-          colorIndex: item.colorIndex,
-        });
 
         // Log actual swatch data from server
         if (item.swatches) {
-          wishlistLog(`  Server swatches:`, item.swatches);
           item.swatches.forEach((s, i) => {
-            wishlistLog(`    Server Swatch ${i}: value="${s.value}", key="${s.key}", image="${s.image}", color="${s.color}"`);
           });
         }
       });
@@ -113,9 +98,7 @@
       updateSyncStatus('synced', 'Sincronizado');
       return wishlist;
     } catch (error) {
-      wishlistError('Failed to fetch server wishlist:', error);
       if (retryCount < 2) {
-        wishlistLog(`Retrying... (attempt ${retryCount + 1}/2)`);
         await new Promise(resolve => setTimeout(resolve, 3000));
         return fetchServerWishlist(retryCount + 1);
       }
@@ -137,7 +120,6 @@
         // Simplified: only essential data needed for display
       };
 
-      wishlistLog(`💾 Saving ${item.title} (${(JSON.stringify(stripped).length / 1024).toFixed(1)}KB)`);
 
       return stripped;
     });
@@ -170,14 +152,12 @@
 
       const data = await response.json();
       if (data.success) {
-        wishlistLog('✅ Successfully saved to server!');
         updateSyncStatus('synced', 'Sincronizado');
         return true;
       } else {
         throw new Error(data.error || 'Failed to save wishlist');
       }
     } catch (error) {
-      wishlistError('❌ Failed to save server wishlist:', error);
       updateSyncStatus('error', 'Erro ao guardar');
       return false;
     }
@@ -205,12 +185,10 @@
       // If we have this item locally, prefer the local version (has full data)
       if (localMap.has(key)) {
         const localItem = localMap.get(key);
-        wishlistLog(`Merging ${item.title}: using local version (has full data)`);
         itemMap.set(key, localItem);
       } else {
         // Item exists on server but not locally (added on another device)
         // Use the server version, but it won't have full variant/swatch data
-        wishlistLog(`Merging ${item.title}: using server version (added on another device)`);
         itemMap.set(key, item);
       }
     });
@@ -226,10 +204,8 @@
         const isRecentlyAdded = (now - itemAddedAt) < RECENT_ADD_THRESHOLD;
 
         if (isRecentlyAdded) {
-          wishlistLog(`Merging recently added local item: ${item.title} (added ${now - itemAddedAt}ms ago)`);
           itemMap.set(key, item);
         } else {
-          wishlistLog(`Skipping stale local item: ${item.title} (added ${now - itemAddedAt}ms ago, not on server)`);
         }
       }
     });
@@ -241,16 +217,12 @@
   let syncTimeout = null;
   const debouncedSyncToServer = () => {
     if (!window.customerId) {
-      wishlistLog('⏭️ Skipping server sync: user not logged in');
       return;
     }
 
-    wishlistLog('⏱️ Debounced sync scheduled (2 seconds)...');
     clearTimeout(syncTimeout);
     syncTimeout = setTimeout(async () => {
-      wishlistLog('🚀 Debounced sync executing now...');
       const items = loadWishlist();
-      wishlistLog('💾 Items to sync:', items.map(i => i.title));
       await saveServerWishlist(items);
     }, 2000); // 2 second delay
   };
@@ -346,7 +318,6 @@
 
       return true;
     } catch (error) {
-      wishlistError('Failed to import wishlist:', error);
       return false;
     }
   };
@@ -354,29 +325,21 @@
   // Enrich wishlist items with cardMarkup from products currently on the page
   // Initialize account sync for logged-in users
   const initAccountSync = async () => {
-    wishlistLog('🔄 initAccountSync called');
-    wishlistLog('Customer ID:', window.customerId);
 
     // Check for wishlist import from URL first (works for all users)
     const importedFromURL = importWishlistFromURL();
 
     // For logged-in users, sync with server
     if (window.customerId) {
-      wishlistLog('✅ User is logged in, syncing with server...');
       try {
         const localItems = loadWishlist();
-        wishlistLog('📱 Local items:', localItems.map(i => i.title));
 
         const serverItems = await fetchServerWishlist();
-        wishlistLog('☁️ Server items:', serverItems?.map(i => i.title));
 
         if (serverItems !== null) {
-          wishlistLog(`Account sync: Local has ${localItems.length} items, Server has ${serverItems.length} items`);
 
           // Merge local and server wishlists
           const merged = mergeWishlists(localItems, serverItems);
-          wishlistLog(`✨ After merge: ${merged.length} items total`);
-          wishlistLog('Merged items:', merged.map(i => i.title));
 
           // Check if merged result differs from server
           const serverKeys = new Set(serverItems.map(item => getWishlistItemKey(item)));
@@ -390,28 +353,24 @@
           try {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(cachedWishlist));
           } catch (error) {
-            wishlistError('Unable to save merged wishlist:', error);
           }
           renderWishlist();
           syncHearts();
 
           // Sync to server if there are any changes
           if (hasChanges) {
-            wishlistLog('Syncing merged wishlist to server...');
             await saveServerWishlist(merged);
           } else {
             updateSyncStatus('synced', 'Sincronizado');
           }
 
           // Force heart sync after server load completes
-          wishlistLog('Re-syncing hearts after server load...');
           setTimeout(() => syncHearts(), 100);
         } else {
           // Server fetch failed, use local only
           updateSyncStatus('synced', 'Local');
         }
       } catch (error) {
-        wishlistError('Account sync error:', error);
         updateSyncStatus('error', 'Erro de sincronização');
       }
     }
@@ -610,10 +569,8 @@
           const urlMatch = bgValue?.match(/url\(['"]?([^'")]+)['"]?\)/);
           if (urlMatch && urlMatch[1]) {
             image = urlMatch[1];
-            wishlistLog(`  ✨ Extracted swatch image from DOM for "${value}": ${image}`);
           } else if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
             color = bgColor;
-            wishlistLog(`  ✨ Extracted swatch color from DOM for "${value}": ${color}`);
           }
           break;
         }
@@ -654,12 +611,6 @@
                           '';
 
       if (index === 0) {
-        wishlistLog(`  🖼️ First variant image sources:`, {
-          'variant.image': variant.image,
-          'variant.featured_image': variant.featured_image,
-          'variant.featured_image?.src': variant.featured_image?.src,
-          finalImage: variantImage
-        });
       }
 
       map.set(key, {
@@ -941,20 +892,15 @@
         cachedWishlist = normalizeWishlistItems(parsed);
         return cachedWishlist.slice();
       } else {
-        wishlistError('Invalid wishlist data format');
         // Clear corrupted data
         localStorage.removeItem(STORAGE_KEY);
       }
     } catch (error) {
-      wishlistError('Unable to read wishlist from storage', error);
-
       // Handle corrupted data
       if (error instanceof SyntaxError) {
-        wishlistWarn('Corrupted wishlist data, clearing...');
         try {
           localStorage.removeItem(STORAGE_KEY);
         } catch (clearError) {
-          wishlistError('Unable to clear corrupted data', clearError);
         }
       }
     }
@@ -969,8 +915,6 @@
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(cachedWishlist));
     } catch (error) {
-      wishlistError('Unable to persist wishlist', error);
-
       // Show user-facing error
       let errorMessage = window.wishlistStrings?.storageError || 'Não foi possível guardar os favoritos';
 
@@ -1167,6 +1111,26 @@
     return null;
   };
 
+  const shouldDebugWishlist = () =>
+    window.WISHLIST_DEBUG === true || window.location.search.includes('wishlist_debug=1');
+
+  let wishlistHeartsLogged = false;
+
+  const logWishlistHearts = (root = document, label = 'init') => {
+    if (!shouldDebugWishlist() || wishlistHeartsLogged) return;
+    const buttons = Array.from(root.querySelectorAll(HEART_SELECTOR));
+    const withHandle = buttons.filter((button) => {
+      const card = getCardFromHeart(button);
+      return Boolean(card?.dataset?.productHandle);
+    }).length;
+
+    console.log(`[wishlist] ${label} hearts`, { total: buttons.length, withHandle });
+    if (buttons.length && withHandle === 0) {
+      console.warn('[wishlist] Hearts found without product data. Check data-product-handle on the wrapper.');
+    }
+    wishlistHeartsLogged = true;
+  };
+
   const getProductFromCard = (card) => {
     if (!card) return null;
     const handle = card.dataset.productHandle;
@@ -1318,7 +1282,12 @@
     const button = event.currentTarget;
     const card = getCardFromHeart(button);
     const product = getProductFromCard(card);
-    if (!product) return;
+    if (!product) {
+      if (shouldDebugWishlist()) {
+        console.warn('[wishlist] Heart click without product data', { button, card });
+      }
+      return;
+    }
 
     const existingItem = findWishlistItem(product.handle);
     if (existingItem) {
@@ -1334,6 +1303,7 @@
       button.dataset.wishlistBound = 'true';
       button.addEventListener('click', handleHeartClick);
     });
+    logWishlistHearts(root, 'attach');
   };
 
   const syncHearts = () => {
@@ -1517,7 +1487,6 @@
     const addToCartLabel = window.wishlistStrings?.addToCart || 'Adicionar ao carrinho';
 
     const sizes = getUniqueSizesForItem(item);
-    wishlistLog(`📏 Creating size buttons for ${item.title}:`, sizes);
 
     return sizes
       .map(
@@ -1583,8 +1552,6 @@
   const createFallbackSwatchAndQuickAddMarkup = (item, quickAddMarkup) => {
     const swatches = Array.isArray(item?.swatches) ? item.swatches : [];
 
-    wishlistLog(`🎨 Creating swatch markup for ${item.title}:`, swatches);
-
     const visibleLimit = 3;
     const visibleSwatches = swatches.slice(0, visibleLimit);
     const overflowCount = swatches.length > visibleLimit ? swatches.length - visibleLimit : 0;
@@ -1594,15 +1561,6 @@
         if (!swatch || typeof swatch !== 'object') return '';
         const hasImage = typeof swatch.image === 'string' && swatch.image.trim().length;
         const hasColor = typeof swatch.color === 'string' && swatch.color.trim().length;
-
-        wishlistLog(`  Swatch ${index}:`, {
-          value: swatch.value,
-          hasImage,
-          hasColor,
-          image: swatch.image,
-          color: swatch.color,
-          fullSwatchObject: swatch
-        });
 
         const classes = ['swatch'];
         if (!hasImage && !hasColor) classes.push('swatch--unavailable');
@@ -1714,7 +1672,6 @@
   const createWishlistCardElement = (item) => {
     if (!item) return null;
 
-    wishlistLog(`🔧 Building simplified card for ${item.title}`);
 
     const template = document.createElement('template');
     const cardMarkup = buildProductCard(item);
@@ -1847,17 +1804,14 @@
   const ensureWishlistCardSwatch = (cardElement, item) => {
     if (!cardElement) return;
 
-    wishlistLog(`🎨 ensureWishlistCardSwatch for ${item.title}`);
 
     const overflowBadge = cardElement.querySelector('.additional-swatch-count');
     if (overflowBadge) {
       overflowBadge.remove();
     }
     const swatches = cardElement.querySelectorAll('.swatch');
-    wishlistLog(`  - Found ${swatches.length} swatch elements in DOM`);
 
     if (!swatches.length) {
-      wishlistLog(`  - ⚠️ No swatches found, cannot enhance`);
       return;
     }
 
@@ -1985,16 +1939,12 @@
   const ensureWishlistQuickAdd = (cardElement, item) => {
     if (!cardElement) return;
 
-    wishlistLog(`➕ ensureWishlistQuickAdd for ${item.title}`);
-    wishlistLog(`  - sizeIndex: ${item.sizeIndex}, colorIndex: ${item.colorIndex}`);
 
     const quickAddContainer = cardElement.querySelector('.card__content') || cardElement;
     let quickAdd = cardElement.querySelector('.product-card-plus');
 
-    wishlistLog(`  - Existing quickAdd element: ${!!quickAdd}`);
 
     if (typeof item?.sizeIndex !== 'number' || item.sizeIndex < 0) {
-      wishlistLog(`  - ⚠️ No sizeIndex, removing quick add`);
       if (quickAdd) {
         quickAdd.remove();
       }
@@ -2002,10 +1952,8 @@
     }
 
     const sizeButtonsMarkup = createSizeButtonsMarkup(item);
-    wishlistLog(`  - Size buttons markup created: ${!!sizeButtonsMarkup}`);
 
     if (!sizeButtonsMarkup) {
-      wishlistLog(`  - ⚠️ No size buttons, removing quick add`);
       if (quickAdd) {
         quickAdd.remove();
       }
@@ -2460,7 +2408,7 @@
           publish(PUB_SUB_EVENTS.cartUpdate, { source: 'wishlist' });
         }
       })
-      .catch((error) => wishlistError('Failed to refresh cart drawer', error));
+      .catch((error) => );
   };
 
   const findWishlistCardContext = (element) => {
@@ -2506,7 +2454,6 @@
         });
       })
       .catch((error) => {
-        wishlistError('Cart add error:', error);
 
         // Determine specific error message
         let errorMessage = window.wishlistStrings?.addToCartError || 'Não foi possível adicionar ao carrinho';
