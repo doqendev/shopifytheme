@@ -125,7 +125,7 @@
     "footers_MJGUrj": {
       "type": "FOOTERS",
       "custom_css": [
-        "@media screen and (max-width: 750px) {div {display:none; }}"
+        "@media screen and (max-width: 749px) {div {display: none; }}"
       ],
       "settings": {}
     },
@@ -142,6 +142,9 @@
       },
       "block_order": [
         "image_gdtJYG"
+      ],
+      "custom_css": [
+        "@media screen and (min-width: 750px) {div {display: none; }}"
       ],
       "settings": {
         "color_scheme": "scheme-1",
