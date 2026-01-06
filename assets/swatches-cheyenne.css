@@ -7,6 +7,10 @@
   gap: 5px;
 }
 
+#product-grid .price-and-swatch {
+  margin-left: 0 !important;
+}
+
 .product-card__swatch-indicator {
   display: flex;
   flex-wrap: nowrap;
@@ -14,6 +18,11 @@
   width: 100%;
   margin-bottom: 0;
   margin-top: -4px;
+}
+
+#product-grid .product-card__swatch-indicator {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 
 .product-card-plus {
@@ -34,6 +43,10 @@
 
   .product-card__swatch-indicator {
     margin-right: 10px;
+  }
+
+  #product-grid .product-card__swatch-indicator {
+    margin-right: 0 !important;
   }
 }
 
