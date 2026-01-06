@@ -4079,9 +4079,12 @@ element.style {
     cursor: pointer;
     border-radius: 0%;
     width: 100%;
-    text-align: left;
+    text-align: center;
     display: flex;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
+    gap: 4px;
 }
 
 .product-card-plus .size-option--recommended {
@@ -4089,9 +4092,17 @@ element.style {
   border-color: rgba(0, 0, 0, 0.12);
 }
 
+.product-card-plus .size-option__label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .size-recommendation-suffix {
-  font-size: 0.85em;
-  opacity: 0.75;
+  display: block;
+  margin-top: 2px;
+  font-size: 0.8em;
+  opacity: 0.7;
 }
 
 
@@ -4128,7 +4139,7 @@ element.style {
 }
 
 .product-card-plus .size-options.size-options--desktop .size-option {
-  justify-content: space-between;
+  justify-content: center;
 }
 
 @media screen and (min-width: 1160px) {

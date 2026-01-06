@@ -499,7 +499,7 @@ body:has(.size-calculator-drawer.is-open) div[class*="product"] {
 }
 
 .size-item--recommended .size-item__label {
-  font-weight: 500;
+  font-weight: 400;
 }
 
 /* Mobile Responsive */
