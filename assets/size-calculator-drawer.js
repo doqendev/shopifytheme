@@ -189,7 +189,7 @@
       labelElement.dataset.originalLabel = labelElement.textContent.trim();
     }
     const original = labelElement.dataset.originalLabel;
-    labelElement.textContent = isRecommended ? `${RECOMMENDED_PREFIX} ${original}` : original;
+    labelElement.textContent = isRecommended ? `${original} ${RECOMMENDED_PREFIX}` : original;
   }
 
   // ============================================
