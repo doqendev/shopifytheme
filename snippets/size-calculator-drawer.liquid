@@ -6,6 +6,19 @@
 {%- liquid
   assign calculator_section_id = section_id | default: 'default'
   assign fifth_media = product.media[4] | default: product.featured_media
+  assign size_option_index = -1
+  assign available_sizes = '' | split: ','
+  for option in product.options_with_values
+    assign option_name = option.name | downcase
+    if option_name == 'size' or option_name == 'tamanho'
+      assign size_option_index = forloop.index0
+      assign available_sizes = option.values
+      break
+    endif
+  endfor
+  if size_option_index == -1
+    assign available_sizes = product.variants | map: 'option1' | uniq
+  endif
 -%}
 
 <div
@@ -271,6 +284,7 @@
   window.themeCalculatorDrawerData['{{ calculator_section_id }}'] = {
     sectionId: '{{ calculator_section_id }}',
     productId: {{ product.id | default: 'null' }},
-    availableSizes: {{ product.variants | map: 'option1' | uniq | json }}
+    availableSizes: {{ available_sizes | json }},
+    sizeOptionIndex: {{ size_option_index }}
   };
 </script>

@@ -17,6 +17,19 @@
     Z_INDEX: 10001,
   };
 
+  const RECOMMENDED_PREFIX = 'Recomendado';
+  const SIZE_ORDER = ['xxxs', 'xxs', 'xs', 's', 'm', 'l', 'xl', 'xxl', 'xxxl', 'xxxxl'];
+  const SIZE_ALIAS_MAP = {
+    pp: 'xs',
+    p: 's',
+    m: 'm',
+    g: 'l',
+    gg: 'xl',
+    xg: 'xl',
+    xgg: 'xxl',
+    xggg: 'xxxl',
+  };
+
   // ============================================
   // STATE MANAGEMENT
   // ============================================
@@ -38,6 +51,145 @@
       calculatorState.set(sectionId, state);
     }
     return state;
+  }
+
+  // ============================================
+  // PRODUCT DATA + SIZE NORMALIZATION
+  // ============================================
+
+  function normalizeSizeValue(value) {
+    return String(value || '').trim().toLowerCase();
+  }
+
+  function getSectionData(sectionId) {
+    if (!sectionId || !window.themeCalculatorDrawerData) return null;
+    return window.themeCalculatorDrawerData[sectionId] || null;
+  }
+
+  function collectAvailableSizes(sectionId) {
+    const data = getSectionData(sectionId);
+    if (data && Array.isArray(data.availableSizes) && data.availableSizes.length) {
+      return data.availableSizes.slice();
+    }
+
+    const sizesFromDrawer = [];
+    const sizeDrawer = document.getElementById(`size-drawer-${sectionId}`);
+    if (sizeDrawer) {
+      sizeDrawer.querySelectorAll('.size-item[data-size]').forEach((item) => {
+        const size = item.dataset.size;
+        if (size) sizesFromDrawer.push(size);
+      });
+    }
+
+    if (sizesFromDrawer.length) {
+      return sizesFromDrawer;
+    }
+
+    const sizesFromCards = [];
+    const triggers = document.querySelectorAll(`[data-calculator-drawer-trigger="${sectionId}"]`);
+    triggers.forEach((trigger) => {
+      const container = trigger.closest('.size-options');
+      if (!container) return;
+      container.querySelectorAll('.size-option[data-size]').forEach((option) => {
+        const size = option.dataset.size;
+        if (size) sizesFromCards.push(size);
+      });
+    });
+
+    return sizesFromCards;
+  }
+
+  function parseSizeLabel(label) {
+    const raw = String(label || '').trim();
+    if (!raw) return null;
+
+    const normalized = raw.toLowerCase();
+
+    if (
+      normalized === 'tu' ||
+      normalized === 'u' ||
+      normalized === 'unico' ||
+      normalized === 'único' ||
+      normalized.includes('one size') ||
+      normalized.includes('tamanho unico') ||
+      normalized.includes('tamanho único')
+    ) {
+      return { raw, type: 'onesize' };
+    }
+
+    const numericMatches = normalized.match(/\d+(?:[.,]\d+)?/g);
+    if (numericMatches && numericMatches.length) {
+      const values = numericMatches
+        .map((match) => parseFloat(match.replace(',', '.')))
+        .filter((value) => !Number.isNaN(value));
+      if (values.length) {
+        const average = values.reduce((sum, value) => sum + value, 0) / values.length;
+        return { raw, type: 'numeric', value: average };
+      }
+    }
+
+    const letterMatches = normalized.match(/xxxxl|xxxl|xxl|xl|xxxs|xxs|xs|s|m|l/g);
+    if (letterMatches && letterMatches.length) {
+      const indices = letterMatches
+        .map((match) => SIZE_ORDER.indexOf(match))
+        .filter((index) => index >= 0);
+      if (indices.length) {
+        const averageIndex = indices.reduce((sum, index) => sum + index, 0) / indices.length;
+        return { raw, type: 'letter', valueIndex: averageIndex };
+      }
+    }
+
+    const compact = normalized.replace(/[^a-z]/g, '');
+    if (SIZE_ALIAS_MAP[compact]) {
+      const mapped = SIZE_ALIAS_MAP[compact];
+      const mappedIndex = SIZE_ORDER.indexOf(mapped);
+      return { raw, type: 'letter', valueIndex: mappedIndex };
+    }
+
+    return { raw, type: 'unknown' };
+  }
+
+  function selectBestSize(availableSizes, baseIndex, baseScore) {
+    if (!availableSizes || !availableSizes.length) return null;
+
+    const parsed = availableSizes.map(parseSizeLabel).filter(Boolean);
+
+    const oneSize = parsed.find((entry) => entry.type === 'onesize');
+    if (oneSize) return oneSize.raw;
+
+    const letterSizes = parsed.filter((entry) => entry.type === 'letter' && typeof entry.valueIndex === 'number');
+    if (letterSizes.length) {
+      const targetIndex = typeof baseIndex === 'number'
+        ? baseIndex
+        : (typeof baseScore === 'number' ? baseScore * (SIZE_ORDER.length - 1) : letterSizes[0].valueIndex);
+
+      let best = letterSizes[0];
+      letterSizes.forEach((entry) => {
+        if (Math.abs(entry.valueIndex - targetIndex) < Math.abs(best.valueIndex - targetIndex)) {
+          best = entry;
+        }
+      });
+      return best.raw;
+    }
+
+    const numericSizes = parsed.filter((entry) => entry.type === 'numeric' && typeof entry.value === 'number');
+    if (numericSizes.length) {
+      numericSizes.sort((a, b) => a.value - b.value);
+      const rawIndex = typeof baseScore === 'number' ? Math.round(baseScore * (numericSizes.length - 1)) : Math.floor((numericSizes.length - 1) / 2);
+      const index = Math.min(Math.max(rawIndex, 0), numericSizes.length - 1);
+      return numericSizes[index].raw;
+    }
+
+    return availableSizes[0];
+  }
+
+  function setRecommendedLabel(labelElement, isRecommended) {
+    if (!labelElement) return;
+    if (!labelElement.dataset.originalLabel) {
+      labelElement.dataset.originalLabel = labelElement.textContent.trim();
+    }
+    const original = labelElement.dataset.originalLabel;
+    labelElement.textContent = isRecommended ? `${RECOMMENDED_PREFIX} ${original}` : original;
   }
 
   // ============================================
@@ -206,16 +358,14 @@
   // SIZE CALCULATION ALGORITHM
   // ============================================
 
-  function calculateSize(measurements) {
-    const { idade, altura, peso, belly, shoulders } = measurements;
+  function calculateBaseSize(measurements) {
+    const { altura, peso, belly, shoulders } = measurements;
 
-    // Calculate BMI
     const heightInMeters = altura / 100;
     const bmi = peso / (heightInMeters * heightInMeters);
 
-    // Map BMI to base size
     const sizeOrder = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
-    let baseSize = '';
+    let baseSize = 'M';
 
     if (bmi < 18.5) {
       baseSize = 'XS';
@@ -231,27 +381,51 @@
       baseSize = 'XXL';
     }
 
-    // Adjust for body type
-    const currentIndex = sizeOrder.indexOf(baseSize);
+    let baseIndex = SIZE_ORDER.indexOf(baseSize.toLowerCase());
+    if (baseIndex === -1) {
+      baseIndex = SIZE_ORDER.indexOf('m');
+    }
 
     if (belly === 'broad' || shoulders === 'broad') {
-      // Size up for broad body types
-      if (currentIndex < sizeOrder.length - 1) {
-        baseSize = sizeOrder[currentIndex + 1];
+      if (baseIndex < SIZE_ORDER.length - 1) {
+        baseIndex += 1;
       }
     } else if (belly === 'slim' && shoulders === 'narrow') {
-      // Size down for slim body types
-      if (currentIndex > 0) {
-        baseSize = sizeOrder[currentIndex - 1];
+      if (baseIndex > 0) {
+        baseIndex -= 1;
       }
     }
 
+    const adjustedBaseSize = SIZE_ORDER[baseIndex]
+      ? SIZE_ORDER[baseIndex].toUpperCase()
+      : baseSize;
+
+    const baseScore = baseIndex / Math.max(1, SIZE_ORDER.length - 1);
+
     return {
-      recommendedSize: baseSize,
-      confidence: 'high',
-      message: `Com base nas tuas medidas, recomendamos o tamanho ${baseSize}.`,
+      baseSize: adjustedBaseSize,
+      baseIndex,
+      baseScore,
       bmi: bmi.toFixed(1),
     };
+  }
+
+  function calculateSize(measurements, sectionId) {
+    const base = calculateBaseSize(measurements);
+    const availableSizes = sectionId ? collectAvailableSizes(sectionId) : [];
+    const recommendedSize = selectBestSize(availableSizes, base.baseIndex, base.baseScore) || base.baseSize;
+
+    return {
+      recommendedSize,
+      confidence: 'high',
+      message: `Com base nas tuas medidas, recomendamos o tamanho ${recommendedSize}.`,
+      bmi: base.bmi,
+      baseSize: base.baseSize,
+    };
+  }
+
+  function calculateSizeForSection(sectionId, measurements) {
+    return calculateSize(measurements, sectionId);
   }
 
   // ============================================
@@ -471,13 +645,17 @@
     // Simulate calculation delay (remove in production)
     setTimeout(() => {
       // Calculate size
-      const result = calculateSize(measurements);
+      const result = calculateSizeForSection(sectionId, measurements);
 
       // Save measurements
       saveMeasurements(measurements);
 
       // Display result
       displayResult(drawer, result);
+
+      // Apply recommendations across drawers/cards
+      applySavedRecommendations();
+      startRecommendationObserver();
 
       // Reset processing state
       state.isProcessing = false;
@@ -520,8 +698,7 @@
     // Update size drawer with recommendation
     const savedMeasurements = loadSavedMeasurements();
     if (savedMeasurements) {
-      const result = calculateSize(savedMeasurements);
-      addRecommendationLabelsToSizeDrawer(sectionId, result.recommendedSize);
+      applySavedRecommendations();
     }
 
     // Show success message in size drawer (optional)
@@ -550,42 +727,105 @@
     const sizeDrawer = document.getElementById(`size-drawer-${sectionId}`);
     if (!sizeDrawer) return;
 
-    // Find all size items
-    const sizeItems = sizeDrawer.querySelectorAll('.size-item');
+    const normalizedRecommended = normalizeSizeValue(recommendedSize);
+    const sizeItems = sizeDrawer.querySelectorAll('.size-item:not(.size-drawer__calculator-button)');
 
     sizeItems.forEach((item) => {
       const sizeLabel = item.querySelector('.size-item__label');
       if (!sizeLabel) return;
 
-      const itemSize = sizeLabel.textContent.trim();
+      const itemSize = item.dataset.size || sizeLabel.textContent.trim();
+      const isRecommended = normalizedRecommended !== '' && normalizeSizeValue(itemSize) === normalizedRecommended;
 
-      // Remove existing recommendation badges
       const existingBadge = item.querySelector('.size-item__recommended');
       if (existingBadge) existingBadge.remove();
 
-      // Remove existing highlight
-      item.classList.remove('size-item--recommended');
-
-      // Add badge to recommended size
-      if (itemSize === recommendedSize) {
-        const badge = document.createElement('span');
-        badge.className = 'size-item__recommended';
-        badge.textContent = 'recomendado';
-        item.appendChild(badge);
-
-        // Add highlight class
-        item.classList.add('size-item--recommended');
-      }
+      setRecommendedLabel(sizeLabel, isRecommended);
+      item.classList.toggle('size-item--recommended', isRecommended);
     });
+  }
+
+  function addRecommendationLabelsToCardOptions(sectionId, recommendedSize) {
+    const normalizedRecommended = normalizeSizeValue(recommendedSize);
+    const triggers = document.querySelectorAll(`[data-calculator-drawer-trigger="${sectionId}"]`);
+
+    triggers.forEach((trigger) => {
+      const container = trigger.closest('.size-options');
+      if (!container) return;
+
+      const options = container.querySelectorAll('.size-option:not(.size-drawer__calculator-button)');
+      options.forEach((option) => {
+        const label = option.querySelector('.size-option__label');
+        if (!label) return;
+
+        const itemSize = option.dataset.size || label.textContent.trim();
+        const isRecommended = normalizedRecommended !== '' && normalizeSizeValue(itemSize) === normalizedRecommended;
+
+        setRecommendedLabel(label, isRecommended);
+        option.classList.toggle('size-option--recommended', isRecommended);
+      });
+    });
+  }
+
+  function applyRecommendationForSection(sectionId, recommendedSize) {
+    addRecommendationLabelsToSizeDrawer(sectionId, recommendedSize);
+    addRecommendationLabelsToCardOptions(sectionId, recommendedSize);
+  }
+
+  function applySavedRecommendations() {
+    const savedMeasurements = loadSavedMeasurements();
+    if (!savedMeasurements) return;
+
+    const sectionIds = new Set();
+
+    if (window.themeCalculatorDrawerData) {
+      Object.keys(window.themeCalculatorDrawerData).forEach((sectionId) => sectionIds.add(sectionId));
+    }
+
+    document.querySelectorAll('[data-calculator-drawer-trigger]').forEach((trigger) => {
+      const sectionId = trigger.dataset.calculatorDrawerTrigger;
+      if (sectionId) sectionIds.add(sectionId);
+    });
+
+    document.querySelectorAll('.size-drawer[data-section-id]').forEach((drawer) => {
+      const sectionId = drawer.dataset.sectionId;
+      if (sectionId) sectionIds.add(sectionId);
+    });
+
+    sectionIds.forEach((sectionId) => {
+      const result = calculateSizeForSection(sectionId, savedMeasurements);
+      applyRecommendationForSection(sectionId, result.recommendedSize);
+    });
+  }
+
+  let recommendationObserver = null;
+  let recommendationTimer = null;
+
+  function startRecommendationObserver() {
+    if (recommendationObserver) return;
+    if (!loadSavedMeasurements()) return;
+    if (!document.body) return;
+
+    recommendationObserver = new MutationObserver((mutations) => {
+      const hasAdditions = mutations.some((mutation) => mutation.addedNodes && mutation.addedNodes.length);
+      if (!hasAdditions) return;
+      if (recommendationTimer) {
+        clearTimeout(recommendationTimer);
+      }
+      recommendationTimer = setTimeout(() => {
+        applySavedRecommendations();
+      }, 80);
+    });
+
+    recommendationObserver.observe(document.body, { childList: true, subtree: true });
   }
 
   function autoCalculateIfMeasurementsSaved(sectionId) {
     const savedMeasurements = loadSavedMeasurements();
     if (!savedMeasurements) return;
 
-    // Calculate and add labels
-    const result = calculateSize(savedMeasurements);
-    addRecommendationLabelsToSizeDrawer(sectionId, result.recommendedSize);
+    const result = calculateSizeForSection(sectionId, savedMeasurements);
+    applyRecommendationForSection(sectionId, result.recommendedSize);
   }
 
   // ============================================
@@ -767,6 +1007,8 @@
     drawers.forEach(drawer => {
     });
 
+    applySavedRecommendations();
+    startRecommendationObserver();
   }
 
   // ============================================
@@ -776,10 +1018,14 @@
   // Expose functions to global scope for integration
   window.themeCalculatorDrawer = {
     calculateSize,
+    calculateSizeForSection,
     loadSavedMeasurements,
     saveMeasurements,
     clearSavedMeasurements,
     addRecommendationLabelsToSizeDrawer,
+    addRecommendationLabelsToCardOptions,
+    applyRecommendationForSection,
+    applySavedRecommendations,
     autoCalculateIfMeasurementsSaved,
     openCalculatorDrawer,
     closeCalculatorDrawer,

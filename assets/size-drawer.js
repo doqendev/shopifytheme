@@ -790,8 +790,8 @@
     if (typeof window.themeCalculatorDrawer !== 'undefined') {
       const savedMeasurements = window.themeCalculatorDrawer.loadSavedMeasurements();
       if (savedMeasurements) {
-        const result = window.themeCalculatorDrawer.calculateSize(savedMeasurements);
-        window.themeCalculatorDrawer.addRecommendationLabelsToSizeDrawer(sectionId, result.recommendedSize);
+        const result = window.themeCalculatorDrawer.calculateSizeForSection(sectionId, savedMeasurements);
+        window.themeCalculatorDrawer.applyRecommendationForSection(sectionId, result.recommendedSize);
       }
     }
 
