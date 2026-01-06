@@ -4089,6 +4089,11 @@ element.style {
   border-color: rgba(25, 135, 84, 0.35);
 }
 
+.size-recommendation-suffix {
+  font-size: 0.85em;
+  opacity: 0.75;
+}
+
 
 .product-card-plus .low-stock-message {
   color: #a30000;

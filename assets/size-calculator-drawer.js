@@ -189,7 +189,17 @@
       labelElement.dataset.originalLabel = labelElement.textContent.trim();
     }
     const original = labelElement.dataset.originalLabel;
-    labelElement.textContent = isRecommended ? `${original} ${RECOMMENDED_PREFIX}` : original;
+    if (!isRecommended) {
+      labelElement.textContent = original;
+      return;
+    }
+
+    labelElement.textContent = '';
+    labelElement.appendChild(document.createTextNode(`${original} `));
+    const suffix = document.createElement('span');
+    suffix.className = 'size-recommendation-suffix';
+    suffix.textContent = RECOMMENDED_PREFIX;
+    labelElement.appendChild(suffix);
   }
 
   // ============================================
