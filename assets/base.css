@@ -4043,21 +4043,21 @@ element.style {
   bottom: 0;
   left: 0;
   width: 100%;
-  padding: 1.3rem;
+  padding: 20px;
   flex-direction: column;
   align-items: stretch;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 16px;
   background: rgba(255, 255, 255, 1);
   z-index: 1;
-  box-shadow: 0px 0px 0px 1px #0000004d;
+  box-shadow: none;
 }
 
 .product-card-plus .overlay-sizes {
     display: flex;
     flex-direction: column;
     width: 100%;
-    gap: 3rem;
+    gap: 0;
 }
 
 .product-card-plus.active .size-options {
@@ -4070,12 +4070,12 @@ element.style {
 }
 
 .product-card-plus .size-option {
-    border: 1px solid #84848400;
+    border: none;
     background: none;
-    padding: .75rem 1rem;
-    font-size: 1.2rem;
+    padding: 12px 0;
+    font-size: 14px;
     font-family: "Work Sans";
-    font-weight: 500;
+    font-weight: 400;
     cursor: pointer;
     border-radius: 0%;
     width: 100%;
@@ -4085,6 +4085,10 @@ element.style {
     justify-content: center;
     align-items: center;
     gap: 4px;
+}
+
+.product-card-plus .size-option:hover:not(.sold-out) {
+  background-color: #f8f8f8;
 }
 
 .product-card-plus .size-option--recommended {
@@ -4124,16 +4128,16 @@ element.style {
   width: auto; /* actual width is set inline from JS to match image width */
   max-width: none;
   border-radius: 0;
-  border: 1px solid rgba(0, 0, 0, 0.12);
+  border: none;
   box-shadow: none;
-  padding: 1.8rem;
-  gap: 1rem;
+  padding: 20px;
+  gap: 16px;
   justify-content: flex-start;
   align-items: stretch;
 }
 
 .product-card-plus .size-options.size-options--desktop .overlay-sizes {
-  gap: 0.75rem;
+  gap: 0;
   max-height: min(26rem, 70vh);
   overflow-y: auto;
 }
@@ -4201,7 +4205,7 @@ body.size-drawer-open .page-width {
   flex-wrap: wrap;
   align-items: center;
   gap: 1rem;              /* keeps text and link tidy on small screens */
-  margin-bottom: 1rem;    /* space above the size buttons */
+  margin-bottom: 16px;    /* space above the size buttons */
   justify-content: space-between;
 }
 
@@ -4215,8 +4219,8 @@ body.size-drawer-open .page-width {
 /* Left label */
 .size-options-title {
   font-family: "Work Sans", sans-serif;
-  font-size: 1.4rem;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   letter-spacing: .03em;
 }
 
