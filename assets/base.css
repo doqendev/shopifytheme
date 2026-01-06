@@ -4085,8 +4085,8 @@ element.style {
 }
 
 .product-card-plus .size-option--recommended {
-  background-color: #f8fdf9;
-  border-color: rgba(25, 135, 84, 0.35);
+  background-color: #f2f2f2;
+  border-color: rgba(0, 0, 0, 0.12);
 }
 
 .size-recommendation-suffix {
