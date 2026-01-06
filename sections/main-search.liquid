@@ -119,7 +119,6 @@
     display: inline-block;
   }
 
-.product-grid.one-col,
 .product-grid.two-col,
 .product-grid.three-col {
   display: grid !important;
@@ -133,15 +132,6 @@
 }
 
   @media (max-width: 749px) {
-    .product-grid.one-col {
-      grid-template-columns: 1fr !important;
-    }
-
-    .product-grid.one-col .grid__item {
-      width: 100% !important;
-      max-width: 100% !important;
-    }
-
     .product-grid.two-col {
       grid-template-columns: repeat(2, 1fr) !important;
     }
@@ -162,22 +152,12 @@
   }
 
   @media (min-width: 750px) {
-    .product-grid.one-col,
     .product-grid.two-col,
     .product-grid.three-col {
       column-gap: 1.6rem !important;
       row-gap: 2rem !important;
       padding-left: 1.6rem;
       padding-right: 1.6rem;
-    }
-
-    .product-grid.one-col {
-      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)) !important;
-    }
-
-    .product-grid.one-col .grid__item {
-      width: 100% !important;
-      max-width: 100% !important;
     }
 
     .product-grid.two-col {
@@ -311,14 +291,6 @@
       {%- if search.results_count > 0 -%}
         <div class="grid-controls page-width">
           <div class="layout-options">
-            <button type="button" id="layout-one-col" class="layout-option-button" aria-label="{{ 'accessibility.grid_layout_one_column' | default: 'One column grid' }}">
-              <span class="grid-icon grid-icon--full">
-                {{ 'grid_1_thinner_active.svg' | inline_asset_content }}
-              </span>
-              <span class="grid-icon grid-icon--empty">
-                {{ 'grid_1_thinner.svg' | inline_asset_content }}
-              </span>
-            </button>
             <button type="button" id="layout-two-col" class="layout-option-button active" aria-label="{{ 'accessibility.grid_layout_two_column' | default: 'Two column grid' }}">
               <span class="grid-icon grid-icon--full">
                 {{ 'grid_2_thinner_active.svg' | inline_asset_content }}
@@ -536,36 +508,28 @@
       if (typeof window.initializeGridOptions !== 'function') {
         window.initializeGridOptions = function() {
           var productGrid = document.getElementById('product-grid');
-          var btnOneCol = document.getElementById('layout-one-col');
           var btnTwoCol = document.getElementById('layout-two-col');
           var btnThreeCol = document.getElementById('layout-three-col');
 
-          if (!productGrid || !btnOneCol || !btnTwoCol || !btnThreeCol) return;
+          if (!productGrid || !btnTwoCol || !btnThreeCol) return;
 
-          btnOneCol.replaceWith(btnOneCol.cloneNode(true));
           btnTwoCol.replaceWith(btnTwoCol.cloneNode(true));
           btnThreeCol.replaceWith(btnThreeCol.cloneNode(true));
 
-          btnOneCol = document.getElementById('layout-one-col');
           btnTwoCol = document.getElementById('layout-two-col');
           btnThreeCol = document.getElementById('layout-three-col');
 
           function setActive(button) {
-            [btnOneCol, btnTwoCol, btnThreeCol].forEach(function(btn) {
+            [btnTwoCol, btnThreeCol].forEach(function(btn) {
               if (btn) btn.classList.toggle('active', btn === button);
             });
           }
 
           function applyGridLayout(layout) {
-            productGrid.classList.remove('one-col', 'two-col', 'three-col');
+            productGrid.classList.remove('two-col', 'three-col');
             productGrid.classList.add(layout);
             window.currentGridLayout = layout;
           }
-
-          btnOneCol.addEventListener('click', function() {
-            applyGridLayout('one-col');
-            setActive(btnOneCol);
-          });
 
           btnTwoCol.addEventListener('click', function() {
             applyGridLayout('two-col');
@@ -581,12 +545,10 @@
           applyGridLayout(window.currentGridLayout);
 
           // Update active button based on current layout
-          if (window.currentGridLayout === 'one-col') {
-            setActive(btnOneCol);
-          } else if (window.currentGridLayout === 'two-col') {
-            setActive(btnTwoCol);
-          } else if (window.currentGridLayout === 'three-col') {
+          if (window.currentGridLayout === 'three-col') {
             setActive(btnThreeCol);
+          } else {
+            setActive(btnTwoCol);
           }
         };
       }
