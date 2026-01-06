@@ -144,9 +144,6 @@
   
   /* New layout options CSS */
   @media (max-width: 749px) {
-    .product-grid.one-col {
-      grid-template-columns: 1fr !important;
-    }
     .product-grid.two-col {
       grid-template-columns: repeat(2, 1fr) !important;
     }
@@ -156,13 +153,6 @@
   }
   @media (min-width: 750px) {
     /* Desktop layout adjustments */
-    .product-grid.one-col {
-      /* Large-card view: auto-fit into big tiles */
-      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)) !important;
-    }
-    .product-grid.one-col .grid__item {
-      max-width: 100%;
-    }
     .product-grid.two-col {
       grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
       column-gap: 1.6rem;
@@ -409,15 +399,6 @@
   <!-- Grid Controls: Layout options and Facets toggle button in the same row -->
   <div class="grid-controls page-width">
     <div class="layout-options">
-      <!-- One Column Button -->
-      <button type="button" id="layout-one-col" class="layout-option-button">
-        <span class="grid-icon grid-icon--full">
-          {{ 'grid_1_thinner_active.svg' | inline_asset_content }}
-        </span>
-        <span class="grid-icon grid-icon--empty">
-          {{ 'grid_1_thinner.svg' | inline_asset_content }}
-        </span>
-      </button>
       <!-- Two Column Button -->
       <button type="button" id="layout-two-col" class="layout-option-button active">
         <span class="grid-icon grid-icon--full">
@@ -622,40 +603,32 @@
   // Global initializer for grid options
   window.initializeGridOptions = function() {
     var grid = document.getElementById('product-grid');
-    var btnOneCol = document.getElementById('layout-one-col');
     var btnTwoCol = document.getElementById('layout-two-col');
     var btnThreeCol = document.getElementById('layout-three-col');
 
-    if (!grid || !btnOneCol || !btnTwoCol || !btnThreeCol) return;
+    if (!grid || !btnTwoCol || !btnThreeCol) return;
 
     // Optionally, remove any previously bound events
-    btnOneCol.replaceWith(btnOneCol.cloneNode(true));
     btnTwoCol.replaceWith(btnTwoCol.cloneNode(true));
     btnThreeCol.replaceWith(btnThreeCol.cloneNode(true));
 
     // Re-select after cloning
-    btnOneCol = document.getElementById('layout-one-col');
     btnTwoCol = document.getElementById('layout-two-col');
     btnThreeCol = document.getElementById('layout-three-col');
 
     function setActive(button) {
-      [btnOneCol, btnTwoCol, btnThreeCol].forEach(function(btn) {
+      [btnTwoCol, btnThreeCol].forEach(function(btn) {
         if (btn) btn.classList.toggle('active', btn === button);
       });
     }
 
-    btnOneCol.addEventListener('click', function() {
-      animateGridTransition(grid, 'one-col', ['two-col', 'three-col']);
-      setActive(btnOneCol);
-    });
-
     btnTwoCol.addEventListener('click', function() {
-      animateGridTransition(grid, 'two-col', ['one-col', 'three-col']);
+      animateGridTransition(grid, 'two-col', ['three-col']);
       setActive(btnTwoCol);
     });
 
     btnThreeCol.addEventListener('click', function() {
-      animateGridTransition(grid, 'three-col', ['one-col', 'two-col']);
+      animateGridTransition(grid, 'three-col', ['two-col']);
       setActive(btnThreeCol);
     });
 
@@ -669,12 +642,10 @@
     }
 
     // Apply the layout corresponding to the active button without triggering a click
-    if (btnOneCol.classList.contains('active')) {
-      grid.classList.add('one-col');
-    } else if (btnTwoCol.classList.contains('active')) {
-      grid.classList.add('two-col');
-    } else if (btnThreeCol.classList.contains('active')) {
+    if (btnThreeCol.classList.contains('active')) {
       grid.classList.add('three-col');
+    } else {
+      grid.classList.add('two-col');
     }
   };
 
