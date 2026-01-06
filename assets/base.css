@@ -4089,9 +4089,6 @@ element.style {
   border-color: rgba(25, 135, 84, 0.35);
 }
 
-.product-card-plus .size-option--recommended .size-option__label {
-  font-weight: 600;
-}
 
 .product-card-plus .low-stock-message {
   color: #a30000;
