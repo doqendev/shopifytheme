@@ -4163,7 +4163,7 @@ element.style {
   width: auto; /* actual width is set inline from JS to match image width */
   max-width: none;
   border-radius: 0;
-  border: none;
+  border: 1px solid;
   box-shadow: none;
   padding: 24px;
   gap: 16px;
