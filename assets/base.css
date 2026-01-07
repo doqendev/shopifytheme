@@ -4270,8 +4270,9 @@ body.size-drawer-open .page-width {
 }
 
 .size-option__low-stock {
-    margin-left: 15px;
-    color: orange;
+      margin-left: 0;
+      color: orange;
+      text-align: center;
 }
 
 @media screen and (max-width: 749px) {
