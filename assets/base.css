@@ -4173,7 +4173,7 @@ element.style {
 
 .product-card-plus .size-options.size-options--desktop .overlay-sizes {
     gap: 8px;
-    max-height: min(26rem, 70vh);
+    max-height: min(30rem, 70vh);
     overflow-y: auto;
   }
 
