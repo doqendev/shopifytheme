@@ -4054,10 +4054,10 @@ element.style {
 }
 
 .product-card-plus .overlay-sizes {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    gap: 0;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      gap: 8px;
 }
 
 .product-card-plus.active .size-options {
