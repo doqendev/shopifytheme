@@ -33,79 +33,79 @@
   display: block;
 }
 
-.size-options-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 10px;
-}
-
-/* Hide header on desktop (990px+) */
-@media screen and (min-width: 990px) {
-  .size-options-header--mobile-only {
-    display: none !important;
+  .size-selector-container .size-options-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
   }
-}
 
-.size-options-title {
-  font-family: "Work Sans", sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: .03em;
-  color: #333;
-}
+  /* Hide header on desktop (990px+) */
+  @media screen and (min-width: 990px) {
+  .size-selector-container .size-options-header--mobile-only {
+      display: none !important;
+    }
+  }
 
-.size-guide-link {
-  font-size: 12px;
-  color: #666;
-  text-decoration: underline;
-}
+  .size-selector-container .size-options-title {
+    font-family: "Work Sans", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: .03em;
+    color: #333;
+  }
 
-.overlay-sizes {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-  gap: 8px;
-}
+  .size-selector-container .size-guide-link {
+    font-size: 12px;
+    color: #666;
+    text-decoration: underline;
+  }
 
-.size-option {
-  border: 1px solid #ddd;
-  background: #fff;
-  padding: 12px 8px;
-  text-align: center;
-  cursor: pointer;
-  border-radius: 4px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
+  .size-selector-container .overlay-sizes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: 8px;
+  }
 
-.size-option:hover:not(.sold-out) {
-  border-color: #333;
-  background: #f8f8f8;
-}
+  .size-selector-container .size-option {
+    border: 1px solid #ddd;
+    background: #fff;
+    padding: 12px 8px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
 
-.size-option.sold-out {
-  background: #f5f5f5;
-  color: #999;
-  cursor: not-allowed;
-  text-decoration: line-through;
-}
+  .size-selector-container .size-option:hover:not(.sold-out) {
+    border-color: #333;
+    background: #f8f8f8;
+  }
 
-.size-option__label {
-  display: block;
-  font-size: 14px;
-}
+  .size-selector-container .size-option.sold-out {
+    background: #f5f5f5;
+    color: #999;
+    cursor: not-allowed;
+    text-decoration: line-through;
+  }
 
-.size-option__low-stock {
-  font-size: 10px;
-  color: #ff6600;
-  margin-top: 2px;
-}
+  .size-selector-container .size-option__label {
+    display: block;
+    font-size: 14px;
+  }
 
-.size-option__low-stock.hidden {
-  display: none;
-}
+  .size-selector-container .size-option__low-stock {
+    font-size: 10px;
+    color: #ff6600;
+    margin-top: 2px;
+  }
+
+  .size-selector-container .size-option__low-stock.hidden {
+    display: none;
+  }
 </style>
 
 <div class="size-selector-container" style="position: relative;">
@@ -161,9 +161,11 @@
 <!-- Simple dropdown toggle script -->
 <script>
   (function() {
-    const trigger = document.getElementById('size-selector-trigger');
-    const dropdown = document.getElementById('size-selector-dropdown');
-    const sizeOptions = document.querySelectorAll('.size-option');
+      const container = document.querySelector('.size-selector-container');
+      if (!container) return;
+      const trigger = container.querySelector('#size-selector-trigger');
+      const dropdown = container.querySelector('#size-selector-dropdown');
+      const sizeOptions = container.querySelectorAll('.size-option');
 
     if (!trigger || !dropdown) return;
 
