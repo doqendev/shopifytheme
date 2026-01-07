@@ -74,7 +74,6 @@
 .size-drawer__body {
   display: flex;
   flex-direction: column;
-  gap: 16px;
 }
 
 .size-drawer__guide {
