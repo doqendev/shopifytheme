@@ -4143,6 +4143,13 @@ element.style {
   opacity: 0.85;
 }
 
+@media screen and (max-width: 749px) {
+  .size-recommendation-suffix,
+  .size-item__recommended {
+    font-size: 9px !important;
+  }
+}
+
 
 .product-card-plus .low-stock-message {
   color: #a30000;
