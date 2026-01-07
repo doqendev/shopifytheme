@@ -4067,7 +4067,7 @@ element.style {
 }
 
 .product-grid.random-grid .product-card-plus .size-option {
-  padding: 16px 0 !important;
+  padding: 10px 0 !important;
 }
 
 .product-card-plus.active .size-options {
@@ -4082,7 +4082,7 @@ element.style {
 .product-card-plus .size-option {
     border: none;
     background: none;
-    padding: 16px 0;
+    padding: 10px 0;
     font-size: 14px;
     font-family: "Work Sans";
     font-weight: 400;
