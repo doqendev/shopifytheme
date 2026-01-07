@@ -935,29 +935,36 @@
             return;
           }
 
-          var sizeVal = btn.dataset.size;
-          var lowStockEl = btn.querySelector('.size-option__low-stock');
-          if (sizeAvailability[sizeVal] === undefined) {
-            btn.style.display = 'none';
-          } else {
-            btn.style.display = '';
-            if (sizeAvailability[sizeVal]) {
-              btn.classList.remove('sold-out');
-              btn.disabled = false;
-              var qty = sizeInventory[sizeVal];
-              if (qty !== undefined && qty > 0 && qty < 5) {
-                lowStockEl.classList.remove('hidden');
-              } else {
-                lowStockEl.classList.add('hidden');
-              }
-            } else {
-              btn.classList.add('sold-out');
-              btn.disabled = true;
+            var sizeVal = btn.dataset.size;
+            var lowStockEl = btn.querySelector('.size-option__low-stock');
+            if (sizeAvailability[sizeVal] === undefined) {
+              btn.style.display = 'none';
+              btn.classList.remove('size-option--low-stock');
               if (lowStockEl) lowStockEl.classList.add('hidden');
+            } else {
+              btn.style.display = '';
+              if (sizeAvailability[sizeVal]) {
+                btn.classList.remove('sold-out');
+                btn.disabled = false;
+                var qty = sizeInventory[sizeVal];
+                var isLowStock = qty !== undefined && qty > 0 && qty < 5;
+                btn.classList.toggle('size-option--low-stock', isLowStock);
+                if (lowStockEl) {
+                  if (isLowStock) {
+                    lowStockEl.classList.remove('hidden');
+                  } else {
+                    lowStockEl.classList.add('hidden');
+                  }
+                }
+              } else {
+                btn.classList.add('sold-out');
+                btn.disabled = true;
+                btn.classList.remove('size-option--low-stock');
+                if (lowStockEl) lowStockEl.classList.add('hidden');
+              }
             }
-          }
-        });
-      }
+          });
+        }
 
       productCards.forEach(function(card){
         updateSizeButtons(card);

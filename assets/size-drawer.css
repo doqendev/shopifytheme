@@ -127,6 +127,14 @@
   display: inline-block;
 }
 
+.size-item--low-stock:not(.size-item--recommended) {
+  background-color: transparent;
+}
+
+.size-item--low-stock:not(.size-item--recommended):hover {
+  background-color: #f8f8f8;
+}
+
 .size-item__loading-message {
   color: #000 !important;
   font-weight: 500;

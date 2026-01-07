@@ -54,7 +54,7 @@
               {%- endif -%}
             {%- endfor -%}
 
-            <div class="size-item {% unless variant_available %}size-item--unavailable{% endunless %}"
+            <div class="size-item{% unless variant_available %} size-item--unavailable{% endunless %}{% if low_stock and variant_available %} size-item--low-stock{% endif %}"
                  data-size="{{ value }}"
                  data-option-index="{{ size_option_index }}">
               <span class="size-item__label">{{ value }}</span>

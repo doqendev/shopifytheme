@@ -4096,6 +4096,14 @@ element.style {
   border-color: rgba(0, 0, 0, 0.12);
 }
 
+.product-card-plus .size-option--low-stock:not(.size-option--recommended) {
+  background-color: transparent;
+}
+
+.product-card-plus .size-option--low-stock:not(.size-option--recommended):hover:not(.sold-out) {
+  background-color: #f8f8f8;
+}
+
 .product-card-plus .size-option__label {
   display: flex;
   flex-direction: column;
