@@ -4120,7 +4120,7 @@ element.style {
   align-items: center;
 
 
-  font-size: 14px;
+  font-size: 10px!important;
   font-weight: 400;
   color: #333;
   display: flex;
