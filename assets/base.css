@@ -4127,9 +4127,9 @@ element.style {
   color: #555;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  background: #e6e6e6;
-  border-radius: 3px;
-  padding: 2px 6px;
+  background: none;
+  border-radius: 0;
+  padding: 0;
   opacity: 0.85;
 }
 
