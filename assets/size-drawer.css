@@ -100,7 +100,6 @@
   justify-content: center;
   flex-direction: column;
   text-align: center;
-  gap: 4px;
   padding: 12px 0;
   cursor: pointer;
   transition: background-color 0.2s ease;
