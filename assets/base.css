@@ -4165,7 +4165,6 @@ element.style {
   border: 1px solid;
   box-shadow: none;
   padding: 24px;
-  gap: 16px;
   justify-content: flex-start;
   align-items: stretch;
 }
