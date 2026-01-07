@@ -4060,6 +4060,17 @@ element.style {
       gap: 8px;
 }
 
+/* Ensure random collection quick add uses the same spacing as standard quick add */
+.product-grid.random-grid .product-card-plus .overlay-sizes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px !important;
+}
+
+.product-grid.random-grid .product-card-plus .size-option {
+  padding: 16px 0 !important;
+}
+
 .product-card-plus.active .size-options {
   display: flex;
   z-index: 6;
