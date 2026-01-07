@@ -482,7 +482,7 @@ body:has(.size-calculator-drawer.is-open) div[class*="product"] {
 
 /* Recommendation Badge in Size Drawer */
 .size-item__recommended {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 500;
   color: #555;
   text-transform: uppercase;
