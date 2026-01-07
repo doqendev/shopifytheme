@@ -4047,7 +4047,6 @@ element.style {
   flex-direction: column;
   align-items: stretch;
   justify-content: center;
-  gap: 16px;
   background: rgba(255, 255, 255, 1);
   z-index: 1;
   box-shadow: none;
