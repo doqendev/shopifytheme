@@ -268,7 +268,7 @@
 
 /* Add spacing above calculator button in quick add (size-option context) */
 .size-option.size-drawer__calculator-button {
-  margin-top: 1.5rem;
+  margin-top: 0rem;
 }
 
 .size-option.size-drawer__calculator-button .size-option__label,
