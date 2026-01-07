@@ -4161,10 +4161,10 @@ element.style {
 }
 
 .product-card-plus .size-options.size-options--desktop .overlay-sizes {
-  gap: 0;
-  max-height: min(26rem, 70vh);
-  overflow-y: auto;
-}
+    gap: 8px;
+    max-height: min(26rem, 70vh);
+    overflow-y: auto;
+  }
 
 .product-card-plus .size-options.size-options--desktop .size-option {
   justify-content: center;
