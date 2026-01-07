@@ -4132,7 +4132,7 @@ element.style {
 .size-recommendation-suffix {
   display: inline-block;
   margin-top: 2px;
-  font-size: 10px;
+  font-size: 6px;
   font-weight: 500;
   color: #555;
   text-transform: uppercase;
