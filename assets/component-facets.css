@@ -1302,7 +1302,7 @@ input.mobile-facets__checkbox {
 .noUi-horizontal .noUi-handle {
     width: 10px !important;
     height: 10px !important;
-    border-radius: 50%;
+    border-radius: 0%;
     top: -4px !important;
     right: -5px !important;
 }
