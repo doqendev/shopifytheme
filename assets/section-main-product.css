@@ -416,6 +416,15 @@ a.product__text {
     margin-bottom: 1rem;
   }
 
+  .product-title-heart-row {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .product-title-heart-row .wishlist-toggle--product-page {
+    margin-left: auto;
+  }
+
   .product-title-heart-row h1 {
     font-size: 2rem;
     font-weight: 300;
