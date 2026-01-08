@@ -77,25 +77,6 @@
         <!-- Tab Panel: Measurements -->
         <div class="sg-tab-panel sg-tab-panel--active" role="tabpanel" id="sg-panel-measurements-{{ sg_id }}" aria-labelledby="sg-tab-measurements-{{ sg_id }}" data-panel="measurements">
 
-          <!-- Size Selector -->
-          {%- if has_metafield_product or sizechart_key != '' -%}
-            <div class="sg-size-selector">
-              <div class="sg-size-buttons" role="radiogroup">
-                {%- if has_metafield_product -%}
-                  {%- for size in metafield_product.sizes -%}
-                    <button class="sg-size-btn {% if forloop.first %}sg-size-btn--active{% endif %}" role="radio" aria-checked="{% if forloop.first %}true{% else %}false{% endif %}" data-size="{{ size }}">{{ size }}</button>
-                  {%- endfor -%}
-                {%- else -%}
-                  <button class="sg-size-btn sg-size-btn--active" role="radio" aria-checked="true" data-size="S">S</button>
-                  <button class="sg-size-btn" role="radio" aria-checked="false" data-size="M">M</button>
-                  <button class="sg-size-btn" role="radio" aria-checked="false" data-size="L">L</button>
-                  <button class="sg-size-btn" role="radio" aria-checked="false" data-size="XL">XL</button>
-                  <button class="sg-size-btn" role="radio" aria-checked="false" data-size="XXL">XXL</button>
-                {%- endif -%}
-              </div>
-            </div>
-          {%- endif -%}
-
           <!-- Product Image -->
           <div class="sg-media">
             {%- assign first_media = product.media[4] | default: product.featured_media -%}
@@ -351,25 +332,6 @@
 
         <!-- Tab Panel: Body Measurements -->
         <div class="sg-tab-panel" role="tabpanel" id="sg-panel-body-{{ sg_id }}" aria-labelledby="sg-tab-body-{{ sg_id }}" data-panel="body">
-
-          <!-- Size Selector for Body -->
-          {%- if has_metafield_body or sizechart_key != '' -%}
-            <div class="sg-size-selector">
-              <div class="sg-size-buttons" role="radiogroup">
-                {%- if has_metafield_body -%}
-                  {%- for size in metafield_body.sizes -%}
-                    <button class="sg-size-btn-body {% if forloop.first %}sg-size-btn-body--active{% endif %}" role="radio" aria-checked="{% if forloop.first %}true{% else %}false{% endif %}" data-size-body="{{ size }}">{{ size }}</button>
-                  {%- endfor -%}
-                {%- else -%}
-                  <button class="sg-size-btn-body sg-size-btn-body--active" role="radio" aria-checked="true" data-size-body="S">S</button>
-                  <button class="sg-size-btn-body" role="radio" aria-checked="false" data-size-body="M">M</button>
-                  <button class="sg-size-btn-body" role="radio" aria-checked="false" data-size-body="L">L</button>
-                  <button class="sg-size-btn-body" role="radio" aria-checked="false" data-size-body="XL">XL</button>
-                  <button class="sg-size-btn-body" role="radio" aria-checked="false" data-size-body="XXL">XXL</button>
-                {%- endif -%}
-              </div>
-            </div>
-          {%- endif -%}
 
           <!-- Body Measurement Table -->
           <div class="sg-table-container">
