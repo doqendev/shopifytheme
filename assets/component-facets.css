@@ -1425,7 +1425,7 @@ input.mobile-facets__checkbox {
 }
 
 .noUi-base, .noUi-connects {
-  height: 6px!important;
+  height: 3px!important;
 }
 
 #FacetsWrapperMobile > details.mobile-facet.facet-accordion.mobile-facet-filter\.v\.t\.shopify\.color-pattern.menu-opening > div > ul > li > div > label.swatch-input__label > span {
