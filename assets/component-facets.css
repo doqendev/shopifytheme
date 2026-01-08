@@ -1300,11 +1300,11 @@ input.mobile-facets__checkbox {
 }
 
 .noUi-horizontal .noUi-handle {
-  width: 20px!important;
-  height: 20px!important;
-  border-radius: 50%;
-  top: -5px!important;
-  right: -9px!important;
+    width: 10px !important;
+    height: 10px !important;
+    border-radius: 50%;
+    top: -5px !important;
+    right: -5px !important;
 }
 
 
