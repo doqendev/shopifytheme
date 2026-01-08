@@ -45,7 +45,7 @@
 
 .price:not(.price--show-badge) .price-item--last:last-of-type {
   margin: 0;
-  color: #EB4444;
+  color: #EB2626;
   font-weight: 100;
 }
 
