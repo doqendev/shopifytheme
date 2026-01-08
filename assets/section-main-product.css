@@ -315,7 +315,6 @@ a.product__text {
 .wishlist-toggle--product-page .wishlist-toggle__icon {
   width: 20px !important;
   height: 20px !important;
-  display: block !important;
   fill: none;
   stroke: #111;
   stroke-width: 1.5;
