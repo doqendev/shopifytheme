@@ -417,6 +417,7 @@ a.product__text {
 
   .product-title-heart-row {
     justify-content: space-between;
+    align-items: flex-start;
     width: 100%;
   }
 
