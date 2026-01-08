@@ -727,27 +727,30 @@ document.addEventListener('DOMContentLoaded', function() {
   div.mobile-facet__swatch .swatch-input__input { display: none; }
   .swatch-input__input:checked + .swatch-input__label .swatch { outline: 1px solid #000; }
 
-  /* ---------- Mobile: SIZE pills (restored) ---------- */
+  /* ---------- Mobile: SIZE list (vertical, no borders) ---------- */
   #FacetsWrapperMobile details.mobile-facet.mobile-facet-filter\.v\.t\.shopify\.size > .mobile-facet__content > ul {
     max-width: 100% !important;
-    display: flex; flex-wrap: wrap; gap: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
     margin: 0;
   }
   #FacetsWrapperMobile details.mobile-facet.mobile-facet-filter\.v\.t\.shopify\.size > .mobile-facet__content > ul > li {
-    flex: 0 0 calc(20% - 20px);
-    border: 1px solid #969696;
-    padding: 0px 5px;
-    text-align: center;
+    flex: 0 0 auto;
+    border: none;
+    padding: 0;
+    text-align: left;
   }
   #FacetsWrapperMobile details.mobile-facet.mobile-facet-filter\.v\.t\.shopify\.size > .mobile-facet__content > ul > li > label {
-    width: 100%; justify-content: center;
+    width: 100%;
+    justify-content: flex-start;
   }
   /* Hide the native checkbox inside the Size facet */
   #FacetsWrapperMobile details.mobile-facet.mobile-facet-filter\.v\.t\.shopify\.size input[type="checkbox"] {
     position: absolute; opacity: 0; pointer-events: none;
   }
 
-  /* ---------- Mobile: PRODUCT pills (same style as Size) ---------- */
+  /* ---------- Mobile: PRODUCT list (vertical, no borders) ---------- */
   /* Product type */
   #FacetsWrapperMobile details.mobile-facet.mobile-facet-filter\.p\.product_type > .mobile-facet__content > ul,
   /* Product tags */
@@ -755,22 +758,27 @@ document.addEventListener('DOMContentLoaded', function() {
   /* Fallbacks if theme emits different param slugs containing ".product" */
   #FacetsWrapperMobile details.mobile-facet[class*="mobile-facet-filter\\.v\\.t\\.shopify\\.product"] > .mobile-facet__content > ul,
   #FacetsWrapperMobile details.mobile-facet[class*="mobile-facet-filter\\.v\\.t\\.product"] > .mobile-facet__content > ul {
-    display: flex; flex-wrap: wrap; gap: 10px; margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
   }
   #FacetsWrapperMobile details.mobile-facet.mobile-facet-filter\.p\.product_type > .mobile-facet__content > ul > li,
   #FacetsWrapperMobile details.mobile-facet.mobile-facet-filter\.p\.tag > .mobile-facet__content > ul > li,
   #FacetsWrapperMobile details.mobile-facet[class*="mobile-facet-filter\\.v\\.t\\.shopify\\.product"] > .mobile-facet__content > ul > li,
   #FacetsWrapperMobile details.mobile-facet[class*="mobile-facet-filter\\.v\\.t\\.product"] > .mobile-facet__content > ul > li {
     flex: 0 0 auto;
-    border: 1px solid #969696;
-    padding: 6px 8px;
-    text-align: center;
+    border: none;
+    padding: 0;
+    text-align: left;
   }
   #FacetsWrapperMobile details.mobile-facet.mobile-facet-filter\.p\.product_type > .mobile-facet__content > ul > li > label,
   #FacetsWrapperMobile details.mobile-facet.mobile-facet-filter\.p\.tag > .mobile-facet__content > ul > li > label,
   #FacetsWrapperMobile details.mobile-facet[class*="mobile-facet-filter\\.v\\.t\\.shopify\\.product"] > .mobile-facet__content > ul > li > label,
   #FacetsWrapperMobile details.mobile-facet[class*="mobile-facet-filter\\.v\\.t\\.product"] > .mobile-facet__content > ul > li > label {
-    width: 100%; justify-content: center; white-space: nowrap;
+    width: 100%;
+    justify-content: flex-start;
+    white-space: nowrap;
   }
   /* Hide native checkboxes inside the Product facet pills */
   #FacetsWrapperMobile details.mobile-facet.mobile-facet-filter\.p\.product_type input[type="checkbox"],
@@ -783,13 +791,29 @@ document.addEventListener('DOMContentLoaded', function() {
   /* Checked state emphasis for pills */
   .mobile-facet__label input[type="checkbox"]:checked + .mobile-facet__checkbox-text { font-weight: bold; color: black;}
 
-  /* ---------- Optional: desktop parity for size/product grids ---------- */
-  .facet-{{ 'filter.v.t.shopify.size' | escape }} > .facet__content > ul { display:flex; flex-wrap:wrap; gap:10px; }
-  .facet-{{ 'filter.v.t.shopify.size' | escape }} > .facet__content > ul > li { border:1px solid #969696; padding:5px 10px; text-align:center; flex:0 0 calc(25% - 10px); }
+  /* ---------- Desktop: size/product lists (vertical, no borders) ---------- */
+  .facet-{{ 'filter.v.t.shopify.size' | escape }} > .facet__content > ul {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .facet-{{ 'filter.v.t.shopify.size' | escape }} > .facet__content > ul > li {
+    border: none;
+    padding: 0;
+    text-align: left;
+  }
   .facet-{{ 'filter.p.product_type' | escape }} > .facet__content > ul,
-  .facet-{{ 'filter.p.product_type' | escape }} > .facet__content > ul { display:flex; flex-wrap:wrap; gap:10px; }
+  .facet-{{ 'filter.p.tag' | escape }} > .facet__content > ul {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
   .facet-{{ 'filter.p.product_type' | escape }} > .facet__content > ul > li,
-  .facet-{{ 'filter.p.tag' | escape }} > .facet__content > ul > li { border:1px solid #969696; padding:5px 10px; text-align:center; flex:0 0 calc(33.333% - 10px); }
+  .facet-{{ 'filter.p.tag' | escape }} > .facet__content > ul > li {
+    border: none;
+    padding: 0;
+    text-align: left;
+  }
   .facet-{{ 'filter.v.t.shopify.color-pattern' | escape }} > .facet__content > ul,
   .facet-{{ 'filter.v.t.shopify.color' | escape }} > .facet__content > ul {
     display: flex;
@@ -802,6 +826,34 @@ document.addEventListener('DOMContentLoaded', function() {
     align-items: center;
     gap: 10px;
     flex-wrap: nowrap;
+  }
+
+  /* ---------- Sort: vertical list, no borders ---------- */
+  .facet-sort .sort-pills {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .facet-sort .sort-pills .facet__item {
+    border: none;
+    padding: 0;
+    text-align: left;
+  }
+  #FacetsWrapperMobile details.mobile-facet.mobile-facet-sort > .mobile-facet__content > ul.sort-pills {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  #FacetsWrapperMobile details.mobile-facet.mobile-facet-sort > .mobile-facet__content > ul.sort-pills .mobile-facet__item {
+    border: none;
+    padding: 0;
+    text-align: left;
   }
 
   /* Responsive tweaks */
