@@ -1417,6 +1417,7 @@ input.mobile-facets__checkbox {
 
 #FacetsWrapperMobile > div.mobile-facets__footer.gradient > facet-remove > a {
   color: black;
+  text-decoration: none;
 }
 
 #main-collection-filters {
