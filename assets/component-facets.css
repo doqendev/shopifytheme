@@ -1362,8 +1362,8 @@ input.mobile-facets__checkbox {
 
 .facet__swatch .swatch-input__label > .swatch,
 .mobile-facet__swatch .swatch-input__label > .swatch {
-  width: 100% !important;
-  height: 100% !important;
+  width: 70% !important;
+  height: 70% !important;
   border: 1px solid rgba(0, 0, 0, 0.2) !important;
   box-shadow: none !important;
   background: var(--swatch--background) !important;
