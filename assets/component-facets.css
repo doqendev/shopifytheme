@@ -1305,7 +1305,9 @@ input.mobile-facets__checkbox {
     border-radius: 0%;
     top: -4px !important;
     right: -5px !important;
+    box-shadow: none!important;
 }
+
 
 
 
