@@ -280,7 +280,6 @@ a.product__text {
 
 .wishlist-toggle--product-page {
   background: transparent;
-  border: 1px solid #e0e0e0;
   padding: 0.5rem;
   cursor: pointer;
   display: flex !important;
