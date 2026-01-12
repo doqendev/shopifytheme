@@ -35,20 +35,6 @@ class ColorImageFilter {
     }, 250));
 
     this.initialized = true;
-    console.log('[ColorImageFilter] Initialized successfully');
-
-    // Debug: Check for data-color attributes on page load
-    setTimeout(() => {
-      const colorElements = document.querySelectorAll('[data-color]');
-      console.log('[ColorImageFilter] On load - Elements with data-color:', colorElements.length);
-      if (colorElements.length > 0) {
-        colorElements.forEach(el => {
-          console.log('[ColorImageFilter] - ', el.className, 'data-color="' + el.dataset.color + '"');
-        });
-      } else {
-        console.log('[ColorImageFilter] No data-color attributes found. Theme may need to be pushed.');
-      }
-    }, 500);
   }
 
   /**
@@ -206,15 +192,6 @@ class ColorImageFilter {
   filterByColor(color) {
     if (!color || this.currentColor === color) return;
     this.currentColor = color;
-
-    console.log('[ColorImageFilter] Filtering by color:', color);
-
-    // Debug: Log all elements with data-color
-    const allColorElements = document.querySelectorAll('[data-color]');
-    console.log('[ColorImageFilter] Found elements with data-color:', allColorElements.length);
-    allColorElements.forEach(el => {
-      console.log('[ColorImageFilter] Element:', el.tagName, 'data-color:', el.dataset.color);
-    });
 
     if (this.isDesktop) {
       this.filterDesktopGallery(color);
