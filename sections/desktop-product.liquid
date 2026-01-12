@@ -16,16 +16,14 @@
 {% assign dummy_block = '{ "settings": { "picker_type": "button", "swatch_shape": "circle" }, "shopify_attributes": "" }' | parse_json %}
 
 {% comment %}
-  Include variant/swatch CSS if needed
+  Include variant/swatch CSS if needed (loaded once, not duplicated)
 {% endcomment %}
 {% unless product.has_only_default_variant %}
   {{ 'component-product-variant-picker.css' | asset_url | stylesheet_tag }}
   {{ 'component-swatch.css' | asset_url | stylesheet_tag }}
+  {{ 'component-swatch-input.css' | asset_url | stylesheet_tag }}
+  {{ 'swatches-cheyenne.css' | asset_url | stylesheet_tag }}
 {% endunless %}
-{{ 'component-swatch-input.css' | asset_url | stylesheet_tag }}
-{{ 'component-product-variant-picker.css' | asset_url | stylesheet_tag }}
-{{ 'component-swatch.css' | asset_url | stylesheet_tag }}
-{{ 'swatches-cheyenne.css' | asset_url | stylesheet_tag }}
 {{ 'component-color-filter.css' | asset_url | stylesheet_tag }}
 
 <style>
@@ -530,8 +528,14 @@
                data-media-id="{{ media.id }}"
                data-color="{{ media_color }}">
             <img
-              src="{{ media | img_url: '1024x1024' }}"
+              src="{{ media | image_url: width: 800 }}"
+              srcset="{{ media | image_url: width: 400 }} 400w,
+                      {{ media | image_url: width: 600 }} 600w,
+                      {{ media | image_url: width: 800 }} 800w,
+                      {{ media | image_url: width: 1000 }} 1000w"
+              sizes="(max-width: 1200px) 50vw, 600px"
               alt="{{ media.alt | escape }}"
+              loading="lazy"
             >
           </div>
         {% endfor %}

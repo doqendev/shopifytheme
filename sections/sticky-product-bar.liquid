@@ -13,15 +13,10 @@
 {% comment %} Create a dummy block object with default settings {% endcomment %}
 {% assign dummy_block = '{ "settings": { "picker_type": "button", "swatch_shape": "circle" }, "shopify_attributes": "" }' | parse_json %}
 
+{% comment %} CSS loaded once - desktop-product.liquid loads these globally {% endcomment %}
 {% unless product.has_only_default_variant %}
-  {{ 'component-product-variant-picker.css' | asset_url | stylesheet_tag }}
-  {{ 'component-swatch.css' | asset_url | stylesheet_tag }}
-  {{ 'swatches-cheyenne.css' | asset_url | stylesheet_tag }}
+  {{ 'component-swatch-input.css' | asset_url | stylesheet_tag }}
 {% endunless %}
-{{ 'component-swatch-input.css' | asset_url | stylesheet_tag }}
-{{ 'component-product-variant-picker.css' | asset_url | stylesheet_tag }}
-{{ 'component-swatch.css' | asset_url | stylesheet_tag }}
-{{ 'swatches-cheyenne.css' | asset_url | stylesheet_tag }}
 
 <style>
 
@@ -105,13 +100,8 @@
 }
 #sticky-product-bar .sticky-bar-summary .product-title {
   font-family: "Work Sans", Arial, Helvetica, sans-serif;
-<<<<<<< Updated upstream
-  font-weight: 100;
-  font-size: 1.1rem;
-=======
-  font-weight: normal;
-  font-size: 1.3rem;
->>>>>>> Stashed changes
+  font-weight: 300;
+  font-size: 1.2rem;
   line-height: 1.8rem;
   text-decoration: none;
   white-space: normal;
