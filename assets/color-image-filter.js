@@ -365,6 +365,9 @@ class ColorImageFilter {
         slider.scrollTo({ left: 0, behavior: 'smooth' });
       }
 
+      // Scroll page to top on mobile
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
       // Update active states
       sliderItems.forEach(item => item.classList.remove('is-active'));
       firstVisibleItem.classList.add('is-active');
@@ -388,6 +391,11 @@ class ColorImageFilter {
       const shouldShow = !itemColor || this.colorMatches(itemColor, color);
       item.classList.toggle('color-filtered-hidden', !shouldShow);
     });
+
+    // Scroll page to top on mobile
+    if (hasColoredImages) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   /**
