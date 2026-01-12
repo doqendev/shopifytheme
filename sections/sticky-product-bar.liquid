@@ -875,10 +875,7 @@
 </div>
 
 
-    <div class="mobile-related-products">
-      <h2 class="also" style="margin-bottom: 1em;">Talvez lhe possa interessar</h2>
-      {% render 'random-collection-grid' %}
-    </div>
+    {%- comment -%} Related products moved to new-product.liquid to avoid duplicate rendering {%- endcomment -%}
     <div class="drawer-footer" style="margin-top: 20px;">
       {% render 'footer-drawer' %}
     </div>
