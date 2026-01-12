@@ -445,8 +445,8 @@
 {% if card_product.featured_media %}
   <div class="card__media swiper-container">
     <div class="swiper-wrapper">
-      {%- comment -%} Only load first 2 images to improve page load performance {%- endcomment -%}
-      {% for media in card_product.media limit: 2 %}
+      {%- comment -%} Only load first image to improve page load performance {%- endcomment -%}
+      {% for media in card_product.media limit: 1 %}
         {% if media.preview_image != blank %}
           <div class="swiper-slide">
             <a href="{{ card_product.url }}" class="full-unstyled-link">
