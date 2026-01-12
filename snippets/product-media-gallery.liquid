@@ -41,7 +41,7 @@
     assign media_width = 0.45
   endif
 
-  assign color_option = null
+  assign color_option = blank
   for option in product.options_with_values
     assign option_name = option.name | downcase
     if option_name == 'color' or option_name == 'cor' or option_name == 'colour'
@@ -74,8 +74,8 @@
         {%- assign featured_media = product.selected_or_first_available_variant.featured_media -%}
         {%- liquid
           assign featured_media_color = ''
-          if color_option != null and color_option.values.size > 1
-            assign filename = featured_media.src | split: '/' | last | split: '?' | first | downcase
+          if color_option != blank and color_option.values.size > 1
+            assign filename = featured_media.preview_image.src | split: '/' | last | split: '?' | first | downcase
             for color_value in color_option.values
               assign color_handle = color_value | downcase | handle
               if filename contains color_handle
@@ -120,8 +120,8 @@
         {%- unless media.id == product.selected_or_first_available_variant.featured_media.id -%}
           {%- liquid
             assign media_color = ''
-            if color_option != null and color_option.values.size > 1
-              assign filename = media.src | split: '/' | last | split: '?' | first | downcase
+            if color_option != blank and color_option.values.size > 1
+              assign filename = media.preview_image.src | split: '/' | last | split: '?' | first | downcase
               for color_value in color_option.values
                 assign color_handle = color_value | downcase | handle
                 if filename contains color_handle
@@ -260,8 +260,8 @@
           -%}
           {%- liquid
             assign thumb_color = ''
-            if color_option != null and color_option.values.size > 1
-              assign filename = featured_media.src | split: '/' | last | split: '?' | first | downcase
+            if color_option != blank and color_option.values.size > 1
+              assign filename = featured_media.preview_image.src | split: '/' | last | split: '?' | first | downcase
               for color_value in color_option.values
                 assign color_handle = color_value | downcase | handle
                 if filename contains color_handle
@@ -317,8 +317,8 @@
               assign media_index = media_index | plus: 1
 
               assign thumb_color = ''
-              if color_option != null and color_option.values.size > 1
-                assign filename = media.src | split: '/' | last | split: '?' | first | downcase
+              if color_option != blank and color_option.values.size > 1
+                assign filename = media.preview_image.src | split: '/' | last | split: '?' | first | downcase
                 for color_value in color_option.values
                   assign color_handle = color_value | downcase | handle
                   if filename contains color_handle
