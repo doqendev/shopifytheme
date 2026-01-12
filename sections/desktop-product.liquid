@@ -170,6 +170,21 @@
     align-items: center;
   }
 
+  /* Prevent swatch size change on selection - keep consistent 15px */
+  .desktop-product-section .product-form__input--swatch .swatch-input__label,
+  .desktop-product-section .product-form__input--swatch .swatch-input__label.active,
+  .desktop-product-section .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label {
+    width: 15px !important;
+    height: 15px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Use box-shadow for active state instead of size change */
+  .desktop-product-section .product-form__input--swatch .swatch-input__label.active,
+  .desktop-product-section .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label {
+    box-shadow: 0 0 0 1px #000 !important;
+  }
+
   /* Description styling */
   .desktop-product-info .product-description {
     line-height: 1.6;
