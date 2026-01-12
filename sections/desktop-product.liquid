@@ -116,6 +116,10 @@
     display: block;
     object-fit: contain;
   }
+  .desktop-product-media .main-image-slide img.lazy-image {
+    background: #f5f5f5;
+    min-height: 400px;
+  }
 
   /* Right column: Sticky Info */
   .desktop-product-info {
@@ -521,22 +525,39 @@
                 assign should_hide = true
               endif
             endif
+
+            assign eager_load = false
+            if forloop.index <= 2
+              assign eager_load = true
+            endif
           -%}
           <div class="main-image-slide{% if should_hide %} color-filtered-hidden{% endif %}"
                id="Slide-{{ forloop.index0 }}"
                data-index="{{ forloop.index0 }}"
                data-media-id="{{ media.id }}"
                data-color="{{ media_color }}">
-            <img
-              src="{{ media | image_url: width: 800 }}"
-              srcset="{{ media | image_url: width: 400 }} 400w,
-                      {{ media | image_url: width: 600 }} 600w,
-                      {{ media | image_url: width: 800 }} 800w,
-                      {{ media | image_url: width: 1000 }} 1000w"
-              sizes="(max-width: 1200px) 50vw, 600px"
-              alt="{{ media.alt | escape }}"
-              loading="lazy"
-            >
+            {%- if eager_load -%}
+              <img
+                src="{{ media | image_url: width: 800 }}"
+                srcset="{{ media | image_url: width: 400 }} 400w,
+                        {{ media | image_url: width: 600 }} 600w,
+                        {{ media | image_url: width: 800 }} 800w,
+                        {{ media | image_url: width: 1000 }} 1000w"
+                sizes="(max-width: 1200px) 50vw, 600px"
+                alt="{{ media.alt | escape }}"
+              >
+            {%- else -%}
+              <img
+                data-src="{{ media | image_url: width: 800 }}"
+                data-srcset="{{ media | image_url: width: 400 }} 400w,
+                        {{ media | image_url: width: 600 }} 600w,
+                        {{ media | image_url: width: 800 }} 800w,
+                        {{ media | image_url: width: 1000 }} 1000w"
+                sizes="(max-width: 1200px) 50vw, 600px"
+                alt="{{ media.alt | escape }}"
+                class="lazy-image"
+              >
+            {%- endif -%}
           </div>
         {% endfor %}
       </div>
@@ -812,6 +833,36 @@ document.addEventListener('DOMContentLoaded', function() {
       behavior: 'auto'
     });
   });
+
+  // Lazy load images as they scroll into view
+  var lazyImages = containerEl.querySelectorAll('img.lazy-image');
+  if (lazyImages.length > 0) {
+    var imageObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          var img = entry.target;
+          if (img.dataset.src) {
+            img.src = img.dataset.src;
+            img.removeAttribute('data-src');
+          }
+          if (img.dataset.srcset) {
+            img.srcset = img.dataset.srcset;
+            img.removeAttribute('data-srcset');
+          }
+          img.classList.remove('lazy-image');
+          imageObserver.unobserve(img);
+        }
+      });
+    }, {
+      root: containerEl,
+      rootMargin: '200px 0px', // Start loading 200px before visible
+      threshold: 0
+    });
+
+    lazyImages.forEach(function(img) {
+      imageObserver.observe(img);
+    });
+  }
 });
 </script>
 

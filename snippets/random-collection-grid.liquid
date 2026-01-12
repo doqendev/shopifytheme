@@ -227,7 +227,7 @@
       <ul id="product-grid" class="grid product-grid random-grid">
         {%- assign skip_card_product_styles = false -%}
         {% assign index = 0 %}
-        {% for related_product in first_collection.products limit: 13 %}
+        {% for related_product in first_collection.products limit: 9 %}
           {% if related_product.id != product.id %}
             {% assign index = index | plus: 1 %}
             {% assign lazy_load = false %}
