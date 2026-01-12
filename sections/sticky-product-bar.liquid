@@ -1170,7 +1170,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Locate the media element.
         var mediaEl = document.querySelector('[data-media-id="' + targetMediaId + '"]');
         if (mediaEl) {
-          mediaEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          // Scroll to top of page on mobile instead of to the image
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
         }
       } else {
@@ -1500,7 +1501,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const mediaEl = document.querySelector('[data-media-id="' + targetMediaId + '"]');
 
             if (mediaEl) {
-              mediaEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              // Scroll to top of page on mobile instead of to the image
+              window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
             }
           } else {
