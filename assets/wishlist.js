@@ -2945,42 +2945,30 @@
       window.wishlistStrings.close = closeLabel;
     }
 
-    // Critical: attach click handlers immediately for responsiveness
     attachHeartListeners();
+    syncHearts();
+    renderWishlist();
     initDrawerTabs();
+    registerWishlistContainerListeners();
+    registerSwatchSyncListener();
+    registerSortListeners();
+    registerLayoutListeners();
 
-    // Defer non-critical operations to avoid blocking main thread
-    const deferredInit = () => {
-      syncHearts();
-      renderWishlist();
-      registerWishlistContainerListeners();
-      registerSwatchSyncListener();
-      registerSortListeners();
-      registerLayoutListeners();
-
-      // Register share button for all users
-      const shareButton = document.getElementById('wishlist-share-button');
-      if (shareButton && !shareButton.dataset.shareBound) {
-        shareButton.dataset.shareBound = 'true';
-        shareButton.addEventListener('click', exportWishlistToURL);
-      }
-
-      // Initialize account sync and check for URL imports (for all users)
-      initAccountSync();
-
-      // Listen for storage changes from other tabs
-      window.addEventListener('storage', handleStorageChange);
-
-      document.addEventListener('shopify:section:load', onSectionLoad);
-      observeDomMutations();
-    };
-
-    // Use requestIdleCallback if available, otherwise setTimeout
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(deferredInit, { timeout: 1000 });
-    } else {
-      setTimeout(deferredInit, 50);
+    // Register share button for all users
+    const shareButton = document.getElementById('wishlist-share-button');
+    if (shareButton && !shareButton.dataset.shareBound) {
+      shareButton.dataset.shareBound = 'true';
+      shareButton.addEventListener('click', exportWishlistToURL);
     }
+
+    // Initialize account sync and check for URL imports (for all users)
+    initAccountSync();
+
+    // Listen for storage changes from other tabs
+    window.addEventListener('storage', handleStorageChange);
+
+    document.addEventListener('shopify:section:load', onSectionLoad);
+    observeDomMutations();
   };
 
   if (document.readyState === 'loading') {
