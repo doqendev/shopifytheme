@@ -1,75 +1,16 @@
 <!doctype html>
 <html class="js" lang="{{ request.locale.iso_code }}">
   <head>
-    <!-- EARLY MOBILE CONTENT HIDE FOR DESKTOP PERFORMANCE -->
-    <!-- This runs before any content is parsed, preventing image preloads -->
-    <script>
-      if (window.innerWidth >= 750) {
-        // 1. Inject CSS immediately to hide containers
-        var s = document.createElement('style');
-        s.textContent = '[id^="MainProduct-"] .product__media-wrapper,.mobile-extras,[id*="MediaGallery"]{display:none!important;visibility:hidden!important}';
-        document.head.appendChild(s);
-
-        // 2. Use MutationObserver to intercept images before they load
-        window._blockMobileImages = true;
-        var observer = new MutationObserver(function(mutations) {
-          if (!window._blockMobileImages) return;
-          mutations.forEach(function(m) {
-            m.addedNodes.forEach(function(node) {
-              if (node.nodeType !== 1) return;
-              // Check if this node or its descendants are in hidden containers
-              var container = node.closest ? node.closest('.product__media-wrapper, .mobile-extras, [id*="MediaGallery"]') : null;
-              if (!container && node.matches && node.matches('.product__media-wrapper, .mobile-extras, [id*="MediaGallery"]')) {
-                container = node;
-              }
-              if (container && !container.closest('.desktop-product-section')) {
-                // Block all images in this container (but not in desktop-product-section)
-                var imgs = container.querySelectorAll ? container.querySelectorAll('img[src]') : [];
-                imgs.forEach(function(img) {
-                  if (img.src && !img.dataset.blocked) {
-                    img.dataset.originalSrc = img.src;
-                    img.removeAttribute('src');
-                    img.removeAttribute('srcset');
-                    img.dataset.blocked = 'true';
-                  }
-                });
-                if (node.tagName === 'IMG' && node.src) {
-                  node.dataset.originalSrc = node.src;
-                  node.removeAttribute('src');
-                  node.removeAttribute('srcset');
-                  node.dataset.blocked = 'true';
-                }
-              }
-            });
-          });
-        });
-        observer.observe(document.documentElement, { childList: true, subtree: true });
-
-        // Also do a cleanup pass when DOM is ready
-        document.addEventListener('DOMContentLoaded', function() {
-          var containers = document.querySelectorAll('.product__media-wrapper, .mobile-extras, [id*="MediaGallery"]');
-          containers.forEach(function(container) {
-            // Check if this container is inside the mobile section (not desktop-product)
-            if (container.closest('.desktop-product-section')) return;
-            var imgs = container.querySelectorAll('img[src]');
-            imgs.forEach(function(img) {
-              if (!img.dataset.blocked) {
-                img.dataset.originalSrc = img.src;
-                img.removeAttribute('src');
-                img.removeAttribute('srcset');
-                img.dataset.blocked = 'true';
-              }
-            });
-          });
-        });
-
-        // Stop observing after page load
-        window.addEventListener('load', function() {
-          window._blockMobileImages = false;
-          observer.disconnect();
-        });
+    <!-- DESKTOP-ONLY: Hide mobile product gallery to prevent duplicate image loading -->
+    <style>
+      @media screen and (min-width: 750px) {
+        [id^="MainProduct-"] .product__media-wrapper,
+        [id*="MediaGallery-"]:not(.desktop-product-section *) {
+          display: none !important;
+          visibility: hidden !important;
+        }
       }
-    </script>
+    </style>
 
     <script>
       window.customerId = {{ customer.id | json }};
