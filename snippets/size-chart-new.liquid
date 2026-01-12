@@ -535,7 +535,7 @@
   </div>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  /* Removed blocking @import - using system fonts instead for performance */
 
   /* ══════════════════════════════════════════════════════════
      ZARA-INSPIRED MINIMALIST DESIGN
@@ -543,13 +543,12 @@
      ══════════════════════════════════════════════════════════ */
 
   .sg-root {
+    --sg-font: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     --sg-black: #000000;
     --sg-white: #FFFFFF;
     --sg-grey-light: #F5F5F5;
     --sg-grey-border: #E5E5E5;
     --sg-grey-text: #707070;
-
-    --sg-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
 
   /* Root & Overlay */
