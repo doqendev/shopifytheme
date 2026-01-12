@@ -58,8 +58,27 @@
   const fetchServerWishlist = async (retryCount = 0) => {
     if (!window.customerId) return null;
 
+    // Check cache first (valid for 5 minutes)
+    const cacheKey = `wishlist_cache_${window.customerId}`;
+    const cacheTimeKey = `wishlist_cache_time_${window.customerId}`;
+    const cached = localStorage.getItem(cacheKey);
+    const cacheTime = localStorage.getItem(cacheTimeKey);
+
+    if (cached && cacheTime && (Date.now() - parseInt(cacheTime)) < 300000) {
+      try {
+        updateSyncStatus('synced', 'Sincronizado');
+        return JSON.parse(cached);
+      } catch (e) {
+        // Invalid cache, continue to fetch
+      }
+    }
+
     try {
       updateSyncStatus('syncing', 'A sincronizar...');
+
+      // Add timeout to prevent long waits
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
 
       const response = await fetch(
         `/apps/wishlist/proxy/api/wishlist/get?customerId=${window.customerId}`,
@@ -68,8 +87,11 @@
           headers: {
             'Content-Type': 'application/json',
           },
+          signal: controller.signal,
         }
       );
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -78,8 +100,8 @@
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
         // Got HTML instead of JSON - likely cold start
-        if (retryCount < 2) {
-          await new Promise(resolve => setTimeout(resolve, 3000));
+        if (retryCount < 1) {
+          await new Promise(resolve => setTimeout(resolve, 500));
           return fetchServerWishlist(retryCount + 1);
         }
         throw new Error('Server returned non-JSON response');
@@ -88,25 +110,28 @@
       const data = await response.json();
       const wishlist = data.wishlist || [];
 
-      // Log what we received from server
-      wishlist.forEach(item => {
-
-        // Log actual swatch data from server
-        if (item.swatches) {
-          item.swatches.forEach((s, i) => {
-          });
-        }
-      });
+      // Cache the result
+      try {
+        localStorage.setItem(cacheKey, JSON.stringify(wishlist));
+        localStorage.setItem(cacheTimeKey, Date.now().toString());
+      } catch (e) {
+        // localStorage might be full, ignore
+      }
 
       updateSyncStatus('synced', 'Sincronizado');
       return wishlist;
     } catch (error) {
-      if (retryCount < 2) {
-        await new Promise(resolve => setTimeout(resolve, 3000));
+      if (error.name === 'AbortError') {
+        // Timeout - fail gracefully without retry
+        updateSyncStatus('error', 'Timeout');
+        return cached ? JSON.parse(cached) : null;
+      }
+      if (retryCount < 1) {
+        await new Promise(resolve => setTimeout(resolve, 500));
         return fetchServerWishlist(retryCount + 1);
       }
       updateSyncStatus('error', 'Erro de sincronização');
-      return null;
+      return cached ? JSON.parse(cached) : null;
     }
   };
 

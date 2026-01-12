@@ -68,20 +68,32 @@ class HTMLUpdateUtility {
   }
 }
 
+// Initialize details/summary accessibility attributes (run once)
 document.querySelectorAll('[id^="Details-"] summary').forEach((summary) => {
   summary.setAttribute('role', 'button');
   summary.setAttribute('aria-expanded', summary.parentNode.hasAttribute('open'));
-
-  if (summary.nextElementSibling.getAttribute('id')) {
+  if (summary.nextElementSibling && summary.nextElementSibling.getAttribute('id')) {
     summary.setAttribute('aria-controls', summary.nextElementSibling.id);
   }
+});
 
-  summary.addEventListener('click', (event) => {
-    event.currentTarget.setAttribute('aria-expanded', !event.currentTarget.closest('details').hasAttribute('open'));
-  });
+// Event delegation for details/summary interactions (single listener instead of many)
+document.addEventListener('click', (event) => {
+  const summary = event.target.closest('[id^="Details-"] summary');
+  if (summary) {
+    summary.setAttribute('aria-expanded', !summary.closest('details').hasAttribute('open'));
+  }
+});
 
-  if (summary.closest('header-drawer, menu-drawer')) return;
-  summary.parentElement.addEventListener('keyup', onKeyUpEscape);
+document.addEventListener('keyup', (event) => {
+  if (event.code.toUpperCase() !== 'ESCAPE') return;
+  const details = event.target.closest('[id^="Details-"]:not(header-drawer):not(menu-drawer)');
+  if (details && details.hasAttribute('open')) {
+    const summary = details.querySelector('summary');
+    details.removeAttribute('open');
+    summary.setAttribute('aria-expanded', 'false');
+    summary.focus();
+  }
 });
 
 const trapFocusHandlers = {};

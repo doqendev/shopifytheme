@@ -81,9 +81,10 @@ class FacetFiltersForm extends HTMLElement {
 
 static renderProductGridContainer(html) {
   // Replace the ProductGridContainer HTML with the newly fetched one
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-  const newGridContainer = doc.getElementById('ProductGridContainer');
+  // Use template element for faster parsing (avoids full document parse)
+  const template = document.createElement('template');
+  template.innerHTML = html;
+  const newGridContainer = template.content.getElementById('ProductGridContainer');
   const existingGridContainer = document.getElementById('ProductGridContainer');
 
   if (newGridContainer && existingGridContainer) {
@@ -112,7 +113,10 @@ static renderProductGridContainer(html) {
 
 
   static renderProductCount(html) {
-    const count = new DOMParser().parseFromString(html, 'text/html').getElementById('ProductCount').innerHTML;
+    const template = document.createElement('template');
+    template.innerHTML = html;
+    const countEl = template.content.getElementById('ProductCount');
+    const count = countEl ? countEl.innerHTML : '';
     const container = document.getElementById('ProductCount');
     const containerDesktop = document.getElementById('ProductCountDesktop');
     container.innerHTML = count;
@@ -128,8 +132,9 @@ static renderProductGridContainer(html) {
   }
 
   static renderFilters(html, event) {
-    const parsedHTML = new DOMParser().parseFromString(html, 'text/html');
-    const facetDetailsElementsFromFetch = parsedHTML.querySelectorAll(
+    const template = document.createElement('template');
+    template.innerHTML = html;
+    const facetDetailsElementsFromFetch = template.content.querySelectorAll(
       '#FacetFiltersForm .js-filter, #FacetFiltersFormMobile .js-filter, #FacetFiltersPillsForm .js-filter'
     );
     const facetDetailsElementsFromDom = document.querySelectorAll(
