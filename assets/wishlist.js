@@ -163,6 +163,10 @@
       // Strip heavy data before sending
       const lightweightItems = stripWishlistData(items);
 
+      // Add timeout to prevent hanging
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+
       const response = await fetch('/apps/wishlist/proxy/api/wishlist/save', {
         method: 'POST',
         headers: {
@@ -172,7 +176,10 @@
           customerId: window.customerId,
           wishlist: lightweightItems,
         }),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
