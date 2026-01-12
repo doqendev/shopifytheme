@@ -187,7 +187,9 @@
   /* Additional swatch / variant styling from previous code */
   @media screen and (min-width: 750px) {
     /* Hide the main product section's media gallery on desktop when desktop-product section is used */
+    /* Use content-visibility: hidden to prevent image loading, not just display: none */
     [id*="MediaGallery"][id*="main"] {
+      content-visibility: hidden;
       display: none !important;
     }
   }

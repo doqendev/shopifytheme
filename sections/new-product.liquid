@@ -825,7 +825,17 @@
           transform: rotate(180deg);
         }
       }
-      @media screen and (min-width: 750px) { .mobile-extras { display: none; } }
+      /* On desktop, hide mobile-extras and prevent resource loading with content-visibility */
+      @media screen and (min-width: 750px) {
+        .mobile-extras {
+          content-visibility: hidden;
+          display: none;
+        }
+        /* Also hide the entire mobile product section wrapper on desktop - resources loaded by desktop-product.liquid instead */
+        #MainProduct-{{ section.id }} .product__media-wrapper {
+          content-visibility: hidden;
+        }
+      }
     </style>
     <div class="mobile-extras">
       <div class="drawer-description">
