@@ -34,6 +34,30 @@
           document.removeEventListener(evt, firstInteraction);
         }, { once: true, passive: true });
       });
+
+      // Track slow/failed images
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          const images = document.querySelectorAll('img');
+          const slowImages = [];
+          images.forEach(img => {
+            if (!img.complete || img.naturalWidth === 0) {
+              slowImages.push(img.src?.split('/').pop()?.split('?')[0] || 'unknown');
+            }
+          });
+          if (slowImages.length) {
+            console.log('\n[PERF] === INCOMPLETE IMAGES ===');
+            slowImages.forEach(s => console.log(s));
+          }
+          // Check for pending requests
+          const entries = performance.getEntriesByType('resource');
+          const pending = entries.filter(e => e.responseEnd === 0);
+          if (pending.length) {
+            console.log('\n[PERF] === PENDING RESOURCES ===');
+            pending.forEach(p => console.log(p.name.split('/').pop().split('?')[0]));
+          }
+        }, 500);
+      });
     </script>
     <!-- END PERFORMANCE DIAGNOSTIC -->
 
