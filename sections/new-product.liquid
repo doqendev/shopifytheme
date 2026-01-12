@@ -728,7 +728,7 @@
                     <script src="{{ 'quick-add.js' | asset_url }}" defer="defer"></script>
                   {%- endif -%}
                 </product-recommendations>
-{% endcomment %}              
+{% endcomment %} 
               {%- when 'icon-with-text' -%}
                 {% render 'icon-with-text', block: block %}
             {%- endcase -%}
@@ -878,7 +878,6 @@
           if availability_content == blank
             assign availability_content = 'Exemplo: Disponível em todas as lojas da região.'
           endif
-
           # Check if share should be shown
           assign show_share = product.metafields.custom.accordion_share_enabled.value
           if show_share == blank
@@ -911,7 +910,7 @@
           </div>
         </details>
         <details id="size-guide-details-{{ sg_id }}" class="size-guide-details">
-          <summary class="h5 size-guide-trigger">Guia de tamanhos</summary>
+          <summary class="h5 size-guide-trigger">Guiaaa de tamanhos</summary>
         </details>
         <script>
           (function() {
