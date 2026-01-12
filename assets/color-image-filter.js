@@ -159,6 +159,14 @@ class ColorImageFilter {
   setInitialColor() {
     // Give DOM time to render
     setTimeout(() => {
+      // First, try to get color from the active/checked swatch in the DOM
+      const initialColor = this.getInitialColorFromDOM();
+      if (initialColor) {
+        this.filterByColor(this.normalizeColor(initialColor));
+        return;
+      }
+
+      // Fallback to product data
       const product = this.getProductData();
       if (!product) return;
 
@@ -184,6 +192,50 @@ class ColorImageFilter {
         }
       }
     }, 100);
+  }
+
+  /**
+   * Get initial color from DOM by checking swatches
+   */
+  getInitialColorFromDOM() {
+    // Look for checked/active color swatch
+    const checkedSwatch = document.querySelector(
+      '.product-form__input--swatch input:checked, ' +
+      'fieldset[data-option-name] input:checked, ' +
+      '.swatch-input__input:checked'
+    );
+
+    if (checkedSwatch) {
+      const fieldset = checkedSwatch.closest('fieldset');
+      if (fieldset) {
+        const legend = fieldset.querySelector('legend');
+        const optionName = (fieldset.dataset.optionName || legend?.textContent || '').toLowerCase().trim();
+
+        if (this.colorOptionNames.some(name => optionName.includes(name))) {
+          return checkedSwatch.value;
+        }
+      }
+    }
+
+    // Fallback: Look for first color swatch (not checked but first in list)
+    const colorFieldsets = document.querySelectorAll('fieldset[data-option-name], .product-form__input--swatch');
+    for (const fieldset of colorFieldsets) {
+      const legend = fieldset.querySelector('legend');
+      const optionName = (fieldset.dataset.optionName || legend?.textContent || '').toLowerCase().trim();
+
+      if (this.colorOptionNames.some(name => optionName.includes(name))) {
+        const firstSwatch = fieldset.querySelector('input[type="radio"]');
+        if (firstSwatch) {
+          // Check the first swatch if none is checked
+          if (!fieldset.querySelector('input:checked')) {
+            firstSwatch.checked = true;
+          }
+          return firstSwatch.value;
+        }
+      }
+    }
+
+    return null;
   }
 
   /**

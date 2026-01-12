@@ -42,10 +42,14 @@
   endif
 
   assign color_option = blank
+  assign first_color_handle = ''
   for option in product.options_with_values
     assign option_name = option.name | downcase
     if option_name == 'color' or option_name == 'cor' or option_name == 'colour'
       assign color_option = option
+      if option.values.size > 1
+        assign first_color_handle = option.values[0] | downcase | handle
+      endif
       break
     endif
   endfor
@@ -74,6 +78,7 @@
         {%- assign featured_media = product.selected_or_first_available_variant.featured_media -%}
         {%- liquid
           assign featured_media_color = ''
+          assign should_hide_featured = false
           if color_option != blank and color_option.values.size > 1
             assign filename = featured_media.preview_image.src | split: '/' | last | split: '?' | first | downcase
             for color_value in color_option.values
@@ -83,11 +88,14 @@
                 break
               endif
             endfor
+            if featured_media_color != blank and featured_media_color != first_color_handle
+              assign should_hide_featured = true
+            endif
           endif
         -%}
         <li
           id="Slide-{{ section.id }}-{{ featured_media.id }}"
-          class="product__media-item grid__item slider__slide is-active{% if single_media_visible %} product__media-item--single{% endif %}{% if featured_media.media_type != 'image' %} product__media-item--full{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
+          class="product__media-item grid__item slider__slide is-active{% if single_media_visible %} product__media-item--single{% endif %}{% if featured_media.media_type != 'image' %} product__media-item--full{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}{% if should_hide_featured %} color-filtered-hidden{% endif %}"
           data-media-id="{{ section.id }}-{{ featured_media.id }}"
           data-color="{{ featured_media_color }}"
         >
@@ -120,6 +128,7 @@
         {%- unless media.id == product.selected_or_first_available_variant.featured_media.id -%}
           {%- liquid
             assign media_color = ''
+            assign should_hide_media = false
             if color_option != blank and color_option.values.size > 1
               assign filename = media.preview_image.src | split: '/' | last | split: '?' | first | downcase
               for color_value in color_option.values
@@ -129,11 +138,14 @@
                   break
                 endif
               endfor
+              if media_color != blank and media_color != first_color_handle
+                assign should_hide_media = true
+              endif
             endif
           -%}
           <li
             id="Slide-{{ section.id }}-{{ media.id }}"
-            class="product__media-item grid__item slider__slide{% if single_media_visible %} product__media-item--single{% endif %}{% if product.selected_or_first_available_variant.featured_media == nil and forloop.index == 1 %} is-active{% endif %}{% if media.media_type != 'image' %} product__media-item--full{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
+            class="product__media-item grid__item slider__slide{% if single_media_visible %} product__media-item--single{% endif %}{% if product.selected_or_first_available_variant.featured_media == nil and forloop.index == 1 %} is-active{% endif %}{% if media.media_type != 'image' %} product__media-item--full{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}{% if should_hide_media %} color-filtered-hidden{% endif %}"
             data-media-id="{{ section.id }}-{{ media.id }}"
             data-color="{{ media_color }}"
           >
@@ -260,6 +272,7 @@
           -%}
           {%- liquid
             assign thumb_color = ''
+            assign should_hide_thumb = false
             if color_option != blank and color_option.values.size > 1
               assign filename = featured_media.preview_image.src | split: '/' | last | split: '?' | first | downcase
               for color_value in color_option.values
@@ -269,11 +282,14 @@
                   break
                 endif
               endfor
+              if thumb_color != blank and thumb_color != first_color_handle
+                assign should_hide_thumb = true
+              endif
             endif
           -%}
           <li
             id="Slide-Thumbnails-{{ section.id }}-0"
-            class="thumbnail-list__item slider__slide{% if section.settings.hide_variants and variant_images contains featured_media.src %} thumbnail-list_item--variant{% endif %}"
+            class="thumbnail-list__item slider__slide{% if section.settings.hide_variants and variant_images contains featured_media.src %} thumbnail-list_item--variant{% endif %}{% if should_hide_thumb %} color-filtered-hidden{% endif %}"
             data-target="{{ section.id }}-{{ featured_media.id }}"
             data-media-position="{{ media_index }}"
             data-color="{{ thumb_color }}"
@@ -317,6 +333,7 @@
               assign media_index = media_index | plus: 1
 
               assign thumb_color = ''
+              assign should_hide_thumb = false
               if color_option != blank and color_option.values.size > 1
                 assign filename = media.preview_image.src | split: '/' | last | split: '?' | first | downcase
                 for color_value in color_option.values
@@ -326,11 +343,14 @@
                     break
                   endif
                 endfor
+                if thumb_color != blank and thumb_color != first_color_handle
+                  assign should_hide_thumb = true
+                endif
               endif
             -%}
             <li
               id="Slide-Thumbnails-{{ section.id }}-{{ forloop.index }}"
-              class="thumbnail-list__item slider__slide{% if section.settings.hide_variants and variant_images contains media.src %} thumbnail-list_item--variant{% endif %}"
+              class="thumbnail-list__item slider__slide{% if section.settings.hide_variants and variant_images contains media.src %} thumbnail-list_item--variant{% endif %}{% if should_hide_thumb %} color-filtered-hidden{% endif %}"
               data-target="{{ section.id }}-{{ media.id }}"
               data-media-position="{{ media_index }}"
               data-color="{{ thumb_color }}"

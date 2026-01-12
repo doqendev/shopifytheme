@@ -460,11 +460,15 @@
 
   assign color_option_index = -1
   assign color_option = blank
+  assign first_color_handle = ''
   for option in product.options_with_values
     assign option_name = option.name | downcase
     if option_name == 'color' or option_name == 'cor' or option_name == 'colour'
       assign color_option_index = forloop.index0
       assign color_option = option
+      if option.values.size > 1
+        assign first_color_handle = option.values[0] | downcase | handle
+      endif
       break
     endif
   endfor
@@ -478,6 +482,7 @@
       {% for media in product.media %}
         {%- liquid
           assign media_color = ''
+          assign should_hide = false
           if color_option != blank and color_option.values.size > 1
             assign filename = media.preview_image.src | split: '/' | last | split: '?' | first | downcase
             for color_value in color_option.values
@@ -487,9 +492,12 @@
                 break
               endif
             endfor
+            if media_color != blank and media_color != first_color_handle
+              assign should_hide = true
+            endif
           endif
         -%}
-        <li data-media-index="{{ forloop.index0 }}" data-color="{{ media_color }}">
+        <li data-media-index="{{ forloop.index0 }}" data-color="{{ media_color }}"{% if should_hide %} class="color-filtered-hidden"{% endif %}>
           {{ media | img_tag: '100x100', alt: media.alt }}
         </li>
       {% endfor %}
@@ -501,6 +509,7 @@
         {% for media in product.media %}
           {%- liquid
             assign media_color = ''
+            assign should_hide = false
             if color_option != blank and color_option.values.size > 1
               assign filename = media.preview_image.src | split: '/' | last | split: '?' | first | downcase
               for color_value in color_option.values
@@ -510,9 +519,12 @@
                   break
                 endif
               endfor
+              if media_color != blank and media_color != first_color_handle
+                assign should_hide = true
+              endif
             endif
           -%}
-          <div class="main-image-slide"
+          <div class="main-image-slide{% if should_hide %} color-filtered-hidden{% endif %}"
                id="Slide-{{ forloop.index0 }}"
                data-index="{{ forloop.index0 }}"
                data-media-id="{{ media.id }}"
