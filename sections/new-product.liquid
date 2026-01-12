@@ -90,6 +90,20 @@
   {%- endif -%}
 
   {% assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src' %}
+
+  {%- comment -%}
+    On desktop (750px+), we use desktop-product.liquid for the media gallery.
+    This script runs immediately (not deferred) to remove the mobile gallery
+    before images start loading, dramatically improving desktop load time.
+  {%- endcomment -%}
+  <script>
+    (function() {
+      if (window.innerWidth >= 750) {
+        document.write('<style>.product__media-wrapper{display:none!important}</style>');
+      }
+    })();
+  </script>
+
   <div class="page-width">
     <div class="product product--{{ section.settings.media_size }} product--{{ section.settings.media_position }} product--{{ section.settings.gallery_layout }} product--mobile-{{ section.settings.mobile_thumbnails }} grid grid--1-col {% if product.media.size > 0 %}grid--2-col-tablet{% else %}product--no-media{% endif %}">
       <div class="grid__item product__media-wrapper">
@@ -829,7 +843,7 @@
       @media screen and (min-width: 750px) {
         .mobile-extras {
           content-visibility: hidden;
-          display: none;
+          display: none !important;
         }
         /* Also hide the entire mobile product section wrapper on desktop - resources loaded by desktop-product.liquid instead */
         #MainProduct-{{ section.id }} .product__media-wrapper {
@@ -837,6 +851,14 @@
         }
       }
     </style>
+    {%- comment -%} Early script to hide mobile-extras on desktop before images load {%- endcomment -%}
+    <script>
+      (function() {
+        if (window.innerWidth >= 750) {
+          document.write('<style>.mobile-extras{display:none!important}</style>');
+        }
+      })();
+    </script>
     <div class="mobile-extras">
       <div class="drawer-description">
         {{ product.content }}
