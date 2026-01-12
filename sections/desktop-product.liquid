@@ -1065,6 +1065,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (titleWrapper && variantPicker) {
     variantPicker.addEventListener('change', function() {
+      if (!variantPicker.variant || !variantPicker.variant.id) return;
       const currentVariant = product.variants.find(v => v.id == variantPicker.variant.id);
       if (currentVariant && currentVariant.featured_image) {
         titleWrapper.dataset.productImage = currentVariant.featured_image.src;
