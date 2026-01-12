@@ -1,0 +1,36 @@
+/* Color Image Filter - Transition Styles */
+
+/* Smooth hide/show transitions for filtering */
+.main-image-slide,
+.product__media-item,
+.thumbnail-list li,
+.thumbnail-list__item {
+  transition: opacity 0.25s ease;
+}
+
+/* Hidden state - used when color doesn't match */
+.color-filtered-hidden {
+  display: none !important;
+}
+
+/* Desktop: Ensure filtered gallery maintains proper layout */
+.desktop-product-media .main-images-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.desktop-product-media .thumbnail-list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Mobile slider adjustments when items are hidden */
+@media screen and (max-width: 749px) {
+  .product__media-list {
+    scroll-snap-type: x mandatory;
+  }
+
+  .product__media-item:not(.color-filtered-hidden) {
+    scroll-snap-align: start;
+  }
+}
