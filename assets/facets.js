@@ -94,6 +94,12 @@ static renderProductGridContainer(html) {
     existingGridContainer.querySelectorAll('.scroll-trigger').forEach((element) => {
       element.classList.add('scroll-trigger--cancel');
     });
+
+    // Remove loading class from the collection element
+    const collectionEl = existingGridContainer.querySelector('.collection');
+    if (collectionEl) {
+      collectionEl.classList.remove('loading');
+    }
   }
 
   // *** IMPORTANT: Reinitialize grid options and product card swipers after updating the grid ***
@@ -177,8 +183,8 @@ static renderProductGridContainer(html) {
       }
     });
 
-    FacetFiltersForm.renderActiveFacets(parsedHTML);
-    FacetFiltersForm.renderAdditionalElements(parsedHTML);
+    FacetFiltersForm.renderActiveFacets(template.content);
+    FacetFiltersForm.renderAdditionalElements(template.content);
 
     if (countsToRender) {
       const closestJSFilterID = event.target.closest('.js-filter').id;
