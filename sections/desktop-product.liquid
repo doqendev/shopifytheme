@@ -162,6 +162,22 @@
     margin-bottom: 14px;
   }
 
+  /* Fix swatch movement on desktop product page - keep size consistent */
+  .desktop-product-section .product-form__input--swatch .swatch-input__label {
+    width: 15px !important;
+    height: 15px !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .desktop-product-section .product-form__input--swatch .swatch-input__label.active,
+  .desktop-product-section .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label {
+    width: 15px !important;
+    height: 15px !important;
+    border: none !important;
+    outline: 1px solid #000 !important;
+    outline-offset: 2px !important;
+  }
 
   /* Description styling */
   .desktop-product-info .product-description {
