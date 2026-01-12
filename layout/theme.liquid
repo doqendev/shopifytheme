@@ -1,6 +1,42 @@
 <!doctype html>
 <html class="js" lang="{{ request.locale.iso_code }}">
   <head>
+    <!-- PERFORMANCE DIAGNOSTIC - REMOVE AFTER DEBUGGING -->
+    <script>
+      window._perfLog = { start: performance.now(), events: [] };
+      window._logPerf = (name) => {
+        const time = (performance.now() - window._perfLog.start).toFixed(0);
+        window._perfLog.events.push({ name, time: +time });
+        console.log(`[PERF] ${time}ms - ${name}`);
+      };
+      window._logPerf('Script start');
+
+      // Track DOM events
+      document.addEventListener('DOMContentLoaded', () => window._logPerf('DOMContentLoaded'));
+      window.addEventListener('load', () => {
+        window._logPerf('Window load');
+        // Log slow resources
+        setTimeout(() => {
+          console.log('\n[PERF] === SLOW RESOURCES (>500ms) ===');
+          performance.getEntriesByType('resource')
+            .filter(r => r.duration > 500)
+            .sort((a, b) => b.duration - a.duration)
+            .forEach(r => console.log(`${r.duration.toFixed(0)}ms - ${r.name.split('/').pop().split('?')[0]}`));
+          console.log('\n[PERF] === TIMELINE ===');
+          window._perfLog.events.forEach(e => console.log(`${e.time}ms - ${e.name}`));
+        }, 100);
+      });
+
+      // Track first user interaction
+      ['click', 'touchstart'].forEach(evt => {
+        document.addEventListener(evt, function firstInteraction() {
+          window._logPerf('First user interaction');
+          document.removeEventListener(evt, firstInteraction);
+        }, { once: true, passive: true });
+      });
+    </script>
+    <!-- END PERFORMANCE DIAGNOSTIC -->
+
     <script>
       window.customerId = {{ customer.id | json }};
       window.customerLoggedIn = !!window.customerId;

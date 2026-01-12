@@ -57,6 +57,7 @@
   // Fetch wishlist from server (for logged-in users)
   const fetchServerWishlist = async (retryCount = 0) => {
     if (!window.customerId) return null;
+    window._logPerf?.('Wishlist fetch START');
 
     // Check cache first (valid for 5 minutes)
     const cacheKey = `wishlist_cache_${window.customerId}`;
@@ -119,8 +120,10 @@
       }
 
       updateSyncStatus('synced', 'Sincronizado');
+      window._logPerf?.('Wishlist fetch END (success)');
       return wishlist;
     } catch (error) {
+      window._logPerf?.('Wishlist fetch END (error: ' + error.message + ')');
       if (error.name === 'AbortError') {
         // Timeout - fail gracefully without retry
         updateSyncStatus('error', 'Timeout');
@@ -2952,10 +2955,12 @@
       window.wishlistStrings.close = closeLabel;
     }
 
+    window._logPerf?.('Wishlist init START');
     attachHeartListeners();
     syncHearts();
     renderWishlist();
     initDrawerTabs();
+    window._logPerf?.('Wishlist init basic DONE');
     registerWishlistContainerListeners();
     registerSwatchSyncListener();
     registerSortListeners();
@@ -2976,6 +2981,7 @@
 
     document.addEventListener('shopify:section:load', onSectionLoad);
     observeDomMutations();
+    window._logPerf?.('Wishlist init COMPLETE');
   };
 
   if (document.readyState === 'loading') {
