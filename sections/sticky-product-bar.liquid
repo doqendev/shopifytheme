@@ -13,10 +13,11 @@
 {% comment %} Create a dummy block object with default settings {% endcomment %}
 {% assign dummy_block = '{ "settings": { "picker_type": "button", "swatch_shape": "circle" }, "shopify_attributes": "" }' | parse_json %}
 
-{% comment %} CSS loaded once - desktop-product.liquid loads these globally {% endcomment %}
-{% unless product.has_only_default_variant %}
-  {{ 'component-swatch-input.css' | asset_url | stylesheet_tag }}
-{% endunless %}
+{% comment %} CSS for mobile sticky bar {% endcomment %}
+{{ 'component-product-variant-picker.css' | asset_url | stylesheet_tag }}
+{{ 'component-swatch.css' | asset_url | stylesheet_tag }}
+{{ 'component-swatch-input.css' | asset_url | stylesheet_tag }}
+{{ 'swatches-cheyenne.css' | asset_url | stylesheet_tag }}
 
 <style>
 

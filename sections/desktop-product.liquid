@@ -16,14 +16,12 @@
 {% assign dummy_block = '{ "settings": { "picker_type": "button", "swatch_shape": "circle" }, "shopify_attributes": "" }' | parse_json %}
 
 {% comment %}
-  Include variant/swatch CSS if needed (loaded once, not duplicated)
+  Include variant/swatch CSS (loaded once, not duplicated)
 {% endcomment %}
-{% unless product.has_only_default_variant %}
-  {{ 'component-product-variant-picker.css' | asset_url | stylesheet_tag }}
-  {{ 'component-swatch.css' | asset_url | stylesheet_tag }}
-  {{ 'component-swatch-input.css' | asset_url | stylesheet_tag }}
-  {{ 'swatches-cheyenne.css' | asset_url | stylesheet_tag }}
-{% endunless %}
+{{ 'component-product-variant-picker.css' | asset_url | stylesheet_tag }}
+{{ 'component-swatch.css' | asset_url | stylesheet_tag }}
+{{ 'component-swatch-input.css' | asset_url | stylesheet_tag }}
+{{ 'swatches-cheyenne.css' | asset_url | stylesheet_tag }}
 {{ 'component-color-filter.css' | asset_url | stylesheet_tag }}
 
 <style>
