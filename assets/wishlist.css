@@ -1383,7 +1383,7 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
 .wishlist-size-drawer__list {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 20px;
   overflow-y: auto;
 }
 
@@ -1442,4 +1442,12 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
 .wishlist-size-drawer__item--success .wishlist-size-drawer__item-label {
   color: #000;
   font-weight: 500;
+}
+
+/* Mobile font size for size drawer */
+@media screen and (max-width: 749px) {
+  .wishlist-size-drawer,
+  .wishlist-size-drawer * {
+    font-size: 16px !important;
+  }
 }
