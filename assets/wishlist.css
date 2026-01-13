@@ -357,22 +357,36 @@ cart-drawer.drawer--wishlist-active #CartDrawer-CartErrors {
 }
 
 /* Quick-add button styling for wishlist cards */
-.wishlist-card .product-card-plus,
-.wishlist-card__image-wrapper .product-card-plus {
+.wishlist-card .card > .product-card-plus {
   position: absolute !important;
   right: 8px !important;
-  bottom: 8px !important;
-  z-index: 100 !important;
+  /* Position from top, accounting for card__content height (roughly 60px for title+price) */
+  bottom: auto !important;
+  top: calc(100% - 100px) !important; /* Position near bottom of image area */
+  z-index: 9999 !important;
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
 }
 
-.wishlist-card .product-card-plus .plus-icon,
-.wishlist-card__image-wrapper .product-card-plus .plus-icon {
+/* Alternative: position relative to card__inner which contains just the image */
+.wishlist-card .card__inner > .product-card-plus,
+.wishlist-card .card__media > .product-card-plus {
+  position: absolute !important;
+  right: 8px !important;
+  bottom: 8px !important;
+  z-index: 9999 !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.wishlist-card .product-card-plus .plus-icon {
   display: flex !important;
   align-items: center;
   justify-content: center;
+  min-width: 32px !important;
+  min-height: 32px !important;
   width: 32px;
   height: 32px;
   background: red !important; /* DEBUG: bright red to see it */

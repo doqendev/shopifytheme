@@ -2214,8 +2214,12 @@
       variantsCount: item?.variants?.length || 0
     });
 
-    // Place quick-add in .wishlist-card__image-wrapper (has position:relative) for proper visibility
-    const quickAddContainer = cardElement.querySelector('.wishlist-card__image-wrapper') || cardElement.querySelector('.card__media') || cardElement;
+    // Place quick-add directly on the .card element for reliable positioning
+    const quickAddContainer = cardElement.querySelector('.card') || cardElement;
+    // Ensure container has position relative for absolute positioning of quick-add
+    if (quickAddContainer && !quickAddContainer.style.position) {
+      quickAddContainer.style.position = 'relative';
+    }
     let quickAdd = cardElement.querySelector('.product-card-plus');
 
 
@@ -2242,6 +2246,10 @@
       quickAdd = createQuickAddElement(item);
       console.log('[wishlist] createQuickAddElement returned:', !!quickAdd, 'container:', quickAddContainer?.className);
       if (!quickAdd) return;
+
+      // Force inline styles to ensure visibility
+      quickAdd.style.cssText = 'position: absolute !important; right: 8px !important; bottom: 8px !important; z-index: 9999 !important; display: block !important; visibility: visible !important; opacity: 1 !important;';
+
       quickAddContainer.appendChild(quickAdd);
       console.log('[wishlist] Quick-add appended to container. Card now has .product-card-plus:', !!cardElement.querySelector('.product-card-plus'));
     } else {
@@ -2255,6 +2263,8 @@
     const trigger = quickAdd.querySelector('.plus-icon');
     if (trigger) {
       trigger.setAttribute('aria-label', window.wishlistStrings?.addToCart || 'Add to cart');
+      // Force inline styles on the plus icon
+      trigger.style.cssText = 'display: flex !important; align-items: center; justify-content: center; width: 32px !important; height: 32px !important; min-width: 32px !important; min-height: 32px !important; background: red !important; color: white !important; visibility: visible !important; opacity: 1 !important; border: none; cursor: pointer;';
     }
 
     const title = quickAdd.querySelector('.size-options-title');
