@@ -2326,12 +2326,13 @@
       button.style.display = '';
       button.dataset.variantId = String(variant.id);
       console.log('[wishlist] Size button:', sizeValue, 'variant.available:', variant.available, 'variant:', variant);
-      if (variant.available) {
-        button.disabled = false;
-        button.classList.remove('sold-out');
-      } else {
-        button.disabled = true;
-        button.classList.add('sold-out');
+      // Always enable buttons - let Shopify handle actual availability when adding to cart
+      // The API's available status may be stale or incorrect
+      button.disabled = false;
+      button.classList.remove('sold-out');
+      // Optionally mark as potentially low/out of stock for visual indication
+      if (!variant.available) {
+        button.classList.add('possibly-low-stock');
       }
 
       const lowStock = button.querySelector('.size-option__low-stock');
