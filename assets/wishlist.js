@@ -2287,6 +2287,15 @@
     const matchingVariants = getMatchingVariants(item);
     const sizeIndex = item.sizeIndex;
 
+    console.log('[wishlist] updateWishlistSizeButtons:', {
+      handle: item.handle,
+      sizeIndex,
+      colorKey: item.colorKey,
+      totalVariants: item.variants?.length || 0,
+      matchingVariants: matchingVariants.length,
+      firstMatchingVariant: matchingVariants[0]
+    });
+
     buttons.forEach((button) => {
       const sizeValue = button.dataset?.size || button.textContent?.trim();
       if (!sizeValue) {
@@ -2312,6 +2321,7 @@
 
       button.style.display = '';
       button.dataset.variantId = String(variant.id);
+      console.log('[wishlist] Size button:', sizeValue, 'variant.available:', variant.available, 'variant:', variant);
       if (variant.available) {
         button.disabled = false;
         button.classList.remove('sold-out');
