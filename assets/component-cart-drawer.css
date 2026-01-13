@@ -254,16 +254,6 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
     z-index: 9999 !important;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
   }
-
-  /* Add space at bottom of cart items for fixed footer */
-  cart-drawer-items {
-    padding-bottom: 5px !important;
-  }
-
-  /* Also add space to panel */
-  .drawer__panel {
-    padding-bottom: 200px !important;
-  }
 }
 
 cart-drawer-items.is-empty + .drawer__footer {
