@@ -584,10 +584,23 @@
         if (variant.option3) options.push(variant.option3);
       }
 
+      // Determine availability - use multiple signals
+      // 1. If available is explicitly true, it's available
+      // 2. If inventory_quantity > 0, it's available
+      // 3. If inventory_policy is "continue", it's available (sell when out of stock)
+      let isAvailable = false;
+      if (variant.available === true) {
+        isAvailable = true;
+      } else if (typeof variant.inventory_quantity === 'number' && variant.inventory_quantity > 0) {
+        isAvailable = true;
+      } else if (variant.inventory_policy === 'continue') {
+        isAvailable = true;
+      }
+
       return {
         id: variant.id,
         title: variant.title,
-        available: !!variant.available,
+        available: isAvailable,
         options: options,
         price: variant.price,
         image: getVariantImageSource(variant.image || variant.featured_image),
