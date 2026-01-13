@@ -2306,15 +2306,15 @@
     // Populate sizes - using div elements like product page size drawer
     const list = drawer.querySelector('.wishlist-size-drawer__list');
     list.innerHTML = sizes.map(size => `
-      <div class="size-item"
+      <div class="size-item${!size.available ? ' size-item--unavailable' : ''}"
            data-variant-id="${size.variantId}"
            data-size="${size.value}">
         <span class="size-item__label">${size.value}</span>
       </div>
     `).join('');
 
-    // Add click handlers for all size items
-    list.querySelectorAll('.size-item').forEach(item => {
+    // Add click handlers only for available size items
+    list.querySelectorAll('.size-item:not(.size-item--unavailable)').forEach(item => {
       item.addEventListener('click', handleWishlistDrawerSizeClick);
     });
 
