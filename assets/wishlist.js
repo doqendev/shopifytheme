@@ -2216,9 +2216,9 @@
 
     // Place quick-add directly on the .card element for reliable positioning
     const quickAddContainer = cardElement.querySelector('.card') || cardElement;
-    // Ensure container has position relative for absolute positioning of quick-add
-    if (quickAddContainer && !quickAddContainer.style.position) {
-      quickAddContainer.style.position = 'relative';
+    // FORCE position relative with !important inline style
+    if (quickAddContainer) {
+      quickAddContainer.style.setProperty('position', 'relative', 'important');
     }
     let quickAdd = cardElement.querySelector('.product-card-plus');
 
