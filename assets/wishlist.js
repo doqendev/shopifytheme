@@ -2214,8 +2214,8 @@
       variantsCount: item?.variants?.length || 0
     });
 
-    // Place quick-add in .card__inner (has position:relative for ratio) or .card for proper absolute positioning
-    const quickAddContainer = cardElement.querySelector('.card__inner') || cardElement.querySelector('.card') || cardElement;
+    // Place quick-add in .card__media (the image container) for proper visibility
+    const quickAddContainer = cardElement.querySelector('.card__media') || cardElement.querySelector('.card__inner') || cardElement;
     let quickAdd = cardElement.querySelector('.product-card-plus');
 
 

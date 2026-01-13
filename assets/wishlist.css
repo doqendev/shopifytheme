@@ -381,6 +381,7 @@ cart-drawer.drawer--wishlist-active #CartDrawer-CartErrors {
 .wishlist-card .card__media {
   width: 100%;
   margin: 0;
+  position: relative; /* Required for absolute positioning of quick-add button */
 }
 
 .wishlist-card__image-wrapper {
