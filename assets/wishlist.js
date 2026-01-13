@@ -2247,8 +2247,8 @@
       console.log('[wishlist] createQuickAddElement returned:', !!quickAdd, 'container:', quickAddContainer?.className);
       if (!quickAdd) return;
 
-      // TEST: Use position fixed to see if button appears anywhere on screen
-      quickAdd.style.cssText = 'position: fixed !important; right: 50px !important; top: 50px !important; z-index: 999999 !important; display: block !important; visibility: visible !important; opacity: 1 !important;';
+      // Position at top-right of card (working position)
+      quickAdd.style.cssText = 'position: absolute !important; right: 8px !important; top: 8px !important; z-index: 9999 !important; display: block !important; visibility: visible !important; opacity: 1 !important;';
 
       quickAddContainer.appendChild(quickAdd);
       console.log('[wishlist] Quick-add appended to container. Card now has .product-card-plus:', !!cardElement.querySelector('.product-card-plus'));
@@ -2900,19 +2900,27 @@
   };
 
   const handleWishlistClicks = (event) => {
+    console.log('[wishlist] handleWishlistClicks - target:', event.target);
+
     const wishlistCard = event.target.closest('[data-wishlist-item]');
+    console.log('[wishlist] handleWishlistClicks - wishlistCard found:', !!wishlistCard);
     if (!wishlistCard) return;
 
     const plusIcon = event.target.closest('.product-card-plus .plus-icon');
+    console.log('[wishlist] handleWishlistClicks - plusIcon found:', !!plusIcon);
     if (plusIcon) {
+      console.log('[wishlist] Plus icon clicked! Preventing default and handling...');
       event.preventDefault();
+      event.stopPropagation();
       handleWishlistPlusClick(plusIcon);
       return;
     }
 
     const sizeOption = event.target.closest('.product-card-plus .size-option');
     if (sizeOption) {
+      console.log('[wishlist] Size option clicked!');
       event.preventDefault();
+      event.stopPropagation();
       handleWishlistSizeOptionClick(sizeOption);
     }
   };
