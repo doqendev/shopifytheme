@@ -2636,6 +2636,10 @@
     if (isWishlistLoading) return;
     const containers = document.querySelectorAll(WISHLIST_CONTAINER_SELECTOR);
     if (!containers.length) return;
+
+    // Clear product cache to ensure fresh data
+    productDataCache.clear();
+
     let items = loadWishlist();
 
     console.log('[wishlist] renderWishlist called, items from localStorage:', items);
