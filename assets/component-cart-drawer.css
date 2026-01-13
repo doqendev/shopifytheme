@@ -262,7 +262,7 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
 
   /* Also add space to panel */
   .drawer__panel {
-    padding-bottom: 180px !important;
+    padding-bottom: 200px !important;
   }
 }
 
