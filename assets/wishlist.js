@@ -2268,8 +2268,11 @@
     const trigger = quickAdd.querySelector('.plus-icon');
     if (trigger) {
       trigger.setAttribute('aria-label', window.wishlistStrings?.addToCart || 'Add to cart');
+      // Ensure the + text is there
+      trigger.textContent = '+';
       // Style the plus icon - white background with black text, ensure visibility
       trigger.style.cssText = 'display: flex !important; align-items: center !important; justify-content: center !important; width: 32px !important; height: 32px !important; min-width: 32px !important; min-height: 32px !important; background-color: white !important; color: black !important; visibility: visible !important; opacity: 1 !important; border: 1px solid #ccc !important; cursor: pointer !important; font-size: 20px !important; font-weight: bold !important; line-height: 1 !important; box-shadow: 0 1px 3px rgba(0,0,0,0.2) !important;';
+      console.log('[wishlist] Plus icon styled, dimensions:', trigger.offsetWidth, 'x', trigger.offsetHeight);
     }
 
     const title = quickAdd.querySelector('.size-options-title');
