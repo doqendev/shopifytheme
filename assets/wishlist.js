@@ -658,26 +658,13 @@
   const fetchProductData = async (handle) => {
     if (!handle) return null;
 
-    console.log('[wishlist] fetchProductData: fetching', handle);
     try {
       const response = await fetch(`/products/${handle}.json`);
-      console.log('[wishlist] fetchProductData: response for', handle, { ok: response.ok, status: response.status });
-      if (!response.ok) {
-        if (response.status === 404) {
-          console.warn(`[wishlist] Product ${handle} not found (may have been deleted)`);
-        }
-        return null;
-      }
+      if (!response.ok) return null;
 
       const data = await response.json();
-      console.log('[wishlist] fetchProductData: got data for', handle, { hasProduct: !!data.product });
-      // Log raw variant data to check available status
-      if (data.product?.variants?.[0]) {
-        console.log('[wishlist] Raw first variant from API:', data.product.variants[0]);
-      }
       return data.product || null;
     } catch (error) {
-      console.warn(`[wishlist] Failed to fetch product ${handle}:`, error);
       return null;
     }
   };
@@ -691,31 +678,20 @@
   const enrichItemWithVariants = (item, productData) => {
     if (!productData || !item) return item;
 
-    console.log('[wishlist] enrichItemWithVariants for:', item.handle, {
-      hasProductData: !!productData,
-      optionsCount: productData.options?.length || 0,
-      variantsCount: productData.variants?.length || 0,
-      options: productData.options,
-      firstVariant: productData.variants?.[0]
-    });
-
     const enriched = { ...item };
 
     // Extract and normalize variants
     enriched.variants = normalizeVariants(productData.variants || []);
 
     // Find color and size option indices
-    // Note: Shopify's /products/{handle}.json returns options as array of strings
-    // e.g., ["Color", "Size"] - not objects with .name property
     enriched.colorIndex = -1;
     enriched.sizeIndex = -1;
 
     if (Array.isArray(productData.options)) {
       productData.options.forEach((option, index) => {
-        if (!option) return; // Skip null/undefined options
+        if (!option) return;
         // Handle both string (from JSON API) and object (from Liquid) formats
         const name = typeof option === 'string' ? option : (option.name || '');
-        console.log(`[wishlist] Option ${index}:`, { raw: option, extractedName: name, isColorMatch: COLOR_LABEL_PATTERN.test(name), isSizeMatch: SIZE_LABEL_PATTERN.test(name) });
         if (COLOR_LABEL_PATTERN.test(name)) {
           enriched.colorIndex = index;
         }
@@ -2212,73 +2188,63 @@
   const ensureWishlistQuickAdd = (cardElement, item) => {
     if (!cardElement) return;
 
-    console.log('[wishlist] ensureWishlistQuickAdd called for:', item?.handle, {
-      sizeIndex: item?.sizeIndex,
-      colorIndex: item?.colorIndex,
-      variantsCount: item?.variants?.length || 0
-    });
+    // Find or create the inline size selector in card__content
+    const cardContent = cardElement.querySelector('.card__content') || cardElement.querySelector('.card__information');
+    if (!cardContent) return;
 
-    // Place quick-add inside .card__inner (the image area) for correct positioning
-    const quickAddContainer = cardElement.querySelector('.card__inner') || cardElement.querySelector('.card') || cardElement;
-    // FORCE position relative with !important inline style
-    if (quickAddContainer) {
-      quickAddContainer.style.setProperty('position', 'relative', 'important');
-      quickAddContainer.style.setProperty('overflow', 'visible', 'important');
-    }
-    let quickAdd = cardElement.querySelector('.product-card-plus');
-
+    let sizeSelector = cardElement.querySelector('.wishlist-size-selector');
 
     if (typeof item?.sizeIndex !== 'number' || item.sizeIndex < 0) {
-      console.log('[wishlist] No sizeIndex, skipping quick-add for:', item?.handle);
-      if (quickAdd) {
-        quickAdd.remove();
-      }
+      if (sizeSelector) sizeSelector.remove();
       return;
     }
 
-    const sizeButtonsMarkup = createSizeButtonsMarkup(item);
-    console.log('[wishlist] sizeButtonsMarkup length:', sizeButtonsMarkup?.length || 0);
-
-    if (!sizeButtonsMarkup) {
-      console.log('[wishlist] No size buttons markup, skipping quick-add for:', item?.handle);
-      if (quickAdd) {
-        quickAdd.remove();
-      }
+    const matchingVariants = getMatchingVariants(item);
+    if (!matchingVariants.length) {
+      if (sizeSelector) sizeSelector.remove();
       return;
     }
 
-    if (!quickAdd) {
-      quickAdd = createQuickAddElement(item);
-      console.log('[wishlist] createQuickAddElement returned:', !!quickAdd, 'container:', quickAddContainer?.className);
-      if (!quickAdd) return;
-
-      // Position at bottom-right of the container (card__inner = image area)
-      quickAdd.style.cssText = 'position: absolute !important; right: 8px !important; bottom: 8px !important; z-index: 9999 !important; display: block !important; visibility: visible !important; opacity: 1 !important; width: 32px !important; height: 32px !important; overflow: visible !important;';
-
-      quickAddContainer.appendChild(quickAdd);
-      console.log('[wishlist] Quick-add appended to container. Card now has .product-card-plus:', !!cardElement.querySelector('.product-card-plus'));
-    } else {
-      console.log('[wishlist] Quick-add already exists, updating overlay');
-      const overlay = quickAdd.querySelector('.overlay-sizes');
-      if (overlay) {
-        overlay.innerHTML = sizeButtonsMarkup;
+    // Build simple inline size buttons
+    const sizeIndex = item.sizeIndex;
+    const sizes = [];
+    matchingVariants.forEach((variant) => {
+      const sizeValue = variant.options?.[sizeIndex];
+      if (sizeValue && !sizes.find(s => s.value === sizeValue)) {
+        sizes.push({
+          value: sizeValue,
+          variantId: variant.id,
+          available: variant.available
+        });
       }
+    });
+
+    if (!sizes.length) {
+      if (sizeSelector) sizeSelector.remove();
+      return;
     }
 
-    const trigger = quickAdd.querySelector('.plus-icon');
-    if (trigger) {
-      trigger.setAttribute('aria-label', window.wishlistStrings?.addToCart || 'Add to cart');
-      // Ensure the + text is there
-      trigger.textContent = '+';
-      // Style the plus icon - white background with black text, ensure visibility
-      trigger.style.cssText = 'display: flex !important; align-items: center !important; justify-content: center !important; width: 32px !important; height: 32px !important; min-width: 32px !important; min-height: 32px !important; background-color: white !important; color: black !important; visibility: visible !important; opacity: 1 !important; border: 1px solid #ccc !important; cursor: pointer !important; font-size: 20px !important; font-weight: bold !important; line-height: 1 !important; box-shadow: 0 1px 3px rgba(0,0,0,0.2) !important;';
-      console.log('[wishlist] Plus icon styled, dimensions:', trigger.offsetWidth, 'x', trigger.offsetHeight);
+    // Create or update the size selector
+    if (!sizeSelector) {
+      sizeSelector = document.createElement('div');
+      sizeSelector.className = 'wishlist-size-selector';
+      cardContent.appendChild(sizeSelector);
     }
 
-    const title = quickAdd.querySelector('.size-options-title');
-    if (title) {
-      title.textContent = window.wishlistStrings?.sizeLabel || 'Select a size';
-    }
+    // Build the HTML
+    sizeSelector.innerHTML = `
+      <div class="wishlist-size-buttons" style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;">
+        ${sizes.map(size => `
+          <button type="button"
+                  class="wishlist-size-btn"
+                  data-variant-id="${size.variantId}"
+                  data-size="${size.value}"
+                  style="padding: 6px 12px; border: 1px solid #ccc; background: white; cursor: pointer; font-size: 12px; min-width: 40px; text-align: center;">
+            ${size.value}
+          </button>
+        `).join('')}
+      </div>
+    `;
   };
 
   const updateWishlistSizeButtons = (cardElement, item) => {
@@ -2294,15 +2260,6 @@
     const buttons = quickAdd.querySelectorAll('.size-option');
     const matchingVariants = getMatchingVariants(item);
     const sizeIndex = item.sizeIndex;
-
-    console.log('[wishlist] updateWishlistSizeButtons:', {
-      handle: item.handle,
-      sizeIndex,
-      colorKey: item.colorKey,
-      totalVariants: item.variants?.length || 0,
-      matchingVariants: matchingVariants.length,
-      firstMatchingVariant: matchingVariants[0]
-    });
 
     buttons.forEach((button) => {
       const sizeValue = button.dataset?.size || button.textContent?.trim();
@@ -2329,7 +2286,6 @@
 
       button.style.display = '';
       button.dataset.variantId = String(variant.id);
-      console.log('[wishlist] Size button:', sizeValue, 'variant.available:', variant.available, 'variant:', variant);
       // Always enable buttons - let Shopify handle actual availability when adding to cart
       // The API's available status may be stale or incorrect
       button.disabled = false;
@@ -2646,8 +2602,6 @@
 
     let items = loadWishlist();
 
-    console.log('[wishlist] renderWishlist called, items from localStorage:', items);
-
     closeAllWishlistQuickAdds();
 
     // Show loading state if we have items to fetch
@@ -2656,22 +2610,8 @@
 
       // Fetch variant data for all items (with caching)
       try {
-        console.log('[wishlist] Fetching variant data for', items.length, 'items...');
         items = await fetchProductsForWishlist(items);
-        console.log('[wishlist] After enrichment, items:', items);
-        // Log first item details for debugging
-        if (items[0]) {
-          console.log('[wishlist] First item details:', {
-            handle: items[0].handle,
-            colorValue: items[0].colorValue,
-            colorKey: items[0].colorKey,
-            colorIndex: items[0].colorIndex,
-            sizeIndex: items[0].sizeIndex,
-            variantsCount: items[0].variants?.length || 0
-          });
-        }
       } catch (error) {
-        console.warn('[wishlist] Error fetching product data:', error);
         // Continue with un-enriched items (graceful degradation)
       }
 
@@ -2846,17 +2786,10 @@
   };
 
   const handleWishlistPlusClick = (plusIcon) => {
-    console.log('[wishlist] handleWishlistPlusClick called');
     const { card, item } = findWishlistCardContext(plusIcon);
-    console.log('[wishlist] findWishlistCardContext result:', { card: !!card, item: item });
-    if (!card || !item) {
-      console.log('[wishlist] No card or item found, returning');
-      return;
-    }
+    if (!card || !item) return;
 
-    console.log('[wishlist] item.sizeIndex:', item.sizeIndex, 'type:', typeof item.sizeIndex);
     if (typeof item.sizeIndex !== 'number' || item.sizeIndex < 0) {
-      console.log('[wishlist] No sizeIndex, trying direct add to cart');
       const variant = getVariantForDirectAdd(item);
       if (variant?.id) {
         addVariantToCart(variant.id, card);
@@ -2865,10 +2798,7 @@
     }
 
     const plus = plusIcon.closest('.product-card-plus');
-    if (!plus) {
-      console.log('[wishlist] No .product-card-plus found');
-      return;
-    }
+    if (!plus) return;
 
     updateWishlistSizeButtons(card, item);
 
@@ -2877,27 +2807,22 @@
     const visibleOptions = Array.from(allSizeOptions).filter(
       (button) => button.style.display !== 'none'
     );
-    console.log('[wishlist] Size options:', allSizeOptions.length, 'visible:', visibleOptions.length);
 
     if (!visibleOptions.length) {
-      console.log('[wishlist] No size options at all, closing');
       closeAllWishlistQuickAdds();
       return;
     }
 
     if (plus.classList.contains('active')) {
-      console.log('[wishlist] Already active, closing');
       plus.classList.remove('active');
       plusIcon.setAttribute('aria-expanded', 'false');
       return;
     }
 
-    console.log('[wishlist] Opening size options panel');
     closeAllWishlistQuickAdds();
     plus.classList.add('active');
     plusIcon.setAttribute('aria-expanded', 'true');
     const sizeOptions = plus.querySelector('.size-options');
-    console.log('[wishlist] sizeOptions element:', sizeOptions);
     sizeOptions?.focus?.();
   };
 
@@ -2940,37 +2865,43 @@
   };
 
   const handleWishlistClicks = (event) => {
-    console.log('[wishlist] handleWishlistClicks - target:', event.target);
-
     const wishlistCard = event.target.closest('[data-wishlist-item]');
-    console.log('[wishlist] handleWishlistClicks - wishlistCard found:', !!wishlistCard);
     if (!wishlistCard) return;
 
-    // Check for size option FIRST (before plus icon, since size options are inside .product-card-plus)
-    const sizeOption = event.target.closest('.product-card-plus .size-option');
-    if (sizeOption) {
-      console.log('[wishlist] Size option clicked!', sizeOption.dataset.size);
+    // Check for inline size button click (new simpler approach)
+    const inlineSizeBtn = event.target.closest('.wishlist-size-btn');
+    if (inlineSizeBtn) {
       event.preventDefault();
       event.stopPropagation();
-      handleWishlistSizeOptionClick(sizeOption);
+
+      const variantId = parseInt(inlineSizeBtn.dataset.variantId, 10);
+      if (variantId) {
+        // Add loading state
+        inlineSizeBtn.textContent = '...';
+        inlineSizeBtn.disabled = true;
+
+        addVariantToCart(variantId, wishlistCard)
+          .then(() => {
+            inlineSizeBtn.textContent = '✓';
+            setTimeout(() => {
+              inlineSizeBtn.textContent = inlineSizeBtn.dataset.size;
+              inlineSizeBtn.disabled = false;
+            }, 1500);
+          })
+          .catch(() => {
+            inlineSizeBtn.textContent = inlineSizeBtn.dataset.size;
+            inlineSizeBtn.disabled = false;
+          });
+      }
       return;
     }
 
-    // Check for click on plus icon OR the product-card-plus container
-    let plusIcon = event.target.closest('.product-card-plus .plus-icon');
-    const plusContainer = event.target.closest('.product-card-plus');
-
-    // If clicked on container but not directly on button, find the button inside
-    if (!plusIcon && plusContainer) {
-      plusIcon = plusContainer.querySelector('.plus-icon');
-    }
-
-    console.log('[wishlist] handleWishlistClicks - plusIcon found:', !!plusIcon, 'plusContainer:', !!plusContainer);
-    if (plusIcon) {
-      console.log('[wishlist] Plus icon clicked! Preventing default and handling...');
+    // Legacy: Check for size option in old .product-card-plus structure
+    const sizeOption = event.target.closest('.product-card-plus .size-option');
+    if (sizeOption) {
       event.preventDefault();
       event.stopPropagation();
-      handleWishlistPlusClick(plusIcon);
+      handleWishlistSizeOptionClick(sizeOption);
       return;
     }
   };
