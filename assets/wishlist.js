@@ -2849,13 +2849,15 @@
 
     updateWishlistSizeButtons(card, item);
 
-    const visibleOption = Array.from(plus.querySelectorAll('.size-option')).find(
-      (button) => button.style.display !== 'none' && !button.disabled,
+    // Check if there are ANY size options (even if all sold out)
+    const allSizeOptions = plus.querySelectorAll('.size-option');
+    const visibleOptions = Array.from(allSizeOptions).filter(
+      (button) => button.style.display !== 'none'
     );
-    console.log('[wishlist] visibleOption found:', !!visibleOption);
+    console.log('[wishlist] Size options:', allSizeOptions.length, 'visible:', visibleOptions.length);
 
-    if (!visibleOption) {
-      console.log('[wishlist] No visible options, closing');
+    if (!visibleOptions.length) {
+      console.log('[wishlist] No size options at all, closing');
       closeAllWishlistQuickAdds();
       return;
     }
