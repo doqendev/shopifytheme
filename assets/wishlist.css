@@ -1020,9 +1020,6 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
     position: relative !important;
   }
 
-  #CartDrawer .cart__ctas {
-    padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px)) !important;
-  }
 
   /* Adjust drawer inner height on mobile to account for device UI */
   #CartDrawer .drawer__inner {
