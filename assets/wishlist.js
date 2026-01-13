@@ -671,6 +671,10 @@
 
       const data = await response.json();
       console.log('[wishlist] fetchProductData: got data for', handle, { hasProduct: !!data.product });
+      // Log raw variant data to check available status
+      if (data.product?.variants?.[0]) {
+        console.log('[wishlist] Raw first variant from API:', data.product.variants[0]);
+      }
       return data.product || null;
     } catch (error) {
       console.warn(`[wishlist] Failed to fetch product ${handle}:`, error);
