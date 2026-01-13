@@ -1311,61 +1311,58 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
 
 /* ============================================================================
    Wishlist Size Drawer (bottom sheet inside cart drawer)
-   Uses the same .size-item classes from size-drawer.css
+   Inherits from size-drawer.css via dual classes, overrides for bottom sheet
    ============================================================================ */
 
-.wishlist-size-drawer {
+.wishlist-size-drawer.size-drawer {
+  /* Override size-drawer fixed positioning for bottom sheet behavior */
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: auto 0 0 0;
+  display: block;
   z-index: 10;
   pointer-events: none;
 }
 
-.wishlist-size-drawer.is-open {
+.wishlist-size-drawer.size-drawer.is-open {
   pointer-events: auto;
 }
 
-.wishlist-size-drawer__overlay {
+.wishlist-size-drawer .size-drawer__overlay {
   display: none;
 }
 
-.wishlist-size-drawer__content {
+.wishlist-size-drawer .size-drawer__content {
+  /* Override for bottom sheet slide-up animation */
   position: relative;
   width: 100%;
-  background: #fff;
+  max-width: none;
+  margin: 0;
+  border-radius: 0;
+  border: none;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
   transform: translateY(100%);
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  opacity: 0;
   max-height: 50vh;
-  display: flex;
-  flex-direction: column;
+  inset: auto;
 }
 
-.wishlist-size-drawer.is-open .wishlist-size-drawer__content {
+.wishlist-size-drawer.is-open .size-drawer__content {
   transform: translateY(0);
   opacity: 1;
 }
 
-.wishlist-size-drawer__body {
+.wishlist-size-drawer .size-drawer__header {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.wishlist-size-drawer .size-drawer__body {
   overflow-y: auto;
 }
 
-.wishlist-size-drawer__list {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
 .wishlist-size-drawer__close {
-  position: absolute;
-  top: 16px;
-  right: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1374,7 +1371,6 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
   cursor: pointer;
   color: #333;
   padding: 0;
-  z-index: 1;
 }
 
 .wishlist-size-drawer__close:hover {

@@ -578,11 +578,17 @@
       if (variant.option2) options.push(variant.option2);
       if (variant.option3) options.push(variant.option3);
 
+      // Determine low stock (1-3 units remaining)
+      const qty = typeof variant.inventory_quantity === 'number' ? variant.inventory_quantity : 0;
+      const isLowStock = variant.available === true && qty > 0 && qty <= 3;
+
       return {
         id: variant.id,
         title: variant.title,
         // .js endpoint provides accurate availability directly
         available: variant.available === true,
+        inventory_quantity: qty,
+        lowStock: isLowStock,
         options: options,
         price: variant.price,
         image: getVariantImageSource(variant.image || variant.featured_image),
@@ -2204,7 +2210,7 @@
       return;
     }
 
-    // Build sizes data
+    // Build sizes data with low stock info
     const sizeIndex = item.sizeIndex;
     const sizes = [];
     matchingVariants.forEach((variant) => {
@@ -2213,7 +2219,8 @@
         sizes.push({
           value: sizeValue,
           variantId: variant.id,
-          available: variant.available
+          available: variant.available,
+          lowStock: variant.lowStock || false
         });
       }
     });
@@ -2254,18 +2261,21 @@
     }
 
     wishlistSizeDrawer = document.createElement('div');
-    wishlistSizeDrawer.className = 'wishlist-size-drawer';
+    wishlistSizeDrawer.className = 'wishlist-size-drawer size-drawer';
     wishlistSizeDrawer.innerHTML = `
-      <div class="wishlist-size-drawer__overlay"></div>
-      <div class="wishlist-size-drawer__content">
-        <div class="wishlist-size-drawer__body">
-          <div class="wishlist-size-drawer__list"></div>
+      <div class="wishlist-size-drawer__overlay size-drawer__overlay"></div>
+      <div class="wishlist-size-drawer__content size-drawer__content">
+        <div class="size-drawer__header">
+          <h3>Seleciona o tamanho</h3>
+          <button type="button" class="wishlist-size-drawer__close" aria-label="Fechar">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 1L13 13M1 13L13 1" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+          </button>
         </div>
-        <button type="button" class="wishlist-size-drawer__close" aria-label="Fechar">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 1L13 13M1 13L13 1" stroke="currentColor" stroke-width="1.5"/>
-          </svg>
-        </button>
+        <div class="wishlist-size-drawer__body size-drawer__body">
+          <div class="wishlist-size-drawer__list size-drawer__list"></div>
+        </div>
       </div>
     `;
 
@@ -2301,18 +2311,55 @@
 
     currentWishlistCard = cardElement;
 
+    // Get recommended size from calculator if available
+    let recommendedSize = null;
+    if (window.themeCalculatorDrawer) {
+      const savedMeasurements = window.themeCalculatorDrawer.loadSavedMeasurements?.();
+      if (savedMeasurements) {
+        recommendedSize = savedMeasurements.recommendedSize;
+      }
+    }
+
     // Populate sizes - using div elements like product page size drawer
     const list = drawer.querySelector('.wishlist-size-drawer__list');
-    list.innerHTML = sizes.map(size => `
-      <div class="size-item${!size.available ? ' size-item--unavailable' : ''}"
-           data-variant-id="${size.variantId}"
-           data-size="${size.value}">
-        <span class="size-item__label">${size.value}</span>
-      </div>
-    `).join('');
+    list.innerHTML = sizes.map(size => {
+      const isRecommended = recommendedSize && size.value.toLowerCase() === recommendedSize.toLowerCase();
+      let classes = 'size-item';
+      if (!size.available) classes += ' size-item--unavailable';
+      if (size.lowStock && size.available) classes += ' size-item--low-stock';
+      if (isRecommended && size.available) classes += ' size-item--recommended';
+
+      return `
+        <div class="${classes}"
+             data-variant-id="${size.variantId}"
+             data-size="${size.value}">
+          <span class="size-item__label">
+            ${size.value}
+            ${isRecommended && size.available ? '<span class="size-item__recommended">Recomendado</span>' : ''}
+          </span>
+          ${size.lowStock && size.available ? '<span class="size-item__stock">Poucas unidades</span>' : ''}
+        </div>
+      `;
+    }).join('');
+
+    // Add calculator button at the end
+    const calculatorBtn = document.createElement('button');
+    calculatorBtn.type = 'button';
+    calculatorBtn.className = 'size-item size-drawer__calculator-button';
+    calculatorBtn.innerHTML = '<span class="size-item__label">CALCULAR TAMANHO</span>';
+    calculatorBtn.addEventListener('click', () => {
+      // Open the size calculator drawer
+      if (window.themeCalculatorDrawer?.openCalculatorDrawer) {
+        // Close wishlist size drawer first
+        closeWishlistSizeDrawer();
+        // Open calculator - pass a pseudo section ID for wishlist
+        window.themeCalculatorDrawer.openCalculatorDrawer('wishlist');
+      }
+    });
+    list.appendChild(calculatorBtn);
 
     // Add click handlers only for available size items
-    list.querySelectorAll('.size-item:not(.size-item--unavailable)').forEach(item => {
+    list.querySelectorAll('.size-item:not(.size-item--unavailable):not(.size-drawer__calculator-button)').forEach(item => {
       item.addEventListener('click', handleWishlistDrawerSizeClick);
     });
 
