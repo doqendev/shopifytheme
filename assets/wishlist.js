@@ -2943,6 +2943,16 @@
     console.log('[wishlist] handleWishlistClicks - wishlistCard found:', !!wishlistCard);
     if (!wishlistCard) return;
 
+    // Check for size option FIRST (before plus icon, since size options are inside .product-card-plus)
+    const sizeOption = event.target.closest('.product-card-plus .size-option');
+    if (sizeOption) {
+      console.log('[wishlist] Size option clicked!', sizeOption.dataset.size);
+      event.preventDefault();
+      event.stopPropagation();
+      handleWishlistSizeOptionClick(sizeOption);
+      return;
+    }
+
     // Check for click on plus icon OR the product-card-plus container
     let plusIcon = event.target.closest('.product-card-plus .plus-icon');
     const plusContainer = event.target.closest('.product-card-plus');
@@ -2959,14 +2969,6 @@
       event.stopPropagation();
       handleWishlistPlusClick(plusIcon);
       return;
-    }
-
-    const sizeOption = event.target.closest('.product-card-plus .size-option');
-    if (sizeOption) {
-      console.log('[wishlist] Size option clicked!');
-      event.preventDefault();
-      event.stopPropagation();
-      handleWishlistSizeOptionClick(sizeOption);
     }
   };
 
