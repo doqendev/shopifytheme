@@ -2823,10 +2823,17 @@
   };
 
   const handleWishlistPlusClick = (plusIcon) => {
+    console.log('[wishlist] handleWishlistPlusClick called');
     const { card, item } = findWishlistCardContext(plusIcon);
-    if (!card || !item) return;
+    console.log('[wishlist] findWishlistCardContext result:', { card: !!card, item: item });
+    if (!card || !item) {
+      console.log('[wishlist] No card or item found, returning');
+      return;
+    }
 
+    console.log('[wishlist] item.sizeIndex:', item.sizeIndex, 'type:', typeof item.sizeIndex);
     if (typeof item.sizeIndex !== 'number' || item.sizeIndex < 0) {
+      console.log('[wishlist] No sizeIndex, trying direct add to cart');
       const variant = getVariantForDirectAdd(item);
       if (variant?.id) {
         addVariantToCart(variant.id, card);
@@ -2835,29 +2842,37 @@
     }
 
     const plus = plusIcon.closest('.product-card-plus');
-    if (!plus) return;
+    if (!plus) {
+      console.log('[wishlist] No .product-card-plus found');
+      return;
+    }
 
     updateWishlistSizeButtons(card, item);
 
     const visibleOption = Array.from(plus.querySelectorAll('.size-option')).find(
       (button) => button.style.display !== 'none' && !button.disabled,
     );
+    console.log('[wishlist] visibleOption found:', !!visibleOption);
 
     if (!visibleOption) {
+      console.log('[wishlist] No visible options, closing');
       closeAllWishlistQuickAdds();
       return;
     }
 
     if (plus.classList.contains('active')) {
+      console.log('[wishlist] Already active, closing');
       plus.classList.remove('active');
       plusIcon.setAttribute('aria-expanded', 'false');
       return;
     }
 
+    console.log('[wishlist] Opening size options panel');
     closeAllWishlistQuickAdds();
     plus.classList.add('active');
     plusIcon.setAttribute('aria-expanded', 'true');
     const sizeOptions = plus.querySelector('.size-options');
+    console.log('[wishlist] sizeOptions element:', sizeOptions);
     sizeOptions?.focus?.();
   };
 
