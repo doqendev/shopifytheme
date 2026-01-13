@@ -2251,8 +2251,8 @@
       console.log('[wishlist] createQuickAddElement returned:', !!quickAdd, 'container:', quickAddContainer?.className);
       if (!quickAdd) return;
 
-      // Position at bottom-right of image area
-      quickAdd.style.cssText = 'position: absolute !important; right: 8px !important; top: auto !important; bottom: 70px !important; z-index: 9999 !important; display: block !important; visibility: visible !important; opacity: 1 !important;';
+      // Position at bottom-right of image area - include explicit width/height
+      quickAdd.style.cssText = 'position: absolute !important; right: 8px !important; top: auto !important; bottom: 70px !important; z-index: 9999 !important; display: block !important; visibility: visible !important; opacity: 1 !important; width: 32px !important; height: 32px !important; overflow: visible !important;';
 
       quickAddContainer.appendChild(quickAdd);
       console.log('[wishlist] Quick-add appended to container. Card now has .product-card-plus:', !!cardElement.querySelector('.product-card-plus'));
