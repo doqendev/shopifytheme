@@ -2243,12 +2243,17 @@
     `;
   };
 
-  // Wishlist Size Drawer
+  // Wishlist Size Drawer (inside cart drawer)
   let wishlistSizeDrawer = null;
   let currentWishlistCard = null;
 
   const createWishlistSizeDrawer = () => {
-    if (wishlistSizeDrawer) return wishlistSizeDrawer;
+    // Check if drawer already exists
+    const existing = document.querySelector('.wishlist-size-drawer');
+    if (existing) {
+      wishlistSizeDrawer = existing;
+      return wishlistSizeDrawer;
+    }
 
     wishlistSizeDrawer = document.createElement('div');
     wishlistSizeDrawer.className = 'wishlist-size-drawer';
@@ -2256,22 +2261,30 @@
       <div class="wishlist-size-drawer__overlay"></div>
       <div class="wishlist-size-drawer__content">
         <div class="wishlist-size-drawer__header">
-          <span class="wishlist-size-drawer__title">Selecionar tamanho</span>
-          <button type="button" class="wishlist-size-drawer__close" aria-label="Fechar">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M1 1L13 13M1 13L13 1" stroke="currentColor" stroke-width="1.5"/>
+          <button type="button" class="wishlist-size-drawer__back" aria-label="Voltar">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
+          <span class="wishlist-size-drawer__title">Selecionar tamanho</span>
+          <div class="wishlist-size-drawer__spacer"></div>
         </div>
         <div class="wishlist-size-drawer__list"></div>
       </div>
     `;
 
-    document.body.appendChild(wishlistSizeDrawer);
+    // Find the cart drawer to append inside
+    const cartDrawer = document.querySelector('cart-drawer .drawer__inner, cart-drawer');
+    if (cartDrawer) {
+      cartDrawer.appendChild(wishlistSizeDrawer);
+    } else {
+      // Fallback to body if cart drawer not found
+      document.body.appendChild(wishlistSizeDrawer);
+    }
 
     // Close on overlay click
     wishlistSizeDrawer.querySelector('.wishlist-size-drawer__overlay').addEventListener('click', closeWishlistSizeDrawer);
-    wishlistSizeDrawer.querySelector('.wishlist-size-drawer__close').addEventListener('click', closeWishlistSizeDrawer);
+    wishlistSizeDrawer.querySelector('.wishlist-size-drawer__back').addEventListener('click', closeWishlistSizeDrawer);
 
     // Close on escape
     document.addEventListener('keydown', (e) => {
@@ -2310,13 +2323,11 @@
     });
 
     drawer.classList.add('is-open');
-    document.body.style.overflow = 'hidden';
   };
 
   const closeWishlistSizeDrawer = () => {
     if (!wishlistSizeDrawer) return;
     wishlistSizeDrawer.classList.remove('is-open');
-    document.body.style.overflow = '';
     currentWishlistCard = null;
   };
 
