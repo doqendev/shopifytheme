@@ -1311,6 +1311,7 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
 
 /* ============================================================================
    Wishlist Size Drawer (bottom sheet inside cart drawer)
+   Matches the product page size-drawer styling
    ============================================================================ */
 
 .wishlist-size-drawer {
@@ -1348,92 +1349,91 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.875rem 1rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  gap: 0.5rem;
+  padding: 16px 20px;
   flex-shrink: 0;
 }
 
-.wishlist-size-drawer__back {
+.wishlist-size-drawer__title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin: 0;
+}
+
+.wishlist-size-drawer__close {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 24px;
+  height: 24px;
   border: none;
   background: transparent;
   cursor: pointer;
   color: #333;
-  flex-shrink: 0;
+  padding: 0;
 }
 
-.wishlist-size-drawer__back:hover {
+.wishlist-size-drawer__close:hover {
   opacity: 0.7;
 }
 
-.wishlist-size-drawer__title {
-  flex: 1;
-  font-size: 0.6875rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  text-align: center;
-}
-
-.wishlist-size-drawer__spacer {
-  width: 1.75rem;
-  flex-shrink: 0;
-}
-
+/* Vertical list matching size-drawer */
 .wishlist-size-drawer__list {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  padding: 1rem;
+  flex-direction: column;
+  gap: 0;
   overflow-y: auto;
 }
 
 .wishlist-size-drawer__item {
-  flex: 0 0 auto;
-  min-width: 3rem;
-  padding: 0.625rem 1rem;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  padding: 12px 0;
+  border: none;
   background: transparent;
   font-family: inherit;
-  font-size: 0.75rem;
-  color: #333;
   cursor: pointer;
-  transition: all 0.15s ease;
-  text-align: center;
+  transition: background-color 0.2s ease;
 }
 
 .wishlist-size-drawer__item:hover:not(:disabled) {
-  background-color: #000;
-  color: #fff;
-  border-color: #000;
+  background-color: #f8f8f8;
+}
+
+.wishlist-size-drawer__item-label {
+  font-size: 14px;
+  font-weight: 400;
+  color: #333;
 }
 
 .wishlist-size-drawer__item--unavailable {
-  color: #ccc;
-  border-color: rgba(0, 0, 0, 0.08);
   cursor: not-allowed;
+  background-color: transparent !important;
 }
 
 .wishlist-size-drawer__item--unavailable .wishlist-size-drawer__item-label {
+  color: #999;
   text-decoration: line-through;
 }
 
 .wishlist-size-drawer__item--loading {
-  opacity: 0.6;
-  pointer-events: none;
+  opacity: 1;
+  position: relative;
+}
+
+.wishlist-size-drawer__item--loading .wishlist-size-drawer__item-label {
+  color: #000;
+  font-weight: 500;
 }
 
 .wishlist-size-drawer__item--success {
-  background-color: #000;
-  color: #fff;
-  border-color: #000;
+  background-color: transparent;
 }
 
-.wishlist-size-drawer__item-label {
-  font-weight: 400;
+.wishlist-size-drawer__item--success .wishlist-size-drawer__item-label {
+  color: #000;
+  font-weight: 500;
 }
