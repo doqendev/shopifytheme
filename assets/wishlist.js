@@ -569,7 +569,7 @@
   const COLOR_LABEL_PATTERN = /(\bcolor\b|\bcolour\b|\bcor\b)/i;
   const SIZE_LABEL_PATTERN = /(\bsize\b|\btamanho\b|\btalla\b|\btaille\b)/i;
 
-  const normalizeVariants = (variants) => {
+  const normalizeVariants = (variants, inventoryMap = null) => {
     if (!Array.isArray(variants)) return [];
     return variants.map((variant) => {
       // Build options array from option1, option2, option3 (Shopify JS API format)
@@ -578,8 +578,14 @@
       if (variant.option2) options.push(variant.option2);
       if (variant.option3) options.push(variant.option3);
 
+      // Get inventory quantity from the inventoryMap (fetched from product page)
+      // The .js endpoint doesn't include inventory, so we fetch it separately
+      let qty = 0;
+      if (inventoryMap && inventoryMap.has(variant.id)) {
+        qty = inventoryMap.get(variant.id);
+      }
+
       // Determine low stock (1-3 units remaining)
-      const qty = typeof variant.inventory_quantity === 'number' ? variant.inventory_quantity : 0;
       const isLowStock = variant.available === true && qty > 0 && qty <= 3;
 
       return {
@@ -674,18 +680,56 @@
   };
 
   /**
+   * Fetches inventory data from the product page
+   * The .js endpoint doesn't include inventory, so we fetch the page and parse themeSizeDrawerData
+   * @param {string} handle - Product handle
+   * @returns {Promise<Map|null>} Map of variant ID to inventory quantity
+   */
+  const fetchInventoryData = async (handle) => {
+    if (!handle) return null;
+
+    try {
+      const response = await fetch(`/products/${handle}`);
+      if (!response.ok) return null;
+
+      const html = await response.text();
+
+      // Parse themeSizeDrawerData from the page
+      const match = html.match(/window\.themeSizeDrawerData\s*=\s*window\.themeSizeDrawerData\s*\|\|\s*\{\};[\s\S]*?variants:\s*(\[[\s\S]*?\])\s*,/);
+      if (match && match[1]) {
+        try {
+          const variants = JSON.parse(match[1]);
+          const inventoryMap = new Map();
+          variants.forEach(v => {
+            if (v.id && typeof v.inventory_quantity === 'number') {
+              inventoryMap.set(v.id, v.inventory_quantity);
+            }
+          });
+          return inventoryMap;
+        } catch (e) {
+          return null;
+        }
+      }
+      return null;
+    } catch (error) {
+      return null;
+    }
+  };
+
+  /**
    * Enriches a wishlist item with variant data from fetched product
    * @param {object} item - Wishlist item from localStorage
    * @param {object} productData - Full product data from Shopify API
+   * @param {Map|null} inventoryMap - Map of variant ID to inventory quantity
    * @returns {object} Enriched item with variants, colorIndex, sizeIndex
    */
-  const enrichItemWithVariants = (item, productData) => {
+  const enrichItemWithVariants = (item, productData, inventoryMap = null) => {
     if (!productData || !item) return item;
 
     const enriched = { ...item };
 
-    // Extract and normalize variants
-    enriched.variants = normalizeVariants(productData.variants || []);
+    // Extract and normalize variants with inventory data
+    enriched.variants = normalizeVariants(productData.variants || [], inventoryMap);
 
     // Find color and size option indices
     enriched.colorIndex = -1;
@@ -735,16 +779,19 @@
         // Check cache first
         const cached = productDataCache.get(item.handle);
         if (cached && (now - cached.timestamp) < PRODUCT_CACHE_TTL) {
-          return enrichItemWithVariants(item, cached.data);
+          return enrichItemWithVariants(item, cached.data, cached.inventoryMap);
         }
 
-        // Fetch fresh data
-        const productData = await fetchProductData(item.handle);
+        // Fetch fresh data - product data and inventory in parallel
+        const [productData, inventoryMap] = await Promise.all([
+          fetchProductData(item.handle),
+          fetchInventoryData(item.handle)
+        ]);
 
         if (productData) {
           // Use fresh timestamp when caching
-          productDataCache.set(item.handle, { data: productData, timestamp: Date.now() });
-          return enrichItemWithVariants(item, productData);
+          productDataCache.set(item.handle, { data: productData, inventoryMap, timestamp: Date.now() });
+          return enrichItemWithVariants(item, productData, inventoryMap);
         }
 
         // Degrade gracefully - return item without variants (no quick-add)
