@@ -356,26 +356,33 @@ cart-drawer.drawer--wishlist-active #CartDrawer-CartErrors {
 }
 
 /* Quick-add button styling for wishlist cards */
-.wishlist-card .product-card-plus {
-  position: absolute;
-  right: 8px;
-  bottom: 8px;
-  z-index: 2;
+.wishlist-card .product-card-plus,
+.wishlist-card__image-wrapper .product-card-plus {
+  position: absolute !important;
+  right: 8px !important;
+  bottom: 8px !important;
+  z-index: 100 !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
-.wishlist-card .product-card-plus .plus-icon {
-  display: flex;
+.wishlist-card .product-card-plus .plus-icon,
+.wishlist-card__image-wrapper .product-card-plus .plus-icon {
+  display: flex !important;
   align-items: center;
   justify-content: center;
   width: 32px;
   height: 32px;
-  background: rgba(255, 255, 255, 0.95);
+  background: red !important; /* DEBUG: bright red to see it */
   border: none;
   border-radius: 0;
   cursor: pointer;
   font-size: 18px;
   line-height: 1;
-  color: rgb(var(--color-foreground));
+  color: white !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .wishlist-card .card__media {

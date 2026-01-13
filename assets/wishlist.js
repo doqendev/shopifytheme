@@ -2214,8 +2214,8 @@
       variantsCount: item?.variants?.length || 0
     });
 
-    // Place quick-add in .card__media (the image container) for proper visibility
-    const quickAddContainer = cardElement.querySelector('.card__media') || cardElement.querySelector('.card__inner') || cardElement;
+    // Place quick-add in .wishlist-card__image-wrapper (has position:relative) for proper visibility
+    const quickAddContainer = cardElement.querySelector('.wishlist-card__image-wrapper') || cardElement.querySelector('.card__media') || cardElement;
     let quickAdd = cardElement.querySelector('.product-card-plus');
 
 
