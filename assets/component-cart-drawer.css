@@ -257,7 +257,7 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
 
   /* Add space at bottom of cart items for fixed footer */
   cart-drawer-items {
-    padding-bottom: 180px !important;
+    padding-bottom: 5px !important;
   }
 
   /* Also add space to panel */
