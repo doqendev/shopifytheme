@@ -1016,7 +1016,7 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
 
   /* Fix footer being cut off by phone UI */
   #CartDrawer .drawer__footer {
-    padding-bottom: max(8rem, calc(4rem + env(safe-area-inset-bottom, 0px))) !important;
+    padding-bottom: max(7rem, calc(4rem + env(safe-area-inset-bottom, 0px))) !important;
     position: relative !important;
   }
 
