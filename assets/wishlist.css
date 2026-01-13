@@ -1280,5 +1280,76 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
   pointer-events: none;
 }
 
+/* ============================================================================
+   Wishlist Inline Size Selector (Add to Cart)
+   ============================================================================ */
 
+.wishlist-size-selector {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(var(--color-foreground, 18, 18, 18), 0.08);
+}
 
+.wishlist-size-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.wishlist-size-btn {
+  min-width: 3.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgba(var(--color-foreground, 18, 18, 18), 0.15);
+  border-radius: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: rgb(var(--color-foreground, 18, 18, 18));
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.wishlist-size-btn:hover {
+  background: rgb(var(--color-foreground, 18, 18, 18));
+  color: rgb(var(--color-background, 255, 255, 255));
+  border-color: rgb(var(--color-foreground, 18, 18, 18));
+}
+
+.wishlist-size-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.wishlist-size-btn:disabled:hover {
+  background: transparent;
+  color: rgb(var(--color-foreground, 18, 18, 18));
+  border-color: rgba(var(--color-foreground, 18, 18, 18), 0.15);
+}
+
+/* Success state after adding to cart */
+.wishlist-size-btn.is-success {
+  background: rgb(var(--color-foreground, 18, 18, 18));
+  color: rgb(var(--color-background, 255, 255, 255));
+  border-color: rgb(var(--color-foreground, 18, 18, 18));
+}
+
+/* Mobile adjustments */
+@media (max-width: 749px) {
+  .wishlist-size-selector {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+  }
+
+  .wishlist-size-buttons {
+    gap: 0.375rem;
+  }
+
+  .wishlist-size-btn {
+    min-width: 2.75rem;
+    padding: 0.375rem 0.5rem;
+    font-size: 0.6875rem;
+  }
+}

@@ -2233,13 +2233,12 @@
 
     // Build the HTML
     sizeSelector.innerHTML = `
-      <div class="wishlist-size-buttons" style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;">
+      <div class="wishlist-size-buttons">
         ${sizes.map(size => `
           <button type="button"
                   class="wishlist-size-btn"
                   data-variant-id="${size.variantId}"
-                  data-size="${size.value}"
-                  style="padding: 6px 12px; border: 1px solid #ccc; background: white; cursor: pointer; font-size: 12px; min-width: 40px; text-align: center;">
+                  data-size="${size.value}">
             ${size.value}
           </button>
         `).join('')}
@@ -2876,6 +2875,8 @@
 
       const variantId = parseInt(inlineSizeBtn.dataset.variantId, 10);
       if (variantId) {
+        const originalText = inlineSizeBtn.dataset.size;
+
         // Add loading state
         inlineSizeBtn.textContent = '...';
         inlineSizeBtn.disabled = true;
@@ -2883,13 +2884,15 @@
         addVariantToCart(variantId, wishlistCard)
           .then(() => {
             inlineSizeBtn.textContent = '✓';
+            inlineSizeBtn.classList.add('is-success');
             setTimeout(() => {
-              inlineSizeBtn.textContent = inlineSizeBtn.dataset.size;
+              inlineSizeBtn.textContent = originalText;
               inlineSizeBtn.disabled = false;
+              inlineSizeBtn.classList.remove('is-success');
             }, 1500);
           })
           .catch(() => {
-            inlineSizeBtn.textContent = inlineSizeBtn.dataset.size;
+            inlineSizeBtn.textContent = originalText;
             inlineSizeBtn.disabled = false;
           });
       }
