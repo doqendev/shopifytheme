@@ -389,13 +389,13 @@ cart-drawer.drawer--wishlist-active #CartDrawer-CartErrors {
   min-height: 32px !important;
   width: 32px;
   height: 32px;
-  background: red !important; /* DEBUG: bright red to see it */
+  background: rgba(255, 255, 255, 0.95) !important;
   border: none;
   border-radius: 0;
   cursor: pointer;
   font-size: 18px;
   line-height: 1;
-  color: white !important;
+  color: black !important;
   visibility: visible !important;
   opacity: 1 !important;
 }
