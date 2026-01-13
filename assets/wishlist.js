@@ -145,9 +145,10 @@
         image: item.image,
         price: item.price,
         addedAt: item.addedAt,
-        // Simplified: only essential data needed for display
+        // Include color data for quick-add functionality
+        colorValue: item.colorValue || '',
+        colorKey: item.colorKey || '',
       };
-
 
       return stripped;
     });
@@ -628,6 +629,135 @@
     }, []);
   };
 
+  // ============================================================================
+  // Fetch-on-Render System for Wishlist Quick-Add
+  // ============================================================================
+
+  const productDataCache = new Map(); // Handle → { data, timestamp }
+  const PRODUCT_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+  /**
+   * Fetches product data from Shopify's product JSON endpoint
+   * @param {string} handle - Product handle
+   * @returns {Promise<object|null>} Product data or null on error
+   */
+  const fetchProductData = async (handle) => {
+    if (!handle) return null;
+
+    try {
+      const response = await fetch(`/products/${handle}.json`);
+      if (!response.ok) {
+        if (response.status === 404) {
+          console.warn(`[wishlist] Product ${handle} not found (may have been deleted)`);
+        }
+        return null;
+      }
+
+      const data = await response.json();
+      return data.product || null;
+    } catch (error) {
+      console.warn(`[wishlist] Failed to fetch product ${handle}:`, error);
+      return null;
+    }
+  };
+
+  /**
+   * Enriches a wishlist item with variant data from fetched product
+   * @param {object} item - Wishlist item from localStorage
+   * @param {object} productData - Full product data from Shopify API
+   * @returns {object} Enriched item with variants, colorIndex, sizeIndex
+   */
+  const enrichItemWithVariants = (item, productData) => {
+    if (!productData || !item) return item;
+
+    const enriched = { ...item };
+
+    // Extract and normalize variants
+    enriched.variants = normalizeVariants(productData.variants || []);
+
+    // Find color and size option indices
+    enriched.colorIndex = -1;
+    enriched.sizeIndex = -1;
+
+    if (Array.isArray(productData.options)) {
+      productData.options.forEach((option, index) => {
+        if (!option) return; // Skip null/undefined options
+        const name = option.name || option || '';
+        if (COLOR_LABEL_PATTERN.test(name)) {
+          enriched.colorIndex = index;
+        }
+        if (SIZE_LABEL_PATTERN.test(name)) {
+          enriched.sizeIndex = index;
+        }
+      });
+    }
+
+    // If we have a stored colorValue, ensure colorKey is set for matching
+    if (item.colorValue && enriched.colorIndex >= 0) {
+      enriched.colorKey = normalizeOptionValue(item.colorValue);
+    }
+
+    return enriched;
+  };
+
+  /**
+   * Fetches product data for multiple wishlist items with caching
+   * Uses parallel fetching for better performance
+   * @param {Array} items - Wishlist items from localStorage
+   * @returns {Promise<Array>} Enriched items with variant data
+   */
+  const fetchProductsForWishlist = async (items) => {
+    if (!Array.isArray(items) || !items.length) return items;
+
+    const now = Date.now();
+
+    // Clean up old cache entries to prevent unbounded growth
+    if (productDataCache.size > 80) {
+      productDataCache.clear(); // Simple cleanup - clear all when oversized
+    }
+
+    // Process items in parallel for better performance
+    const enrichmentPromises = items.map(async (item) => {
+      try {
+        // Check cache first
+        const cached = productDataCache.get(item.handle);
+        if (cached && (now - cached.timestamp) < PRODUCT_CACHE_TTL) {
+          return enrichItemWithVariants(item, cached.data);
+        }
+
+        // Fetch fresh data
+        const productData = await fetchProductData(item.handle);
+
+        if (productData) {
+          // Use fresh timestamp when caching
+          productDataCache.set(item.handle, { data: productData, timestamp: Date.now() });
+          return enrichItemWithVariants(item, productData);
+        }
+
+        // Degrade gracefully - return item without variants (no quick-add)
+        return item;
+      } catch (error) {
+        console.warn(`[wishlist] Error enriching item ${item.handle}:`, error);
+        // Degrade gracefully for this specific item
+        return item;
+      }
+    });
+
+    return Promise.all(enrichmentPromises);
+  };
+
+  /**
+   * Clears the product data cache
+   * @param {string} handle - Optional specific product handle to clear
+   */
+  const clearProductCache = (handle = null) => {
+    if (handle) {
+      productDataCache.delete(handle);
+    } else {
+      productDataCache.clear();
+    }
+  };
+
   const deriveSwatchesFromVariants = (variants, colorIndex) => {
     if (!Array.isArray(variants)) return [];
     if (typeof colorIndex !== 'number' || colorIndex < 0) return [];
@@ -701,7 +831,7 @@
   };
 
   const normalizeWishlistItem = (item, card = null) => {
-    // Simplified: only normalize essential fields
+    // Store essential fields + color data for fetch-on-render quick-add
     if (!item || typeof item !== 'object') return null;
 
     const handle = item.handle;
@@ -713,7 +843,23 @@
       normalizedImage = normalizeImageUrl(rawImage);
     }
 
-    return {
+    // Extract color value from item or card
+    let colorValue = '';
+    let colorKey = '';
+
+    if (typeof item.colorValue === 'string' && item.colorValue.trim()) {
+      colorValue = item.colorValue.trim();
+    } else if (card?.dataset?.selectedColor) {
+      colorValue = card.dataset.selectedColor.trim();
+    }
+
+    if (typeof item.colorKey === 'string' && item.colorKey.trim()) {
+      colorKey = item.colorKey.trim();
+    } else if (colorValue) {
+      colorKey = normalizeOptionValue(colorValue);
+    }
+
+    const normalized = {
       handle,
       title: item.title || '',
       url: item.url || '',
@@ -721,6 +867,16 @@
       price: item.price || '',
       addedAt: item.addedAt || Date.now(),
     };
+
+    // Only include color data if present (keeps storage minimal)
+    if (colorValue) {
+      normalized.colorValue = colorValue;
+    }
+    if (colorKey) {
+      normalized.colorKey = colorKey;
+    }
+
+    return normalized;
   };
 
   const normalizeWishlistItems = (items) => {
@@ -1348,14 +1504,15 @@
       card.dataset.productImage ||
       '';
 
-    // Note: Swatches and variants not collected for simplified wishlist display
-
+    // Include color data for fetch-on-render quick-add (variants fetched on render)
     return {
       handle,
       title: card.dataset.productTitle || '',
       url: card.dataset.productUrl || '',
       image: productImage,
       price: card.dataset.productPrice || '',
+      colorValue: selectedColor,  // Selected color (human-readable)
+      colorKey: colorKey,          // Normalized color key for matching
       _card: card,  // Store card reference for normalization
     };
   };
@@ -2312,30 +2469,52 @@
     return sorted;
   };
 
-  // Show loading overlay
-  const showWishlistLoading = () => {
-    const overlay = document.getElementById('wishlist-loading-overlay');
-    const grid = document.getElementById('wishlist-product-grid');
+  // Loading state flag to prevent concurrent renderWishlist calls
+  let isWishlistLoading = false;
 
-    if (overlay) {
-      overlay.classList.add('active');
-    }
-    if (grid) {
-      grid.classList.add('wishlist-grid-loading');
-    }
+  // Show loading overlay (works for both wishlist page and drawer)
+  const showWishlistLoading = () => {
+    isWishlistLoading = true;
+
+    // Handle wishlist page overlay (by ID)
+    const pageOverlay = document.getElementById('wishlist-loading-overlay');
+    const pageGrid = document.getElementById('wishlist-product-grid');
+    if (pageOverlay) pageOverlay.classList.add('active');
+    if (pageGrid) pageGrid.classList.add('wishlist-grid-loading');
+
+    // Handle drawer containers (by selector)
+    const containers = document.querySelectorAll(WISHLIST_CONTAINER_SELECTOR);
+    containers.forEach((container) => {
+      container.classList.add('is-loading');
+      // Create dynamic overlay if needed (for drawer)
+      let loader = container.querySelector('.wishlist-loading-overlay');
+      if (!loader) {
+        loader = document.createElement('div');
+        loader.className = 'wishlist-loading-overlay';
+        loader.innerHTML = '<div class="wishlist-loading-spinner"></div>';
+        container.appendChild(loader);
+      }
+      loader.hidden = false;
+    });
   };
 
-  // Hide loading overlay
+  // Hide loading overlay (works for both wishlist page and drawer)
   const hideWishlistLoading = () => {
-    const overlay = document.getElementById('wishlist-loading-overlay');
-    const grid = document.getElementById('wishlist-product-grid');
+    isWishlistLoading = false;
 
-    if (overlay) {
-      overlay.classList.remove('active');
-    }
-    if (grid) {
-      grid.classList.remove('wishlist-grid-loading');
-    }
+    // Handle wishlist page overlay (by ID)
+    const pageOverlay = document.getElementById('wishlist-loading-overlay');
+    const pageGrid = document.getElementById('wishlist-product-grid');
+    if (pageOverlay) pageOverlay.classList.remove('active');
+    if (pageGrid) pageGrid.classList.remove('wishlist-grid-loading');
+
+    // Handle drawer containers (by selector)
+    const containers = document.querySelectorAll(WISHLIST_CONTAINER_SELECTOR);
+    containers.forEach((container) => {
+      container.classList.remove('is-loading');
+      const loader = container.querySelector('.wishlist-loading-overlay');
+      if (loader) loader.hidden = true;
+    });
   };
 
   // Update sort option and re-render
@@ -2386,17 +2565,32 @@
     }
   };
 
-  const renderWishlist = () => {
+  const renderWishlist = async () => {
+    // Prevent concurrent executions
+    if (isWishlistLoading) return;
     const containers = document.querySelectorAll(WISHLIST_CONTAINER_SELECTOR);
     if (!containers.length) return;
     let items = loadWishlist();
 
-    // Apply sorting if items exist
+    closeAllWishlistQuickAdds();
+
+    // Show loading state if we have items to fetch
     if (items.length) {
+      showWishlistLoading();
+
+      // Fetch variant data for all items (with caching)
+      try {
+        items = await fetchProductsForWishlist(items);
+      } catch (error) {
+        console.warn('[wishlist] Error fetching product data:', error);
+        // Continue with un-enriched items (graceful degradation)
+      }
+
+      hideWishlistLoading();
+
+      // Apply sorting after enrichment
       items = sortWishlistItems(items);
     }
-
-    closeAllWishlistQuickAdds();
 
     containers.forEach((container) => {
       const grid = container.querySelector(WISHLIST_GRID_SELECTOR);

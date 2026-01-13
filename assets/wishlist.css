@@ -1184,5 +1184,51 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
   }
 }
 
+/* ============================================================================
+   Wishlist Loading Overlay (for fetch-on-render)
+   ============================================================================ */
+
+.wishlist-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.wishlist-loading-overlay[hidden] {
+  display: none;
+}
+
+.wishlist-loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 2px solid rgba(var(--color-foreground, 18, 18, 18), 0.1);
+  border-top-color: rgba(var(--color-foreground, 18, 18, 18), 0.8);
+  border-radius: 50%;
+  animation: wishlist-spin 0.8s linear infinite;
+}
+
+@keyframes wishlist-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Container needs position relative for overlay */
+[data-wishlist-container] {
+  position: relative;
+}
+
+[data-wishlist-container].is-loading .wishlist-grid {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 
 
