@@ -2188,24 +2188,25 @@
   const ensureWishlistQuickAdd = (cardElement, item) => {
     if (!cardElement) return;
 
-    // Find or create the inline size selector in card__content
+    // Find or create the add to cart button in card__content
     const cardContent = cardElement.querySelector('.card__content') || cardElement.querySelector('.card__information');
     if (!cardContent) return;
 
-    let sizeSelector = cardElement.querySelector('.wishlist-size-selector');
+    let addToCartWrapper = cardElement.querySelector('.wishlist-add-to-cart');
 
+    // Remove if no size option available
     if (typeof item?.sizeIndex !== 'number' || item.sizeIndex < 0) {
-      if (sizeSelector) sizeSelector.remove();
+      if (addToCartWrapper) addToCartWrapper.remove();
       return;
     }
 
     const matchingVariants = getMatchingVariants(item);
     if (!matchingVariants.length) {
-      if (sizeSelector) sizeSelector.remove();
+      if (addToCartWrapper) addToCartWrapper.remove();
       return;
     }
 
-    // Build simple inline size buttons
+    // Build sizes data
     const sizeIndex = item.sizeIndex;
     const sizes = [];
     matchingVariants.forEach((variant) => {
@@ -2220,30 +2221,133 @@
     });
 
     if (!sizes.length) {
-      if (sizeSelector) sizeSelector.remove();
+      if (addToCartWrapper) addToCartWrapper.remove();
       return;
     }
 
-    // Create or update the size selector
-    if (!sizeSelector) {
-      sizeSelector = document.createElement('div');
-      sizeSelector.className = 'wishlist-size-selector';
-      cardContent.appendChild(sizeSelector);
+    // Create or update the add to cart button
+    if (!addToCartWrapper) {
+      addToCartWrapper = document.createElement('div');
+      addToCartWrapper.className = 'wishlist-add-to-cart';
+      cardContent.appendChild(addToCartWrapper);
     }
 
-    // Build the HTML
-    sizeSelector.innerHTML = `
-      <div class="wishlist-size-buttons">
-        ${sizes.map(size => `
-          <button type="button"
-                  class="wishlist-size-btn"
-                  data-variant-id="${size.variantId}"
-                  data-size="${size.value}">
-            ${size.value}
+    // Store sizes data on the card element for the drawer
+    cardElement.wishlistSizes = sizes;
+
+    // Build the button HTML
+    addToCartWrapper.innerHTML = `
+      <button type="button" class="wishlist-add-to-cart-btn" aria-label="Adicionar ao carrinho">
+        <span>Adicionar</span>
+      </button>
+    `;
+  };
+
+  // Wishlist Size Drawer
+  let wishlistSizeDrawer = null;
+  let currentWishlistCard = null;
+
+  const createWishlistSizeDrawer = () => {
+    if (wishlistSizeDrawer) return wishlistSizeDrawer;
+
+    wishlistSizeDrawer = document.createElement('div');
+    wishlistSizeDrawer.className = 'wishlist-size-drawer';
+    wishlistSizeDrawer.innerHTML = `
+      <div class="wishlist-size-drawer__overlay"></div>
+      <div class="wishlist-size-drawer__content">
+        <div class="wishlist-size-drawer__header">
+          <span class="wishlist-size-drawer__title">Selecionar tamanho</span>
+          <button type="button" class="wishlist-size-drawer__close" aria-label="Fechar">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 1L13 13M1 13L13 1" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
           </button>
-        `).join('')}
+        </div>
+        <div class="wishlist-size-drawer__list"></div>
       </div>
     `;
+
+    document.body.appendChild(wishlistSizeDrawer);
+
+    // Close on overlay click
+    wishlistSizeDrawer.querySelector('.wishlist-size-drawer__overlay').addEventListener('click', closeWishlistSizeDrawer);
+    wishlistSizeDrawer.querySelector('.wishlist-size-drawer__close').addEventListener('click', closeWishlistSizeDrawer);
+
+    // Close on escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && wishlistSizeDrawer.classList.contains('is-open')) {
+        closeWishlistSizeDrawer();
+      }
+    });
+
+    return wishlistSizeDrawer;
+  };
+
+  const openWishlistSizeDrawer = (cardElement) => {
+    const drawer = createWishlistSizeDrawer();
+    const sizes = cardElement.wishlistSizes || [];
+    const item = cardElement.wishlistItem;
+
+    if (!sizes.length) return;
+
+    currentWishlistCard = cardElement;
+
+    // Populate sizes
+    const list = drawer.querySelector('.wishlist-size-drawer__list');
+    list.innerHTML = sizes.map(size => `
+      <button type="button"
+              class="wishlist-size-drawer__item ${!size.available ? 'wishlist-size-drawer__item--unavailable' : ''}"
+              data-variant-id="${size.variantId}"
+              data-size="${size.value}"
+              ${!size.available ? 'disabled' : ''}>
+        <span class="wishlist-size-drawer__item-label">${size.value}</span>
+      </button>
+    `).join('');
+
+    // Add click handlers for size items
+    list.querySelectorAll('.wishlist-size-drawer__item:not([disabled])').forEach(btn => {
+      btn.addEventListener('click', handleWishlistDrawerSizeClick);
+    });
+
+    drawer.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeWishlistSizeDrawer = () => {
+    if (!wishlistSizeDrawer) return;
+    wishlistSizeDrawer.classList.remove('is-open');
+    document.body.style.overflow = '';
+    currentWishlistCard = null;
+  };
+
+  const handleWishlistDrawerSizeClick = (event) => {
+    const button = event.currentTarget;
+    const variantId = parseInt(button.dataset.variantId, 10);
+    const sizeValue = button.dataset.size;
+
+    if (!variantId || !currentWishlistCard) return;
+
+    // Show loading state
+    const originalText = button.querySelector('.wishlist-size-drawer__item-label').textContent;
+    button.querySelector('.wishlist-size-drawer__item-label').textContent = 'Adicionando...';
+    button.disabled = true;
+    button.classList.add('wishlist-size-drawer__item--loading');
+
+    addVariantToCart(variantId, currentWishlistCard)
+      .then(() => {
+        button.querySelector('.wishlist-size-drawer__item-label').textContent = 'Adicionado!';
+        button.classList.add('wishlist-size-drawer__item--success');
+
+        // Close drawer after brief delay
+        setTimeout(() => {
+          closeWishlistSizeDrawer();
+        }, 800);
+      })
+      .catch(() => {
+        button.querySelector('.wishlist-size-drawer__item-label').textContent = originalText;
+        button.disabled = false;
+        button.classList.remove('wishlist-size-drawer__item--loading');
+      });
   };
 
   const updateWishlistSizeButtons = (cardElement, item) => {
@@ -2867,35 +2971,12 @@
     const wishlistCard = event.target.closest('[data-wishlist-item]');
     if (!wishlistCard) return;
 
-    // Check for inline size button click (new simpler approach)
-    const inlineSizeBtn = event.target.closest('.wishlist-size-btn');
-    if (inlineSizeBtn) {
+    // Check for Add to Cart button click - opens size drawer
+    const addToCartBtn = event.target.closest('.wishlist-add-to-cart-btn');
+    if (addToCartBtn) {
       event.preventDefault();
       event.stopPropagation();
-
-      const variantId = parseInt(inlineSizeBtn.dataset.variantId, 10);
-      if (variantId) {
-        const originalText = inlineSizeBtn.dataset.size;
-
-        // Add loading state
-        inlineSizeBtn.textContent = '...';
-        inlineSizeBtn.disabled = true;
-
-        addVariantToCart(variantId, wishlistCard)
-          .then(() => {
-            inlineSizeBtn.textContent = '✓';
-            inlineSizeBtn.classList.add('is-success');
-            setTimeout(() => {
-              inlineSizeBtn.textContent = originalText;
-              inlineSizeBtn.disabled = false;
-              inlineSizeBtn.classList.remove('is-success');
-            }, 1500);
-          })
-          .catch(() => {
-            inlineSizeBtn.textContent = originalText;
-            inlineSizeBtn.disabled = false;
-          });
-      }
+      openWishlistSizeDrawer(wishlistCard);
       return;
     }
 
