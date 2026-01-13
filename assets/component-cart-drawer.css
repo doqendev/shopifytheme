@@ -249,7 +249,7 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
     left: 0 !important;
     right: 0 !important;
     padding: 1.5rem !important;
-    padding-bottom: max(2rem, calc(1.5rem + env(safe-area-inset-bottom, 5px))) !important;
+    padding-bottom: max(2rem, calc(1.5rem + env(safe-area-inset-bottom, 34px))) !important;
     background: #fff !important;
     z-index: 9999 !important;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
