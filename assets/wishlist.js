@@ -2218,11 +2218,12 @@
       variantsCount: item?.variants?.length || 0
     });
 
-    // Place quick-add directly on the .card element for reliable positioning
-    const quickAddContainer = cardElement.querySelector('.card') || cardElement;
+    // Place quick-add inside .card__inner (the image area) for correct positioning
+    const quickAddContainer = cardElement.querySelector('.card__inner') || cardElement.querySelector('.card') || cardElement;
     // FORCE position relative with !important inline style
     if (quickAddContainer) {
       quickAddContainer.style.setProperty('position', 'relative', 'important');
+      quickAddContainer.style.setProperty('overflow', 'visible', 'important');
     }
     let quickAdd = cardElement.querySelector('.product-card-plus');
 
@@ -2251,8 +2252,8 @@
       console.log('[wishlist] createQuickAddElement returned:', !!quickAdd, 'container:', quickAddContainer?.className);
       if (!quickAdd) return;
 
-      // Position at bottom-right of image area - include explicit width/height
-      quickAdd.style.cssText = 'position: absolute !important; right: 8px !important; top: auto !important; bottom: 70px !important; z-index: 9999 !important; display: block !important; visibility: visible !important; opacity: 1 !important; width: 32px !important; height: 32px !important; overflow: visible !important;';
+      // Position at bottom-right of the container (card__inner = image area)
+      quickAdd.style.cssText = 'position: absolute !important; right: 8px !important; bottom: 8px !important; z-index: 9999 !important; display: block !important; visibility: visible !important; opacity: 1 !important; width: 32px !important; height: 32px !important; overflow: visible !important;';
 
       quickAddContainer.appendChild(quickAdd);
       console.log('[wishlist] Quick-add appended to container. Card now has .product-card-plus:', !!cardElement.querySelector('.product-card-plus'));
