@@ -658,8 +658,10 @@
   const fetchProductData = async (handle) => {
     if (!handle) return null;
 
+    console.log('[wishlist] fetchProductData: fetching', handle);
     try {
       const response = await fetch(`/products/${handle}.json`);
+      console.log('[wishlist] fetchProductData: response for', handle, { ok: response.ok, status: response.status });
       if (!response.ok) {
         if (response.status === 404) {
           console.warn(`[wishlist] Product ${handle} not found (may have been deleted)`);
@@ -668,6 +670,7 @@
       }
 
       const data = await response.json();
+      console.log('[wishlist] fetchProductData: got data for', handle, { hasProduct: !!data.product });
       return data.product || null;
     } catch (error) {
       console.warn(`[wishlist] Failed to fetch product ${handle}:`, error);
@@ -683,6 +686,14 @@
    */
   const enrichItemWithVariants = (item, productData) => {
     if (!productData || !item) return item;
+
+    console.log('[wishlist] enrichItemWithVariants for:', item.handle, {
+      hasProductData: !!productData,
+      optionsCount: productData.options?.length || 0,
+      variantsCount: productData.variants?.length || 0,
+      options: productData.options,
+      firstVariant: productData.variants?.[0]
+    });
 
     const enriched = { ...item };
 
@@ -700,6 +711,7 @@
         if (!option) return; // Skip null/undefined options
         // Handle both string (from JSON API) and object (from Liquid) formats
         const name = typeof option === 'string' ? option : (option.name || '');
+        console.log(`[wishlist] Option ${index}:`, { raw: option, extractedName: name, isColorMatch: COLOR_LABEL_PATTERN.test(name), isSizeMatch: SIZE_LABEL_PATTERN.test(name) });
         if (COLOR_LABEL_PATTERN.test(name)) {
           enriched.colorIndex = index;
         }
@@ -2196,12 +2208,18 @@
   const ensureWishlistQuickAdd = (cardElement, item) => {
     if (!cardElement) return;
 
+    console.log('[wishlist] ensureWishlistQuickAdd called for:', item?.handle, {
+      sizeIndex: item?.sizeIndex,
+      colorIndex: item?.colorIndex,
+      variantsCount: item?.variants?.length || 0
+    });
 
     const quickAddContainer = cardElement.querySelector('.card__content') || cardElement;
     let quickAdd = cardElement.querySelector('.product-card-plus');
 
 
     if (typeof item?.sizeIndex !== 'number' || item.sizeIndex < 0) {
+      console.log('[wishlist] No sizeIndex, skipping quick-add for:', item?.handle);
       if (quickAdd) {
         quickAdd.remove();
       }
@@ -2209,8 +2227,10 @@
     }
 
     const sizeButtonsMarkup = createSizeButtonsMarkup(item);
+    console.log('[wishlist] sizeButtonsMarkup length:', sizeButtonsMarkup?.length || 0);
 
     if (!sizeButtonsMarkup) {
+      console.log('[wishlist] No size buttons markup, skipping quick-add for:', item?.handle);
       if (quickAdd) {
         quickAdd.remove();
       }
@@ -2589,6 +2609,8 @@
     if (!containers.length) return;
     let items = loadWishlist();
 
+    console.log('[wishlist] renderWishlist called, items from localStorage:', items);
+
     closeAllWishlistQuickAdds();
 
     // Show loading state if we have items to fetch
@@ -2597,7 +2619,20 @@
 
       // Fetch variant data for all items (with caching)
       try {
+        console.log('[wishlist] Fetching variant data for', items.length, 'items...');
         items = await fetchProductsForWishlist(items);
+        console.log('[wishlist] After enrichment, items:', items);
+        // Log first item details for debugging
+        if (items[0]) {
+          console.log('[wishlist] First item details:', {
+            handle: items[0].handle,
+            colorValue: items[0].colorValue,
+            colorKey: items[0].colorKey,
+            colorIndex: items[0].colorIndex,
+            sizeIndex: items[0].sizeIndex,
+            variantsCount: items[0].variants?.length || 0
+          });
+        }
       } catch (error) {
         console.warn('[wishlist] Error fetching product data:', error);
         // Continue with un-enriched items (graceful degradation)
