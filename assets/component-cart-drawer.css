@@ -204,11 +204,6 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
     padding: 1.5rem;
   }
 
-  .drawer__footer {
-    padding: 1.5rem;
-    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 20px));
-  }
-
   #CartDrawer cart-drawer-items {
     padding: 1.5rem 1.5rem 0;
   }
@@ -249,17 +244,25 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
 
 @media screen and (max-width: 749px) {
   .drawer__footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 1.5rem;
-    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 20px));
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    padding: 1.5rem !important;
+    padding-bottom: max(2rem, calc(1.5rem + env(safe-area-inset-bottom, 34px))) !important;
+    background: #fff !important;
+    z-index: 9999 !important;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
   }
 
   /* Add space at bottom of cart items for fixed footer */
   cart-drawer-items {
-    padding-bottom: 140px !important;
+    padding-bottom: 180px !important;
+  }
+
+  /* Also add space to panel */
+  .drawer__panel {
+    padding-bottom: 180px !important;
   }
 }
 
