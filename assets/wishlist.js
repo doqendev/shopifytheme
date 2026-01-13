@@ -571,14 +571,28 @@
 
   const normalizeVariants = (variants) => {
     if (!Array.isArray(variants)) return [];
-    return variants.map((variant) => ({
-      id: variant.id,
-      title: variant.title,
-      available: !!variant.available,
-      options: Array.isArray(variant.options) ? variant.options.slice() : [],
-      price: variant.price,
-      image: getVariantImageSource(variant.image || variant.featured_image),
-    }));
+    return variants.map((variant) => {
+      // Build options array from option1, option2, option3 (Shopify JSON API format)
+      // or use existing options array (Liquid format)
+      let options = [];
+      if (Array.isArray(variant.options) && variant.options.length > 0) {
+        options = variant.options.slice();
+      } else {
+        // Build from option1, option2, option3
+        if (variant.option1) options.push(variant.option1);
+        if (variant.option2) options.push(variant.option2);
+        if (variant.option3) options.push(variant.option3);
+      }
+
+      return {
+        id: variant.id,
+        title: variant.title,
+        available: !!variant.available,
+        options: options,
+        price: variant.price,
+        image: getVariantImageSource(variant.image || variant.featured_image),
+      };
+    });
   };
 
   const normalizeSwatchEntry = (entry, card = null) => {
@@ -676,13 +690,16 @@
     enriched.variants = normalizeVariants(productData.variants || []);
 
     // Find color and size option indices
+    // Note: Shopify's /products/{handle}.json returns options as array of strings
+    // e.g., ["Color", "Size"] - not objects with .name property
     enriched.colorIndex = -1;
     enriched.sizeIndex = -1;
 
     if (Array.isArray(productData.options)) {
       productData.options.forEach((option, index) => {
         if (!option) return; // Skip null/undefined options
-        const name = option.name || option || '';
+        // Handle both string (from JSON API) and object (from Liquid) formats
+        const name = typeof option === 'string' ? option : (option.name || '');
         if (COLOR_LABEL_PATTERN.test(name)) {
           enriched.colorIndex = index;
         }
