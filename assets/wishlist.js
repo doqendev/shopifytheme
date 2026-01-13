@@ -2305,20 +2305,19 @@
 
     currentWishlistCard = cardElement;
 
-    // Populate sizes
+    // Populate sizes - always enable buttons, let Shopify check stock on add
     const list = drawer.querySelector('.wishlist-size-drawer__list');
     list.innerHTML = sizes.map(size => `
       <button type="button"
-              class="wishlist-size-drawer__item ${!size.available ? 'wishlist-size-drawer__item--unavailable' : ''}"
+              class="wishlist-size-drawer__item"
               data-variant-id="${size.variantId}"
-              data-size="${size.value}"
-              ${!size.available ? 'disabled' : ''}>
+              data-size="${size.value}">
         <span class="wishlist-size-drawer__item-label">${size.value}</span>
       </button>
     `).join('');
 
-    // Add click handlers for size items
-    list.querySelectorAll('.wishlist-size-drawer__item:not([disabled])').forEach(btn => {
+    // Add click handlers for all size items
+    list.querySelectorAll('.wishlist-size-drawer__item').forEach(btn => {
       btn.addEventListener('click', handleWishlistDrawerSizeClick);
     });
 
