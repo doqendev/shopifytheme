@@ -97,7 +97,7 @@
   width: 100%;
   height: auto;
   aspect-ratio: 2 / 3;
-  overflow: hidden;
+  overflow: visible;
 }
 
 [data-wishlist-item] .wishlist-card__image-link {
@@ -105,6 +105,7 @@
   width: 100%;
   height: 100%;
   position: relative;
+  z-index: 1;
 }
 
 [data-wishlist-item] .wishlist-card__image {
@@ -345,12 +346,12 @@ cart-drawer.drawer--wishlist-active #CartDrawer-CartErrors {
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   --image-padding: 0;
 }
 
 .wishlist-card .card__inner {
-  overflow: hidden;
+  overflow: visible;
   width: 100%;
   position: relative; /* Required for absolute positioning of quick-add button */
 }
@@ -396,7 +397,7 @@ cart-drawer.drawer--wishlist-active #CartDrawer-CartErrors {
   height: auto;
   aspect-ratio: 2 / 3;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .wishlist-card__image-link {
@@ -404,6 +405,7 @@ cart-drawer.drawer--wishlist-active #CartDrawer-CartErrors {
   width: 100%;
   height: 100%;
   position: relative;
+  z-index: 1;
 }
 
 .wishlist-card__image {
@@ -588,11 +590,11 @@ cart-drawer.drawer--wishlist-active #CartDrawer-CartErrors {
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .wishlist-card .card__inner {
-  overflow: hidden;
+  overflow: visible;
   position: relative; /* Required for absolute positioning of quick-add button */
 }
 
@@ -601,6 +603,7 @@ cart-drawer.drawer--wishlist-active #CartDrawer-CartErrors {
   width: 100%;
   height: 100%;
   position: relative;
+  z-index: 1;
 }
 
 .wishlist-card__image {
