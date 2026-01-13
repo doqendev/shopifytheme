@@ -2214,7 +2214,8 @@
       variantsCount: item?.variants?.length || 0
     });
 
-    const quickAddContainer = cardElement.querySelector('.card__content') || cardElement;
+    // Place quick-add in .card__inner (has position:relative for ratio) or .card for proper absolute positioning
+    const quickAddContainer = cardElement.querySelector('.card__inner') || cardElement.querySelector('.card') || cardElement;
     let quickAdd = cardElement.querySelector('.product-card-plus');
 
 
@@ -2239,9 +2240,12 @@
 
     if (!quickAdd) {
       quickAdd = createQuickAddElement(item);
+      console.log('[wishlist] createQuickAddElement returned:', !!quickAdd, 'container:', quickAddContainer?.className);
       if (!quickAdd) return;
       quickAddContainer.appendChild(quickAdd);
+      console.log('[wishlist] Quick-add appended to container. Card now has .product-card-plus:', !!cardElement.querySelector('.product-card-plus'));
     } else {
+      console.log('[wishlist] Quick-add already exists, updating overlay');
       const overlay = quickAdd.querySelector('.overlay-sizes');
       if (overlay) {
         overlay.innerHTML = sizeButtonsMarkup;

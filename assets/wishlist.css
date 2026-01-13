@@ -352,6 +352,30 @@ cart-drawer.drawer--wishlist-active #CartDrawer-CartErrors {
 .wishlist-card .card__inner {
   overflow: hidden;
   width: 100%;
+  position: relative; /* Required for absolute positioning of quick-add button */
+}
+
+/* Quick-add button styling for wishlist cards */
+.wishlist-card .product-card-plus {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  z-index: 2;
+}
+
+.wishlist-card .product-card-plus .plus-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  color: rgb(var(--color-foreground));
 }
 
 .wishlist-card .card__media {
@@ -561,6 +585,7 @@ cart-drawer.drawer--wishlist-active #CartDrawer-CartErrors {
 
 .wishlist-card .card__inner {
   overflow: hidden;
+  position: relative; /* Required for absolute positioning of quick-add button */
 }
 
 .wishlist-card__image-link {
