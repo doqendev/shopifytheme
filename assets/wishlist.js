@@ -2260,15 +2260,14 @@
     wishlistSizeDrawer.innerHTML = `
       <div class="wishlist-size-drawer__overlay"></div>
       <div class="wishlist-size-drawer__content">
-        <div class="wishlist-size-drawer__header">
-          <h3 class="wishlist-size-drawer__title">Selecionar tamanho</h3>
-          <button type="button" class="wishlist-size-drawer__close" aria-label="Fechar">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M1 1L13 13M1 13L13 1" stroke="currentColor" stroke-width="1.5"/>
-            </svg>
-          </button>
+        <div class="wishlist-size-drawer__body">
+          <div class="wishlist-size-drawer__list"></div>
         </div>
-        <div class="wishlist-size-drawer__list"></div>
+        <button type="button" class="wishlist-size-drawer__close" aria-label="Fechar">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1L13 13M1 13L13 1" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+        </button>
       </div>
     `;
 
@@ -2304,20 +2303,19 @@
 
     currentWishlistCard = cardElement;
 
-    // Populate sizes - always enable buttons, let Shopify check stock on add
+    // Populate sizes - using div elements like product page size drawer
     const list = drawer.querySelector('.wishlist-size-drawer__list');
     list.innerHTML = sizes.map(size => `
-      <button type="button"
-              class="wishlist-size-drawer__item"
-              data-variant-id="${size.variantId}"
-              data-size="${size.value}">
-        <span class="wishlist-size-drawer__item-label">${size.value}</span>
-      </button>
+      <div class="size-item"
+           data-variant-id="${size.variantId}"
+           data-size="${size.value}">
+        <span class="size-item__label">${size.value}</span>
+      </div>
     `).join('');
 
     // Add click handlers for all size items
-    list.querySelectorAll('.wishlist-size-drawer__item').forEach(btn => {
-      btn.addEventListener('click', handleWishlistDrawerSizeClick);
+    list.querySelectorAll('.size-item').forEach(item => {
+      item.addEventListener('click', handleWishlistDrawerSizeClick);
     });
 
     drawer.classList.add('is-open');
@@ -2330,22 +2328,23 @@
   };
 
   const handleWishlistDrawerSizeClick = (event) => {
-    const button = event.currentTarget;
-    const variantId = parseInt(button.dataset.variantId, 10);
-    const sizeValue = button.dataset.size;
+    const item = event.currentTarget;
+    const variantId = parseInt(item.dataset.variantId, 10);
+    const sizeValue = item.dataset.size;
 
     if (!variantId || !currentWishlistCard) return;
 
     // Show loading state
-    const originalText = button.querySelector('.wishlist-size-drawer__item-label').textContent;
-    button.querySelector('.wishlist-size-drawer__item-label').textContent = 'Adicionando...';
-    button.disabled = true;
-    button.classList.add('wishlist-size-drawer__item--loading');
+    const label = item.querySelector('.size-item__label');
+    const originalText = label.textContent;
+    label.textContent = 'Adicionando...';
+    item.classList.add('size-item--loading');
+    item.style.pointerEvents = 'none';
 
     addVariantToCart(variantId, currentWishlistCard)
       .then(() => {
-        button.querySelector('.wishlist-size-drawer__item-label').textContent = 'Adicionado!';
-        button.classList.add('wishlist-size-drawer__item--success');
+        label.textContent = 'Adicionado!';
+        item.classList.add('size-item--active');
 
         // Close drawer after brief delay
         setTimeout(() => {
@@ -2353,9 +2352,9 @@
         }, 800);
       })
       .catch(() => {
-        button.querySelector('.wishlist-size-drawer__item-label').textContent = originalText;
-        button.disabled = false;
-        button.classList.remove('wishlist-size-drawer__item--loading');
+        label.textContent = originalText;
+        item.classList.remove('size-item--loading');
+        item.style.pointerEvents = 'auto';
       });
   };
 

@@ -1311,7 +1311,7 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
 
 /* ============================================================================
    Wishlist Size Drawer (bottom sheet inside cart drawer)
-   Matches the product page size-drawer styling
+   Uses the same .size-item classes from size-drawer.css
    ============================================================================ */
 
 .wishlist-size-drawer {
@@ -1350,21 +1350,22 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
   opacity: 1;
 }
 
-.wishlist-size-drawer__header {
+.wishlist-size-drawer__body {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
+  flex-direction: column;
+  overflow-y: auto;
 }
 
-.wishlist-size-drawer__title {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 500;
-  color: #333;
+.wishlist-size-drawer__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 .wishlist-size-drawer__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1373,81 +1374,9 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
   cursor: pointer;
   color: #333;
   padding: 0;
+  z-index: 1;
 }
 
 .wishlist-size-drawer__close:hover {
   opacity: 0.7;
-}
-
-/* Vertical list matching size-drawer */
-.wishlist-size-drawer__list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  overflow-y: auto;
-}
-
-.wishlist-size-drawer__item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  text-align: center;
-  padding: 12px 0;
-  border: none;
-  background: transparent;
-  font-family: inherit;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.wishlist-size-drawer__item:hover:not(:disabled) {
-  background-color: #f8f8f8;
-}
-
-.wishlist-size-drawer__item-label {
-  font-size: 14px;
-  font-weight: 400;
-  color: #333;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.wishlist-size-drawer__item--unavailable {
-  cursor: not-allowed;
-  background-color: transparent !important;
-}
-
-.wishlist-size-drawer__item--unavailable .wishlist-size-drawer__item-label {
-  color: #999;
-  text-decoration: line-through;
-}
-
-.wishlist-size-drawer__item--loading {
-  opacity: 1;
-  position: relative;
-}
-
-.wishlist-size-drawer__item--loading .wishlist-size-drawer__item-label {
-  color: #000;
-  font-weight: 500;
-}
-
-.wishlist-size-drawer__item--success {
-  background-color: transparent;
-}
-
-.wishlist-size-drawer__item--success .wishlist-size-drawer__item-label {
-  color: #000;
-  font-weight: 500;
-}
-
-/* Mobile font size for size drawer */
-@media screen and (max-width: 749px) {
-  .wishlist-size-drawer,
-  .wishlist-size-drawer * {
-    font-size: 16px !important;
-  }
 }
