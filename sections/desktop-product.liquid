@@ -11,6 +11,14 @@
 {% endschema %}
 
 {% comment %}
+  Preload the first product image for faster LCP (Largest Contentful Paint)
+{% endcomment %}
+{%- if product.media.size > 0 -%}
+  {%- assign first_media = product.media[0] -%}
+  <link rel="preload" as="image" href="{{ first_media | image_url: width: 800 }}" imagesrcset="{{ first_media | image_url: width: 400 }} 400w, {{ first_media | image_url: width: 600 }} 600w, {{ first_media | image_url: width: 800 }} 800w, {{ first_media | image_url: width: 1000 }} 1000w" imagesizes="(max-width: 1200px) 50vw, 600px" fetchpriority="high">
+{%- endif -%}
+
+{% comment %}
   Create a dummy block object with default settings
 {% endcomment %}
 {% assign dummy_block = '{ "settings": { "picker_type": "button", "swatch_shape": "circle" }, "shopify_attributes": "" }' | parse_json %}
@@ -581,6 +589,11 @@
                         {{ media | image_url: width: 1000 }} 1000w"
                 sizes="(max-width: 1200px) 50vw, 600px"
                 alt="{{ media.alt | escape }}"
+                loading="eager"
+                fetchpriority="{% if forloop.first %}high{% else %}low{% endif %}"
+                decoding="sync"
+                width="800"
+                height="{{ 800 | divided_by: media.aspect_ratio | round }}"
               >
             {%- else -%}
               <img
