@@ -572,35 +572,17 @@
   const normalizeVariants = (variants) => {
     if (!Array.isArray(variants)) return [];
     return variants.map((variant) => {
-      // Build options array from option1, option2, option3 (Shopify JSON API format)
-      // or use existing options array (Liquid format)
+      // Build options array from option1, option2, option3 (Shopify JS API format)
       let options = [];
-      if (Array.isArray(variant.options) && variant.options.length > 0) {
-        options = variant.options.slice();
-      } else {
-        // Build from option1, option2, option3
-        if (variant.option1) options.push(variant.option1);
-        if (variant.option2) options.push(variant.option2);
-        if (variant.option3) options.push(variant.option3);
-      }
-
-      // Determine availability - use multiple signals
-      // 1. If available is explicitly true, it's available
-      // 2. If inventory_quantity > 0, it's available
-      // 3. If inventory_policy is "continue", it's available (sell when out of stock)
-      let isAvailable = false;
-      if (variant.available === true) {
-        isAvailable = true;
-      } else if (typeof variant.inventory_quantity === 'number' && variant.inventory_quantity > 0) {
-        isAvailable = true;
-      } else if (variant.inventory_policy === 'continue') {
-        isAvailable = true;
-      }
+      if (variant.option1) options.push(variant.option1);
+      if (variant.option2) options.push(variant.option2);
+      if (variant.option3) options.push(variant.option3);
 
       return {
         id: variant.id,
         title: variant.title,
-        available: isAvailable,
+        // .js endpoint provides accurate availability directly
+        available: variant.available === true,
         options: options,
         price: variant.price,
         image: getVariantImageSource(variant.image || variant.featured_image),
@@ -664,7 +646,8 @@
   const PRODUCT_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
   /**
-   * Fetches product data from Shopify's product JSON endpoint
+   * Fetches product data from Shopify's product JS endpoint
+   * Uses .js endpoint for accurate availability data
    * @param {string} handle - Product handle
    * @returns {Promise<object|null>} Product data or null on error
    */
@@ -672,11 +655,13 @@
     if (!handle) return null;
 
     try {
-      const response = await fetch(`/products/${handle}.json`);
+      // Use .js endpoint which returns accurate variant availability
+      const response = await fetch(`/products/${handle}.js`);
       if (!response.ok) return null;
 
+      // .js endpoint returns product directly (not wrapped in { product: ... })
       const data = await response.json();
-      return data.product || null;
+      return data || null;
     } catch (error) {
       return null;
     }
