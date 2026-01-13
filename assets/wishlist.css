@@ -1016,11 +1016,15 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
 
   /* Fix footer being cut off by phone UI */
   #CartDrawer .drawer__footer {
-    position: sticky;
+    position: fixed;
     bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem;
     padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 20px));
     background: #fff;
-    z-index: 10;
+    z-index: 100;
+    border-top: 1px solid #E5E5E5;
   }
 
   /* Adjust drawer inner height on mobile to account for device UI */
@@ -1033,12 +1037,24 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
 
   /* Ensure panels have proper height constraints */
   #CartDrawer .drawer__panels {
-    max-height: 100%;
-    min-height: 0;
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Cart panel needs to account for fixed footer */
+  #CartDrawer .drawer__panel--active {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+    padding-bottom: calc(120px + env(safe-area-inset-bottom, 20px));
   }
 
   /* Make sure cart items area is scrollable */
   #CartDrawer cart-drawer-items {
+    flex: 1;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
   }
