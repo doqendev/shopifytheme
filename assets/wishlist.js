@@ -2943,8 +2943,16 @@
     console.log('[wishlist] handleWishlistClicks - wishlistCard found:', !!wishlistCard);
     if (!wishlistCard) return;
 
-    const plusIcon = event.target.closest('.product-card-plus .plus-icon');
-    console.log('[wishlist] handleWishlistClicks - plusIcon found:', !!plusIcon);
+    // Check for click on plus icon OR the product-card-plus container
+    let plusIcon = event.target.closest('.product-card-plus .plus-icon');
+    const plusContainer = event.target.closest('.product-card-plus');
+
+    // If clicked on container but not directly on button, find the button inside
+    if (!plusIcon && plusContainer) {
+      plusIcon = plusContainer.querySelector('.plus-icon');
+    }
+
+    console.log('[wishlist] handleWishlistClicks - plusIcon found:', !!plusIcon, 'plusContainer:', !!plusContainer);
     if (plusIcon) {
       console.log('[wishlist] Plus icon clicked! Preventing default and handling...');
       event.preventDefault();
