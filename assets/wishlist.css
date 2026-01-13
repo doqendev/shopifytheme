@@ -1016,15 +1016,19 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
 
   /* Fix footer being cut off by phone UI */
   #CartDrawer .drawer__footer {
-    position: relative !important;
+    position: sticky;
+    bottom: 0;
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 20px));
+    background: #fff;
+    z-index: 10;
   }
-
 
   /* Adjust drawer inner height on mobile to account for device UI */
   #CartDrawer .drawer__inner {
     height: 100dvh;
     max-height: 100dvh;
     max-height: -webkit-fill-available;
+    padding-bottom: 0;
   }
 
   /* Ensure panels have proper height constraints */
