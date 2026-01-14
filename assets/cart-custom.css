@@ -796,8 +796,9 @@ cart-items .il-price {
 /* Buttons positioned at bottom */
 cart-items .il-icons-row {
   display: flex;
+  flex-wrap: nowrap;
   gap: 0;
-  align-items: flex-end;
+  align-items: baseline;
   position: absolute;
   bottom: 0;
   left: 0;
@@ -805,6 +806,7 @@ cart-items .il-icons-row {
   order: 4;
   line-height: 1;
   margin: 0 !important;
+  white-space: nowrap;
 }
 
 cart-items .il-cart-line__edit,
@@ -820,6 +822,8 @@ cart-items .il-cart-line__remove {
   border: none;
   padding: 0 0 0.25rem 0;
   text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 cart-items .il-cart-line__edit:hover,
@@ -828,7 +832,7 @@ cart-items .il-cart-line__remove:hover {
 }
 
 cart-items .il-cart-line__edit::after {
-  content: " · ";
+  content: "·";
   margin: 0 0.5rem;
   color: #CCCCCC;
 }
