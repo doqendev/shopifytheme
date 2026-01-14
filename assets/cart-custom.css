@@ -205,7 +205,7 @@ cart-items .il-cart-line:last-child {
 
 #CartDrawer .il-icons-row{
   display:flex;
-  gap:5;
+  gap: 5px;
   align-items:flex-end;
   position: absolute;
   bottom: 0;
