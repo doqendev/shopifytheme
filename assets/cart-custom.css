@@ -829,7 +829,6 @@ cart-items .il-cart-line__remove:hover {
 
 cart-items .il-cart-line__edit::after {
   content: " · ";
-  margin: 0 0.5rem;
   color: #CCCCCC;
 }
 
