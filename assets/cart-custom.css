@@ -620,7 +620,7 @@ cart-items .il-cart-line:last-child {
 #CartDrawer .drawer__inner{ display:flex; flex-direction:column; height:100vh; max-height:100vh }
 #CartDrawer .drawer__panels{ flex:1 1 auto; display:flex; flex-direction:column; min-height:0 }
 #CartDrawer #CartDrawer-CartPanel{ flex:1 1 auto; display:flex; flex-direction:column; min-height:0 }
-#CartDrawer cart-drawer-items{ flex:1 1 auto; min-height:0; overflow:auto; padding: 0rem 0rem 0; }
+#CartDrawer cart-drawer-items{ flex:1 1 auto; min-height:0; overflow:auto; padding: rem 0rem 0; }
 #CartDrawer .drawer__footer{
   flex:0 0 auto;
 }
