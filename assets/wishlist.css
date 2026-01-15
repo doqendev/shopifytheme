@@ -1660,3 +1660,52 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
   width: 20px;
   height: 20px;
 }
+
+/* ============================================================================
+   Wishlist Calculator Drawer (inline size calculator)
+   ============================================================================ */
+
+.wishlist-calculator-drawer {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10003;
+  padding: 20px;
+}
+
+.wishlist-calculator-drawer.is-open {
+  display: flex;
+}
+
+.wishlist-calculator-drawer .size-calculator-drawer__overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+
+.wishlist-calculator-drawer .size-calculator-drawer__content {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  max-height: 90vh;
+  background: #fff;
+  overflow-y: auto;
+  z-index: 1;
+}
+
+/* Mobile: full screen */
+@media (max-width: 749px) {
+  .wishlist-calculator-drawer {
+    padding: 0;
+  }
+
+  .wishlist-calculator-drawer .size-calculator-drawer__content {
+    max-width: none;
+    max-height: none;
+    height: 100%;
+    border-radius: 0;
+  }
+}

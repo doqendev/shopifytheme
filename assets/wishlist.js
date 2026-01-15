@@ -2298,6 +2298,323 @@
   // Wishlist Size Drawer (inside cart drawer)
   let wishlistSizeDrawer = null;
   let currentWishlistCard = null;
+  let wishlistCalculatorDrawer = null;
+  let pendingCalculatorCard = null;
+
+  // ============================================
+  // WISHLIST CALCULATOR DRAWER
+  // ============================================
+
+  const createWishlistCalculatorDrawer = () => {
+    const existing = document.querySelector('.wishlist-calculator-drawer');
+    if (existing) {
+      wishlistCalculatorDrawer = existing;
+      return wishlistCalculatorDrawer;
+    }
+
+    wishlistCalculatorDrawer = document.createElement('div');
+    wishlistCalculatorDrawer.className = 'wishlist-calculator-drawer size-calculator-drawer';
+    wishlistCalculatorDrawer.dataset.currentStep = '1';
+    wishlistCalculatorDrawer.innerHTML = `
+      <div class="size-calculator-drawer__overlay" data-wishlist-calculator-close></div>
+      <div class="size-calculator-drawer__content">
+        <header class="size-calculator-drawer__header">
+          <h3>Calculadora de Tamanho</h3>
+          <button type="button" class="size-calculator-drawer__close" data-wishlist-calculator-close aria-label="Fechar">×</button>
+        </header>
+
+        <div class="calculator-steps">
+          <div class="calculator-step calculator-step--active" data-step-indicator="1">
+            <div class="calculator-step__number">1</div>
+            <div class="calculator-step__label">Medidas</div>
+          </div>
+          <div class="calculator-step" data-step-indicator="2">
+            <div class="calculator-step__number">2</div>
+            <div class="calculator-step__label">Tipo de Corpo</div>
+          </div>
+          <div class="calculator-step" data-step-indicator="3">
+            <div class="calculator-step__number">3</div>
+            <div class="calculator-step__label">Resultado</div>
+          </div>
+        </div>
+
+        <div class="size-calculator-drawer__body">
+          <form class="size-calculator-form" data-wishlist-calculator-form>
+            <!-- STEP 1: Basic Measurements -->
+            <div class="calculator-step-content" data-step-content="1">
+              <div class="calculator-form__section">
+                <label for="wishlist-calc-idade" class="calculator-form__label">Idade (anos)</label>
+                <input type="number" id="wishlist-calc-idade" name="idade" class="calculator-form__input" min="1" max="120" required placeholder="Ex: 25" />
+              </div>
+              <div class="calculator-form__section">
+                <label for="wishlist-calc-altura" class="calculator-form__label">Altura (cm)</label>
+                <input type="number" id="wishlist-calc-altura" name="altura" class="calculator-form__input" min="100" max="250" required placeholder="Ex: 175" />
+              </div>
+              <div class="calculator-form__section">
+                <label for="wishlist-calc-peso" class="calculator-form__label">Peso (kg)</label>
+                <input type="number" id="wishlist-calc-peso" name="peso" class="calculator-form__input" min="30" max="300" required placeholder="Ex: 70" />
+              </div>
+              <button type="button" class="calculator-form__next button button--primary" data-wishlist-next-step>Próximo</button>
+            </div>
+
+            <!-- STEP 2: Body Type Selection -->
+            <div class="calculator-step-content" data-step-content="2" hidden>
+              <div class="calculator-form__section">
+                <label class="calculator-form__label calculator-form__label--visual">Tipo de Barriga</label>
+                <div class="calculator-visual-selector" data-selector-group="belly">
+                  <button type="button" class="calculator-visual-option" data-value="slim" data-wishlist-visual-option>
+                    <div class="calculator-visual-option__icon"><span style="font-size:32px">🔹</span></div>
+                    <span class="calculator-visual-option__label">Magra</span>
+                  </button>
+                  <button type="button" class="calculator-visual-option" data-value="normal" data-wishlist-visual-option>
+                    <div class="calculator-visual-option__icon"><span style="font-size:32px">⬜</span></div>
+                    <span class="calculator-visual-option__label">Normal</span>
+                  </button>
+                  <button type="button" class="calculator-visual-option" data-value="broad" data-wishlist-visual-option>
+                    <div class="calculator-visual-option__icon"><span style="font-size:32px">🔷</span></div>
+                    <span class="calculator-visual-option__label">Larga</span>
+                  </button>
+                </div>
+                <input type="hidden" name="belly" required />
+              </div>
+              <div class="calculator-form__section">
+                <label class="calculator-form__label calculator-form__label--visual">Tipo de Ombros</label>
+                <div class="calculator-visual-selector" data-selector-group="shoulders">
+                  <button type="button" class="calculator-visual-option" data-value="narrow" data-wishlist-visual-option>
+                    <div class="calculator-visual-option__icon"><span style="font-size:32px">↔️</span></div>
+                    <span class="calculator-visual-option__label">Estreitos</span>
+                  </button>
+                  <button type="button" class="calculator-visual-option" data-value="normal" data-wishlist-visual-option>
+                    <div class="calculator-visual-option__icon"><span style="font-size:32px">➖</span></div>
+                    <span class="calculator-visual-option__label">Normais</span>
+                  </button>
+                  <button type="button" class="calculator-visual-option" data-value="broad" data-wishlist-visual-option>
+                    <div class="calculator-visual-option__icon"><span style="font-size:32px">↔️</span></div>
+                    <span class="calculator-visual-option__label">Largos</span>
+                  </button>
+                </div>
+                <input type="hidden" name="shoulders" required />
+              </div>
+              <div class="calculator-form__navigation">
+                <button type="button" class="calculator-form__back button button--secondary" data-wishlist-prev-step>Voltar</button>
+                <button type="button" class="calculator-form__submit button button--primary" data-wishlist-calculate>Calcular Tamanho</button>
+              </div>
+            </div>
+          </form>
+
+          <!-- STEP 3: Results Display -->
+          <div class="calculator-step-content" data-step-content="3" hidden>
+            <div class="size-calculator-result">
+              <div class="calculator-result__icon">
+                <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="32" cy="32" r="28" stroke="#198754" stroke-width="4" fill="none"/>
+                  <path d="M20 32 L28 40 L44 24" stroke="#198754" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <h4 class="calculator-result__title">Tamanho Recomendado</h4>
+              <div class="calculator-result__size" data-wishlist-result-size></div>
+              <p class="calculator-result__message" data-wishlist-result-message></p>
+              <button type="button" class="calculator-result__confirm button button--primary" data-wishlist-calculator-confirm>Selecionar Tamanho</button>
+              <button type="button" class="calculator-result__recalculate link" data-wishlist-calculator-recalculate>Recalcular</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(wishlistCalculatorDrawer);
+    initWishlistCalculatorEvents();
+    return wishlistCalculatorDrawer;
+  };
+
+  const initWishlistCalculatorEvents = () => {
+    if (!wishlistCalculatorDrawer) return;
+
+    // Close events
+    wishlistCalculatorDrawer.querySelectorAll('[data-wishlist-calculator-close]').forEach(el => {
+      el.addEventListener('click', closeWishlistCalculatorDrawer);
+    });
+
+    // Next step
+    wishlistCalculatorDrawer.querySelector('[data-wishlist-next-step]')?.addEventListener('click', () => {
+      const form = wishlistCalculatorDrawer.querySelector('[data-wishlist-calculator-form]');
+      const idade = form.querySelector('[name="idade"]').value;
+      const altura = form.querySelector('[name="altura"]').value;
+      const peso = form.querySelector('[name="peso"]').value;
+
+      if (!idade || !altura || !peso) {
+        return;
+      }
+
+      goToWishlistCalculatorStep(2);
+    });
+
+    // Previous step
+    wishlistCalculatorDrawer.querySelector('[data-wishlist-prev-step]')?.addEventListener('click', () => {
+      goToWishlistCalculatorStep(1);
+    });
+
+    // Visual options
+    wishlistCalculatorDrawer.querySelectorAll('[data-wishlist-visual-option]').forEach(option => {
+      option.addEventListener('click', () => {
+        const group = option.closest('[data-selector-group]');
+        if (!group) return;
+        const groupName = group.dataset.selectorGroup;
+
+        // Remove active from siblings
+        group.querySelectorAll('[data-wishlist-visual-option]').forEach(o => o.classList.remove('is-selected'));
+        option.classList.add('is-selected');
+
+        // Update hidden input
+        const hiddenInput = wishlistCalculatorDrawer.querySelector(`input[name="${groupName}"]`);
+        if (hiddenInput) hiddenInput.value = option.dataset.value;
+      });
+    });
+
+    // Calculate button
+    wishlistCalculatorDrawer.querySelector('[data-wishlist-calculate]')?.addEventListener('click', () => {
+      const form = wishlistCalculatorDrawer.querySelector('[data-wishlist-calculator-form]');
+      const belly = form.querySelector('[name="belly"]').value;
+      const shoulders = form.querySelector('[name="shoulders"]').value;
+
+      if (!belly || !shoulders) {
+        return;
+      }
+
+      calculateWishlistSize();
+    });
+
+    // Confirm button
+    wishlistCalculatorDrawer.querySelector('[data-wishlist-calculator-confirm]')?.addEventListener('click', () => {
+      closeWishlistCalculatorDrawer();
+      // Reopen size drawer with the card
+      if (pendingCalculatorCard) {
+        setTimeout(() => {
+          openWishlistSizeDrawer(pendingCalculatorCard);
+        }, 300);
+      }
+    });
+
+    // Recalculate button
+    wishlistCalculatorDrawer.querySelector('[data-wishlist-calculator-recalculate]')?.addEventListener('click', () => {
+      resetWishlistCalculator();
+      goToWishlistCalculatorStep(1);
+    });
+
+    // Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && wishlistCalculatorDrawer?.classList.contains('is-open')) {
+        closeWishlistCalculatorDrawer();
+      }
+    });
+  };
+
+  const goToWishlistCalculatorStep = (step) => {
+    if (!wishlistCalculatorDrawer) return;
+
+    wishlistCalculatorDrawer.dataset.currentStep = step;
+
+    // Update step indicators
+    wishlistCalculatorDrawer.querySelectorAll('[data-step-indicator]').forEach(indicator => {
+      const indicatorStep = parseInt(indicator.dataset.stepIndicator, 10);
+      indicator.classList.toggle('calculator-step--active', indicatorStep <= step);
+      indicator.classList.toggle('calculator-step--completed', indicatorStep < step);
+    });
+
+    // Show/hide step content
+    wishlistCalculatorDrawer.querySelectorAll('[data-step-content]').forEach(content => {
+      const contentStep = parseInt(content.dataset.stepContent, 10);
+      content.hidden = contentStep !== step;
+    });
+  };
+
+  const calculateWishlistSize = () => {
+    const form = wishlistCalculatorDrawer.querySelector('[data-wishlist-calculator-form]');
+    const measurements = {
+      idade: parseInt(form.querySelector('[name="idade"]').value, 10),
+      altura: parseInt(form.querySelector('[name="altura"]').value, 10),
+      peso: parseInt(form.querySelector('[name="peso"]').value, 10),
+      belly: form.querySelector('[name="belly"]').value,
+      shoulders: form.querySelector('[name="shoulders"]').value
+    };
+
+    // Use the global calculator if available, otherwise simple calculation
+    let recommendedSize = 'M';
+    if (window.themeCalculatorDrawer?.calculateSize) {
+      const result = window.themeCalculatorDrawer.calculateSize(measurements);
+      recommendedSize = result?.recommendedSize || 'M';
+
+      // Save measurements for future use
+      window.themeCalculatorDrawer.saveMeasurements?.({
+        ...measurements,
+        recommendedSize
+      });
+    } else {
+      // Fallback simple calculation based on BMI
+      const bmi = measurements.peso / Math.pow(measurements.altura / 100, 2);
+      if (bmi < 18.5) recommendedSize = 'S';
+      else if (bmi < 25) recommendedSize = 'M';
+      else if (bmi < 30) recommendedSize = 'L';
+      else recommendedSize = 'XL';
+
+      // Adjust for body type
+      if (measurements.belly === 'broad' || measurements.shoulders === 'broad') {
+        const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+        const currentIndex = sizes.indexOf(recommendedSize);
+        if (currentIndex < sizes.length - 1) recommendedSize = sizes[currentIndex + 1];
+      }
+    }
+
+    // Show result
+    const resultSize = wishlistCalculatorDrawer.querySelector('[data-wishlist-result-size]');
+    const resultMessage = wishlistCalculatorDrawer.querySelector('[data-wishlist-result-message]');
+
+    if (resultSize) resultSize.textContent = recommendedSize;
+    if (resultMessage) resultMessage.textContent = 'Com base nas tuas medidas, recomendamos este tamanho.';
+
+    goToWishlistCalculatorStep(3);
+  };
+
+  const resetWishlistCalculator = () => {
+    if (!wishlistCalculatorDrawer) return;
+
+    const form = wishlistCalculatorDrawer.querySelector('[data-wishlist-calculator-form]');
+    if (form) form.reset();
+
+    // Reset visual options
+    wishlistCalculatorDrawer.querySelectorAll('[data-wishlist-visual-option]').forEach(o => o.classList.remove('is-selected'));
+  };
+
+  const openWishlistCalculatorDrawer = (cardElement) => {
+    createWishlistCalculatorDrawer();
+    pendingCalculatorCard = cardElement;
+
+    // Load saved measurements if available
+    if (window.themeCalculatorDrawer?.loadSavedMeasurements) {
+      const saved = window.themeCalculatorDrawer.loadSavedMeasurements();
+      if (saved) {
+        const form = wishlistCalculatorDrawer.querySelector('[data-wishlist-calculator-form]');
+        if (form) {
+          if (saved.idade) form.querySelector('[name="idade"]').value = saved.idade;
+          if (saved.altura) form.querySelector('[name="altura"]').value = saved.altura;
+          if (saved.peso) form.querySelector('[name="peso"]').value = saved.peso;
+        }
+      }
+    }
+
+    resetWishlistCalculator();
+    goToWishlistCalculatorStep(1);
+    wishlistCalculatorDrawer.classList.add('is-open');
+  };
+
+  const closeWishlistCalculatorDrawer = () => {
+    if (!wishlistCalculatorDrawer) return;
+    wishlistCalculatorDrawer.classList.remove('is-open');
+  };
+
+  // ============================================
+  // WISHLIST SIZE DRAWER
+  // ============================================
 
   const createWishlistSizeDrawer = () => {
     // Check if drawer already exists
@@ -2395,27 +2712,13 @@
     calculatorBtn.className = 'size-item size-drawer__calculator-button';
     calculatorBtn.innerHTML = '<span class="size-item__label">CALCULAR TAMANHO</span>';
     calculatorBtn.addEventListener('click', () => {
-      // Get the product URL from the wishlist item
-      const productUrl = item?.url || (item?.handle ? `/products/${item.handle}` : null);
+      // Close the size drawer first
+      closeWishlistSizeDrawer();
 
-      if (productUrl) {
-        // Close wishlist size drawer
-        closeWishlistSizeDrawer();
-
-        // Close the cart drawer
-        const cartDrawer = document.querySelector('cart-drawer');
-        if (cartDrawer?.close) {
-          cartDrawer.close();
-        } else if (cartDrawer) {
-          cartDrawer.classList.remove('is-open', 'active');
-          cartDrawer.removeAttribute('open');
-          document.body.classList.remove('overflow-hidden');
-        }
-
-        // Navigate to product page with calculator parameter
-        const separator = productUrl.includes('?') ? '&' : '?';
-        window.location.href = `${productUrl}${separator}open_calculator=true`;
-      }
+      // Open the calculator drawer inline (without leaving the page)
+      setTimeout(() => {
+        openWishlistCalculatorDrawer(cardElement);
+      }, 200);
     });
     list.appendChild(calculatorBtn);
 
