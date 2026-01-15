@@ -2395,12 +2395,26 @@
     calculatorBtn.className = 'size-item size-drawer__calculator-button';
     calculatorBtn.innerHTML = '<span class="size-item__label">CALCULAR TAMANHO</span>';
     calculatorBtn.addEventListener('click', () => {
-      // Open the size calculator drawer
-      if (window.themeCalculatorDrawer?.openCalculatorDrawer) {
-        // Close wishlist size drawer first
+      // Get the product URL from the wishlist item
+      const productUrl = item?.url || (item?.handle ? `/products/${item.handle}` : null);
+
+      if (productUrl) {
+        // Close wishlist size drawer
         closeWishlistSizeDrawer();
-        // Open calculator - pass a pseudo section ID for wishlist
-        window.themeCalculatorDrawer.openCalculatorDrawer('wishlist');
+
+        // Close the cart drawer
+        const cartDrawer = document.querySelector('cart-drawer');
+        if (cartDrawer?.close) {
+          cartDrawer.close();
+        } else if (cartDrawer) {
+          cartDrawer.classList.remove('is-open', 'active');
+          cartDrawer.removeAttribute('open');
+          document.body.classList.remove('overflow-hidden');
+        }
+
+        // Navigate to product page with calculator parameter
+        const separator = productUrl.includes('?') ? '&' : '?';
+        window.location.href = `${productUrl}${separator}open_calculator=true`;
       }
     });
     list.appendChild(calculatorBtn);

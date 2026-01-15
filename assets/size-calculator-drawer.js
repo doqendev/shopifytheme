@@ -1019,6 +1019,25 @@
 
     applySavedRecommendations();
     startRecommendationObserver();
+
+    // Auto-open calculator if URL has open_calculator=true parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('open_calculator') === 'true') {
+      // Find the first available calculator drawer on the page (product page)
+      setTimeout(() => {
+        const calculatorDrawer = document.querySelector('.size-calculator-drawer');
+        if (calculatorDrawer) {
+          const sectionId = calculatorDrawer.dataset.sectionId;
+          if (sectionId) {
+            openCalculatorDrawer(sectionId);
+            // Clean up URL parameter without reloading
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.delete('open_calculator');
+            window.history.replaceState({}, '', newUrl.toString());
+          }
+        }
+      }, 300); // Small delay to ensure page is ready
+    }
   }
 
   // ============================================
