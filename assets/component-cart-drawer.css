@@ -49,7 +49,11 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
   transform: translateX(0);
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Work+Sans:wght@300;400;500&display=swap');
+
+/* ============================================
+   REFINED LUXURY CART DRAWER - Editorial Style
+   ============================================ */
 
 .drawer__header {
   position: relative;
@@ -57,53 +61,54 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
   display: flex;
   flex-direction: column;
   border-bottom: none;
+  background: #FFFFFF;
 }
 
 .drawer__heading {
   margin: 0 0 1rem;
 }
 
-/* Tab Navigation Styling - Minimalist Zara Style */
+/* Tab Navigation - Refined Editorial Style */
 .drawer__tabs {
   display: flex;
   gap: 0;
-  padding: 2.5rem 2rem 0;
+  padding: 2.8rem 2.5rem 0;
   position: relative;
   background: #FFFFFF;
-  border-bottom: 1px solid #E5E5E5;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .drawer__tab {
   flex: 1;
   background: transparent;
   border: none;
-  padding: 0 1rem 1.25rem;
+  padding: 0 1.5rem 1.4rem;
   font-family: 'Work Sans', sans-serif;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 400;
-  letter-spacing: 0.5px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: #999999;
+  color: rgba(0, 0, 0, 0.4);
   cursor: pointer;
   position: relative;
-  transition: color 0.2s ease;
+  transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
 }
 
 .drawer__tab::before {
   content: '';
   position: absolute;
   bottom: -1px;
-  left: 0;
-  right: 0;
+  left: 50%;
+  right: 50%;
   height: 1px;
   background: #000000;
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
+  transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .drawer__tab::after {
@@ -111,7 +116,7 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
 }
 
 .drawer__tab:hover {
-  color: #000000;
+  color: rgba(0, 0, 0, 0.7);
   background: transparent;
 }
 
@@ -122,44 +127,58 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
 }
 
 .drawer__tab.is-active::before {
-  transform: scaleX(1);
+  left: 0;
+  right: 0;
 }
 
 .drawer__tab.is-active::after {
   display: none;
 }
 
-/* Tab Count Badge - Minimal */
+/* Tab Count Badge - Refined */
 .drawer__tab-count {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-family: 'Work Sans', sans-serif;
-  font-size: 13px;
+  font-size: 10px;
   font-weight: 400;
+  letter-spacing: 0.5px;
   color: inherit;
-  transition: color 0.2s ease;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
 }
 
+.drawer__tab.is-active .drawer__tab-count {
+  opacity: 1;
+}
+
+/* Tab Label Styling */
+.drawer__tab-label {
+  position: relative;
+}
+
+/* Close Button - Refined */
 .drawer__close {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 8px;
+  padding: 10px;
   background: none;
   border: none;
   cursor: pointer;
   color: #000000;
   position: absolute;
-  top: 2.5rem;
-  right: 2rem;
-  margin: -8px -8px -8px 0;
+  top: 2.8rem;
+  right: 2.5rem;
+  margin: -10px -10px -10px 0;
   z-index: 10;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .drawer__close:hover {
-  opacity: 0.6;
+  opacity: 0.5;
+  transform: rotate(90deg);
 }
 
 .cart-drawer__warnings .drawer__close {
@@ -180,21 +199,22 @@ cart-drawer:not(.is-empty) .cart-drawer__collection {
   }
 
   .drawer__tabs {
-    padding: calc(2rem + env(safe-area-inset-top)) 1.5rem 0;
+    padding: calc(2.2rem + env(safe-area-inset-top)) 1.5rem 0;
   }
 
   .drawer__tab {
-    padding: 0 0.75rem 1rem;
-    font-size: 12px;
+    padding: 0 0.75rem 1.2rem;
+    font-size: 10px;
+    letter-spacing: 1.2px;
     gap: 0.4rem;
   }
 
   .drawer__tab-count {
-    font-size: 12px;
+    font-size: 9px;
   }
 
   .drawer__close {
-    top: calc(2rem + env(safe-area-inset-top));
+    top: calc(2.2rem + env(safe-area-inset-top));
     right: calc(1.5rem + env(safe-area-inset-right));
     padding: 8px;
     margin: -8px -8px -8px 0;

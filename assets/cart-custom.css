@@ -153,12 +153,15 @@ cart-items .il-cart-line:last-child {
   object-fit: cover;
   object-position: center;
 }
-#CartDrawer .cart__empty-text{text-align:center;color:#666666;font-size:14px;font-weight:400;line-height:1.6;}
+/* ============================================
+   CART DRAWER - Empty State Refined Styling
+   ============================================ */
+#CartDrawer .cart__empty-text{text-align:center;color:rgba(0,0,0,0.5);font-family:'Work Sans',sans-serif;font-size:13px;font-weight:300;line-height:1.7;letter-spacing:0.02em;}
 #CartDrawer .drawer__empty-state:not([hidden]){display:flex;align-items:center;justify-content:center}
-#CartDrawer .cart-drawer__empty-content{margin-top:0; margin-bottom: 2.5rem;}
-#CartDrawer .cart__empty-heading{font-size:18px;font-weight:500;color:#000000;margin-bottom:0.5rem;text-align:center;}
-#CartDrawer .cart__empty-subtitle{font-size:14px;color:#666666;}
-#CartDrawer .cart-drawer__recommendations-title{font-size:14px;font-weight:500;color:#000000;margin-bottom:1.5rem;text-transform:uppercase;letter-spacing:0.5px;}
+#CartDrawer .cart-drawer__empty-content{margin-top:0;margin-bottom:0;}
+#CartDrawer .cart__empty-heading{font-family:'Cormorant Garamond','Times New Roman',serif;font-size:1.75rem;font-weight:300;color:#000000;margin-bottom:0.75rem;text-align:center;letter-spacing:-0.01em;line-height:1.2;}
+#CartDrawer .cart__empty-subtitle{font-family:'Work Sans',sans-serif;font-size:0.8125rem;font-weight:300;color:rgba(0,0,0,0.5);letter-spacing:0.02em;line-height:1.7;}
+#CartDrawer .cart-drawer__recommendations-title{font-family:'Work Sans',sans-serif;font-size:0.6875rem;font-weight:500;color:rgba(0,0,0,0.4);margin-bottom:1.5rem;text-transform:uppercase;letter-spacing:1.5px;}
 /* Cart Item Structure - Clean Zara Style */
 #CartDrawer .il-item-details{
   flex-direction: column !important;
@@ -855,6 +858,10 @@ cart-items th:last-child {
   display: none !important;
 }
 
+/* ============================================
+   CART DRAWER - Recommendations Refined Style
+   ============================================ */
+
 /* Empty cart state - center text but not recommendation cards */
 #CartDrawer .cart-drawer__empty-content {
   text-align: center;
@@ -872,44 +879,62 @@ cart-items th:last-child {
   text-align: left;
 }
 
-/* Remove bold from recommendation card prices */
+/* Recommendation card styling */
 #CartDrawer .cart-recommendation-card__price {
+  font-family: 'Work Sans', sans-serif;
   font-weight: 400;
+  font-size: 0.75rem;
+  color: rgba(0, 0, 0, 0.6);
 }
 
-/* Empty cart recommendations - add spacing between product cards */
+#CartDrawer .cart-recommendation-card__title {
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 400;
+  font-size: 0.75rem;
+  color: #000000;
+}
+
+/* Empty cart recommendations - refined spacing */
 #CartDrawer .cart-drawer__collection {
-  padding: 0 2rem 2rem !important;
+  padding: 2rem 1.5rem 2.5rem !important;
 }
 
 #CartDrawer .cart-recommendation-card {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
 }
 
 /* Wishlist/Favoritos tab - same spacing as cart */
 #CartDrawer-WishlistPanel .cart-drawer__collection {
-  padding: 0 2rem 2rem !important;
+  padding: 2rem 1.5rem 2.5rem !important;
 }
 
 #CartDrawer-WishlistPanel .cart-recommendation-card {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
 }
 
 /* Mobile spacing for recommendations */
 @media screen and (max-width: 749px) {
   #CartDrawer .cart-drawer__collection {
-    padding: 0 1.5rem 1.5rem !important;
+    padding: 1.5rem 1rem 1.5rem !important;
   }
 
   #CartDrawer .cart-recommendation-card {
-    margin-bottom: 1rem;
+    margin-bottom: 0;
   }
 
   #CartDrawer-WishlistPanel .cart-drawer__collection {
-    padding: 0 1.5rem 1.5rem !important;
+    padding: 1.5rem 1rem 1.5rem !important;
   }
 
   #CartDrawer-WishlistPanel .cart-recommendation-card {
-    margin-bottom: 1rem;
+    margin-bottom: 0;
+  }
+
+  #CartDrawer .cart__empty-heading {
+    font-size: 1.5rem;
+  }
+
+  #CartDrawer .cart__empty-subtitle {
+    font-size: 0.75rem;
   }
 }
