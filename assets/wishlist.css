@@ -318,13 +318,14 @@ cart-drawer.drawer--wishlist-active #CartDrawer-CartErrors {
 
 /* Empty State - Editorial Typography */
 .cart__empty-heading {
-  font-family: 'Cormorant Garamond', 'Times New Roman', serif;
-  font-size: 1.75rem;
-  font-weight: 300;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 400;
   color: #000000;
   margin: 0 0 0.75rem 0;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  text-transform: none;
 }
 
 .cart__empty-subtitle {
@@ -1095,7 +1096,7 @@ cart-drawer.drawer--wishlist-active #CartDrawer-WishlistPanel > .drawer__wishlis
   }
 
   .cart__empty-heading {
-    font-size: 1.5rem;
+    font-size: 1.125rem;
   }
 
   .cart__empty-subtitle {

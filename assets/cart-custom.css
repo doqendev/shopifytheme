@@ -159,7 +159,7 @@ cart-items .il-cart-line:last-child {
 #CartDrawer .cart__empty-text{text-align:center;color:rgba(0,0,0,0.5);font-family:'Work Sans',sans-serif;font-size:13px;font-weight:300;line-height:1.7;letter-spacing:0.02em;}
 #CartDrawer .drawer__empty-state:not([hidden]){display:flex;align-items:center;justify-content:center}
 #CartDrawer .cart-drawer__empty-content{margin-top:0;margin-bottom:0;}
-#CartDrawer .cart__empty-heading{font-family:'Cormorant Garamond','Times New Roman',serif;font-size:1.75rem;font-weight:300;color:#000000;margin-bottom:0.75rem;text-align:center;letter-spacing:-0.01em;line-height:1.2;}
+#CartDrawer .cart__empty-heading{font-family:'Work Sans',sans-serif;font-size:1.25rem;font-weight:400;color:#000000;margin-bottom:0.75rem;text-align:center;letter-spacing:0.01em;line-height:1.3;}
 #CartDrawer .cart__empty-subtitle{font-family:'Work Sans',sans-serif;font-size:0.8125rem;font-weight:300;color:rgba(0,0,0,0.5);letter-spacing:0.02em;line-height:1.7;}
 #CartDrawer .cart-drawer__recommendations-title{font-family:'Work Sans',sans-serif;font-size:0.6875rem;font-weight:500;color:rgba(0,0,0,0.4);margin-bottom:1.5rem;text-transform:uppercase;letter-spacing:1.5px;}
 /* Cart Item Structure - Clean Zara Style */
@@ -931,7 +931,7 @@ cart-items th:last-child {
   }
 
   #CartDrawer .cart__empty-heading {
-    font-size: 1.5rem;
+    font-size: 1.125rem;
   }
 
   #CartDrawer .cart__empty-subtitle {
