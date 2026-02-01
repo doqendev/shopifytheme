@@ -1,0 +1,371 @@
+{% comment %}
+  Editorial Photo Static - derived from Hero Slider (Desktop/Mobile Images per Slide)
+  - Added separate image_picker for mobile images.
+  - Uses <picture> element for responsive image loading.
+  - Retains all previous styling and functionality.
+{% endcomment %}
+
+<section class="editorial-static-hero" id="editorial-photo-static-container">
+  {% for block in section.blocks %}
+    <div
+      class="editorial-slide"
+      style="
+        --border-color: {{ block.settings.border_color }};
+        --border-width: {{ block.settings.border_width }}px;
+        --max-width: {{ block.settings.max_width }}px;
+        --margin-top: {{ block.settings.margin_top }}px;
+        --mobile-border-width: {{ block.settings.border_width_mobile }}px;
+        --mobile-max-width: {{ block.settings.max_width_mobile }}px;
+        --mobile-margin-top: {{ block.settings.margin_top_mobile }}px;
+      "
+    >
+      {%- assign desktop_image = block.settings.image_desktop -%}
+      {%- assign mobile_image = block.settings.image_mobile -%}
+      {%- assign alt_text = block.settings.caption | escape | default: 'Editorial image' -%}
+
+      {%- comment -%} Determine a primary image for the fallback <img> tag and for the main condition {% endcomment -%}
+      {%- assign has_any_image = false -%}
+      {%- assign fallback_img_src = "" -%}
+      {%- assign fallback_img_width = block.settings.max_width -%}
+
+      {%- if desktop_image != blank -%}
+        {%- assign has_any_image = true -%}
+        {%- assign fallback_img_src = desktop_image | image_url: width: block.settings.max_width -%}
+      {%- elsif mobile_image != blank -%}
+        {%- assign has_any_image = true -%}
+        {%- assign fallback_img_src = mobile_image | image_url: width: block.settings.max_width_mobile -%}
+        {%- assign fallback_img_width = block.settings.max_width_mobile -%}
+      {%- endif -%}
+
+      {% if has_any_image %}
+        <picture class="editorial-slide-picture-element">
+          {% if mobile_image != blank %}
+            <source
+              media="(max-width: 700px)"
+              srcset="{{ mobile_image | image_url: width: block.settings.max_width_mobile }}"
+            >
+          {% endif %}
+          {% if desktop_image != blank %}
+            <source
+              media="(min-width: 701px)"
+              srcset="{{ desktop_image | image_url: width: block.settings.max_width }}"
+            >
+          {% endif %}
+          {%- comment -%} Fallback for browsers that don't support <picture> or if sources fail. Uses determined fallback_img_src. {%- endcomment -%}
+          <img
+            src="{{ fallback_img_src }}"
+            alt="{{ alt_text }}"
+            class="editorial-slide-image"
+            loading="lazy"
+            width="{{ fallback_img_width }}" {% comment %} Optional: hint for browser {% endcomment %}
+          >
+        </picture>
+      {% else %}
+        <div class="editorial-slide-placeholder">
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        </div>
+      {% endif %}
+      
+      {%- assign has_caption_content = false -%}
+      {%- if block.settings.caption != blank -%}
+        {%- assign has_caption_content = true -%}
+      {%- endif -%}
+
+      {%- assign has_button_content = false -%}
+      {%- if block.settings.button_text != blank and block.settings.button_link != blank -%}
+        {%- assign has_button_content = true -%}
+      {%- endif -%}
+
+      {% if has_caption_content or has_button_content %}
+        <div class="editorial-slide-overlay">
+          {% if has_caption_content %}
+            <div class="editorial-slide-caption">{{ block.settings.caption }}</div>
+          {% endif %}
+          {% if has_button_content %}
+            <a href="{{ block.settings.button_link }}" class="editorial-slide-button">
+              {{ block.settings.button_text }}
+            </a>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  {% endfor %}
+</section>
+
+<style>
+  .editorial-static-hero {
+    position: relative;
+    height: auto;
+    overflow: visible;
+    background: transparent;
+  }
+
+  .editorial-slide {
+    position: relative; 
+    margin-top: var(--margin-top, 200px);
+    margin-left: auto; margin-right: auto;
+    max-width: var(--max-width, 840px);
+    width: calc(100% - 40px);
+    padding: var(--border-width, 24px); 
+    background: var(--border-color, #eaeada); 
+    box-sizing: border-box;
+    
+    transform: none; 
+         
+  }
+  .editorial-slide-picture-element { /* Style for the <picture> tag */
+    display: block;
+    width: 100%;
+    height: 100%; /* Ensure it fills the inner area of the slide */
+    overflow: hidden; /* In case object-fit doesn't perfectly contain */
+  }
+
+  .editorial-slide-image {  /* Style for the <img> tag inside <picture> */
+    display: block;
+    width: 100%;
+    height: 100%; 
+    object-fit: cover; 
+  }
+
+  .editorial-slide-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%; 
+    height: 100%; 
+    background-color: #f0f0f0;
+  }
+  .editorial-slide-placeholder .placeholder-svg {
+    width: 50px;
+    height: 50px;
+  }
+
+  .editorial-slide-overlay {
+    position: absolute;
+    top: var(--border-width, 24px);
+    bottom: var(--border-width, 24px);
+    left: var(--border-width, 24px);
+    right: var(--border-width, 24px);
+    z-index: 2; 
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end; 
+    padding-bottom: 12%; 
+    pointer-events: none; 
+  }
+
+  .editorial-slide-caption {
+    width: auto; 
+    max-width: 90%;
+    margin-bottom: 20px; 
+    
+    color: #FFFFFF; 
+    font-size: 3.5rem; 
+    font-weight: 700; 
+    text-transform: uppercase; 
+    text-align: center;
+    letter-spacing: 0.05em; 
+    
+    text-shadow: 0px 2px 6px rgba(0, 0, 0, 0.35); 
+    
+    background-color: transparent; 
+    pointer-events: none; 
+  }
+
+  .editorial-slide-button {
+    display: inline-block; 
+    padding: 10px 28px; 
+    font-size: 0.85rem; 
+    color: #FFFFFF;
+    background-color: rgba(0, 0, 0, 0.4); 
+    border: 1px solid rgba(255,255,255,0.75); 
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 0;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    cursor: pointer;
+    pointer-events: auto; 
+  }
+
+  .editorial-slide-button:hover,
+  .editorial-slide-button:focus {
+    background-color: #FFFFFF;
+    color: #000000;
+    border-color: #FFFFFF;
+  }
+
+  @media (max-width: 700px) {
+    .editorial-slide {
+      margin-top: var(--mobile-margin-top, 40px);
+      max-width: var(--mobile-max-width, 360px);
+      padding: var(--mobile-border-width, 8px);
+    }
+    .editorial-slide-overlay {
+        top: var(--mobile-border-width, 8px);
+        bottom: var(--mobile-border-width, 8px);
+        left: var(--mobile-border-width, 8px);
+        right: var(--mobile-border-width, 8px);
+        padding-bottom: 10%; 
+    }
+    .editorial-slide-caption {
+      font-size: 2rem; 
+      margin-bottom: 15px;
+      letter-spacing: 0.03em;
+      text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.4);
+    }
+    .editorial-slide-button {
+      font-size: 0.8rem;
+      padding: 8px 20px;
+      background-color: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255,255,255,0.7);
+    }
+  }
+</style>
+
+
+{% schema %}
+{
+  "name": "Editorial Photo Static",
+  "tag": "section",
+  "max_blocks": 10,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Editorial Photo Static",
+      "info": "Stack images vertically with captions and buttons."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "photo",
+      "name": "Photo Block",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image_desktop",
+          "label": "Desktop Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_mobile",
+          "label": "Mobile Image (Portrait Recommended)"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Caption Text",
+          "default": "Image Caption" 
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button Text",
+          "default": "Shop Now",
+          "info": "Leave blank to hide button."
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link"
+        },
+        {
+          "type": "color",
+          "id": "border_color",
+          "label": "Border Color",
+          "default": "#eaeada"
+        },
+        {
+          "type": "range",
+          "id": "border_width",
+          "label": "Border Width (Desktop)",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "default": 24
+        },
+        {
+          "type": "range",
+          "id": "max_width",
+          "label": "Max Slide Width (Desktop)",
+          "min": 300,
+          "max": 1200,
+          "step": 10,
+          "unit": "px",
+          "default": 840
+        },
+        {
+          "type": "range",
+          "id": "margin_top",
+          "label": "Top Margin (Desktop)",
+          "min": 0,
+          "max": 300,
+          "step": 5,
+          "unit": "px",
+          "default": 200
+        },
+        {
+          "type": "header",
+          "content": "Mobile Settings"
+        },
+        {
+          "type": "range",
+          "id": "border_width_mobile",
+          "label": "Border Width (Mobile)",
+          "min": 0,
+          "max": 30,
+          "step": 1,
+          "unit": "px",
+          "default": 8
+        },
+        {
+          "type": "range",
+          "id": "max_width_mobile",
+          "label": "Max Slide Width (Mobile)",
+          "min": 200,
+          "max": 600,
+          "step": 5,
+          "unit": "px",
+          "default": 360
+        },
+        {
+          "type": "range",
+          "id": "margin_top_mobile",
+          "label": "Top Margin (Mobile)",
+          "min": 0,
+          "max": 200,
+          "step": 5,
+          "unit": "px",
+          "default": 40
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Editorial Photo Static",
+      "category": "Image",
+      "blocks": [
+        { 
+          "type": "photo",
+          "settings": {
+            "caption": "NewCollection",
+            "button_text": "Discover"
+          }
+        },
+        { 
+          "type": "photo",
+          "settings": {
+            "caption": "Seasonal Sale",
+            "button_text": "Shop Now"
+          }
+        },
+        { "type": "photo" }
+      ]
+    }
+  ]
+}
+{% endschema %}
