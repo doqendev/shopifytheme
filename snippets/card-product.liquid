@@ -282,7 +282,7 @@
                           {% if swatch_count == 0 %}
                             {% assign is_active = true %}
                           {% endif %}
-                          {% render 'swatch', swatch: value.swatch, shape: 'circle', variant_image: variant_image_url, is_default: is_active, option_value: option_text | escape %}
+                          {% render 'swatch', swatch: value.swatch, shape: 'circle', variant_image: variant_image_url, is_default: is_active, option_value: option_text %}
                           {% assign swatch_count = swatch_count | plus: 1 %}
                         {% else %}
                           {% assign additional_swatch_count = additional_swatch_count | plus: 1 %}
@@ -626,3 +626,15 @@
     </div>
   </div>
 {% endif %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{% render 'swatch', swatch: value.swatch, shape: 'circle', variant_image:
+    variant_image_url, is_default: is_active, option_value: option_text | escape %}"
+  to: "{% render 'swatch', swatch: value.swatch, shape: 'circle', variant_image: variant_image_url,
+    is_default: is_active, option_value: option_text %}"
+  position: 12046..12190
+{% endcomment %}

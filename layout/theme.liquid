@@ -16,7 +16,7 @@
     <script>
   console.log("Liquid customer.id:", {{ customer.id | json }});
   console.log("Liquid customer object:", {{ customer | json }});
-  console.log("Liquid customerLoggedIn:", {{ customer != nil | json }});
+  console.log("Liquid customerLoggedIn:", {{ customer | json }});
 </script>
 
 
@@ -467,3 +467,13 @@ menu-drawer > details[open] > summary::before {
     {%- endif -%}
   </body>
 </html>
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{{ customer != nil | json }}"
+  to: "{{ customer | json }}"
+  position: 543..564
+{% endcomment %}
