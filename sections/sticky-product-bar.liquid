@@ -311,19 +311,14 @@
           </div>
           {% unless product.has_only_default_variant %}
           <div class="product-variants">
-            {% render 'product-variant-picker', product: product, block: dummy_block, product_form_id: 'product-form-' | append: section.id %}
+            {% render 'product-variant-picker', product: product, block: dummy_block, product_form_id: 'product-form-', append: section.id %}
           </div>
           {% endunless %}
         </div>
       </div>
       <!-- Right side: Add to Cart button(s) -->
       <div class="add-to-cart">
-        {% render 'buy-buttons',
-            block: dummy_block,
-            product: product,
-            product_form_id: 'product-form-' | append: section.id,
-            show_pickup_availability: false
-        %}
+        {% render 'buy-buttons', block: dummy_block, product: product, product_form_id: 'product-form-', append: section.id, show_pickup_availability: false %}
       </div>
     </div>
   </div>
@@ -839,3 +834,25 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{% render 'product-variant-picker', product: product, block: dummy_block,
+    product_form_id: 'product-form-' | append: section.id %}"
+  to: "{% render 'product-variant-picker', product: product, block: dummy_block, product_form_id:
+    'product-form-', append: section.id %}"
+  position: 9165..9294
+- from: |-
+    {% render 'buy-buttons',
+                block: dummy_block,
+                product: product,
+                product_form_id: 'product-form-' | append: section.id,
+                show_pickup_availability: false
+            %}
+  to: "{% render 'buy-buttons', block: dummy_block, product: product, product_form_id:
+    'product-form-', append: section.id, show_pickup_availability: false %}"
+  position: 9455..9606
+{% endcomment %}
