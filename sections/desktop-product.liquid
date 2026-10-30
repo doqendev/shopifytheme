@@ -678,11 +678,7 @@
     {% unless product.has_only_default_variant %}
       <!-- Variant Picker -->
       <div class="product-variants">
-        {% render 'desktop-variant-picker',
-          product: product,
-          product_form_id: 'desktop-product-form-' | append: section.id,
-          block: dummy_block
-        %}
+        {% render 'desktop-variant-picker', product: product, product_form_id: 'desktop-product-form-', append: section.id, block: dummy_block %}
 
         
       </div>
@@ -690,13 +686,7 @@
 
     <!-- Add to Cart Buttons -->
     <div class="add-to-cart">
-      {% render 'buy-buttons',
-          block: dummy_block,
-          product: product,
-          product_form_id: 'desktop-product-form-' | append: section.id,
-          section_id: section.id,
-          show_pickup_availability: false
-      %}
+      {% render 'buy-buttons', block: dummy_block, product: product, product_form_id: 'desktop-product-form-', append: section.id, section_id: section.id, show_pickup_availability: false %}
     </div>
 
     <!-- Accordion -->
@@ -1176,3 +1166,31 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <script src="{{ 'color-image-filter.js' | asset_url }}" defer="defer"></script>
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: |-
+    {% render 'desktop-variant-picker',
+              product: product,
+              product_form_id: 'desktop-product-form-' | append: section.id,
+              block: dummy_block
+            %}
+  to: "{% render 'desktop-variant-picker', product: product, product_form_id: 'desktop-product-form-',
+    append: section.id, block: dummy_block %}"
+  position: 22413..22550
+- from: |-
+    {% render 'buy-buttons',
+              block: dummy_block,
+              product: product,
+              product_form_id: 'desktop-product-form-' | append: section.id,
+              section_id: section.id,
+              show_pickup_availability: false
+          %}
+  to: "{% render 'buy-buttons', block: dummy_block, product: product, product_form_id:
+    'desktop-product-form-', append: section.id, section_id: section.id, show_pickup_availability:
+    false %}"
+  position: 22664..22847
+{% endcomment %}

@@ -673,7 +673,7 @@
               {% assign swatch_count = color_options.values.size %}
               {% if swatch_count < 2 %}
                 <!-- Show all swatches when fewer than 2 -->
-                {% render 'product-variant-picker', product: product, block: dummy_block, product_form_id: 'product-form-' | append: section.id %}
+                {% render 'product-variant-picker', product: product, block: dummy_block, product_form_id: 'product-form-', append: section.id %}
               {% else %}
                 <!-- Show condensed swatch + counter when 2 or more -->
                 <div class="swatch-condensed" data-swatch-count="{{ swatch_count }}">
@@ -686,7 +686,7 @@
               {% endif %}
             {% else %}
               <!-- No color options, show regular variant picker -->
-              {% render 'product-variant-picker', product: product, block: dummy_block, product_form_id: 'product-form-' | append: section.id %}
+              {% render 'product-variant-picker', product: product, block: dummy_block, product_form_id: 'product-form-', append: section.id %}
             {% endif %}
           </div>
           {% endunless %}
@@ -699,13 +699,7 @@
       </div>
       <!-- Right side: Add to Cart button(s) -->
       <div class="add-to-cart">
-        {% render 'buy-buttons',
-            block: dummy_block,
-            product: product,
-            product_form_id: 'product-form-' | append: section.id,
-            section_id: section.id,
-            show_pickup_availability: false
-        %}
+        {% render 'buy-buttons', block: dummy_block, product: product, product_form_id: 'product-form-', append: section.id, section_id: section.id, show_pickup_availability: false %}
       </div>
     </div>
   </div>
@@ -1655,3 +1649,28 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{% render 'product-variant-picker', product: product, block: dummy_block,
+    product_form_id: 'product-form-' | append: section.id %}"
+  to: "{% render 'product-variant-picker', product: product, block: dummy_block, product_form_id:
+    'product-form-', append: section.id %}"
+  position: 18703..18832
+- from: "{% render 'product-variant-picker', product: product, block: dummy_block,
+    product_form_id: 'product-form-' | append: section.id %}"
+  to: "{% render 'product-variant-picker', product: product, block: dummy_block, product_form_id:
+    'product-form-', append: section.id %}"
+  position: 19596..19725
+- from: "{% render 'buy-buttons',\r\n            block: dummy_block,\r\n            product:
+    product,\r\n            product_form_id: 'product-form-' | append: section.id,\r\n
+    \           section_id: section.id,\r\n            show_pickup_availability: false\r\n
+    \       %}"
+  to: "{% render 'buy-buttons', block: dummy_block, product: product, product_form_id:
+    'product-form-', append: section.id, section_id: section.id, show_pickup_availability:
+    false %}"
+  position: 20120..20295
+{% endcomment %}
